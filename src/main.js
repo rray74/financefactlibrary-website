@@ -5,4 +5,4 @@
 //
 // import { something } from './lib/something.js';
 
-console.log('Financial Facts — JS bundle loaded');
+console.log("Finance Fact Library — JS bundle loaded");

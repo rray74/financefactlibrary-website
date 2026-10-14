@@ -341,7 +341,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <div>
             <label for="meta_title" class="block font-semibold mb-1">Meta title</label>
             <p class="text-xs opacity-70 mb-2">
-                The search result headline. " — Financial Facts" is added after it, so aim for
+                The search result headline. " — Finance Fact Library" is added after it, so aim for
                 42 characters or fewer to keep the whole title within about 60. Blank uses the
                 subject name.
             </p>

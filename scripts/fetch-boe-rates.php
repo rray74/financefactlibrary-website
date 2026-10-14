@@ -318,7 +318,7 @@ function fetchBoeSeries(array $codes, ?string $fromFile): array
             CURLOPT_TIMEOUT        => 30,
             // The Bank's site rejects requests that don't look like a browser.
             CURLOPT_USERAGENT      => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                . 'Chrome/124.0 Safari/537.36 (financial-facts.com data check)',
+                . 'Chrome/124.0 Safari/537.36 (financefactlibrary.com data check)',
         ]);
         $csv = curl_exec($curl);
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);

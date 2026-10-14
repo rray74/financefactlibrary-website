@@ -1,6 +1,6 @@
 <?php
 /**
- * CSV -> database import for Financial Facts.
+ * CSV -> database import for Finance Fact Library.
  *
  * Usage:
  *   php scripts/import-facts.php path/to/your-facts.csv

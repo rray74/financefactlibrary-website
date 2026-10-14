@@ -1,7 +1,7 @@
 <?php
 /*
  * Variables a page can set before including this file:
- *   $pageTitle        shown before " — Financial Facts" in the <title>
+ *   $pageTitle        shown before " — <site name>" in the <title>
  *   $metaDescription  the search result snippet (trimmed to 160 characters)
  *   $canonicalPath    the page's one true path, e.g. /uk/mortgages/, which
  *                     becomes the canonical tag's full URL
@@ -9,7 +9,14 @@
  *                     previews, error pages)
  *   $country          the page's country, which decides the navigation
  */
-$pageTitle = $pageTitle ?? 'Financial Facts';
+
+// The site's name lives in one place, includes/site-info.php, so a future
+// rename is a one-line change. require_once is safe even if another file
+// has already loaded it.
+require_once __DIR__ . '/site-info.php';
+
+// Fall back to the site name on pages that don't set their own title.
+$pageTitle = $pageTitle ?? SITE_NAME;
 
 // Pages that aren't tied to a country (admin, articles, error pages) get
 // the default country's navigation.
@@ -30,12 +37,13 @@ if (!empty($metaDescription)) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?= e($htmlLang) ?>" data-theme="financialfacts">
+<html lang="<?= e($htmlLang) ?>" data-theme="financefactlibrary">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= e($pageTitle) ?> — Financial Facts</title>
+    <?php // Site name taken from SITE_NAME rather than typed out here. ?>
+    <title><?= e($pageTitle) ?> — <?= e(SITE_NAME) ?></title>
 
     <?php if (!empty($metaDescription)): ?>
     <meta name="description" content="<?= e($metaDescription) ?>">
@@ -66,8 +74,9 @@ if (!empty($metaDescription)) {
 
     <header class="border-b-2 border-primary bg-base-100">
         <div class="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
+            <?php // Wordmark uses SITE_NAME so it always matches the <title>. ?>
             <a href="<?= e($homeUrl) ?>" class="font-display text-2xl font-semibold tracking-tight text-primary">
-                Financial Facts
+                <?= e(SITE_NAME) ?>
             </a>
             <nav class="flex gap-6 font-sans text-sm">
                 <?php foreach ($navCategories as $cat): ?>

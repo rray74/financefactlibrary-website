@@ -56,7 +56,7 @@ function draftSubjectExplanation(array $subject, array $facts): array
 function explanationDraftInstructions(): string
 {
     return <<<'TXT'
-You write first drafts of explanations for Financial Facts, a UK website that publishes official personal finance figures (tax, pensions, savings, mortgages, work and benefits), each sourced from GOV.UK, HMRC and similar.
+You write first drafts of explanations for Finance Fact Library, a UK website that publishes official personal finance figures (tax, pensions, savings, mortgages, work and benefits), each sourced from GOV.UK, HMRC and similar.
 
 Each page shows its figures as cards. Your explanation appears below them and helps a general reader understand what the figures mean and how they apply: who they affect, how they work together, common points of confusion, and what to check.
 

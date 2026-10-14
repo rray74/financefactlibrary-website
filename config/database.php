@@ -13,7 +13,7 @@ if (file_exists($localConfig)) {
     require $localConfig;
 } else {
     define('DB_HOST', 'localhost');
-    define('DB_NAME', 'u123456789_financialfacts');
+    define('DB_NAME', 'u123456789_financefactlibrary');
     define('DB_USER', 'u123456789_ffuser');
     define('DB_PASS', 'change-me');
 }

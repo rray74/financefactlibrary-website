@@ -1,1 +1,1 @@
-(()=>{console.log("Financial Facts \u2014 JS bundle loaded");})();
+(()=>{console.log("Finance Fact Library \u2014 JS bundle loaded");})();

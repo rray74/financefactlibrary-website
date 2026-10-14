@@ -270,7 +270,7 @@ function fetchPageText(string $url): string
             CURLOPT_TIMEOUT        => 30,
             CURLOPT_ENCODING       => '',
             CURLOPT_USERAGENT      => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                . 'Chrome/124.0 Safari/537.36 (financial-facts.com data check)',
+                . 'Chrome/124.0 Safari/537.36 (financefactlibrary.com data check)',
         ]);
         $html = curl_exec($curl);
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);

@@ -10,8 +10,17 @@
                 <a href="/privacy/" class="hover:text-accent">Privacy</a>
             </nav>
             <div class="flex flex-col sm:flex-row justify-between gap-4">
-                <p>&copy; <?= date('Y') ?> Financial Facts. Every figure is sourced and dated individually.</p>
-                <p class="font-mono text-xs opacity-70">General information, not financial advice.</p>
+                <?php // SITE_NAME comes from includes/site-info.php, loaded by header.php, so the name is set in one place. ?>
+                <p>&copy; <?= date('Y') ?> <?= e(SITE_NAME) ?>. Every figure is sourced and dated individually.</p>
+                <?php
+                // States plainly that this is an independent information site, not a
+                // regulated firm, so no one mistakes it for a broker or adviser with a
+                // similar name. Links to the full disclaimer for the detail.
+                ?>
+                <p class="font-mono text-xs opacity-70 sm:text-right">
+                    Independent information site. General information, not regulated financial advice.
+                    <a href="/disclaimer/" class="underline hover:text-accent">Read the disclaimer</a>.
+                </p>
             </div>
         </div>
     </footer>

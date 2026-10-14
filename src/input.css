@@ -3,17 +3,17 @@
   themes: false;
 }
 @plugin "daisyui/theme" {
-  name: "financialfacts";
+  name: "financefactlibrary";
   default: true;
-  --color-primary: #1B2A4A;    /* ink navy */
-  --color-secondary: #6B8F71;  /* sage */
-  --color-accent: #C9A227;     /* mustard */
-  --color-neutral: #1B2A4A;
-  --color-base-100: #F7F5F0;   /* paper */
-  --color-info: #3B5A87;
-  --color-success: #6B8F71;
-  --color-warning: #C9A227;
-  --color-error: #B3452C;
+  --color-primary: #1b2a4a; /* ink navy */
+  --color-secondary: #6b8f71; /* sage */
+  --color-accent: #c9a227; /* mustard */
+  --color-neutral: #1b2a4a;
+  --color-base-100: #f7f5f0; /* paper */
+  --color-info: #3b5a87;
+  --color-success: #6b8f71;
+  --color-warning: #c9a227;
+  --color-error: #b3452c;
 }
 
 @theme {
@@ -26,28 +26,30 @@
    Deliberately flat: solid offset shadow instead of blur, and a
    clipped corner to read as an index card rather than a SaaS panel. */
 .fact-card {
-    position: relative;
-    background: #FFFFFF;
-    border: 2px solid #1B2A4A;
-    box-shadow: 4px 4px 0 #1B2A4A;
-    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  background: #ffffff;
+  border: 2px solid #1b2a4a;
+  box-shadow: 4px 4px 0 #1b2a4a;
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .fact-card:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #1B2A4A;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1b2a4a;
 }
 
 .fact-card .fact-value {
-    font-variant-numeric: tabular-nums;
+  font-variant-numeric: tabular-nums;
 }
 
 .article-body {
-    max-width: 68ch;
-    line-height: 1.7;
+  max-width: 68ch;
+  line-height: 1.7;
 }
 
 .article-body p {
-    margin-bottom: 1.25em;
+  margin-bottom: 1.25em;
 }

@@ -5,7 +5,7 @@ $canonicalPath = '/disclaimer/';
 redirectToCanonical($canonicalPath);
 
 $pageTitle = 'Disclaimer';
-$metaDescription = 'Financial Facts provides general information about UK personal finance figures, not financial, tax or legal advice.';
+$metaDescription = 'Finance Fact Library provides general information about UK personal finance figures, not financial, tax or legal advice.';
 
 include __DIR__ . '/../includes/header.php';
 ?>
@@ -15,7 +15,7 @@ include __DIR__ . '/../includes/header.php';
 
     <h2 class="font-display text-2xl font-semibold mb-3">General information only</h2>
     <p class="mb-8">
-        The information on Financial Facts is for general guidance about UK rules and figures. It is
+        The information on Finance Fact Library is for general guidance about UK rules and figures. It is
         not financial, tax, investment or legal advice, and it doesn't take your personal
         circumstances into account. For advice about your own situation, speak to a qualified,
         regulated adviser.
@@ -36,19 +36,19 @@ include __DIR__ . '/../includes/header.php';
 
     <h2 class="font-display text-2xl font-semibold mb-3">Not regulated advice</h2>
     <p class="mb-8">
-        Financial Facts is not authorised or regulated by the Financial Conduct Authority and does
+        Finance Fact Library is not authorised or regulated by the Financial Conduct Authority and does
         not recommend any product or provider.
     </p>
 
     <h2 class="font-display text-2xl font-semibold mb-3">Links to other websites</h2>
     <p class="mb-8">
-        Source links go to official websites that Financial Facts doesn't control. Their content
+        Source links go to official websites that Finance Fact Library doesn't control. Their content
         may change or move after a figure was checked.
     </p>
 
     <h2 class="font-display text-2xl font-semibold mb-3">Liability</h2>
     <p>
-        While every effort is made to keep the figures accurate and current, Financial Facts can't
+        While every effort is made to keep the figures accurate and current, Finance Fact Library can't
         guarantee that all information is complete or error-free, and accepts no liability for any
         loss arising from reliance on it.
     </p>

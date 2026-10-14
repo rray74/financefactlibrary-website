@@ -6,7 +6,7 @@
  */
 
 define('DB_HOST', 'localhost'); // Hostinger MySQL host, from hPanel
-define('DB_NAME', 'u123456789_financialfacts');
+define('DB_NAME', 'u123456789_financefactlibrary');
 define('DB_USER', 'u123456789_ffuser');
 define('DB_PASS', 'your-real-password-here');
 

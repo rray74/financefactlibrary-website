@@ -1,8 +1,8 @@
 {
-  "name": "financial-facts",
+  "name": "financefactlibrary",
   "version": "1.0.0",
   "private": true,
-  "description": "Build tooling for Financial Facts (PHP site) — compiles Tailwind/DaisyUI CSS and bundles JS. Not used at runtime.",
+  "description": "Build tooling for Finance Fact Library (PHP site) — compiles Tailwind/DaisyUI CSS and bundles JS. Not used at runtime.",
   "scripts": {
     "build:css": "tailwindcss -i ./src/input.css -o ./public/assets/css/tailwind.css --minify",
     "watch:css": "tailwindcss -i ./src/input.css -o ./public/assets/css/tailwind.css --watch",

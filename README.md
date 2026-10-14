@@ -1,6 +1,6 @@
-# Financial Facts
+# Finance Fact Library
 
-A PHP + MySQL site structured as a browsable hierarchy of financial facts:
+A PHP + MySQL site structured as a browsable hierarchy of finance facts:
 **Category → Subcategory → Subject → Facts**. Each Subject is a single
 keyword/search-phrase page (e.g. "2-Year Fixed Mortgage Rates") showing
 its full pool of facts. Styled with Tailwind CSS + DaisyUI. Articles/news
@@ -41,12 +41,12 @@ a review cadence and a dashboard to act on it.
 types go stale at very different rates, so one blanket schedule doesn't
 fit:
 
-| Data type | Suggested cadence | Why |
-|---|---|---|
-| Mortgage/savings rates (best-buy, average) | 7 days | Move weekly in normal markets |
-| Bank of England base rate | 42 days | Set at MPC meetings (~every 6 weeks) |
-| Product fees, typical costs | 30 days | Change occasionally, worth a monthly glance |
-| Statutory allowances (ISA, personal allowance, thresholds) | 180 days | Fixed for the tax year, but announced at each Budget |
+| Data type                                                  | Suggested cadence | Why                                                  |
+| ---------------------------------------------------------- | ----------------- | ---------------------------------------------------- |
+| Mortgage/savings rates (best-buy, average)                 | 7 days            | Move weekly in normal markets                        |
+| Bank of England base rate                                  | 42 days           | Set at MPC meetings (~every 6 weeks)                 |
+| Product fees, typical costs                                | 30 days           | Change occasionally, worth a monthly glance          |
+| Statutory allowances (ISA, personal allowance, thresholds) | 180 days          | Fixed for the tax year, but announced at each Budget |
 
 Set this per fact when you add it — it's a column on `facts`, not a
 global setting.
@@ -83,7 +83,7 @@ allowances only surfacing once a year around the tax-year change.
 ## Project structure
 
 ```
-financial-facts/
+financefactlibrary/
 ├── config/
 │   ├── database.php              # connection logic (PDO)
 │   └── database.local.php.example # copy to database.local.php with real creds
@@ -118,7 +118,7 @@ financial-facts/
 Hostinger's Web and Cloud hosting plans don't let you change a domain's
 document root: it's always `public_html`. But this project's web root is
 `public/`, so that `config/` and `includes/` stay out of reach of a
-browser. The workaround is to keep the whole repo *next to*
+browser. The workaround is to keep the whole repo _next to_
 `public_html`, then replace `public_html` with a symlink (a shortcut)
 pointing at the repo's `public/` folder:
 
@@ -161,7 +161,7 @@ and the GitHub path with your own:
 
 ```bash
 cd ~/domains/yourdomain.com
-git clone git@github.com:YOUR-USERNAME/financial-facts-website.git app
+git clone git@github.com:YOUR-USERNAME/financefactlibrary-website.git app
 ```
 
 **4. Swap `public_html` for the symlink.** Keep the old folder as a
@@ -216,12 +216,12 @@ cat ~/.ssh/hostinger_deploy.pub
 **3. Add five secrets to GitHub.** Repo → Settings → Secrets and
 variables → Actions → New repository secret:
 
-| Secret | Value |
-|---|---|
-| `HOSTINGER_HOST` | SSH host, from hPanel → SSH Access |
-| `HOSTINGER_PORT` | SSH port, from the same page |
-| `HOSTINGER_USER` | SSH username, from the same page |
-| `HOSTINGER_SSH_KEY` | the whole private key: `cat ~/.ssh/hostinger_deploy` |
+| Secret               | Value                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| `HOSTINGER_HOST`     | SSH host, from hPanel → SSH Access                                                        |
+| `HOSTINGER_PORT`     | SSH port, from the same page                                                              |
+| `HOSTINGER_USER`     | SSH username, from the same page                                                          |
+| `HOSTINGER_SSH_KEY`  | the whole private key: `cat ~/.ssh/hostinger_deploy`                                      |
 | `HOSTINGER_APP_PATH` | e.g. `/home/u123456789/domains/yourdomain.com/app` (run `pwd` in the app folder over SSH) |
 
 **4. Test it.** Make a small change, then in VS Code's Source Control
@@ -273,7 +273,7 @@ php scripts/fetch-boe-rates.php             # fetch and apply
 custom cron job with this command:
 
 ```
-/usr/bin/php /home/u888389356/domains/financial-facts.com/app/scripts/fetch-boe-rates.php
+/usr/bin/php /home/u888389356/domains/financefactlibrary.com/app/scripts/fetch-boe-rates.php
 ```
 
 Set it to run weekly, for example Mondays at 07:00 (`0 7 * * 1`). The Bank
@@ -304,7 +304,7 @@ php scripts/check-sources.php             # check and record results
 command, weekly on Mondays at 07:30 (`30 7 * * 1`):
 
 ```
-/usr/bin/php /home/u888389356/domains/financial-facts.com/app/scripts/check-sources.php
+/usr/bin/php /home/u888389356/domains/financefactlibrary.com/app/scripts/check-sources.php
 ```
 
 After a Budget or at the start of a tax year, run it by hand straight
@@ -352,7 +352,7 @@ npm run watch         # rebuilds both on file change, for local dev
 ```
 
 - **CSS**: `src/input.css` holds the Tailwind v4 + DaisyUI v5 setup,
-  including the `financialfacts` theme tokens (ink navy / sage / mustard /
+  including the `financefactlibrary` theme tokens (ink navy / sage / mustard /
   paper) and the `.fact-card` / `.article-body` custom rules. Edit colors,
   fonts or custom classes there, not in the compiled output.
 - **JS**: `src/main.js` is the entry point esbuild bundles and minifies.
@@ -365,4 +365,5 @@ npm run watch         # rebuilds both on file change, for local dev
   files are really a fallback/local-dev convenience there.
 - If using Option A, run `npm run build` and commit the result before
   pushing — hPanel's Git deploy won't build anything for you.
-# financial-facts-website
+
+# financefactlibrary-website

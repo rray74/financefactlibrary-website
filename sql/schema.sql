@@ -1,4 +1,4 @@
--- Financial Facts — database schema v2
+-- Finance Fact Library — database schema v2
 -- Hierarchy: categories > subcategories > subjects > facts (pool per subject)
 -- Import via phpMyAdmin in hPanel, or: mysql -u USER -p DBNAME < schema.sql
 --

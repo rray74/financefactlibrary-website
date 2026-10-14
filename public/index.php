@@ -21,7 +21,7 @@ if (!$country) {
 $canonicalPath = countryUrl($country['url_prefix']);
 redirectToCanonical($canonicalPath);
 
-$pageTitle = $country['name'] . ' financial facts';
+$pageTitle = $country['name'] . ' finance facts';
 $metaDescription = 'Rates, thresholds and figures that matter for ' . $country['name']
     . ' personal finance, checked against primary sources and dated.';
 $categories = getCategoriesForCountry((int) $country['id']);
@@ -31,7 +31,7 @@ include __DIR__ . '/../includes/header.php';
 
 <section class="mb-14">
     <h1 class="font-display text-4xl sm:text-5xl font-semibold leading-tight mb-4 max-w-2xl">
-        Financial facts, kept current.
+        Finance facts, kept current.
     </h1>
     <p class="text-lg opacity-80 max-w-xl">
         Rates, thresholds and figures that matter for UK personal finance —

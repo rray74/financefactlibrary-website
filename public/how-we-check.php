@@ -6,7 +6,7 @@ $canonicalPath = '/how-we-check-our-figures/';
 redirectToCanonical($canonicalPath);
 
 $pageTitle = 'How we check our figures';
-$metaDescription = 'How Financial Facts sources, dates and checks every figure: official sources only, a review schedule for each fact, and a record of every change.';
+$metaDescription = 'How Finance Fact Library sources, dates and checks every figure: official sources only, a review schedule for each fact, and a record of every change.';
 
 // Live numbers, so everything this page says about the data stays true.
 $stats = getSourcingStats();

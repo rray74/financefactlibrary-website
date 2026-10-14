@@ -26,11 +26,11 @@
     RewriteEngine On
 
     # --- One address for the whole site ---
-    # Permanently redirect www.financial-facts.com to financial-facts.com,
+    # Permanently redirect www.financefactlibrary.com to financefactlibrary.com,
     # keeping the rest of the address (path and any query string), so
     # links and rankings are never split between two versions of the site.
     # Comes before everything else so it applies to real files too.
-    # Local development hosts (e.g. financial-facts:8888) don't start with
+    # Local development hosts (e.g. financefactlibrary:8888) don't start with
     # www, so they're unaffected. HTTPS itself is enforced by Hostinger's
     # "Force HTTPS" setting rather than here, because Hostinger's CDN
     # handles the secure connection before requests reach this file.

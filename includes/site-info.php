@@ -11,7 +11,7 @@
  * This file is committed to Git, so don't put anything secret here.
  */
 
-const SITE_NAME = 'Financial Facts';
+const SITE_NAME = 'Finance Fact Library';
 
 // The person responsible for the site's content, e.g. 'Richard Ray'.
 const SITE_OWNER_NAME = '';
@@ -21,4 +21,4 @@ const SITE_OWNER_BIO = '';
 
 // Where readers can report an error or get in touch. Shown on the About,
 // sourcing and privacy pages. Leave blank to hide it.
-const SITE_CONTACT_EMAIL = 'info@financial-facts.com';
+const SITE_CONTACT_EMAIL = 'info@financefactlibrary.com';
