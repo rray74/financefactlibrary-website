@@ -13,13 +13,23 @@
  *   - its JSON key saved as config/search-console-key.json on each
  *     machine (gitignored, like database.local.php)
  *
+ * Since the October 2026 rename, the service account is
+ * finance-fact-library-dashboard@finance-fact-library.iam.gserviceaccount.com,
+ * in the finance-fact-library Google Cloud project.
+ *
  * Both settings below have defaults that match that setup, and either
  * can be overridden in config/database.local.php.
  */
 
-/** The Search Console property. Domain properties are written sc-domain:... */
+/**
+ * The Search Console property. Domain properties are written sc-domain:...
+ *
+ * Switched from sc-domain:financial-facts.com to the new domain after the
+ * October 2026 rename. Data from before the move stays in the old
+ * property; the new one only has data from its verification onwards.
+ */
 if (!defined('GSC_SITE_URL')) {
-    define('GSC_SITE_URL', 'sc-domain:financial-facts.com');
+    define('GSC_SITE_URL', 'sc-domain:financefactlibrary.com');
 }
 
 /** Where the service account's JSON key is kept. */
@@ -132,7 +142,7 @@ function searchConsoleHttp(string $url, string $body, array $headers): array
 
 /**
  * Turn a full address from Search Console into the site path used
- * everywhere else, e.g. https://financial-facts.com/uk/tax/ -> /uk/tax/
+ * everywhere else, e.g. https://financefactlibrary.com/uk/tax/ -> /uk/tax/
  */
 function searchConsolePath(string $url): string
 {
