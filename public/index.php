@@ -1,15 +1,59 @@
 <?php
 require_once __DIR__ . '/../includes/functions.php';
 
-// The bare domain (/) has no country, so send visitors to the default
-// country's home. It's a temporary (302) redirect so that / can become a
-// country picker later without search engines having cached the redirect.
+// The bare domain (/) has no country. Instead of redirecting visitors
+// to a country home (which was a 302 and meant the homepage never
+// returned a page of its own), / now serves a real 200 page: a short
+// "choose your country" landing page. This is what Google's Change of
+// Address tool, and any old financial-facts.com links, land on, so it
+// must load as a page and not bounce on to somewhere else.
 if (($_GET['country'] ?? '') === '') {
     $default = getDefaultCountry();
     if (!$default) {
         showErrorPage(404, 'No countries are live yet.');
     }
-    header('Location: ' . countryUrl($default['url_prefix']), true, 302);
+
+    // Same variable the country home sets below, so the header treats
+    // the bare domain as its own canonical address ("/").
+    $canonicalPath = '/';
+
+    $pageTitle = 'Finance Fact Library';
+    $metaDescription = 'Rates, thresholds and figures that matter for personal finance, '
+        . 'checked against primary sources and dated.';
+
+    include __DIR__ . '/../includes/header.php';
+    ?>
+
+    <section class="mb-14">
+        <h1 class="font-display text-4xl sm:text-5xl font-semibold leading-tight mb-4 max-w-2xl">
+            Finance facts, kept current.
+        </h1>
+        <p class="text-lg opacity-80 max-w-xl">
+            Rates, thresholds and figures that matter for personal finance,
+            checked against primary sources and dated, so you always know how current a figure is.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="font-mono text-xs uppercase tracking-wide text-secondary mb-4">
+            Choose your country
+        </h2>
+        <ul class="grid sm:grid-cols-2 gap-4 max-w-xl">
+            <?php // Only the default (UK) country is live, so it is the only
+                  // card. When more countries go live, loop over them here. ?>
+            <li>
+                <a href="<?= e(countryUrl($default['url_prefix'])) ?>"
+                    class="block border-2 border-primary p-5 hover:text-accent transition-colors">
+                    <span class="font-display text-2xl font-semibold">
+                        <?= e($default['name']) ?>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <?php
+    include __DIR__ . '/../includes/footer.php';
     exit;
 }
 
