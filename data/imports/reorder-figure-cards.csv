@@ -1,0 +1,21 @@
+category_slug,subcategory_slug,subject_slug,fact_key,link_type,context
+mortgages,interest-rates,bank-of-england-base-rate,boe_svr,unlink,
+mortgages,interest-rates,bank-of-england-base-rate,boe_2yr_fixed_75ltv,unlink,
+mortgages,interest-rates,bank-of-england-base-rate,boe_svr,also,"Standard variable rates are usually set by lenders with Bank Rate in mind, but they don't move in step with it."
+mortgages,interest-rates,bank-of-england-base-rate,boe_2yr_fixed_75ltv,also,"Fixed rates follow where lenders expect Bank Rate to go, not where it is today."
+mortgages,fixed-rate-mortgages,buy-to-let-mortgage-rates,boe_2yr_fixed_75ltv,unlink,
+mortgages,fixed-rate-mortgages,buy-to-let-mortgage-rates,uk_base_rate,unlink,
+mortgages,fixed-rate-mortgages,buy-to-let-mortgage-rates,sdlt_additional_property_surcharge,unlink,
+mortgages,fixed-rate-mortgages,buy-to-let-mortgage-rates,lbtt_ads_rate,unlink,
+mortgages,fixed-rate-mortgages,buy-to-let-mortgage-rates,boe_2yr_fixed_75ltv,also,"The same measure for homeowners, for comparison. The two series are weighted differently by the Bank, so the gap between them is not a like-for-like price difference."
+mortgages,fixed-rate-mortgages,buy-to-let-mortgage-rates,uk_base_rate,also,
+mortgages,fixed-rate-mortgages,buy-to-let-mortgage-rates,sdlt_additional_property_surcharge,also,Landlords in England and Northern Ireland pay this extra on each band of the price when they buy another property.
+mortgages,fixed-rate-mortgages,buy-to-let-mortgage-rates,lbtt_ads_rate,also,Landlords in Scotland pay this Additional Dwelling Supplement on the whole price of another property.
+savings,savings-accounts,average-savings-rates,uk_base_rate,unlink,
+savings,savings-accounts,average-savings-rates,avg_easy_access_isa,unlink,
+savings,savings-accounts,average-savings-rates,boe_cash_isa_1yr_fixed,unlink,
+savings,savings-accounts,average-savings-rates,boe_cash_isa_2yr_fixed,unlink,
+savings,savings-accounts,average-savings-rates,uk_base_rate,also,"Savings rates tend to follow the Bank of England's base rate, though banks don't always pass changes on in full."
+savings,savings-accounts,average-savings-rates,avg_easy_access_isa,also,
+savings,savings-accounts,average-savings-rates,boe_cash_isa_1yr_fixed,also,
+savings,savings-accounts,average-savings-rates,boe_cash_isa_2yr_fixed,also,

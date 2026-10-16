@@ -472,6 +472,13 @@ function getRecentChangesForSubject(int $subjectId, int $limit = 12): array
          JOIN facts f ON f.id = fh.fact_id AND f.status = 'published'
          JOIN subject_facts sf ON sf.fact_id = f.id AND sf.subject_id = :sid
          WHERE fh.old_value IS NOT NULL
+           -- Skip rows where nothing actually changed (for example a monthly
+           -- Bank of England check that came back the same), which would
+           -- otherwise read as a rise or fall between two identical figures.
+           AND fh.old_value <> fh.new_value
+           AND NOT (fh.old_value_numeric IS NOT NULL
+                    AND fh.new_value_numeric IS NOT NULL
+                    AND fh.old_value_numeric = fh.new_value_numeric)
          ORDER BY changed_on DESC, fh.id DESC
          LIMIT " . (int) $limit
     );
