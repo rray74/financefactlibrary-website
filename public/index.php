@@ -39,16 +39,20 @@ if (($_GET['country'] ?? '') === '') {
             Choose your country
         </h2>
         <ul class="grid sm:grid-cols-2 gap-4 max-w-xl">
-            <?php // Only the default (UK) country is live, so it is the only
-                  // card. When more countries go live, loop over them here. ?>
+            <?php // One card per live country. A country appears here as soon
+                  // as it's marked is_active in the jurisdictions table, so
+                  // nothing needs editing on this page when the US, Canada,
+                  // Australia or New Zealand go live. ?>
+            <?php foreach (getActiveCountries() as $liveCountry): ?>
             <li>
-                <a href="<?= e(countryUrl($default['url_prefix'])) ?>"
+                <a href="<?= e(countryUrl($liveCountry['url_prefix'])) ?>"
                     class="block border-2 border-primary p-5 hover:text-accent transition-colors">
                     <span class="font-display text-2xl font-semibold">
-                        <?= e($default['name']) ?>
+                        <?= e($liveCountry['name']) ?>
                     </span>
                 </a>
             </li>
+            <?php endforeach; ?>
         </ul>
     </section>
 
@@ -65,8 +69,13 @@ if (!$country) {
 $canonicalPath = countryUrl($country['url_prefix']);
 redirectToCanonical($canonicalPath);
 
-$pageTitle = $country['name'] . ' finance facts';
-$metaDescription = 'Rates, thresholds and figures that matter for ' . $country['name']
+// "UK", "Canadian", "Australian"... from COUNTRY_WORDING in functions.php,
+// so the title, description and intro read naturally for each country
+// instead of always saying UK (or the stiffer "United Kingdom").
+$countryAdjective = countryAdjective($country);
+
+$pageTitle = $countryAdjective . ' finance facts';
+$metaDescription = 'Rates, thresholds and figures that matter for ' . $countryAdjective
     . ' personal finance, checked against primary sources and dated.';
 $categories = getCategoriesForCountry((int) $country['id']);
 
@@ -78,7 +87,8 @@ include __DIR__ . '/../includes/header.php';
         Finance facts, kept current.
     </h1>
     <p class="text-lg opacity-80 max-w-xl">
-        Rates, thresholds and figures that matter for UK personal finance —
+        <?php // Country taken from the URL, not hard-coded, so each country home gets its own intro. ?>
+        Rates, thresholds and figures that matter for <?= e($countryAdjective) ?> personal finance,
         checked against primary sources and dated, so you always know how current a figure is.
     </p>
 </section>

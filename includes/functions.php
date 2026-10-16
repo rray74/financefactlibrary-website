@@ -239,6 +239,88 @@ function getDefaultCountry(): ?array
 }
 
 // ------------------------------------------------------------
+// Country wording
+//
+// The words used to talk about each country in page copy, keyed by the
+// jurisdiction's ISO code. Kept here rather than in the database because
+// it's sentence wording, not data, and it only changes when a new country
+// is added. A country missing from this list still works: the helpers
+// below fall back to its name from the jurisdictions table.
+//
+//   short     - how it reads mid-sentence ("covers the UK and Canada")
+//   adjective - how it reads before a noun ("UK personal finance")
+//   sources   - examples of the official sources its figures come from,
+//               used on the About page once that country is live
+// ------------------------------------------------------------
+
+const COUNTRY_WORDING = [
+    'GB' => [
+        'short'     => 'the UK',
+        'adjective' => 'UK',
+        'sources'   => 'GOV.UK, HMRC, the Scottish and Welsh governments and NS&I',
+    ],
+    'US' => [
+        'short'     => 'the US',
+        'adjective' => 'US',
+        'sources'   => 'the IRS, the Social Security Administration and the Federal Reserve',
+    ],
+    'CA' => [
+        'short'     => 'Canada',
+        'adjective' => 'Canadian',
+        'sources'   => 'the Canada Revenue Agency, Employment and Social Development Canada and the Bank of Canada',
+    ],
+    'AU' => [
+        'short'     => 'Australia',
+        'adjective' => 'Australian',
+        'sources'   => 'the Australian Taxation Office, Services Australia and the Reserve Bank of Australia',
+    ],
+    'NZ' => [
+        'short'     => 'New Zealand',
+        'adjective' => 'New Zealand',
+        'sources'   => 'Inland Revenue, Work and Income and the Reserve Bank of New Zealand',
+    ],
+];
+
+/**
+ * "UK", "Canadian", "Australian"... for phrases like "UK personal finance".
+ * Falls back to the country's full name if it has no wording entry yet.
+ */
+function countryAdjective(array $country): string
+{
+    return COUNTRY_WORDING[$country['code']]['adjective'] ?? $country['name'];
+}
+
+/**
+ * "the UK", "Canada"... for use mid-sentence.
+ */
+function countryShortName(array $country): string
+{
+    return COUNTRY_WORDING[$country['code']]['short'] ?? $country['name'];
+}
+
+/**
+ * Example official sources for a country, or '' if none are listed.
+ */
+function countrySourceExamples(array $country): string
+{
+    return COUNTRY_WORDING[$country['code']]['sources'] ?? '';
+}
+
+/**
+ * Joins words as a readable list: "A", "A and B", "A, B and C".
+ * (No Oxford comma, to match the site's UK house style.)
+ */
+function joinWithAnd(array $items): string
+{
+    $items = array_values($items);
+    if (count($items) <= 1) {
+        return $items[0] ?? '';
+    }
+    $last = array_pop($items);
+    return implode(', ', $items) . ' and ' . $last;
+}
+
+// ------------------------------------------------------------
 // Category > Subcategory > Subject hierarchy
 // ------------------------------------------------------------
 
