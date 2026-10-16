@@ -1,8 +1,8 @@
 <?php
 /**
- * Fetches average mortgage, cash ISA and savings account rates from the
- * Bank of England's statistical database and updates (or confirms) the
- * matching facts.
+ * Fetches average mortgage (including buy-to-let), cash ISA and savings
+ * account rates from the Bank of England's statistical database and
+ * updates (or confirms) the matching facts.
  *
  * Usage, from the project root:
  *   php scripts/fetch-boe-rates.php --dry-run   show what would change, write nothing
@@ -172,6 +172,21 @@ const BOE_SERIES = [
         'create'     => [
             'subject_slug' => 'average-savings-rates',
             'label'        => 'Average 3-year fixed-rate bond',
+        ],
+    ],
+
+    // Buy-to-let mortgages, shown on the Buy-to-Let Mortgage Rates page.
+    // The Bank publishes one buy-to-let series: the 2-year fixed rate at
+    // 75% loan-to-value. The pattern insists on the buy-to-let wording, so
+    // the ordinary 2-year 75% series can never be picked up by mistake.
+    'boe_btl_2yr_fixed_75ltv' => [
+        'code'       => 'IUMZID4',
+        'match'      => ['/2\s*-?\s*year|two[\s-]*year/i', '/75\s*%/', '/fixed/i', '/buy[\s-]*to[\s-]*let|BTL/i'],
+        'max_change' => 0.75,
+        'context'    => 'Bank of England average of rates advertised by UK lenders in %s on 2-year fixed buy-to-let mortgages, for landlords with a 25%% deposit.',
+        'create'     => [
+            'subject_slug' => 'buy-to-let-mortgage-rates',
+            'label'        => 'Average 2-year fixed buy-to-let rate, 75% loan-to-value',
         ],
     ],
 ];
