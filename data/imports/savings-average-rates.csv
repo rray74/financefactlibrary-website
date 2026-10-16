@@ -1,0 +1,5 @@
+category_slug,subcategory_slug,subject_slug,subject_name,subject_intro,subject_meta_title,subject_meta_description,fact_key,link_type,context
+savings,savings-accounts,average-savings-rates,Average Savings Rates,"The average interest rates UK banks and building societies are advertising on easy access savings, fixed-rate bonds and cash ISAs, updated monthly from Bank of England data.","Average UK Savings Rates: Easy Access, Fixed Bonds and Cash ISAs","The latest Bank of England averages for UK savings rates: easy access accounts, 1, 2 and 3-year fixed-rate bonds, and cash ISAs.",uk_base_rate,also,"Savings rates tend to follow the Bank of England's base rate, though banks don't always pass changes on in full."
+savings,savings-accounts,average-savings-rates,,,,,avg_easy_access_isa,also,
+savings,savings-accounts,average-savings-rates,,,,,boe_cash_isa_1yr_fixed,also,
+savings,savings-accounts,average-savings-rates,,,,,boe_cash_isa_2yr_fixed,also,

@@ -1,7 +1,8 @@
 <?php
 /**
- * Fetches average mortgage and cash ISA rates from the Bank of England's
- * statistical database and updates (or confirms) the matching facts.
+ * Fetches average mortgage, cash ISA and savings account rates from the
+ * Bank of England's statistical database and updates (or confirms) the
+ * matching facts.
  *
  * Usage, from the project root:
  *   php scripts/fetch-boe-rates.php --dry-run   show what would change, write nothing
@@ -125,6 +126,52 @@ const BOE_SERIES = [
         'create'     => [
             'subject_slug' => 'cash-isa-allowance',
             'label'        => 'Average 2-year fixed cash ISA rate',
+        ],
+    ],
+
+    // Savings account averages (outside ISAs), shown on the Average
+    // Savings Rates page. The Bank doesn't publish a notice account
+    // series, so easy access and fixed-rate bonds are covered. Each
+    // pattern names the product exactly, so a cash ISA series (which
+    // never says "bond") can't be picked up by mistake.
+    'boe_instant_access_savings' => [
+        'code'       => 'IUMB6VJ',
+        'match'      => ['/instant[\s-]*access/i', '/including unconditional/i'],
+        'max_change' => 0.5,
+        'context'    => 'Bank of England average of the rates UK banks and building societies advertised on instant access savings accounts in %s, including bonuses, for a £1,000 balance.',
+        'create'     => [
+            'subject_slug' => 'average-savings-rates',
+            'label'        => 'Average easy access savings rate',
+        ],
+    ],
+    'boe_1yr_fixed_bond' => [
+        'code'       => 'IUMWTFA',
+        'match'      => ['/(one|1)[\s-]*year fixed[\s-]*rate bond/i'],
+        'max_change' => 0.5,
+        'context'    => 'Bank of England average of the rates advertised on 1-year fixed-rate savings bonds in %s. Your money is tied up for the year in return for a guaranteed rate.',
+        'create'     => [
+            'subject_slug' => 'average-savings-rates',
+            'label'        => 'Average 1-year fixed-rate bond',
+        ],
+    ],
+    'boe_2yr_fixed_bond' => [
+        'code'       => 'IUMB6RH',
+        'match'      => ['/(two|2)[\s-]*year fixed[\s-]*rate bond/i'],
+        'max_change' => 0.5,
+        'context'    => 'Bank of England average of the rates advertised on 2-year fixed-rate savings bonds in %s.',
+        'create'     => [
+            'subject_slug' => 'average-savings-rates',
+            'label'        => 'Average 2-year fixed-rate bond',
+        ],
+    ],
+    'boe_3yr_fixed_bond' => [
+        'code'       => 'IUMB6RI',
+        'match'      => ['/(three|3)[\s-]*year fixed[\s-]*rate bond/i'],
+        'max_change' => 0.5,
+        'context'    => 'Bank of England average of the rates advertised on 3-year fixed-rate savings bonds in %s.',
+        'create'     => [
+            'subject_slug' => 'average-savings-rates',
+            'label'        => 'Average 3-year fixed-rate bond',
         ],
     ],
 ];
