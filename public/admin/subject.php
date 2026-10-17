@@ -17,6 +17,12 @@ requireAdmin();
  * explanation and puts it in the Explanation box, unsaved, for you to
  * rewrite before clicking Save page details.
  *
+ * Placeholders: the four text fields can use {fact:fact_key} and
+ * {tax_year} (includes/placeholders.php). The page lists them, inserts
+ * one at the cursor when clicked, counts characters with them filled in,
+ * and refuses to save an invalid one. Problems in the saved text (a fact
+ * retired since, say) are flagged when the page opens.
+ *
  * Fact VALUES aren't edited here. They change on the review page or via
  * the importer, through updateFactValue(), so every change is recorded
  * in fact_history.
@@ -45,6 +51,22 @@ foreach ($facts as $fact) {
         $ownedFactIds[] = (int) $fact['id'];
     }
 }
+
+// Placeholders this page can use, and what each shows now. Only the
+// page's published facts, since only they appear on the public page.
+$countryCode = (string) $subject['country_code'];
+$placeholderValues = placeholderValuesForPage($countryCode, $facts);
+$pageFactKeys = [];
+$pageFactLabels = [];
+foreach ($facts as $fact) {
+    if ($fact['status'] === 'published') {
+        $pageFactKeys[] = $fact['fact_key'];
+        $pageFactLabels['{fact:' . $fact['fact_key'] . '}'] = $fact['label'];
+    }
+}
+
+// Text with its placeholders filled in, as the public page shows it.
+$fillPreview = fn(?string $text) => fillPlaceholders($text, $countryCode, $facts);
 
 // Where in the page to land after saving, so you're returned to the form
 // you just used rather than the top.
@@ -92,7 +114,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'meta_description' => $_POST['meta_description'] ?? null,
                 'status'           => $_POST['status'] ?? '',
             ]);
-            setAdminFlash('success', 'Subject saved.');
+
+            // Saved. Placeholders that are valid but use a figure from
+            // another page are allowed, but worth knowing about.
+            $warnings = checkPlaceholders($pdo, [
+                'Intro'            => $_POST['intro'] ?? null,
+                'Explanation'      => $_POST['explanation'] ?? null,
+                'Meta title'       => $_POST['meta_title'] ?? null,
+                'Meta description' => $_POST['meta_description'] ?? null,
+            ], $pageFactKeys)['warnings'];
+            setAdminFlash($warnings ? 'info' : 'success',
+                'Subject saved.' . ($warnings ? ' Note: ' . implode(' ', $warnings) : ''));
 
         } elseif ($action === 'save_fact') {
             $factId = (int) ($_POST['fact_id'] ?? 0);
@@ -191,7 +223,16 @@ $form = [
 // fields are left blank (fact.php falls back to the name and intro).
 $publicUrl = subjectUrlById($subjectId);
 $fallbackTitle = $subject['name'];
-$fallbackDescription = (string) cleanEditorText($subject['intro'], true);
+$fallbackDescription = (string) cleanEditorText($fillPreview($subject['intro']), true);
+
+// Problems in the text as saved, e.g. a placeholder whose fact has been
+// retired since, which the public page would show as nothing.
+$savedPlaceholderCheck = checkPlaceholders(getDbConnection(), [
+    'Intro'            => $subject['intro'],
+    'Explanation'      => $subject['explanation'] ?? null,
+    'Meta title'       => $subject['meta_title'],
+    'Meta description' => $subject['meta_description'],
+], $pageFactKeys);
 
 // What each status means for the public page, shown next to the choice.
 $statusHelp = [
@@ -279,18 +320,53 @@ include __DIR__ . '/../../includes/admin-nav.php';
 <section id="subject-details" class="mb-14 scroll-mt-6">
     <h2 class="font-display text-2xl font-semibold mb-4">Page details</h2>
 
+    <?php if ($savedPlaceholderCheck['errors'] || $savedPlaceholderCheck['warnings']): ?>
+    <?php // About the SAVED text, so it shows even if nothing has been edited. ?>
+    <div class="alert <?= $savedPlaceholderCheck['errors'] ? 'alert-error' : 'alert-info' ?> mb-6 text-sm max-w-2xl">
+        <span>
+            <strong>Placeholders in the saved text:</strong>
+            <?php foreach (array_merge($savedPlaceholderCheck['errors'], $savedPlaceholderCheck['warnings']) as $problem): ?>
+            <br><?= e($problem) ?>
+            <?php endforeach; ?>
+            <?php if ($savedPlaceholderCheck['errors']): ?>
+            <br>The public page shows these as nothing until they're fixed.
+            <?php endif; ?>
+        </span>
+    </div>
+    <?php endif; ?>
+
     <form method="post" class="space-y-6 max-w-2xl">
         <?= adminCsrfField() ?>
         <input type="hidden" name="action" value="save_subject">
 
+        <?php // Placeholders: click one to put it where the cursor was in any of the four fields. ?>
+        <details open class="fact-card p-4">
+            <summary class="font-semibold cursor-pointer text-sm">Placeholders for this page</summary>
+            <p class="text-xs opacity-70 mt-2 mb-3">
+                Use these instead of typing figures that change, in any of the fields below. Click one to
+                insert it where your cursor was. The page shows the live value. See
+                <span class="font-mono">docs/house-style/</span> for when to use them.
+            </p>
+            <ul class="space-y-1 text-sm">
+                <?php foreach ($placeholderValues as $token => $value): ?>
+                <li class="flex flex-wrap items-baseline gap-x-3">
+                    <button type="button" class="btn btn-xs btn-outline font-mono" data-insert="<?= e($token) ?>"><?= e($token) ?></button>
+                    <span class="fact-value font-semibold"><?= e($value) ?></span>
+                    <span class="text-xs opacity-60"><?= e($pageFactLabels[$token] ?? 'Tax year of this page\'s figures') ?></span>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </details>
+
         <div>
             <label for="intro" class="block font-semibold mb-1">Intro</label>
             <p class="text-xs opacity-70 mb-2">
-                The paragraph under the page heading. Also used as the search result
-                description when the meta description below is blank.
+                The line under the page heading. Also shown on this page's card on the subcategory
+                page, and used as the search result description when the meta description below is
+                blank. One sentence, 120 to 200 characters, no figures.
             </p>
-            <textarea id="intro" name="intro" rows="6" class="textarea textarea-bordered w-full"
-                data-counter="intro-count"><?= e($form['intro']) ?></textarea>
+            <textarea id="intro" name="intro" rows="3" class="textarea textarea-bordered w-full"
+                data-counter="intro-count" data-limit="200" data-min="120"><?= e($form['intro']) ?></textarea>
             <p id="intro-count" class="text-xs opacity-60 mt-1"></p>
         </div>
 
@@ -323,11 +399,12 @@ include __DIR__ . '/../../includes/admin-nav.php';
             </div>
             <?php endif; ?>
             <textarea id="explanation" name="explanation" rows="16" class="textarea textarea-bordered w-full font-mono text-sm"
-                data-counter="explanation-count"><?= e($form['explanation']) ?></textarea>
+                data-counter="explanation-count" data-words="1"><?= e($form['explanation']) ?></textarea>
             <p id="explanation-count" class="text-xs opacity-60 mt-1"></p>
 
             <?php // Preview of the SAVED version, rendered exactly as the public page does it. ?>
-            <?php $savedExplanationHtml = renderExplanation($subject['explanation'] ?? null); ?>
+            <?php // Placeholders filled in, as on the public page. ?>
+            <?php $savedExplanationHtml = renderExplanation($fillPreview($subject['explanation'] ?? null)); ?>
             <?php if ($savedExplanationHtml !== ''): ?>
             <details class="mt-3">
                 <summary class="text-sm text-secondary cursor-pointer">Preview (as last saved)</summary>
@@ -347,20 +424,25 @@ include __DIR__ . '/../../includes/admin-nav.php';
             </p>
             <input type="text" id="meta_title" name="meta_title" maxlength="255"
                 class="input input-bordered w-full" value="<?= e($form['meta_title']) ?>"
-                placeholder="<?= e($fallbackTitle) ?>" data-counter="meta-title-count" data-limit="42">
+                placeholder="<?= e($fallbackTitle) ?>" data-counter="meta-title-count" data-limit="42"
+                data-preview="meta-title-preview">
             <p id="meta-title-count" class="text-xs opacity-60 mt-1"></p>
+            <?php // Filled in by the script below when the title uses placeholders. ?>
+            <p id="meta-title-preview" class="text-xs mt-1"></p>
         </div>
 
         <div>
             <label for="meta_description" class="block font-semibold mb-1">Meta description</label>
             <p class="text-xs opacity-70 mb-2">
                 The search result snippet. Anything over 160 characters is cut short on the
-                page, so aim for 155 or fewer. Blank uses the intro.
+                page, so aim for 140 to 155. Blank uses the intro.
             </p>
             <textarea id="meta_description" name="meta_description" rows="3" maxlength="255"
                 class="textarea textarea-bordered w-full" placeholder="<?= e($fallbackDescription) ?>"
-                data-counter="meta-description-count" data-limit="155"><?= e($form['meta_description']) ?></textarea>
+                data-counter="meta-description-count" data-limit="155" data-min="140"
+                data-preview="meta-description-preview"><?= e($form['meta_description']) ?></textarea>
             <p id="meta-description-count" class="text-xs opacity-60 mt-1"></p>
+            <p id="meta-description-preview" class="text-xs mt-1"></p>
         </div>
 
         <fieldset>
@@ -666,22 +748,79 @@ include __DIR__ . '/../../includes/admin-nav.php';
 </script>
 
 <script>
-    // Live character counts under the intro and meta fields. Fields with a
-    // data-limit turn red past it, matching what search results show.
+    // This page's placeholders and what each shows now (token => value),
+    // so counts and previews below match the public page.
+    var PAGE_PLACEHOLDERS = <?= json_encode($placeholderValues, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?>;
+
+    // Same pattern as PLACEHOLDER_PATTERN in includes/placeholders.php.
+    // Placeholders this page doesn't list are left as typed.
+    function fillPagePlaceholders(text) {
+        return text.replace(/\{[^{}\n]{1,100}\}/g, function (token) {
+            return Object.prototype.hasOwnProperty.call(PAGE_PLACEHOLDERS, token) ? PAGE_PLACEHOLDERS[token] : token;
+        });
+    }
+
+    // Live counts under the text fields, with placeholders filled in.
+    // data-limit / data-min turn the count red outside the house style's
+    // range; data-words counts words instead (the explanation);
+    // data-preview shows the filled-in text when it uses placeholders.
     // Array.from counts characters, so £ counts as one, as on the server.
     document.querySelectorAll('[data-counter]').forEach(function (field) {
         var output = document.getElementById(field.dataset.counter);
         var limit = field.dataset.limit ? parseInt(field.dataset.limit, 10) : null;
+        var min = field.dataset.min ? parseInt(field.dataset.min, 10) : null;
+        var preview = field.dataset.preview ? document.getElementById(field.dataset.preview) : null;
 
         function update() {
-            var length = Array.from(field.value.trim()).length;
-            output.textContent = length + ' characters' + (limit ? ' (aim for ' + limit + ' or fewer)' : '');
-            output.classList.toggle('text-error', limit !== null && length > limit);
+            var raw = field.value.trim();
+            var filled = fillPagePlaceholders(raw);
+            var hasPlaceholders = filled !== raw;
+
+            if (field.dataset.words) {
+                var words = filled === '' ? 0 : filled.split(/\s+/).length;
+                output.textContent = words + ' words (house style: usually 300 to 600)';
+            } else {
+                var length = Array.from(filled).length;
+                var range = min && limit ? min + ' to ' + limit : (limit ? limit + ' or fewer' : null);
+                output.textContent = length + ' characters' + (hasPlaceholders ? ' with figures filled in' : '')
+                    + (range ? ' (aim for ' + range + ')' : '');
+                output.classList.toggle('text-error',
+                    raw !== '' && ((limit !== null && length > limit) || (min !== null && length < min)));
+            }
+
+            if (preview) {
+                preview.textContent = hasPlaceholders ? 'Shows as: ' + filled : '';
+            }
         }
 
         field.addEventListener('input', update);
         update();
     });
+
+    // Placeholder buttons: insert at the cursor in whichever of the four
+    // fields was used last (the explanation if none has been yet).
+    (function () {
+        var fields = ['intro', 'explanation', 'meta_title', 'meta_description']
+            .map(function (id) { return document.getElementById(id); });
+        var lastField = document.getElementById('explanation');
+
+        fields.forEach(function (field) {
+            field.addEventListener('focus', function () { lastField = field; });
+        });
+
+        document.querySelectorAll('[data-insert]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var token = button.dataset.insert;
+                var start = lastField.selectionStart ?? lastField.value.length;
+                var end = lastField.selectionEnd ?? start;
+                lastField.value = lastField.value.slice(0, start) + token + lastField.value.slice(end);
+                lastField.focus();
+                lastField.setSelectionRange(start + token.length, start + token.length);
+                // Updates the count and preview.
+                lastField.dispatchEvent(new Event('input'));
+            });
+        });
+    })();
 </script>
 
 <?php include __DIR__ . '/../../includes/footer.php'; ?>

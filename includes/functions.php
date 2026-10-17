@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
+// {fact:key} and {tax_year} in page text, filled in on display (see that file).
+require_once __DIR__ . '/placeholders.php';
 
 /*
  * Read-side functions for the public site and admin pages.

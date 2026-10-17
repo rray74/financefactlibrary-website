@@ -63,9 +63,8 @@ foreach ($subjects as $subject) {
 // Status counts for the summary line.
 $statusCounts = array_count_values(array_column($subjects, 'status'));
 
-// Intros shorter than this are flagged, since the plan is to expand the
-// short AI-written ones. A rough guide, not a rule.
-const SHORT_INTRO_CHARACTERS = 200;
+// Intros shorter than SHORT_INTRO_CHARACTERS (in admin-queries.php, shared
+// with the dashboard) are flagged as short. A rough guide, not a rule.
 
 $pageTitle = 'Subjects';
 $noindex = true; // admin page, keep it out of search results

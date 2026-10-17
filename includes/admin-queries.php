@@ -11,6 +11,14 @@
 require_once __DIR__ . '/functions.php';
 
 /**
+ * Intros shorter than this are flagged as short, on the subjects list and
+ * the dashboard. Matches the house style (docs/house-style/core.md): one
+ * sentence of 120 to 200 characters. Was 200, which flagged intros that
+ * follow the house style.
+ */
+const SHORT_INTRO_CHARACTERS = 120;
+
+/**
  * Every subject, whatever its status, with where it sits in the site and
  * a few numbers for the subjects list. Ordered the way the site's
  * navigation is: category, then subcategory, then subject.
@@ -47,7 +55,9 @@ function getAdminSubject(int $subjectId): ?array
     $stmt = $pdo->prepare(
         'SELECT s.*, sc.name AS subcategory_name, sc.slug AS subcategory_slug,
                 c.name AS category_name, c.slug AS category_slug,
-                j.id AS country_id, j.url_prefix AS country_prefix, j.name AS country_name
+                j.id AS country_id, j.url_prefix AS country_prefix, j.name AS country_name,
+                -- For {tax_year} and the house style file of the country.
+                j.code AS country_code
          FROM subjects s
          JOIN subcategories sc ON sc.id = s.subcategory_id
          JOIN categories c ON c.id = sc.category_id
@@ -171,7 +181,7 @@ function getLatestCronRuns(): array
 
 /**
  * Headline numbers for the dashboard, in one query. "Short intro" uses
- * the same 200-character guide as the subjects list.
+ * SHORT_INTRO_CHARACTERS, the same guide as the subjects list.
  */
 function getDashboardCounts(): array
 {
@@ -184,7 +194,7 @@ function getDashboardCounts(): array
             (SELECT COUNT(*) FROM facts WHERE status = 'draft') AS draft_facts,
             (SELECT COUNT(DISTINCT source_id) FROM facts WHERE status = 'published') AS sources_used,
             (SELECT COUNT(*) FROM subjects
-             WHERE status = 'published' AND CHAR_LENGTH(COALESCE(intro, '')) < 200) AS short_intros,
+             WHERE status = 'published' AND CHAR_LENGTH(COALESCE(intro, '')) < " . SHORT_INTRO_CHARACTERS . ") AS short_intros,
             (SELECT COUNT(*) FROM subjects
              WHERE status = 'published' AND COALESCE(explanation, '') = '') AS no_explanation"
     )->fetch();

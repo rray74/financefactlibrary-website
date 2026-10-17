@@ -46,8 +46,10 @@ include __DIR__ . '/../includes/header.php';
     <a href="<?= e(subjectUrl($country['url_prefix'], $subcategory['category_slug'], $subcategory['slug'], $subject['slug'])) ?>"
         class="fact-card p-6 block">
         <h3 class="font-display text-xl font-semibold mb-2"><?= e($subject['name']) ?></h3>
-        <?php if ($subject['intro']): ?>
-        <p class="text-sm opacity-80"><?= e($subject['intro']) ?></p>
+        <?php // Intros can contain placeholders, filled in the same way as on the subject page. ?>
+        <?php $cardIntro = fillSubjectPlaceholders($subject['intro'], (int) $subject['id'], $country['code']); ?>
+        <?php if ($cardIntro): ?>
+        <p class="text-sm opacity-80"><?= e($cardIntro) ?></p>
         <?php endif; ?>
     </a>
     <?php endforeach; ?>

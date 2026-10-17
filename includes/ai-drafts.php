@@ -9,10 +9,16 @@
  * Save page details. It's a starting point, not finished copy: pages
  * that are recognisably human-edited are what search engines reward.
  *
- * Figures: the AI is told to use only the figures it's given, written
- * exactly as given. As a safety net, every number in the draft is
- * compared with the page's figures, and any that don't match are listed
- * when the draft appears, so you can check or remove them.
+ * House style: the AI is sent docs/house-style/core.md and the page's
+ * country file (e.g. docs/house-style/uk.md) with every request, so drafts
+ * follow the same rules as hand-written pages. Edit those files to change
+ * how drafts are written.
+ *
+ * Figures: the AI is given each figure with its placeholder
+ * ({fact:fact_key}) and told to use the placeholder for anything that
+ * changes, and never to introduce other figures. As a safety net, every
+ * number typed in the draft is compared with the page's figures, and any
+ * that don't match are listed when the draft appears.
  *
  * Uses callClaude() and the API key from includes/ai-proposer.php.
  */
@@ -36,7 +42,11 @@ function draftSubjectExplanation(array $subject, array $facts): array
         throw new RuntimeException('This page has no published figures yet, so there is nothing to write from. Add facts first.');
     }
 
-    $reply = callClaude(explanationDraftInstructions(), explanationDraftRequest($subject, $published), 3000);
+    $reply = callClaude(
+        explanationDraftInstructions((string) $subject['country_prefix']),
+        explanationDraftRequest($subject, $published),
+        3000
+    );
 
     // Tidy the reply: drop any ```markdown fences, normalise line endings,
     // and keep it within the editor's 20,000-character limit.
@@ -52,30 +62,46 @@ function draftSubjectExplanation(array $subject, array $facts): array
     return ['text' => $text, 'unmatched' => findUnmatchedNumbers($text, $published)];
 }
 
-/** The standing instructions for writing an explanation. */
-function explanationDraftInstructions(): string
+/**
+ * The house style for a country: docs/house-style/core.md followed by the
+ * country's own file (uk.md for /uk/ pages). The country file is optional,
+ * so a new country works with the core rules until its file is written.
+ */
+function houseStyleText(string $countryPrefix): string
 {
-    return <<<'TXT'
-You write first drafts of explanations for Finance Fact Library, a UK website that publishes official personal finance figures (tax, pensions, savings, mortgages, work and benefits), each sourced from GOV.UK, HMRC and similar.
+    $folder = __DIR__ . '/../docs/house-style/';
+    if (!is_readable($folder . 'core.md')) {
+        throw new RuntimeException('docs/house-style/core.md is missing, so there is no house style to draft from.');
+    }
 
-Each page shows its figures as cards. Your explanation appears below them and helps a general reader understand what the figures mean and how they apply: who they affect, how they work together, common points of confusion, and what to check.
+    $text = file_get_contents($folder . 'core.md');
+    $countryFile = $folder . preg_replace('/[^a-z]/', '', strtolower($countryPrefix)) . '.md';
+    if (is_readable($countryFile)) {
+        $text .= "\n\n" . file_get_contents($countryFile);
+    }
+    return $text;
+}
 
-Rules:
-- UK English, plain and friendly, short sentences. Write for someone with no financial background.
-- Use ONLY the figures you are given, written exactly as given (e.g. £12,570, 20%). Never introduce any other amount, rate, threshold or date, and never calculate new figures. If something needs a figure you weren't given, describe it in words.
-- Stay factual. No financial advice or recommendations ("you should..."). Where a reader's situation matters, suggest they check GOV.UK or speak to a regulated adviser.
-- Don't repeat the figure cards as a list; explain them.
-- 350 to 600 words.
+/** The standing instructions for writing an explanation: the job, then the house style. */
+function explanationDraftInstructions(string $countryPrefix): string
+{
+    $job = <<<'TXT'
+You write first drafts of the explanation section for Finance Fact Library, a website that publishes official personal finance figures, each sourced from the government and similar official bodies.
 
-Format (the site's editor only understands these):
-- "## Heading" for 3 to 5 section headings, no other heading levels.
-- Paragraphs separated by a blank line.
-- "- item" for bullet lists, "1. item" for numbered steps, used sparingly.
-- **bold** only for a few key terms.
-- No links, tables, images, HTML or other Markdown.
+Each page shows its figures as cards. Your explanation appears below them and helps a general reader understand what the figures mean and how they apply.
+
+You are drafting the EXPLANATION field only. Follow the house style below exactly, in particular:
+- Each figure you are given comes with its placeholder, such as {fact:personal_allowance}. Write the placeholder, not the figure, for anything that changes. Only type a figure if the house style allows it (fixed until a known date, which you must then give).
+- Never introduce any amount, rate, threshold or date you weren't given, and never calculate new figures, except a rate worked out directly from fixed figures, with the working shown.
+- A page whose figures are checked every 42 days or less is a rate page: don't state its rates at all.
 
 Reply with the explanation text only: no title, no preamble, no notes.
+
+The house style follows.
+
 TXT;
+
+    return $job . houseStyleText($countryPrefix);
 }
 
 /** The request for one subject: what the page is, its intro, and its figures. */
@@ -85,10 +111,13 @@ function explanationDraftRequest(array $subject, array $facts): string
     foreach ($facts as $fact) {
         // The context readers see on this page (an override, if the page has one).
         $context = $fact['context_override'] ?? $fact['context'];
-        $line = '- ' . $fact['label'] . ': ' . formatFactValue($fact);
+        $line = '- ' . $fact['label'] . ': ' . formatFactValue($fact)
+            . "\n  placeholder: {fact:" . $fact['fact_key'] . '}';
         if (isRegionalFact($fact)) {
-            $line .= ' (applies in ' . $fact['jurisdiction_name'] . ')';
+            $line .= "\n  applies in: " . $fact['jurisdiction_name'];
         }
+        // How often it's checked: 42 days or less makes this a rate page.
+        $line .= "\n  checked every: " . (int) $fact['review_frequency_days'] . ' days';
         if ($context) {
             $line .= "\n  note: " . $context;
         }
@@ -101,9 +130,13 @@ function explanationDraftRequest(array $subject, array $facts): string
         $lines[] = $line;
     }
 
+    $taxYear = pageTaxYear((string) $subject['country_code'], $facts);
+
     return "Page: {$subject['name']}\n"
+        . "Country: {$subject['country_name']}\n"
         . "Section: {$subject['category_name']} > {$subject['subcategory_name']}\n"
         . ($subject['intro'] ? "Intro shown above the figures: {$subject['intro']}\n" : '')
+        . "Tax year of the figures: $taxYear (placeholder: {tax_year})\n"
         . "\nFigures on the page:\n" . implode("\n", $lines);
 }
 

@@ -32,11 +32,18 @@ redirectToCanonical($canonicalPath);
 
 $country = getCountryByPrefix($subject['country_prefix']);
 
+$facts = getFactsForSubject($subject['id']);
+
+// The four written fields can contain {fact:key} and {tax_year}
+// placeholders (includes/placeholders.php), filled in here with the live
+// figures, so the text never goes out of date when a figure changes.
+$fill = fn(?string $text) => fillPlaceholders($text, $country['code'], $facts);
+$intro = $fill($subject['intro']);
+
 // meta_title / meta_description come from the subjects table when set,
 // falling back to the subject name and intro.
-$pageTitle = $subject['meta_title'] ?: $subject['name'];
-$metaDescription = $subject['meta_description'] ?: ($subject['intro'] ?? '');
-$facts = getFactsForSubject($subject['id']);
+$pageTitle = $fill($subject['meta_title']) ?: $subject['name'];
+$metaDescription = $fill($subject['meta_description']) ?: ($intro ?? '');
 
 // Generated sections below the facts. Both come from the database, so
 // every page gains content that updates itself when the figures change.
@@ -46,7 +53,7 @@ $changes = getRecentChangesForSubject((int) $subject['id']);
 // The longer written explanation (migration 010), edited in the admin.
 // renderExplanation() escapes everything and returns '' when there's
 // none, in which case the section isn't shown.
-$explanationHtml = renderExplanation($subject['explanation'] ?? null);
+$explanationHtml = renderExplanation($fill($subject['explanation'] ?? null));
 
 // Breadcrumb structured data, so search results can show the
 // Category > Subcategory > Page trail instead of a bare URL.
@@ -81,8 +88,9 @@ include __DIR__ . '/../includes/header.php';
 
 <section class="mb-10">
     <h1 class="font-display text-4xl font-semibold mb-3"><?= e($subject['name']) ?></h1>
-    <?php if ($subject['intro']): ?>
-    <p class="text-lg opacity-80 max-w-xl"><?= e($subject['intro']) ?></p>
+    <?php if ($intro): ?>
+    <?php // $intro has its placeholders filled in (see the top of this file). ?>
+    <p class="text-lg opacity-80 max-w-xl"><?= e($intro) ?></p>
     <?php endif; ?>
 </section>
 

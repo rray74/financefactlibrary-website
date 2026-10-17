@@ -41,6 +41,13 @@
  *                            tax year's rate), recorded in the fact's
  *                            history and dated by effective_from
  *
+ * Placeholders: subject_intro, subject_meta_title and
+ * subject_meta_description can contain {fact:fact_key} and {tax_year}
+ * (see includes/placeholders.php). A row with an invalid placeholder, or
+ * one naming a fact that doesn't exist or isn't published, is refused as
+ * a whole. The fact must already exist when the row is read, so put rows
+ * that create facts above rows whose text uses them.
+ *
  * Editing existing pages without phpMyAdmin:
  *   Any filled-in name, description, intro, meta or subject_status cell is
  *   applied to the category, subcategory or subject on that row, whether
@@ -178,6 +185,14 @@ while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
             if ($subjectSlug === '') {
                 throw new RuntimeException('subject_slug is required');
             }
+
+            // Placeholders in the subject's text must be valid before
+            // anything is written, the same check the editor makes.
+            assertValidPlaceholders($pdo, [
+                'subject_intro'            => $get('subject_intro'),
+                'subject_meta_title'       => $get('subject_meta_title'),
+                'subject_meta_description' => $get('subject_meta_description'),
+            ]);
             if (!isset($subjectCache[$subjectSlug])) {
                 $subjectCache[$subjectSlug] = getOrCreateSubject(
                     $pdo, $subcategoryId, $subjectSlug, $get('subject_name'), $get('subject_intro')

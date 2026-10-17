@@ -16,6 +16,8 @@
  */
 
 require_once __DIR__ . '/../config/database.php';
+// Placeholder checks for subject text (assertValidPlaceholders()).
+require_once __DIR__ . '/placeholders.php';
 
 /**
  * Domains whose facts can be trusted without review, with the licence
@@ -554,6 +556,15 @@ function updateSubjectDetails(PDO $pdo, int $subjectId, array $fields): void
         throw new RuntimeException('Explanation is too long (20,000 characters at most).');
     }
 
+    // Placeholders ({fact:key}, {tax_year}) must all be valid, or readers
+    // would see them as typed. Field names match the editor's labels.
+    assertValidPlaceholders($pdo, [
+        'Intro'            => $intro,
+        'Explanation'      => $explanation,
+        'Meta title'       => $metaTitle,
+        'Meta description' => $metaDescription,
+    ]);
+
     $stmt = $pdo->prepare('SELECT id FROM subjects WHERE id = :id');
     $stmt->execute(['id' => $subjectId]);
     if (!$stmt->fetchColumn()) {
@@ -660,6 +671,8 @@ function createSubject(PDO $pdo, array $s): int
     if (!in_array($status, SUBJECT_STATUSES, true)) {
         throw new RuntimeException('Choose a status: draft, published or retired.');
     }
+    // Same placeholder check as every other save of page text.
+    assertValidPlaceholders($pdo, ['Intro' => $intro]);
 
     $stmt = $pdo->prepare('SELECT id FROM subcategories WHERE id = :id');
     $stmt->execute(['id' => $subcategoryId]);
