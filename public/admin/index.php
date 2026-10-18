@@ -13,6 +13,8 @@ requireAdmin();
  *   - whether the weekly cron jobs ran, and how they went
  *   - headline counts, including content gaps (short intros, pages
  *     without an explanation)
+ *   - the writing queue: pages without an explanation, most-searched
+ *     first, and whether an AI draft is waiting (scripts/draft-pages.php)
  *   - Google search performance for the last 28 days (Search Console)
  *   - the latest figure changes across the site
  *
@@ -29,6 +31,12 @@ $waiting = [
 $waitingTotal = array_sum(array_column($waiting, 1));
 
 $counts = getDashboardCounts();
+
+// Pages still to be written, in the order the nightly drafts follow.
+// Only the top of the list is shown; the count covers all of it.
+$writingQueue = getWritingQueue();
+$writingQueueDrafted = count(array_filter($writingQueue, fn($page) => $page['has_draft']));
+const WRITING_QUEUE_SHOWN = 15;
 $recentChanges = getRecentFactChanges(10);
 
 // Search Console: the latest 28 days, fetched daily by
@@ -173,7 +181,8 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <p class="font-display text-3xl font-semibold my-1"><?= (int) $counts['published_facts'] ?></p>
             <p class="text-xs opacity-60"><?= (int) $counts['draft_facts'] ?> draft &middot; <?= (int) $counts['sources_used'] ?> source pages</p>
         </div>
-        <a href="/admin/subjects.php" class="fact-card p-5 block hover:border-accent">
+        <?php // Jumps to the writing queue below. ?>
+        <a href="#writing-queue" class="fact-card p-5 block hover:border-accent">
             <p class="text-sm opacity-70">Pages needing writing</p>
             <?php // Content gaps on published pages: the plan is to expand intros and add explanations. ?>
             <p class="font-display text-3xl font-semibold my-1"><?= (int) $counts['no_explanation'] ?></p>
@@ -182,6 +191,62 @@ include __DIR__ . '/../../includes/admin-nav.php';
             </p>
         </a>
     </div>
+</section>
+
+<?php // ---------- Writing queue ---------- ?>
+<section id="writing-queue" class="mb-12 scroll-mt-6">
+    <h2 class="font-display text-2xl font-semibold mb-2">Writing queue</h2>
+    <p class="opacity-80 max-w-xl mb-4 text-sm">
+        <?php if (!$writingQueue): ?>
+        Every page has an explanation.
+        <?php else: ?>
+        <?= count($writingQueue) ?> page<?= count($writingQueue) === 1 ? '' : 's' ?> without an explanation,
+        <?= $writingQueueDrafted ?> with an AI draft waiting. Most-searched first, the order the nightly
+        drafts follow. Start at the top.
+        <?php endif; ?>
+    </p>
+    <?php if ($writingQueue): ?>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+            <thead>
+                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
+                    <th class="py-2 pr-4">Page</th>
+                    <th class="py-2 pr-4">Status</th>
+                    <th class="py-2 pr-4 text-right">Impressions</th>
+                    <th class="py-2 pr-4">AI draft</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach (array_slice($writingQueue, 0, WRITING_QUEUE_SHOWN) as $page): ?>
+                <tr class="border-b border-primary/20 align-top">
+                    <td class="py-3 pr-4">
+                        <a href="/admin/subject.php?id=<?= (int) $page['id'] ?>#subject-details" class="font-semibold hover:text-accent">
+                            <?= e($page['name']) ?>
+                        </a>
+                    </td>
+                    <td class="py-3 pr-4 font-mono text-xs"><?= e($page['status']) ?></td>
+                    <td class="py-3 pr-4 text-right"><?= number_format((int) $page['impressions']) ?></td>
+                    <td class="py-3 pr-4 text-xs">
+                        <?php if ($page['has_draft']): ?>
+                        <span class="font-mono px-2 py-1 rounded bg-secondary/10 text-secondary">
+                            Ready <?= e(date('j M', strtotime($page['draft_created_at']))) ?>
+                        </span>
+                        <?php elseif ((int) $page['published_facts'] === 0): ?>
+                        <?php // Drafts are written from the page's figures, so it needs some first. ?>
+                        <span class="opacity-60">Needs published figures first</span>
+                        <?php else: ?>
+                        <span class="opacity-60">Waiting</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php if (count($writingQueue) > WRITING_QUEUE_SHOWN): ?>
+    <p class="text-xs opacity-60 mt-2">And <?= count($writingQueue) - WRITING_QUEUE_SHOWN ?> more.</p>
+    <?php endif; ?>
+    <?php endif; ?>
 </section>
 
 <?php // ---------- Search (Google Search Console) ---------- ?>

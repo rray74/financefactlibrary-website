@@ -153,6 +153,7 @@ const ADMIN_EXPECTED_CRON_SCRIPTS = [
     'fetch-boe-rates.php'      => 'Mondays 07:00',
     'check-sources.php'        => 'Mondays 07:30',
     'fetch-search-console.php' => 'Daily 06:00',
+    'draft-pages.php'          => 'Daily 05:00',
 ];
 const ADMIN_CRON_STALE_DAYS = 8;
 
@@ -274,4 +275,56 @@ function getTopQueriesForPath(string $path, int $limit = 10): array
     );
     $stmt->execute(['path' => $path]);
     return $stmt->fetchAll();
+}
+
+// ------------------------------------------------------------
+// Page writing (subject_drafts, migration 012)
+// ------------------------------------------------------------
+
+/** A subject's stored AI draft, or NULL if it has none. */
+function getSubjectDraft(int $subjectId): ?array
+{
+    $pdo = getDbConnection();
+    $stmt = $pdo->prepare('SELECT * FROM subject_drafts WHERE subject_id = :sid');
+    $stmt->execute(['sid' => $subjectId]);
+    return $stmt->fetch() ?: null;
+}
+
+/**
+ * Pages still to be written: published and draft subjects with no
+ * explanation, most-searched first (Google impressions in the last 28
+ * days), then published before draft, then by name. Each row has
+ * impressions, has_draft and draft_created_at. Used by the dashboard's
+ * writing queue and by scripts/draft-pages.php, so both work in the same
+ * order.
+ */
+function getWritingQueue(): array
+{
+    $pdo = getDbConnection();
+    $rows = $pdo->query(
+        "SELECT s.id, s.name, s.status,
+                (d.subject_id IS NOT NULL) AS has_draft, d.created_at AS draft_created_at,
+                -- Only pages with at least one published figure can be drafted.
+                (SELECT COUNT(*) FROM subject_facts sf
+                 JOIN facts f ON f.id = sf.fact_id AND f.status = 'published'
+                 WHERE sf.subject_id = s.id) AS published_facts
+         FROM subjects s
+         LEFT JOIN subject_drafts d ON d.subject_id = s.id
+         WHERE s.status IN ('published', 'draft') AND COALESCE(s.explanation, '') = ''"
+    )->fetchAll();
+
+    // Impressions by page path. Paths are built in PHP (subjectUrlById),
+    // so they're matched here rather than joined in SQL.
+    $impressions = $pdo->query('SELECT page_path, impressions FROM search_console_pages')
+        ->fetchAll(PDO::FETCH_KEY_PAIR);
+
+    foreach ($rows as &$row) {
+        $row['path'] = subjectUrlById((int) $row['id']);
+        $row['impressions'] = (int) ($impressions[$row['path']] ?? 0);
+    }
+    unset($row);
+
+    usort($rows, fn($a, $b) => [$b['impressions'], $a['status'] !== 'published', $a['name']]
+        <=> [$a['impressions'], $b['status'] !== 'published', $b['name']]);
+    return $rows;
 }

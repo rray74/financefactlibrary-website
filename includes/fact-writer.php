@@ -588,6 +588,38 @@ function updateSubjectDetails(PDO $pdo, int $subjectId, array $fields): void
 }
 
 /**
+ * Store an AI draft of a subject's four text fields (subject_drafts,
+ * migration 012), replacing any earlier draft for that subject. Drafts
+ * never touch the live page.
+ *
+ * $draft keys: intro, explanation, meta_title, meta_description, and
+ * problems (a list of sentences). $madeBy is 'nightly' or 'editor'.
+ */
+function saveSubjectDraft(PDO $pdo, int $subjectId, array $draft, string $madeBy): void
+{
+    $pdo->prepare(
+        'REPLACE INTO subject_drafts
+            (subject_id, intro, explanation, meta_title, meta_description, problems, made_by, model, created_at)
+         VALUES (:sid, :intro, :explanation, :meta_title, :meta_description, :problems, :made_by, :model, NOW())'
+    )->execute([
+        'sid'              => $subjectId,
+        'intro'            => $draft['intro'] ?? null,
+        'explanation'      => $draft['explanation'] ?? null,
+        'meta_title'       => $draft['meta_title'] ?? null,
+        'meta_description' => $draft['meta_description'] ?? null,
+        'problems'         => !empty($draft['problems']) ? implode("\n", $draft['problems']) : null,
+        'made_by'          => $madeBy,
+        'model'            => defined('ANTHROPIC_MODEL') ? ANTHROPIC_MODEL : null,
+    ]);
+}
+
+/** Remove a subject's draft, once the page has been written. */
+function deleteSubjectDraft(PDO $pdo, int $subjectId): void
+{
+    $pdo->prepare('DELETE FROM subject_drafts WHERE subject_id = :sid')->execute(['sid' => $subjectId]);
+}
+
+/**
  * Save a fact's wording and review cadence from the admin editor: label,
  * context and review_frequency_days. The value itself is never changed
  * here. That always goes through updateFactValue(), so it's recorded in

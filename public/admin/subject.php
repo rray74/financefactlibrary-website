@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/fact-writer.php';
 require_once __DIR__ . '/../../includes/admin-auth.php';
 require_once __DIR__ . '/../../includes/admin-queries.php';
-require_once __DIR__ . '/../../includes/ai-drafts.php'; // "Draft this for me" for the explanation
+require_once __DIR__ . '/../../includes/ai-drafts.php'; // AI drafts of the four text fields
 
 // Must be first: sends anyone not logged in to /admin/login.php.
 requireAdmin();
@@ -13,9 +13,12 @@ requireAdmin();
  * title and description) and status, plus the label, context and review cadence of
  * each fact the page owns, and add new facts to it.
  *
- * "Draft this for me" (Phase 2) asks the AI for a first draft of the
- * explanation and puts it in the Explanation box, unsaved, for you to
- * rewrite before clicking Save page details.
+ * AI drafts: pages without an explanation are drafted overnight by
+ * scripts/draft-pages.php, and "Draft this page" redrafts one now. The
+ * draft (all four text fields) is stored in subject_drafts and shown
+ * under each field with a "Use draft" button, which copies it into the
+ * box. Nothing reaches the live page until you click Save page details,
+ * and saving with an explanation clears the draft.
  *
  * Placeholders: the four text fields can use {fact:fact_key} and
  * {tax_year} (includes/placeholders.php). The page lists them, inserts
@@ -68,6 +71,9 @@ foreach ($facts as $fact) {
 // Text with its placeholders filled in, as the public page shows it.
 $fillPreview = fn(?string $text) => fillPlaceholders($text, $countryCode, $facts);
 
+// This page's stored AI draft (subject_drafts), or NULL.
+$draft = getSubjectDraft($subjectId);
+
 // Where in the page to land after saving, so you're returned to the form
 // you just used rather than the top.
 $returnAnchor = '';
@@ -83,27 +89,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         requireValidCsrf();
         $pdo = getDbConnection();
 
-        if ($action === 'save_subject' && !empty($_POST['draft_explanation'])) {
-            // "Draft this for me": the button is inside the page details
-            // form, so everything typed in the form comes back too. The
-            // draft replaces only the Explanation box, and NOTHING is saved:
-            // the form simply reappears with the draft in it.
-            $returnAnchor = '#explanation-field';
+        if ($action === 'save_subject' && !empty($_POST['draft_page'])) {
+            // "Draft this page": the button is inside the page details form,
+            // so everything typed comes back too, and is put back in the
+            // boxes unchanged (nothing typed is lost or saved). The new draft
+            // replaces any stored one and appears under each field.
+            $returnAnchor = '#subject-details';
 
-            // The AI can take up to a minute; allow for that.
-            set_time_limit(150);
+            // The AI can take up to a minute or so; allow for that.
+            set_time_limit(180);
 
-            $draft = draftSubjectExplanation($subject, $facts);
-            // The draft replaces the Explanation box; draft_unmatched is
-            // shown in a note above it (see the form below).
-            rememberAdminInput([
-                'explanation'     => $draft['text'],
-                'draft_unmatched' => implode(', ', $draft['unmatched']),
-            ] + $_POST);
+            $newDraft = draftSubjectPage($pdo, $subject, $facts);
+            saveSubjectDraft($pdo, $subjectId, $newDraft, 'editor');
+            rememberAdminInput($_POST);
 
-            // The details (and any numbers to check) are in the note shown
-            // above the Explanation box, right next to the draft.
-            setAdminFlash('info', 'AI draft added to the Explanation box below. It is not saved yet.');
+            setAdminFlash('info', 'New AI draft below each field. Click "Use draft" to copy one into its box. '
+                . 'Nothing on the page has changed.');
 
         } elseif ($action === 'save_subject') {
             $returnAnchor = '#subject-details';
@@ -123,6 +124,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'Meta title'       => $_POST['meta_title'] ?? null,
                 'Meta description' => $_POST['meta_description'] ?? null,
             ], $pageFactKeys)['warnings'];
+            // Once the page has an explanation, the draft has done its job.
+            // (A page saved with only an intro, say, keeps its draft.)
+            if (cleanEditorText($_POST['explanation'] ?? null) !== null) {
+                deleteSubjectDraft($pdo, $subjectId);
+            }
+
             setAdminFlash($warnings ? 'info' : 'success',
                 'Subject saved.' . ($warnings ? ' Note: ' . implode(' ', $warnings) : ''));
 
@@ -234,6 +241,30 @@ $savedPlaceholderCheck = checkPlaceholders(getDbConnection(), [
     'Meta description' => $subject['meta_description'],
 ], $pageFactKeys);
 
+/**
+ * The AI draft for one field, shown under the field: the draft text and a
+ * "Use draft" button that copies it into the box (see the script at the
+ * end). Nothing is shown if there's no draft for the field, or it's
+ * already what's in the box. Open when the box is empty, folded away
+ * when you've already written something there.
+ */
+function renderFieldDraft(?array $draft, string $field, string $currentValue): string
+{
+    $text = $draft[$field] ?? null;
+    if ($text === null || $text === '' || trim($text) === trim($currentValue)) {
+        return '';
+    }
+
+    $open = trim($currentValue) === '' ? ' open' : '';
+    $when = date('j M', strtotime($draft['created_at']));
+    return '<details class="mt-2 border-l-2 border-secondary/40 pl-3"' . $open . '>'
+        . '<summary class="text-xs text-secondary cursor-pointer">AI draft (' . e($when) . ')</summary>'
+        . '<div class="whitespace-pre-wrap text-sm opacity-80 my-2' . ($field === 'explanation' ? ' font-mono' : '') . '">'
+        . e($text) . '</div>'
+        . '<button type="button" class="btn btn-xs btn-outline" data-use-draft="' . e($field) . '">Use draft</button>'
+        . '</details>';
+}
+
 // What each status means for the public page, shown next to the choice.
 $statusHelp = [
     'draft'     => 'Hidden. The page answers 404 and is left out of listings and the sitemap.',
@@ -339,6 +370,43 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <?= adminCsrfField() ?>
         <input type="hidden" name="action" value="save_subject">
 
+        <?php // AI draft: what's stored, anything to check, and the button to redraft now. ?>
+        <?php if ($draft || aiProposalsAvailable()): ?>
+        <div class="fact-card p-4 text-sm">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <p class="font-semibold">
+                    <?php if ($draft): ?>
+                    AI draft from <?= e(date('j M Y, H:i', strtotime($draft['created_at']))) ?>
+                    <span class="font-normal opacity-60">(<?= $draft['made_by'] === 'nightly' ? 'made overnight' : 'made here' ?>)</span>
+                    <?php else: ?>
+                    No AI draft for this page yet
+                    <?php endif; ?>
+                </p>
+                <?php if (aiProposalsAvailable()): ?>
+                <?php // Submits this form with draft_page set: what's typed comes back unchanged. ?>
+                <button type="submit" name="draft_page" value="1" formnovalidate
+                    class="btn btn-xs btn-outline" id="draft-button"><?= $draft ? 'Redraft this page' : 'Draft this page' ?></button>
+                <?php endif; ?>
+            </div>
+            <p class="text-xs opacity-70 mt-1">
+                <?= $draft
+                    ? 'Shown under each field. "Use draft" copies it into the box to rewrite in your own words. Nothing changes until you save.'
+                    : 'Pages without an explanation are drafted overnight, most-searched first. Or draft this one now (up to a minute).' ?>
+            </p>
+            <?php if ($draft && $draft['problems']): ?>
+            <?php // Numbers that aren't among the page's figures, and placeholder problems. ?>
+            <div class="alert alert-error mt-3 text-sm">
+                <span>
+                    <strong>Check before using:</strong>
+                    <?php foreach (explode("\n", $draft['problems']) as $problem): ?>
+                    <br><?= e($problem) ?>
+                    <?php endforeach; ?>
+                </span>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
         <?php // Placeholders: click one to put it where the cursor was in any of the four fields. ?>
         <details open class="fact-card p-4">
             <summary class="font-semibold cursor-pointer text-sm">Placeholders for this page</summary>
@@ -368,17 +436,11 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <textarea id="intro" name="intro" rows="3" class="textarea textarea-bordered w-full"
                 data-counter="intro-count" data-limit="200" data-min="120"><?= e($form['intro']) ?></textarea>
             <p id="intro-count" class="text-xs opacity-60 mt-1"></p>
+            <?= renderFieldDraft($draft, 'intro', $form['intro']) ?>
         </div>
 
         <div id="explanation-field" class="scroll-mt-6">
-            <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-                <label for="explanation" class="block font-semibold">Explanation</label>
-                <?php if (aiProposalsAvailable()): ?>
-                <?php // Submits this form with draft_explanation set: the draft comes back unsaved. ?>
-                <button type="submit" name="draft_explanation" value="1" formnovalidate
-                    class="btn btn-xs btn-outline" id="draft-button">Draft this for me</button>
-                <?php endif; ?>
-            </div>
+            <label for="explanation" class="block font-semibold mb-1">Explanation</label>
             <p class="text-xs opacity-70 mb-2">
                 The written guide shown below the figures. Leave blank to hide the section.
                 Formatting: <code class="font-mono">## Heading</code>, <code class="font-mono">### Smaller heading</code>,
@@ -386,21 +448,10 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 <code class="font-mono">**bold**</code> and <code class="font-mono">[link text](/uk/tax/)</code>.
                 A blank line starts a new paragraph.
             </p>
-            <?php if (!empty($oldSubject['draft_explanation'])): ?>
-            <?php // Shown right after "Draft this for me", next to the draft itself, so it can't be missed. ?>
-            <div class="alert <?= !empty($oldSubject['draft_unmatched']) ? 'alert-error' : 'alert-info' ?> mb-3 text-sm">
-                <span>
-                    AI first draft, <strong>not saved</strong>. Rewrite it in your own words, then click Save page details.
-                    <?php if (!empty($oldSubject['draft_unmatched'])): ?>
-                    <br>Check these numbers, which aren't among the page's figures:
-                    <strong><?= e($oldSubject['draft_unmatched']) ?></strong>.
-                    <?php endif; ?>
-                </span>
-            </div>
-            <?php endif; ?>
             <textarea id="explanation" name="explanation" rows="16" class="textarea textarea-bordered w-full font-mono text-sm"
                 data-counter="explanation-count" data-words="1"><?= e($form['explanation']) ?></textarea>
             <p id="explanation-count" class="text-xs opacity-60 mt-1"></p>
+            <?= renderFieldDraft($draft, 'explanation', $form['explanation']) ?>
 
             <?php // Preview of the SAVED version, rendered exactly as the public page does it. ?>
             <?php // Placeholders filled in, as on the public page. ?>
@@ -429,6 +480,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <p id="meta-title-count" class="text-xs opacity-60 mt-1"></p>
             <?php // Filled in by the script below when the title uses placeholders. ?>
             <p id="meta-title-preview" class="text-xs mt-1"></p>
+            <?= renderFieldDraft($draft, 'meta_title', $form['meta_title']) ?>
         </div>
 
         <div>
@@ -443,6 +495,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 data-preview="meta-description-preview"><?= e($form['meta_description']) ?></textarea>
             <p id="meta-description-count" class="text-xs opacity-60 mt-1"></p>
             <p id="meta-description-preview" class="text-xs mt-1"></p>
+            <?= renderFieldDraft($draft, 'meta_description', $form['meta_description']) ?>
         </div>
 
         <fieldset>
@@ -729,20 +782,32 @@ include __DIR__ . '/../../includes/admin-nav.php';
 </script>
 
 <script>
-    // "Draft this for me": ask before replacing text already in the box,
-    // and show that it's working, since the AI can take up to a minute.
+    // "Draft this page": show that it's working, since the AI can take up
+    // to a minute. What's typed in the boxes is kept either way.
     (function () {
         var button = document.getElementById('draft-button');
         if (!button) return;
-        button.addEventListener('click', function (event) {
-            var box = document.getElementById('explanation');
-            if (box.value.trim() !== '' && !confirm(
-                'Replace the text in the Explanation box with a new draft? Nothing is saved until you click Save page details.'
-            )) {
-                event.preventDefault();
-                return;
-            }
+        button.addEventListener('click', function () {
             button.textContent = 'Drafting… (up to a minute)';
+        });
+    })();
+
+    // "Use draft": copy a field's stored draft into its box, asking first
+    // if the box already has something in it. Nothing is saved.
+    (function () {
+        var drafts = <?= json_encode($draft ? array_intersect_key($draft, array_flip(DRAFT_FIELDS)) : new stdClass(),
+            JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?>;
+
+        document.querySelectorAll('[data-use-draft]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var field = document.getElementById(button.dataset.useDraft);
+                if (field.value.trim() !== '' && !confirm('Replace what\'s in this box with the draft? Nothing is saved until you click Save page details.')) {
+                    return;
+                }
+                field.value = drafts[button.dataset.useDraft];
+                field.dispatchEvent(new Event('input')); // updates the count and preview
+                field.focus();
+            });
         });
     })();
 </script>
