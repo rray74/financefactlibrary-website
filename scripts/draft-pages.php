@@ -49,6 +49,10 @@ $limit = isset($options['limit']) ? max(1, (int) $options['limit']) : DRAFTS_PER
 
 $pdo = getDbConnection();
 
+// Each page waits about a minute for the AI with the connection idle, and
+// Hostinger's MySQL drops idle connections sooner than that.
+keepDbConnectionOpenForAi($pdo);
+
 $runId = null;
 if (!$dryRun) {
     $pdo->prepare("INSERT INTO cron_runs (script) VALUES ('draft-pages.php')")->execute();
@@ -79,13 +83,20 @@ try {
             continue;
         }
 
-        // One page failing (a timeout, an unreadable reply) doesn't stop the rest.
+        // One page failing (a timeout, an unreadable reply) doesn't stop the
+        // rest. A database failure does, since every later page would fail
+        // the same way (the first live run failed 10 pages on one dropped
+        // connection).
         try {
             $subject = getAdminSubject((int) $page['id']);
             $draft = draftSubjectPage($pdo, $subject, getAdminFactsForSubject((int) $page['id']));
             saveSubjectDraft($pdo, (int) $page['id'], $draft, 'nightly');
             $drafted++;
             echo "  drafted: $label" . ($draft['problems'] ? ' (' . count($draft['problems']) . ' thing(s) to check)' : '') . "\n";
+        } catch (PDOException $e) {
+            $failed++;
+            echo "  FAILED: $label: " . $e->getMessage() . "\n";
+            throw new RuntimeException('Stopped: database error (' . $e->getMessage() . ')', 0, $e);
         } catch (Throwable $e) {
             $failed++;
             echo "  FAILED: $label: " . $e->getMessage() . "\n";
@@ -114,8 +125,16 @@ try {
 } catch (Throwable $e) {
     fwrite(STDERR, 'FAILED: ' . $e->getMessage() . "\n");
     if ($runId) {
-        $pdo->prepare("UPDATE cron_runs SET status = 'error', error = :e, finished_at = NOW() WHERE id = :id")
-            ->execute(['e' => substr($e->getMessage(), 0, 1000), 'id' => $runId]);
+        $note = "$drafted drafted before stopping. " . $e->getMessage();
+        // Recording the failure can itself fail if the connection is gone.
+        // Try once more on the same connection, and if that fails too, say
+        // so in the cron output rather than ending with a PHP fatal error.
+        try {
+            $pdo->prepare("UPDATE cron_runs SET status = 'error', error = :e, finished_at = NOW() WHERE id = :id")
+                ->execute(['e' => substr($note, 0, 1000), 'id' => $runId]);
+        } catch (Throwable $recordError) {
+            fwrite(STDERR, 'Could not record the failure in cron_runs: ' . $recordError->getMessage() . "\n");
+        }
     }
     exit(1);
 }

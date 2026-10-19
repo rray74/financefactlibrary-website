@@ -106,6 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Reading the source pages and the AI together can take a minute or two.
             set_time_limit(240);
+            // The result is saved afterwards, so keep the connection open meanwhile.
+            keepDbConnectionOpenForAi($pdo);
 
             $typed = [];
             foreach (array_keys(TEXT_FIELD_LABELS) as $field) {
@@ -129,6 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // The AI can take up to a minute or so; allow for that.
             set_time_limit(180);
+            // The draft is saved afterwards, so keep the connection open meanwhile.
+            keepDbConnectionOpenForAi($pdo);
 
             $newDraft = draftSubjectPage($pdo, $subject, $facts);
             saveSubjectDraft($pdo, $subjectId, $newDraft, 'editor');

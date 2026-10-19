@@ -69,6 +69,12 @@ $useAi = !isset($options['no-ai']) && aiProposalsAvailable();
 
 $pdo = getDbConnection();
 
+// The AI step waits on each call with the connection idle; keep it open
+// (Hostinger's MySQL drops idle connections quickly).
+if ($useAi) {
+    keepDbConnectionOpenForAi($pdo);
+}
+
 $runId = null;
 if (!$dryRun) {
     $pdo->prepare("INSERT INTO cron_runs (script) VALUES ('check-sources.php')")->execute();

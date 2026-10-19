@@ -60,6 +60,28 @@ if (!defined('AI_MAX_CHANGE_RATIO')) {
 /** Longest page text sent to the AI (characters). GOV.UK pages are far shorter. */
 const AI_MAX_PAGE_CHARACTERS = 100000;
 
+/**
+ * Keep a database connection open through long AI calls.
+ *
+ * Hostinger's MySQL closes connections that sit idle for a short time,
+ * and an AI call can take a minute or more with the connection unused.
+ * The next query then fails with "MySQL server has gone away" (which is
+ * what stopped the first nightly run of scripts/draft-pages.php). This
+ * raises the idle limit for this one connection only, to 15 minutes. It
+ * changes nothing for any other connection or the server.
+ *
+ * Call it before the first AI call in any script or page that uses the
+ * database afterwards. Safe to call more than once.
+ */
+function keepDbConnectionOpenForAi(PDO $pdo, int $seconds = 900): void
+{
+    try {
+        $pdo->exec('SET SESSION wait_timeout = ' . (int) $seconds);
+    } catch (Throwable $e) {
+        // Not fatal: the worst case is the old behaviour, reported as an error.
+    }
+}
+
 /** True if an API key is set and cURL is available, so proposals can run. */
 function aiProposalsAvailable(): bool
 {
