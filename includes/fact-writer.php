@@ -633,6 +633,16 @@ function saveSubjectTextCheck(PDO $pdo, int $subjectId, array $result, string $t
     ]);
 }
 
+/**
+ * Mark a subject's text as reviewed now (subjects.text_reviewed_at,
+ * migration 014). Called when the editor saves the page details. Clears
+ * the "figure changed" and "yearly review" flags in review-flags.php.
+ */
+function markSubjectTextReviewed(PDO $pdo, int $subjectId): void
+{
+    $pdo->prepare('UPDATE subjects SET text_reviewed_at = NOW() WHERE id = :id')->execute(['id' => $subjectId]);
+}
+
 /** Remove a subject's draft, once the page has been written. */
 function deleteSubjectDraft(PDO $pdo, int $subjectId): void
 {

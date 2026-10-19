@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../includes/admin-auth.php';
 require_once __DIR__ . '/../../includes/admin-queries.php';
 require_once __DIR__ . '/../../includes/ai-drafts.php'; // AI drafts of the four text fields
 require_once __DIR__ . '/../../includes/text-checks.php'; // quick checks and the AI check of the text
+require_once __DIR__ . '/../../includes/review-flags.php'; // why this page needs reviewing, if it does
 
 // Must be first: sends anyone not logged in to /admin/login.php.
 requireAdmin();
@@ -25,6 +26,10 @@ requireAdmin();
  * saved text whenever the page opens. "Check with AI" reads whatever is in
  * the boxes against the page's figures and source pages, without saving,
  * and the result stays on the page, marked if the text has changed since.
+ *
+ * Review flags (includes/review-flags.php): if the page needs reviewing,
+ * the reasons are shown at the top of Page details. Saving the page
+ * details marks the text as reviewed, which clears some of them.
  *
  * Placeholders: the four text fields can use {fact:fact_key} and
  * {tax_year} (includes/placeholders.php). The page lists them, inserts
@@ -159,6 +164,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'Meta title'       => $_POST['meta_title'] ?? null,
                 'Meta description' => $_POST['meta_description'] ?? null,
             ], $pageFactKeys)['warnings'];
+            // Saving is the review: it clears the "figure changed" and
+            // "yearly review" flags (see includes/review-flags.php).
+            markSubjectTextReviewed($pdo, $subjectId);
+
             // Once the page has an explanation, the draft has done its job.
             // (A page saved with only an intro, say, keeps its draft.)
             if (cleanEditorText($_POST['explanation'] ?? null) !== null) {
@@ -295,6 +304,9 @@ $savedFields = [
 ];
 $savedQuickNotes = quickTextChecks($savedFields, $facts);
 
+// Why this page is on the dashboard's "Needs reviewing" list, if it is.
+$reviewFlags = getReviewFlagsForSubject($subjectId);
+
 /**
  * The AI draft for one field, shown under the field: the draft text and a
  * "Use draft" button that copies it into the box (see the script at the
@@ -404,6 +416,20 @@ include __DIR__ . '/../../includes/admin-nav.php';
 <?php // ---------- Subject details ---------- ?>
 <section id="subject-details" class="mb-14 scroll-mt-6">
     <h2 class="font-display text-2xl font-semibold mb-4">Page details</h2>
+
+    <?php if ($reviewFlags): ?>
+    <?php // The same reasons the dashboard's "Needs reviewing" list shows. ?>
+    <div class="alert alert-warning mb-6 text-sm max-w-2xl">
+        <span>
+            <strong>This page needs reviewing:</strong>
+            <?php foreach ($reviewFlags as $flag): ?>
+            <br><strong><?= e(REVIEW_FLAG_LABELS[$flag['kind']]) ?>.</strong> <?= e($flag['detail']) ?>
+            <?php endforeach; ?>
+            <br><span class="opacity-80">Saving the page details marks the text as reviewed. AI check and placeholder
+            problems clear once they're fixed and checked again.</span>
+        </span>
+    </div>
+    <?php endif; ?>
 
     <?php $savedNotes = array_merge($savedPlaceholderCheck['warnings'], $savedQuickNotes); ?>
     <?php if ($savedPlaceholderCheck['errors'] || $savedNotes): ?>
@@ -633,6 +659,8 @@ include __DIR__ . '/../../includes/admin-nav.php';
         </fieldset>
 
         <button type="submit" class="btn btn-primary">Save page details</button>
+        <?php // Saving is how a review is recorded (subjects.text_reviewed_at). ?>
+        <p class="text-xs opacity-60 mt-2">Saving also marks this page's text as reviewed today.</p>
     </form>
 </section>
 

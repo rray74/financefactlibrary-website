@@ -154,6 +154,7 @@ const ADMIN_EXPECTED_CRON_SCRIPTS = [
     'check-sources.php'        => 'Mondays 07:30',
     'fetch-search-console.php' => 'Daily 06:00',
     'draft-pages.php'          => 'Daily 05:00',
+    'check-page-text.php'      => 'Daily 05:30',
 ];
 const ADMIN_CRON_STALE_DAYS = 8;
 

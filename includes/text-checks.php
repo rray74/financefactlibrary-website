@@ -261,7 +261,9 @@ function textCheckHash(array $fields): string
  * Returns:
  *   findings  list of ['field', 'kind', 'quote', 'problem']; only those
  *             whose quote really is in the text are kept
- *   sources   list of ['name', 'url', 'read' => true/false, 'error']
+ *   sources   list of ['name', 'url', 'read' => true/false, 'error', 'hash'];
+ *             hash is the same fingerprint check-sources.php stores in
+ *             sources.content_hash, so a later change to the page shows
  *   dropped   how many findings were dropped for misquoting the text
  */
 function aiTextCheck(array $subject, array $facts, array $fields): array
@@ -286,9 +288,13 @@ function aiTextCheck(array $subject, array $facts, array $fields): array
         if (!$url || isset($sources[$url]) || in_array($url, SKIP_SOURCE_URLS, true)) {
             continue;
         }
-        $sources[$url] = ['name' => $fact['source_name'] ?? $url, 'url' => $url, 'read' => false, 'error' => null];
+        $sources[$url] = ['name' => $fact['source_name'] ?? $url, 'url' => $url, 'read' => false, 'error' => null, 'hash' => null];
         try {
             $text = fetchPageText($url);
+            // Fingerprint of the whole page, worked out exactly as
+            // check-sources.php does, so scripts/check-page-text.php can tell
+            // when the page has changed since this check.
+            $sources[$url]['hash'] = hash('sha256', $text);
             $sourceTexts[$url] = preg_match('/^.{0,' . TEXT_CHECK_SOURCE_CHARACTERS . '}/su', $text, $m) ? $m[0] : $text;
             $sources[$url]['read'] = true;
         } catch (Throwable $e) {

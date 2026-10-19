@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/admin-auth.php';
 require_once __DIR__ . '/../../includes/admin-queries.php';
+require_once __DIR__ . '/../../includes/review-flags.php'; // the "Needs reviewing" list
 
 // Must be first: sends anyone not logged in to /admin/login.php.
 requireAdmin();
@@ -13,6 +14,7 @@ requireAdmin();
  *   - whether the weekly cron jobs ran, and how they went
  *   - headline counts, including content gaps (short intros, pages
  *     without an explanation)
+ *   - pages needing a review, and why (includes/review-flags.php)
  *   - the writing queue: pages without an explanation, most-searched
  *     first, and whether an AI draft is waiting (scripts/draft-pages.php)
  *   - Google search performance for the last 28 days (Search Console)
@@ -31,6 +33,9 @@ $waiting = [
 $waitingTotal = array_sum(array_column($waiting, 1));
 
 $counts = getDashboardCounts();
+
+// Written pages that need another look, most important first.
+$reviewFlagged = getReviewFlags();
 
 // Pages still to be written, in the order the nightly drafts follow.
 // Only the top of the list is shown; the count covers all of it.
@@ -191,6 +196,48 @@ include __DIR__ . '/../../includes/admin-nav.php';
             </p>
         </a>
     </div>
+</section>
+
+<?php // ---------- Needs reviewing ---------- ?>
+<section id="needs-reviewing" class="mb-12 scroll-mt-6">
+    <h2 class="font-display text-2xl font-semibold mb-2">Needs reviewing</h2>
+    <?php if (!$reviewFlagged): ?>
+    <p class="opacity-80 max-w-xl text-sm">No written page needs reviewing.</p>
+    <?php else: ?>
+    <p class="opacity-80 max-w-xl mb-4 text-sm">
+        <?= count($reviewFlagged) ?> written page<?= count($reviewFlagged) === 1 ? '' : 's' ?> to look at again,
+        most important first. Each page's editor shows the same reasons at the top.
+    </p>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+            <thead>
+                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
+                    <th class="py-2 pr-4">Page</th>
+                    <th class="py-2 pr-4">Why</th>
+                    <th class="py-2 pr-4 text-right">Impressions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($reviewFlagged as $page): ?>
+                <tr class="border-b border-primary/20 align-top">
+                    <td class="py-3 pr-4">
+                        <a href="/admin/subject.php?id=<?= (int) $page['id'] ?>#subject-details" class="font-semibold hover:text-accent">
+                            <?= e($page['name']) ?>
+                        </a>
+                    </td>
+                    <td class="py-3 pr-4 text-xs">
+                        <?php // One line per reason; the details are on the page's editor. ?>
+                        <?php foreach ($page['reasons'] as $reason): ?>
+                        <span class="block"><?= e(REVIEW_FLAG_LABELS[$reason['kind']]) ?></span>
+                        <?php endforeach; ?>
+                    </td>
+                    <td class="py-3 pr-4 text-right"><?= number_format((int) $page['impressions']) ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php endif; ?>
 </section>
 
 <?php // ---------- Writing queue ---------- ?>
