@@ -114,9 +114,14 @@ Draft all four fields: intro, meta_title, meta_description and explanation. Foll
 - If you're given the searches that showed this page on Google, use the words people actually search for in the meta title and description.
 - Count characters with placeholders filled in (you are told what each shows) when keeping to the house style's lengths.
 
-Reply with JSON only, no other text, in this shape:
-{"intro": "...", "meta_title": "...", "meta_description": "...", "explanation": "..."}
-The explanation uses the editor's format from the house style, with \n for new lines inside the JSON string.
+Reply with the four fields between tags, in this order, and nothing else:
+<intro>...</intro>
+<meta_title>...</meta_title>
+<meta_description>...</meta_description>
+<explanation>
+...
+</explanation>
+The explanation uses the editor's format from the house style, written exactly as it should appear, with real line breaks.
 
 The house style follows.
 
@@ -171,20 +176,35 @@ function pageDraftRequest(array $subject, array $facts): string
 
 /**
  * Turn the AI's reply into the four fields, tidied the same way the
- * editor tidies what you type. Tolerates ```json fences. Throws if the
- * reply can't be read or has no explanation.
+ * editor tidies what you type. Throws if the reply has no explanation.
+ *
+ * The reply has each field between tags (<intro>...</intro> and so on).
+ * This replaced JSON, which broke on long explanations: one unescaped
+ * line break or quote mark in the explanation made the whole reply
+ * unreadable (the first live run failed on the minimum wage page). Text
+ * outside the tags is ignored.
  */
 function parsePageDraft(string $reply): array
 {
-    $json = trim(preg_replace('/^```(?:json)?|```$/m', '', trim($reply)));
-    $data = json_decode($json, true);
-    if (!is_array($data)) {
-        throw new RuntimeException('The AI reply was not in the expected format. Try again.');
+    $data = [];
+    foreach (DRAFT_FIELDS as $field) {
+        if (preg_match('#<' . $field . '>(.*?)</' . $field . '>#s', $reply, $m)) {
+            $data[$field] = $m[1];
+        }
+    }
+
+    if (!isset($data['explanation'])) {
+        // An opening tag with no closing one means the reply was cut off.
+        $cutOff = strpos($reply, '<explanation>') !== false;
+        throw new RuntimeException(($cutOff
+            ? 'The AI reply was cut off before the end of the explanation.'
+            : 'The AI reply was not in the expected format.')
+            . ' Try again. It began: "' . aiReplyStart($reply) . '"');
     }
 
     $draft = [];
     foreach (DRAFT_FIELDS as $field) {
-        $value = is_string($data[$field] ?? null) ? $data[$field] : null;
+        $value = $data[$field] ?? null;
         if ($field === 'explanation') {
             // Normalise line endings and stray blank lines; keep within the editor's limit.
             $value = trim(preg_replace("/\n{3,}/", "\n\n", str_replace(["\r\n", "\r"], "\n", (string) $value)));
@@ -204,7 +224,7 @@ function parsePageDraft(string $reply): array
     }
 
     if ($draft['explanation'] === null) {
-        throw new RuntimeException('The AI returned no explanation. Try again.');
+        throw new RuntimeException('The AI returned an empty explanation. Try again.');
     }
     return $draft;
 }

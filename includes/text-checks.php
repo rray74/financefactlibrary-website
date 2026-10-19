@@ -299,10 +299,15 @@ function aiTextCheck(array $subject, array $facts, array $fields): array
     $reply = callClaude(textCheckInstructions(), textCheckRequest($subject, $published, $filled, $sources, $sourceTexts), 3000);
 
     // --- Read the reply, keeping only findings that quote the text exactly. ---
-    $json = trim(preg_replace('/^```(?:json)?|```$/m', '', trim($reply)));
-    $data = json_decode($json, true);
+    // The JSON is taken from the first { to the last }, so a sentence or a
+    // ```json fence around it doesn't matter. (Findings are short, so JSON
+    // is safe here, unlike the long explanations in AI drafts.)
+    $start = strpos($reply, '{');
+    $end = strrpos($reply, '}');
+    $data = ($start !== false && $end > $start) ? json_decode(substr($reply, $start, $end - $start + 1), true) : null;
     if (!is_array($data) || !isset($data['findings']) || !is_array($data['findings'])) {
-        throw new RuntimeException('The AI reply was not in the expected format. Try again.');
+        throw new RuntimeException('The AI reply was not in the expected format. Try again. It began: "'
+            . aiReplyStart($reply) . '"');
     }
 
     // Compare without caring about spacing or curly versus straight quotes.

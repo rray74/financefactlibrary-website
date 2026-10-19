@@ -61,6 +61,17 @@ if (!defined('AI_MAX_CHANGE_RATIO')) {
 const AI_MAX_PAGE_CHARACTERS = 100000;
 
 /**
+ * The first 150 characters of an AI reply, on one line, for error
+ * messages, so a reply that can't be read shows what came back. Used by
+ * the AI drafts and the AI text check.
+ */
+function aiReplyStart(string $reply): string
+{
+    $flat = trim(preg_replace('/\s+/u', ' ', $reply));
+    return preg_match('/^.{0,150}/su', $flat, $m) ? $m[0] : substr($flat, 0, 150);
+}
+
+/**
  * Keep a database connection open through long AI calls.
  *
  * Hostinger's MySQL closes connections that sit idle for a short time,
