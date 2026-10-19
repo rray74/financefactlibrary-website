@@ -29,6 +29,7 @@
 
 require_once __DIR__ . '/ai-proposer.php';
 require_once __DIR__ . '/admin-queries.php'; // getTopQueriesForPath() for the page's searches
+require_once __DIR__ . '/text-checks.php';   // findUnmatchedNumbers(), shared with the checks on saved text
 
 /** The four fields a draft covers, in the order the editor shows them. */
 const DRAFT_FIELDS = ['intro', 'explanation', 'meta_title', 'meta_description'];
@@ -206,51 +207,4 @@ function parsePageDraft(string $reply): array
         throw new RuntimeException('The AI returned no explanation. Try again.');
     }
     return $draft;
-}
-
-/**
- * Numbers in the draft that don't match any of the page's figures, so
- * they can be checked before saving. Ignored: whole numbers under 10
- * (like "Plan 2" or "3 steps"), years from 1900 to 2100, the parts of the
- * page's tax years (2026/27), and anything inside a {placeholder}.
- */
-function findUnmatchedNumbers(string $text, array $facts): array
-{
-    // Placeholders contain fact keys like sl_plan2_threshold, which aren't figures.
-    $text = preg_replace(PLACEHOLDER_PATTERN, ' ', $text);
-
-    // Every form a page figure might take, without thousands separators.
-    $known = [];
-    foreach ($facts as $fact) {
-        foreach ([$fact['value'], formatFactValue($fact)] as $written) {
-            if (preg_match_all('/\d[\d,]*(?:\.\d+)?/', (string) $written, $m)) {
-                foreach ($m[0] as $number) {
-                    $known[str_replace(',', '', $number)] = true;
-                }
-            }
-        }
-        if ($fact['value_numeric'] !== null) {
-            $n = (float) $fact['value_numeric'];
-            $known[rtrim(rtrim(number_format($n, 4, '.', ''), '0'), '.')] = true; // 241.30 -> 241.3
-            $known[number_format($n, 2, '.', '')] = true;                         // 3.5 -> 3.50
-        }
-        if ($fact['tax_year'] && preg_match('#^(\d{4})/(\d{2})$#', $fact['tax_year'], $m)) {
-            $known[$m[1]] = true;
-            $known[$m[2]] = true;
-        }
-    }
-
-    $unmatched = [];
-    if (preg_match_all('/(?<![\w.])\d[\d,]*(?:\.\d+)?/', $text, $m)) {
-        foreach ($m[0] as $number) {
-            $plain = rtrim(str_replace(',', '', $number), '.');
-            $value = (float) $plain;
-            $isSmallWhole = $value < 10 && strpos($plain, '.') === false;
-            $isYear = strpos($plain, '.') === false && $value >= 1900 && $value <= 2100;
-            if (!$isSmallWhole && !$isYear && !isset($known[$plain])) {
-                $unmatched[$number] = true;
-            }
-        }
-    }
-    return array_keys($unmatched);
 }

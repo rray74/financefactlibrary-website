@@ -328,3 +328,21 @@ function getWritingQueue(): array
         <=> [$a['impressions'], $b['status'] !== 'published', $b['name']]);
     return $rows;
 }
+
+/**
+ * A subject's latest AI text check (subject_text_checks, migration 013),
+ * with findings and sources decoded, or NULL if it's never been checked.
+ */
+function getSubjectTextCheck(int $subjectId): ?array
+{
+    $pdo = getDbConnection();
+    $stmt = $pdo->prepare('SELECT * FROM subject_text_checks WHERE subject_id = :sid');
+    $stmt->execute(['sid' => $subjectId]);
+    $row = $stmt->fetch();
+    if (!$row) {
+        return null;
+    }
+    $row['findings'] = json_decode((string) $row['findings'], true) ?: [];
+    $row['sources'] = json_decode((string) $row['sources'], true) ?: [];
+    return $row;
+}

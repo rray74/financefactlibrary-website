@@ -613,6 +613,26 @@ function saveSubjectDraft(PDO $pdo, int $subjectId, array $draft, string $madeBy
     ]);
 }
 
+/**
+ * Store the result of an AI text check (subject_text_checks, migration
+ * 013), replacing the subject's previous one. $result is what
+ * aiTextCheck() returns; $textHash is textCheckHash() of the text checked.
+ */
+function saveSubjectTextCheck(PDO $pdo, int $subjectId, array $result, string $textHash): void
+{
+    $pdo->prepare(
+        'REPLACE INTO subject_text_checks (subject_id, text_hash, findings, sources, dropped, model, checked_at)
+         VALUES (:sid, :hash, :findings, :sources, :dropped, :model, NOW())'
+    )->execute([
+        'sid'      => $subjectId,
+        'hash'     => $textHash,
+        'findings' => json_encode($result['findings'], JSON_UNESCAPED_UNICODE),
+        'sources'  => json_encode($result['sources'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        'dropped'  => (int) $result['dropped'],
+        'model'    => defined('ANTHROPIC_MODEL') ? ANTHROPIC_MODEL : null,
+    ]);
+}
+
 /** Remove a subject's draft, once the page has been written. */
 function deleteSubjectDraft(PDO $pdo, int $subjectId): void
 {

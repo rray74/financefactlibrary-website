@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../includes/fact-writer.php';
 require_once __DIR__ . '/../../includes/admin-auth.php';
 require_once __DIR__ . '/../../includes/admin-queries.php';
 require_once __DIR__ . '/../../includes/ai-drafts.php'; // AI drafts of the four text fields
+require_once __DIR__ . '/../../includes/text-checks.php'; // quick checks and the AI check of the text
 
 // Must be first: sends anyone not logged in to /admin/login.php.
 requireAdmin();
@@ -19,6 +20,11 @@ requireAdmin();
  * under each field with a "Use draft" button, which copies it into the
  * box. Nothing reaches the live page until you click Save page details,
  * and saving with an explanation clears the draft.
+ *
+ * Checks (includes/text-checks.php): quick house-style checks run on the
+ * saved text whenever the page opens. "Check with AI" reads whatever is in
+ * the boxes against the page's figures and source pages, without saving,
+ * and the result stays on the page, marked if the text has changed since.
  *
  * Placeholders: the four text fields can use {fact:fact_key} and
  * {tax_year} (includes/placeholders.php). The page lists them, inserts
@@ -74,6 +80,9 @@ $fillPreview = fn(?string $text) => fillPlaceholders($text, $countryCode, $facts
 // This page's stored AI draft (subject_drafts), or NULL.
 $draft = getSubjectDraft($subjectId);
 
+// This page's latest AI text check (subject_text_checks), or NULL.
+$textCheck = getSubjectTextCheck($subjectId);
+
 // Where in the page to land after saving, so you're returned to the form
 // you just used rather than the top.
 $returnAnchor = '';
@@ -89,7 +98,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         requireValidCsrf();
         $pdo = getDbConnection();
 
-        if ($action === 'save_subject' && !empty($_POST['draft_page'])) {
+        if ($action === 'save_subject' && !empty($_POST['check_page'])) {
+            // "Check with AI": checks the text in the boxes as typed, saved
+            // or not, and saves nothing but the check's result. What's typed
+            // comes back unchanged.
+            $returnAnchor = '#text-check';
+
+            // Reading the source pages and the AI together can take a minute or two.
+            set_time_limit(240);
+
+            $typed = [];
+            foreach (array_keys(TEXT_FIELD_LABELS) as $field) {
+                $typed[$field] = (string) ($_POST[$field] ?? '');
+            }
+            $result = aiTextCheck($subject, $facts, $typed);
+            saveSubjectTextCheck($pdo, $subjectId, $result, textCheckHash($typed));
+            rememberAdminInput($_POST);
+
+            $found = count($result['findings']);
+            setAdminFlash($found ? 'info' : 'success', ($found
+                ? "AI check: $found thing" . ($found === 1 ? '' : 's') . ' to look at, listed under Page details.'
+                : 'AI check: no problems found.') . ' Nothing has been saved.');
+
+        } elseif ($action === 'save_subject' && !empty($_POST['draft_page'])) {
             // "Draft this page": the button is inside the page details form,
             // so everything typed comes back too, and is put back in the
             // boxes unchanged (nothing typed is lost or saved). The new draft
@@ -130,8 +161,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 deleteSubjectDraft($pdo, $subjectId);
             }
 
-            setAdminFlash($warnings ? 'info' : 'success',
-                'Subject saved.' . ($warnings ? ' Note: ' . implode(' ', $warnings) : ''));
+            // Quick house-style checks on what was just saved. They're listed
+            // under Page details, so the message only says how many.
+            $quickNotes = quickTextChecks([
+                'intro'            => $_POST['intro'] ?? null,
+                'explanation'      => $_POST['explanation'] ?? null,
+                'meta_title'       => $_POST['meta_title'] ?? null,
+                'meta_description' => $_POST['meta_description'] ?? null,
+            ], $facts);
+            $toCheck = count($warnings) + count($quickNotes);
+            setAdminFlash($toCheck ? 'info' : 'success', 'Subject saved.'
+                . ($toCheck ? " $toCheck thing" . ($toCheck === 1 ? '' : 's') . ' to check, listed under Page details.' : ''));
 
         } elseif ($action === 'save_fact') {
             $factId = (int) ($_POST['fact_id'] ?? 0);
@@ -240,6 +280,16 @@ $savedPlaceholderCheck = checkPlaceholders(getDbConnection(), [
     'Meta title'       => $subject['meta_title'],
     'Meta description' => $subject['meta_description'],
 ], $pageFactKeys);
+
+// Quick house-style checks on the saved text, shown with the placeholder
+// problems until they're fixed.
+$savedFields = [
+    'intro'            => $subject['intro'],
+    'explanation'      => $subject['explanation'] ?? null,
+    'meta_title'       => $subject['meta_title'],
+    'meta_description' => $subject['meta_description'],
+];
+$savedQuickNotes = quickTextChecks($savedFields, $facts);
 
 /**
  * The AI draft for one field, shown under the field: the draft text and a
@@ -351,12 +401,14 @@ include __DIR__ . '/../../includes/admin-nav.php';
 <section id="subject-details" class="mb-14 scroll-mt-6">
     <h2 class="font-display text-2xl font-semibold mb-4">Page details</h2>
 
-    <?php if ($savedPlaceholderCheck['errors'] || $savedPlaceholderCheck['warnings']): ?>
+    <?php $savedNotes = array_merge($savedPlaceholderCheck['warnings'], $savedQuickNotes); ?>
+    <?php if ($savedPlaceholderCheck['errors'] || $savedNotes): ?>
     <?php // About the SAVED text, so it shows even if nothing has been edited. ?>
     <div class="alert <?= $savedPlaceholderCheck['errors'] ? 'alert-error' : 'alert-info' ?> mb-6 text-sm max-w-2xl">
         <span>
-            <strong>Placeholders in the saved text:</strong>
-            <?php foreach (array_merge($savedPlaceholderCheck['errors'], $savedPlaceholderCheck['warnings']) as $problem): ?>
+            <strong>Checks on the saved text:</strong>
+            <?php // Placeholder errors first (the public page shows those as nothing), then house-style checks. ?>
+            <?php foreach (array_merge($savedPlaceholderCheck['errors'], $savedNotes) as $problem): ?>
             <br><?= e($problem) ?>
             <?php endforeach; ?>
             <?php if ($savedPlaceholderCheck['errors']): ?>
@@ -403,6 +455,70 @@ include __DIR__ . '/../../includes/admin-nav.php';
                     <?php endforeach; ?>
                 </span>
             </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php // AI check: the latest result, and the button to check the text in the boxes now. ?>
+        <?php if ($textCheck || aiProposalsAvailable()): ?>
+        <?php $checkMatchesBoxes = $textCheck && textCheckHash($form) === $textCheck['text_hash']; ?>
+        <div id="text-check" class="fact-card p-4 text-sm scroll-mt-6">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <p class="font-semibold">
+                    <?php if ($textCheck): ?>
+                    AI check from <?= e(date('j M Y, H:i', strtotime($textCheck['checked_at']))) ?>
+                    <?php // Matched by fingerprint, so a check of unsaved text still counts once it's saved unchanged. ?>
+                    <span class="font-normal <?= $checkMatchesBoxes ? 'opacity-60' : 'text-error' ?>">
+                        (<?= $checkMatchesBoxes ? 'of the text in the boxes' : 'the text has changed since' ?>)
+                    </span>
+                    <?php else: ?>
+                    Not checked by AI yet
+                    <?php endif; ?>
+                </p>
+                <?php if (aiProposalsAvailable()): ?>
+                <?php // Submits this form with check_page set: nothing is saved, what's typed comes back. ?>
+                <button type="submit" name="check_page" value="1" formnovalidate
+                    class="btn btn-xs btn-outline" id="check-button">Check with AI</button>
+                <?php endif; ?>
+            </div>
+            <p class="text-xs opacity-70 mt-1">
+                Reads the text in the boxes, with figures filled in, against this page's figures and their
+                source pages. Saved or not, nothing is changed. Up to two minutes.
+            </p>
+
+            <?php if ($textCheck): ?>
+            <?php if (!$textCheck['findings']): ?>
+            <p class="mt-3 text-secondary">No problems found.</p>
+            <?php else: ?>
+            <ul class="mt-3 space-y-3">
+                <?php foreach ($textCheck['findings'] as $finding): ?>
+                <li class="border-l-2 border-error/50 pl-3">
+                    <span class="font-mono text-xs uppercase tracking-wide text-error">
+                        <?= e(TEXT_CHECK_KINDS[$finding['kind']] ?? $finding['kind']) ?>
+                        &middot; <?= e(TEXT_FIELD_LABELS[$finding['field']] ?? $finding['field']) ?>
+                    </span>
+                    <span class="block italic opacity-80">&ldquo;<?= e($finding['quote']) ?>&rdquo;</span>
+                    <span class="block"><?= e($finding['problem']) ?></span>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
+
+            <?php // What it read, so a source that couldn't be read is visible. ?>
+            <p class="text-xs opacity-60 mt-3">
+                <?php if (!$textCheck['sources']): ?>
+                No source pages to read (figures without a source, or Bank of England data only).
+                <?php else: ?>
+                Sources:
+                <?php foreach ($textCheck['sources'] as $i => $source): ?>
+                <?= $i > 0 ? '&middot;' : '' ?>
+                <?= e($source['name']) ?> <?= $source['read'] ? '(read)' : '(couldn\'t be read: ' . e((string) $source['error']) . ')' ?>
+                <?php endforeach; ?>
+                <?php endif; ?>
+                <?php if ((int) $textCheck['dropped'] > 0): ?>
+                <br><?= (int) $textCheck['dropped'] ?> finding(s) dropped because they misquoted the text.
+                <?php endif; ?>
+            </p>
             <?php endif; ?>
         </div>
         <?php endif; ?>
@@ -789,6 +905,15 @@ include __DIR__ . '/../../includes/admin-nav.php';
         if (!button) return;
         button.addEventListener('click', function () {
             button.textContent = 'Drafting… (up to a minute)';
+        });
+    })();
+
+    // "Check with AI": show that it's working while the sources are read.
+    (function () {
+        var button = document.getElementById('check-button');
+        if (!button) return;
+        button.addEventListener('click', function () {
+            button.textContent = 'Checking… (up to two minutes)';
         });
     })();
 
