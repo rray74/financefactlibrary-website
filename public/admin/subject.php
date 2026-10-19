@@ -200,6 +200,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'label'                 => $_POST['label'] ?? null,
                 'context'               => $_POST['context'] ?? null,
                 'review_frequency_days' => $_POST['review_frequency_days'] ?? null,
+                // How the weekly source check finds this figure (see updateFactDetails()).
+                'source_url'            => $_POST['source_url'] ?? null,
+                'source_publisher'      => $_POST['source_publisher'] ?? null,
+                'source_match_text'     => $_POST['source_match_text'] ?? null,
             ]);
             setAdminFlash('success', 'Fact saved.');
 
@@ -738,8 +742,44 @@ include __DIR__ . '/../../includes/admin-nav.php';
                             <span class="text-sm opacity-70">days</span>
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-sm btn-primary">Save fact</button>
                 </div>
+
+                <?php // How the weekly source check (scripts/check-sources.php) finds this figure. ?>
+                <details class="text-sm" <?= $oldFactId === $factId ? 'open' : '' ?>>
+                    <summary class="cursor-pointer text-secondary">Source and how it's checked</summary>
+                    <div class="space-y-3 mt-3">
+                        <div>
+                            <label for="source-<?= $factId ?>" class="block text-sm font-semibold mb-1">Source page</label>
+                            <input type="url" id="source-<?= $factId ?>" name="source_url"
+                                class="input input-bordered input-sm w-full font-mono"
+                                value="<?= e((string) ($factForm['source_url'] ?? '')) ?>">
+                            <p class="text-xs opacity-60 mt-1">
+                                The page the weekly check reads. Change it if the figure has moved to another page.
+                            </p>
+                        </div>
+                        <div>
+                            <label for="publisher-<?= $factId ?>" class="block text-sm font-semibold mb-1">Publisher</label>
+                            <input type="text" id="publisher-<?= $factId ?>" name="source_publisher" maxlength="255"
+                                class="input input-bordered input-sm w-full"
+                                value="<?= e((string) ($factForm['source_publisher'] ?? $factForm['source_name'] ?? '')) ?>">
+                            <p class="text-xs opacity-60 mt-1">Only used when the source page is new to the site, e.g. GOV.UK — DWP.</p>
+                        </div>
+                        <div>
+                            <label for="match-<?= $factId ?>" class="block text-sm font-semibold mb-1">
+                                Text to look for <span class="font-normal opacity-60">(optional)</span>
+                            </label>
+                            <input type="text" id="match-<?= $factId ?>" name="source_match_text" maxlength="255"
+                                class="input input-bordered input-sm w-full"
+                                value="<?= e((string) ($factForm['source_match_text'] ?? '')) ?>">
+                            <p class="text-xs opacity-60 mt-1">
+                                Leave blank to look for the figure itself. Fill in for figures the source writes in
+                                words, copying its exact wording, e.g. "one week's pay for each full year".
+                            </p>
+                        </div>
+                    </div>
+                </details>
+
+                <button type="submit" class="btn btn-sm btn-primary">Save fact</button>
             </form>
             <?php else: ?>
             <?php // Shared fact: read-only here, with a link to the page that owns it. ?>

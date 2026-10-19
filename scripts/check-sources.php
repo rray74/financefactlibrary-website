@@ -153,6 +153,27 @@ try {
                 continue;
             }
 
+            // A fact with "text to look for" (migration 015) is checked by that
+            // text instead of its number: for figures the page writes in
+            // words, like "one and half week's pay".
+            if (trim((string) ($fact['source_match_text'] ?? '')) !== '') {
+                if (pageContainsText($text, $fact['source_match_text'])) {
+                    echo "  ✓  {$fact['fact_key']}: found \"{$fact['source_match_text']}\"\n";
+                    $counts['found']++;
+                    if (!$dryRun) {
+                        markFactVerified($pdo, (int) $fact['id']);
+                    }
+                } else {
+                    echo "  ✗  {$fact['fact_key']}: \"{$fact['source_match_text']}\" NOT FOUND on the page\n";
+                    $counts['not_found']++;
+                    $missing[] = $fact;
+                    if (!$dryRun) {
+                        recordCheck($pdo, $fact, 'not_found', null);
+                    }
+                }
+                continue;
+            }
+
             $candidates = valueCandidates($fact);
             if (!$candidates) {
                 echo "  -  {$fact['fact_key']}: not a number, not checked\n";
@@ -251,6 +272,22 @@ try {
 }
 
 // ============================================================
+
+/**
+ * True if the page text contains the given words, ignoring capitals,
+ * spacing, and curly versus straight quotes and apostrophes (GOV.UK
+ * writes "week’s" with a curly apostrophe; people type "week's").
+ */
+function pageContainsText(string $pageText, string $lookFor): bool
+{
+    $normalise = fn(string $s) => strtolower(trim(preg_replace('/\s+/u', ' ',
+        str_replace(["\u{2019}", "\u{2018}", "\u{201C}", "\u{201D}"], ["'", "'", '"', '"'], $s))));
+    $needle = $normalise($lookFor);
+    // The page text has thousands separators removed (see fetchPageText()),
+    // so remove them from the words looked for too: "£1,000" -> "£1000".
+    $needle = preg_replace('/(\d),(\d{3})(?!\d)/', '$1$2', $needle);
+    return $needle !== '' && strpos($normalise($pageText), $needle) !== false;
+}
 
 /**
  * The ways a figure might be written on its source page, without

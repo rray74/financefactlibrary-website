@@ -651,11 +651,16 @@ function deleteSubjectDraft(PDO $pdo, int $subjectId): void
 
 /**
  * Save a fact's wording and review cadence from the admin editor: label,
- * context and review_frequency_days. The value itself is never changed
- * here. That always goes through updateFactValue(), so it's recorded in
- * fact_history.
+ * context and review_frequency_days, and how it's checked: its source
+ * page and, optionally, the text to look for there. The value itself is
+ * never changed here. That always goes through updateFactValue(), so
+ * it's recorded in fact_history.
  *
- * $fields keys: label, context, review_frequency_days.
+ * $fields keys: label, context, review_frequency_days, and optionally
+ * source_url and source_publisher (a blank URL keeps the current source;
+ * a new URL is found or created through getOrCreateSource(), like the
+ * importer) and source_match_text (migration 015; blank means check the
+ * figure itself).
  */
 function updateFactDetails(PDO $pdo, int $factId, array $fields): void
 {
@@ -675,19 +680,42 @@ function updateFactDetails(PDO $pdo, int $factId, array $fields): void
         throw new RuntimeException('Review every must be a whole number of days, from 1 to 3650.');
     }
 
-    $stmt = $pdo->prepare('SELECT id FROM facts WHERE id = :id');
+    $matchText = cleanEditorText($fields['source_match_text'] ?? null, true);
+    if ($matchText !== null && textLength($matchText) > 255) {
+        throw new RuntimeException('Text to look for is too long (255 characters at most).');
+    }
+
+    $stmt = $pdo->prepare('SELECT id, source_id, jurisdiction_id FROM facts WHERE id = :id');
     $stmt->execute(['id' => $factId]);
-    if (!$stmt->fetchColumn()) {
+    $current = $stmt->fetch();
+    if (!$current) {
         throw new RuntimeException("Fact $factId not found");
     }
 
+    // Source page: only changed when a URL is given, and only to a real
+    // web address. The publisher is used if the source is new; an existing
+    // source keeps its own, since other facts may share it.
+    $sourceId = $current['source_id'];
+    $sourceUrl = cleanEditorText($fields['source_url'] ?? null, true);
+    if ($sourceUrl !== null) {
+        if (!filter_var($sourceUrl, FILTER_VALIDATE_URL) || !preg_match('#^https?://#i', $sourceUrl)) {
+            throw new RuntimeException('Source page must be a full web address starting with https://');
+        }
+        $sourceId = getOrCreateSource($pdo, $sourceUrl,
+            cleanEditorText($fields['source_publisher'] ?? null, true), (int) $current['jurisdiction_id']);
+    }
+
     $stmt = $pdo->prepare(
-        'UPDATE facts SET label = :label, context = :context, review_frequency_days = :review WHERE id = :id'
+        'UPDATE facts SET label = :label, context = :context, review_frequency_days = :review,
+                source_id = :source, source_match_text = :match
+         WHERE id = :id'
     );
     $stmt->execute([
         'label'   => $label,
         'context' => $context,
         'review'  => $reviewDays,
+        'source'  => $sourceId,
+        'match'   => $matchText,
         'id'      => $factId,
     ]);
 }
