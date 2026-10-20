@@ -5,15 +5,42 @@
 @plugin "daisyui/theme" {
   name: "financefactlibrary";
   default: true;
+  color-scheme: light;
+
+  /* Every colour has a matching "-content" colour: the text that sits on
+     top of it. daisyUI components use these (a filled button's label is
+     --color-primary-content, an alert's text is --color-info-content, and
+     so on). When they were missing, the text fell back to the page's navy,
+     so filled buttons showed as a dark box with no readable label, and
+     the info and error alerts were dark text on a mid-tone background.
+     Light text goes on the dark colours (navy, blue, red); navy goes on
+     the lighter ones (sage, mustard). */
   --color-primary: #1b2a4a; /* ink navy */
+  --color-primary-content: #f7f5f0;
   --color-secondary: #6b8f71; /* sage */
+  --color-secondary-content: #1b2a4a;
   --color-accent: #c9a227; /* mustard */
+  --color-accent-content: #1b2a4a;
   --color-neutral: #1b2a4a;
+  --color-neutral-content: #f7f5f0;
+
+  /* base-content is the default text colour for components, and the
+     source of input borders (a faint tint of it); without it, input and
+     textarea borders were close to invisible. base-200 and base-300 are
+     slightly darker papers, for components that need a second surface. */
   --color-base-100: #f7f5f0; /* paper */
+  --color-base-200: #eeebe3;
+  --color-base-300: #e0dcd0;
+  --color-base-content: #1b2a4a;
+
   --color-info: #3b5a87;
+  --color-info-content: #f7f5f0;
   --color-success: #6b8f71;
+  --color-success-content: #1b2a4a;
   --color-warning: #c9a227;
+  --color-warning-content: #1b2a4a;
   --color-error: #b3452c;
+  --color-error-content: #f7f5f0;
 }
 
 @theme {
