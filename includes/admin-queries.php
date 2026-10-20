@@ -151,12 +151,72 @@ function getJurisdictionOptions(int $countryId): array
  */
 const ADMIN_EXPECTED_CRON_SCRIPTS = [
     'fetch-boe-rates.php'      => 'Mondays 07:00',
-    'check-sources.php'        => 'Mondays 07:30',
+    'check-sources.php'        => 'Daily 07:30',
     'fetch-search-console.php' => 'Daily 06:00',
     'draft-pages.php'          => 'Daily 05:00',
     'check-page-text.php'      => 'Daily 05:30',
+    'send-alerts.php'          => 'Daily 08:00',
 ];
+
+/**
+ * How many days after its last start a script counts as stopped. The
+ * default suits a weekly job (a day late by then); daily jobs get 2, so
+ * one missed run shows up on the dashboard instead of going unnoticed
+ * for over a week. A script not listed here uses the default.
+ */
 const ADMIN_CRON_STALE_DAYS = 8;
+const ADMIN_CRON_STALE_DAYS_BY_SCRIPT = [
+    'check-sources.php'        => 2,
+    'fetch-search-console.php' => 2,
+    'draft-pages.php'          => 2,
+    'check-page-text.php'      => 2,
+    'send-alerts.php'          => 2,
+];
+
+/** Days after which a script's last run counts as stale (see above). */
+function cronStaleDays(string $script): int
+{
+    return ADMIN_CRON_STALE_DAYS_BY_SCRIPT[$script] ?? ADMIN_CRON_STALE_DAYS;
+}
+
+/**
+ * Describe one script's latest run: when it started, and a state of
+ * ok / error / running / stuck / stale / never, with a label and whether
+ * it's a problem ('bad'). Used by the dashboard's Scheduled jobs table
+ * and by the email alerts (includes/alerts.php), so both agree.
+ *
+ * $run is the script's row from getLatestCronRuns(), or NULL if it has
+ * never run; $script picks the stale limit.
+ */
+function describeCronRun(?array $run, string $script = ''): array
+{
+    if ($run === null) {
+        return ['started' => null, 'state' => 'never', 'label' => 'No runs recorded', 'bad' => true];
+    }
+
+    // The start-time column's name isn't fixed across environments, so
+    // use whichever exists.
+    $startedRaw = $run['started_at'] ?? $run['created_at'] ?? null;
+    $started = $startedRaw ? strtotime($startedRaw) : null;
+    $finished = !empty($run['finished_at']);
+    $ageDays = $started ? (time() - $started) / 86400 : null;
+
+    if (!$finished) {
+        // Still marked as running more than an hour after starting means
+        // it died without recording an outcome.
+        $stuck = $started !== null && time() - $started > 3600;
+        return ['started' => $started, 'state' => $stuck ? 'stuck' : 'running',
+                'label' => $stuck ? 'Didn\'t finish' : 'Running now', 'bad' => $stuck];
+    }
+    if ($ageDays !== null && $ageDays > cronStaleDays($script)) {
+        // The schedule has stopped.
+        return ['started' => $started, 'state' => 'stale',
+                'label' => 'Last run ' . floor($ageDays) . ' days ago', 'bad' => true];
+    }
+    $ok = ($run['status'] ?? '') === 'ok';
+    return ['started' => $started, 'state' => $ok ? 'ok' : 'error',
+            'label' => $ok ? 'OK' : 'Problem', 'bad' => !$ok];
+}
 
 /**
  * The latest cron_runs row for each script, keyed by script name. Uses

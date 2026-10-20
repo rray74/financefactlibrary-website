@@ -61,39 +61,7 @@ foreach (getAdminSubjectList() as $listedSubject) {
 $latestRuns = getLatestCronRuns();
 $cronScripts = array_unique(array_merge(array_keys(ADMIN_EXPECTED_CRON_SCRIPTS), array_keys($latestRuns)));
 
-/**
- * Describe one script's latest run for the table: when it started, and a
- * status of ok / error / running / stale / never, with a colour.
- */
-function describeCronRun(?array $run): array
-{
-    if ($run === null) {
-        return ['started' => null, 'state' => 'never', 'label' => 'No runs recorded', 'bad' => true];
-    }
-
-    // The start-time column's name isn't fixed across environments, so
-    // use whichever exists.
-    $startedRaw = $run['started_at'] ?? $run['created_at'] ?? null;
-    $started = $startedRaw ? strtotime($startedRaw) : null;
-    $finished = !empty($run['finished_at']);
-    $ageDays = $started ? (time() - $started) / 86400 : null;
-
-    if (!$finished) {
-        // Still marked as running more than an hour after starting means
-        // it died without recording an outcome.
-        $stuck = $started !== null && time() - $started > 3600;
-        return ['started' => $started, 'state' => $stuck ? 'stuck' : 'running',
-                'label' => $stuck ? 'Didn\'t finish' : 'Running now', 'bad' => $stuck];
-    }
-    if ($ageDays !== null && $ageDays > ADMIN_CRON_STALE_DAYS) {
-        // Weekly jobs: a last run over 8 days ago means the schedule stopped.
-        return ['started' => $started, 'state' => 'stale',
-                'label' => 'Last run ' . floor($ageDays) . ' days ago', 'bad' => true];
-    }
-    $ok = ($run['status'] ?? '') === 'ok';
-    return ['started' => $started, 'state' => $ok ? 'ok' : 'error',
-            'label' => $ok ? 'OK' : 'Problem', 'bad' => !$ok];
-}
+// describeCronRun() is in includes/admin-queries.php, shared with the email alerts.
 
 $pageTitle = 'Dashboard';
 $noindex = true; // admin page, keep it out of search results
@@ -144,7 +112,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 <?php foreach ($cronScripts as $script): ?>
                 <?php
                 $run = $latestRuns[$script] ?? null;
-                $state = describeCronRun($run);
+                $state = describeCronRun($run, $script);
                 ?>
                 <tr class="border-b border-primary/20 align-top">
                     <td class="py-3 pr-4">
