@@ -122,6 +122,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // The message from the last action ($_SESSION['flash']) is now shown by
 // includes/admin-nav.php, which every admin page shares.
 
+// Button and input styling, written out in full on this page. The theme's
+// own filled-button style (btn-primary) shows as a dark box with no
+// readable label, and its default input border is too faint to see, which
+// hid the Update and Approve buttons and the New value box. Using the
+// theme's own colours directly (primary for the box, base-100 for the
+// text) keeps them readable.
+$filledButton = 'btn btn-xs border-primary bg-primary text-base-100 hover:opacity-80';
+$inputField = 'input input-xs border border-primary/40 bg-base-100';
+
 $pageTitle = 'Facts Due for Review';
 $noindex = true; // admin page, keep it out of search results
 $adminSection = 'review';
@@ -187,7 +196,7 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
                         <form method="post" class="flex gap-1">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token']) ?>">
                             <input type="hidden" name="change_id" value="<?= (int) $change['id'] ?>">
-                            <button type="submit" name="action" value="approve_change" class="btn btn-xs btn-primary">Approve</button>
+                            <button type="submit" name="action" value="approve_change" class="<?= $filledButton ?>">Approve</button>
                             <button type="submit" name="action" value="reject_change" class="btn btn-xs btn-outline">Reject</button>
                         </form>
                     </td>
@@ -199,12 +208,12 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
 </section>
 <?php endif; ?>
 
-<?php // Figures the weekly source check couldn't find on their source page (scripts/check-sources.php). ?>
+<?php // Figures the source check couldn't find on their source page (scripts/check-sources.php, run daily). ?>
 <?php if (!empty($needsAttention)): ?>
 <section class="mb-12">
     <h2 class="font-display text-2xl font-semibold mb-2">Needs a look</h2>
     <p class="opacity-80 max-w-xl mb-4">
-        The weekly check couldn't find these figures on their source pages, usually because the page
+        The source check couldn't find these figures on their source pages, usually because the page
         now shows a new value. Open the source, then confirm the figure or enter the new one.
     </p>
     <div class="overflow-x-auto">
@@ -254,10 +263,10 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
                             <input type="hidden" name="fact_id" value="<?= (int) $fact['id'] ?>">
                             <input type="hidden" name="action" value="update">
                             <input type="text" name="new_value" placeholder="New value" required
-                                class="input input-xs input-bordered w-24">
+                                class="<?= $inputField ?> w-24">
                             <input type="date" name="effective_from" title="Effective from (optional)"
-                                class="input input-xs input-bordered">
-                            <button type="submit" class="btn btn-xs btn-primary">Update</button>
+                                class="<?= $inputField ?>">
+                            <button type="submit" class="<?= $filledButton ?>">Update</button>
                         </form>
                     </td>
                 </tr>
@@ -337,10 +346,10 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
                         <input type="hidden" name="fact_id" value="<?= (int) $fact['id'] ?>">
                         <input type="hidden" name="action" value="update">
                         <input type="text" name="new_value" placeholder="New value" required
-                            class="input input-xs input-bordered w-24">
+                            class="<?= $inputField ?> w-24">
                         <input type="date" name="effective_from" title="Effective from (optional)"
-                            class="input input-xs input-bordered">
-                        <button type="submit" class="btn btn-xs btn-primary">Update</button>
+                            class="<?= $inputField ?>">
+                        <button type="submit" class="<?= $filledButton ?>">Update</button>
                     </form>
                 </td>
             </tr>
