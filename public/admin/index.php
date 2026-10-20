@@ -40,8 +40,65 @@ $reviewFlagged = getReviewFlags();
 // Pages still to be written, in the order the nightly drafts follow.
 // Only the top of the list is shown; the count covers all of it.
 $writingQueue = getWritingQueue();
-$writingQueueDrafted = count(array_filter($writingQueue, fn($page) => $page['has_draft']));
-const WRITING_QUEUE_SHOWN = 15;
+
+// Two groups, so everything with an AI draft ready is together at the top:
+// the pages to work on now. The waiting pages follow. Each keeps the order
+// getWritingQueue() gives (most-searched first, which is also the order the
+// nightly drafts take them in).
+$writingQueueReady = array_values(array_filter($writingQueue, fn($page) => $page['has_draft']));
+$writingQueueWaiting = array_values(array_filter($writingQueue, fn($page) => !$page['has_draft']));
+
+// The waiting group is only cut off as a guard against a very long page,
+// once many countries are live. Every page with a draft ready is always shown.
+const WRITING_QUEUE_WAITING_SHOWN = 100;
+
+/**
+ * Print one group of the writing queue as a table. Both groups use the
+ * same columns, so the draft column says "Ready" (with the date) or why a
+ * page is still waiting.
+ */
+function printWritingQueueTable(array $pages): void
+{
+    ?>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+            <thead>
+                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
+                    <th class="py-2 pr-4">Page</th>
+                    <th class="py-2 pr-4">Status</th>
+                    <th class="py-2 pr-4 text-right">Impressions</th>
+                    <th class="py-2 pr-4">AI draft</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($pages as $page): ?>
+                <tr class="border-b border-primary/20 align-top">
+                    <td class="py-3 pr-4">
+                        <a href="/admin/subject.php?id=<?= (int) $page['id'] ?>#subject-details" class="font-semibold hover:text-accent">
+                            <?= e($page['name']) ?>
+                        </a>
+                    </td>
+                    <td class="py-3 pr-4 font-mono text-xs"><?= e($page['status']) ?></td>
+                    <td class="py-3 pr-4 text-right"><?= number_format((int) $page['impressions']) ?></td>
+                    <td class="py-3 pr-4 text-xs">
+                        <?php if ($page['has_draft']): ?>
+                        <span class="font-mono px-2 py-1 rounded bg-secondary/10 text-secondary">
+                            Ready <?= e(date('j M', strtotime($page['draft_created_at']))) ?>
+                        </span>
+                        <?php elseif ((int) $page['published_facts'] === 0): ?>
+                        <?php // Drafts are written from the page's figures, so it needs some first. ?>
+                        <span class="opacity-60">Needs published figures first</span>
+                        <?php else: ?>
+                        <span class="opacity-60">Waiting</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+}
 $recentChanges = getRecentFactChanges(10);
 
 // Search Console: the latest 28 days, fetched daily by
@@ -211,55 +268,43 @@ include __DIR__ . '/../../includes/admin-nav.php';
 <?php // ---------- Writing queue ---------- ?>
 <section id="writing-queue" class="mb-12 scroll-mt-6">
     <h2 class="font-display text-2xl font-semibold mb-2">Writing queue</h2>
-    <p class="opacity-80 max-w-xl mb-4 text-sm">
+    <p class="opacity-80 max-w-xl mb-6 text-sm">
         <?php if (!$writingQueue): ?>
         Every page has an explanation.
         <?php else: ?>
-        <?= count($writingQueue) ?> page<?= count($writingQueue) === 1 ? '' : 's' ?> without an explanation,
-        <?= $writingQueueDrafted ?> with an AI draft waiting. Most-searched first, the order the nightly
-        drafts follow. Start at the top.
+        <?= count($writingQueue) ?> page<?= count($writingQueue) === 1 ? '' : 's' ?> without an explanation:
+        <?= count($writingQueueReady) ?> with an AI draft ready, listed first, and
+        <?= count($writingQueueWaiting) ?> still waiting for theirs. Within each group, the most-searched
+        come first.
         <?php endif; ?>
     </p>
+
     <?php if ($writingQueue): ?>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm border-collapse">
-            <thead>
-                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
-                    <th class="py-2 pr-4">Page</th>
-                    <th class="py-2 pr-4">Status</th>
-                    <th class="py-2 pr-4 text-right">Impressions</th>
-                    <th class="py-2 pr-4">AI draft</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach (array_slice($writingQueue, 0, WRITING_QUEUE_SHOWN) as $page): ?>
-                <tr class="border-b border-primary/20 align-top">
-                    <td class="py-3 pr-4">
-                        <a href="/admin/subject.php?id=<?= (int) $page['id'] ?>#subject-details" class="font-semibold hover:text-accent">
-                            <?= e($page['name']) ?>
-                        </a>
-                    </td>
-                    <td class="py-3 pr-4 font-mono text-xs"><?= e($page['status']) ?></td>
-                    <td class="py-3 pr-4 text-right"><?= number_format((int) $page['impressions']) ?></td>
-                    <td class="py-3 pr-4 text-xs">
-                        <?php if ($page['has_draft']): ?>
-                        <span class="font-mono px-2 py-1 rounded bg-secondary/10 text-secondary">
-                            Ready <?= e(date('j M', strtotime($page['draft_created_at']))) ?>
-                        </span>
-                        <?php elseif ((int) $page['published_facts'] === 0): ?>
-                        <?php // Drafts are written from the page's figures, so it needs some first. ?>
-                        <span class="opacity-60">Needs published figures first</span>
-                        <?php else: ?>
-                        <span class="opacity-60">Waiting</span>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-    <?php if (count($writingQueue) > WRITING_QUEUE_SHOWN): ?>
-    <p class="text-xs opacity-60 mt-2">And <?= count($writingQueue) - WRITING_QUEUE_SHOWN ?> more.</p>
+    <?php // Pages with a draft ready: the ones to work on now. ?>
+    <h3 class="font-mono text-xs uppercase tracking-wide text-secondary mb-2">
+        Ready to write (<?= count($writingQueueReady) ?>)
+    </h3>
+    <?php if ($writingQueueReady): ?>
+    <p class="opacity-70 text-xs mb-2">Open one, use the draft under each field, and rewrite it in your own words.</p>
+    <?php printWritingQueueTable($writingQueueReady); ?>
+    <?php else: ?>
+    <p class="opacity-70 text-sm">No drafts are ready. The nightly job makes the next batch at 05:00.</p>
+    <?php endif; ?>
+
+    <?php // Pages still waiting for a draft, in the order the nightly job takes them. ?>
+    <?php if ($writingQueueWaiting): ?>
+    <h3 class="font-mono text-xs uppercase tracking-wide text-secondary mt-10 mb-2">
+        Waiting for a draft (<?= count($writingQueueWaiting) ?>)
+    </h3>
+    <p class="opacity-70 text-xs mb-2">
+        Drafted overnight, in this order. You can also open any page and click Draft this page.
+    </p>
+    <?php printWritingQueueTable(array_slice($writingQueueWaiting, 0, WRITING_QUEUE_WAITING_SHOWN)); ?>
+    <?php if (count($writingQueueWaiting) > WRITING_QUEUE_WAITING_SHOWN): ?>
+    <p class="text-xs opacity-60 mt-2">
+        And <?= count($writingQueueWaiting) - WRITING_QUEUE_WAITING_SHOWN ?> more, further down the same order.
+    </p>
+    <?php endif; ?>
     <?php endif; ?>
     <?php endif; ?>
 </section>
