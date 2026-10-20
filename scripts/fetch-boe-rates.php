@@ -14,9 +14,21 @@
  *                                               use a saved download instead of
  *                                               fetching (for testing)
  *
- * Runs on the live server from a cron job (see README). It has to run
- * there, not from Claude's tools, because the Bank's database is only
- * reachable from an ordinary server or browser.
+ * Runs on the live server from a cron job (see README), daily at 07:00.
+ * It has to run there, not from Claude's tools, because the Bank's
+ * database is only reachable from an ordinary server or browser.
+ *
+ * What it covers: the Bank's MONTHLY average-rate series (mortgage rates,
+ * SVR, cash ISA and savings averages, buy-to-let). The Bank publishes
+ * each series once a month, so most days nothing changes and every figure
+ * is simply marked verified; running daily means a new month's data is
+ * picked up within a day of its release instead of up to a week later.
+ * It is safe to run daily: unchanged values add no history, and a held
+ * change isn't recorded twice (see holdChange()).
+ *
+ * What it doesn't cover: Bank Rate itself (the base rate). That figure is
+ * checked by scripts/check-sources.php, which reads the Bank's Bank Rate
+ * page every day.
  *
  * Safety checks, in order, for every series:
  *   1. The Bank's own description of the series must match the words we
@@ -332,8 +344,13 @@ try {
         ]);
     }
 
-    // A non-zero exit code makes the cron job report a problem.
-    exit($counts['failed'] > 0 || $counts['held'] > 0 ? 1 : 0);
+    // A non-zero exit code makes the cron job report a problem. Only series
+    // that were skipped count: a held change is waiting for a decision, not
+    // a failed job. (It used to count too, which suited a weekly run. Daily,
+    // it would report a problem every morning until the change was approved
+    // or rejected.) Held changes are listed on the review page, and emailed
+    // once by scripts/send-alerts.php.
+    exit($counts['failed'] > 0 ? 1 : 0);
 
 } catch (Throwable $e) {
     fwrite(STDERR, 'FAILED: ' . $e->getMessage() . "\n");

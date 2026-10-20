@@ -150,7 +150,7 @@ function getJurisdictionOptions(int $countryId): array
  * cron scripts here.
  */
 const ADMIN_EXPECTED_CRON_SCRIPTS = [
-    'fetch-boe-rates.php'      => 'Mondays 07:00',
+    'fetch-boe-rates.php'      => 'Daily 07:00',
     'check-sources.php'        => 'Daily 07:30',
     'fetch-search-console.php' => 'Daily 06:00',
     'draft-pages.php'          => 'Daily 05:00',
@@ -166,6 +166,7 @@ const ADMIN_EXPECTED_CRON_SCRIPTS = [
  */
 const ADMIN_CRON_STALE_DAYS = 8;
 const ADMIN_CRON_STALE_DAYS_BY_SCRIPT = [
+    'fetch-boe-rates.php'      => 2,
     'check-sources.php'        => 2,
     'fetch-search-console.php' => 2,
     'draft-pages.php'          => 2,
