@@ -17,3 +17,7 @@ define('SITE_URL', 'http://financefactlibrary.com');
 // Admin credentials
 define('ADMIN_USERNAME', 'admin');
 define('ADMIN_PASSWORD_HASH', '************');
+
+// Alert email settings
+define('ALERT_EMAIL_TO', 'your@address.com');
+define('ALERT_EMAIL_FROM', 'alerts@financefactlibrary.com'); // optional
