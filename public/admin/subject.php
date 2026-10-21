@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../includes/admin-queries.php';
 require_once __DIR__ . '/../../includes/ai-drafts.php'; // AI drafts of the four text fields
 require_once __DIR__ . '/../../includes/text-checks.php'; // quick checks and the AI check of the text
 require_once __DIR__ . '/../../includes/review-flags.php'; // why this page needs reviewing, if it does
+require_once __DIR__ . '/../../includes/lessons.php';       // keeps drafts with the saved text, to learn from the edits
 
 // Must be first: sends anyone not logged in to /admin/login.php.
 requireAdmin();
@@ -26,6 +27,12 @@ requireAdmin();
  * saved text whenever the page opens. "Check with AI" reads whatever is in
  * the boxes against the page's figures and source pages, without saving,
  * and the result stays on the page, marked if the text has changed since.
+ *
+ * Learning (includes/lessons.php): when a page is saved with an explanation
+ * while it still has an AI draft, the draft and the saved text are kept
+ * together, so the lessons page can suggest what the AI should learn from
+ * how it was edited. The AI draft and the AI check are both given the
+ * approved lessons.
  *
  * Review flags (includes/review-flags.php): if the page needs reviewing,
  * the reasons are shown at the top of Page details. Saving the page
@@ -109,8 +116,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // comes back unchanged.
             $returnAnchor = '#text-check';
 
-            // Reading the source pages and the AI together can take a minute or two.
-            set_time_limit(240);
+            // Reading the source pages and the AI together can take a couple of minutes.
+            set_time_limit(300);
             // The result is saved afterwards, so keep the connection open meanwhile.
             keepDbConnectionOpenForAi($pdo);
 
@@ -134,8 +141,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // replaces any stored one and appears under each field.
             $returnAnchor = '#subject-details';
 
-            // The AI can take up to a minute or so; allow for that.
-            set_time_limit(180);
+            // Reading the source pages and writing the draft can take a couple of minutes.
+            set_time_limit(300);
             // The draft is saved afterwards, so keep the connection open meanwhile.
             keepDbConnectionOpenForAi($pdo);
 
@@ -169,8 +176,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             markSubjectTextReviewed($pdo, $subjectId);
 
             // Once the page has an explanation, the draft has done its job.
-            // (A page saved with only an intro, say, keeps its draft.)
+            // (A page saved with only an intro, say, keeps its draft.) Before
+            // it goes, it's kept with the text it was saved as, so the lessons
+            // page can learn from how it was edited. This is best-effort: a
+            // problem here must not make the save look as if it failed.
+            $editRecorded = false;
             if (cleanEditorText($_POST['explanation'] ?? null) !== null) {
+                $draftToKeep = getSubjectDraft($subjectId);
+                if ($draftToKeep) {
+                    try {
+                        $savedRow = getAdminSubject($subjectId);
+                        recordDraftEdit($pdo, $subjectId, $draftToKeep, [
+                            'intro'            => $savedRow['intro'],
+                            'explanation'      => $savedRow['explanation'],
+                            'meta_title'       => $savedRow['meta_title'],
+                            'meta_description' => $savedRow['meta_description'],
+                        ]);
+                        $editRecorded = true;
+                    } catch (Throwable $e) {
+                        // Not recorded (for example migration 017 isn't applied yet).
+                    }
+                }
                 deleteSubjectDraft($pdo, $subjectId);
             }
 
@@ -184,7 +210,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ], $facts);
             $toCheck = count($warnings) + count($quickNotes);
             setAdminFlash($toCheck ? 'info' : 'success', 'Subject saved.'
-                . ($toCheck ? " $toCheck thing" . ($toCheck === 1 ? '' : 's') . ' to check, listed under Page details.' : ''));
+                . ($toCheck ? " $toCheck thing" . ($toCheck === 1 ? '' : 's') . ' to check, listed under Page details.' : '')
+                . ($editRecorded ? ' Your changes to the draft are kept, for the lessons page to learn from.' : ''));
 
         } elseif ($action === 'save_fact') {
             $factId = (int) ($_POST['fact_id'] ?? 0);
@@ -516,8 +543,9 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 <?php endif; ?>
             </div>
             <p class="text-xs opacity-70 mt-1">
-                Reads the text in the boxes, with figures filled in, against this page's figures and their
-                source pages. Saved or not, nothing is changed. Up to two minutes.
+                Reads the text in the boxes, with figures filled in, against this page's figures, their
+                source pages, the house style and the <a href="/admin/lessons.php" class="underline hover:text-accent">lessons
+                learned so far</a>. Saved or not, nothing is changed. Up to two minutes.
             </p>
 
             <?php if ($textCheck): ?>

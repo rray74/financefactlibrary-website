@@ -22,7 +22,8 @@
  */
 
 require_once __DIR__ . '/ai-proposer.php';  // callClaude()
-require_once __DIR__ . '/source-pages.php'; // fetchPageText(), SKIP_SOURCE_URLS
+require_once __DIR__ . '/source-pages.php'; // fetchPageText(), SKIP_SOURCE_URLS, readSourcePagesForFacts()
+require_once __DIR__ . '/lessons.php';       // writingGuidanceText(): house style and lessons
 
 /** The four text fields, with the names the editor shows. */
 const TEXT_FIELD_LABELS = [
@@ -267,8 +268,22 @@ const TEXT_CHECK_KINDS = [
     'contradicts_figure' => 'Conflicts with a figure',
     'likely_wrong'       => 'Probably wrong',
     'missing_region'     => 'Regional difference missing',
+    'missing_exception'  => 'Exception or condition missing',
+    'heading_mismatch'   => "Heading doesn't match its text",
+    'duplicated'         => 'Said twice',
+    'unneeded_section'   => 'Section not needed',
+    'house_style'        => 'Breaks the house style',
     'advice'             => 'Reads as advice',
 ];
+
+/**
+ * The kinds that are about how the page is written rather than whether it
+ * is right. The editor shows them all, but only the others count towards
+ * the "AI check found problems" review flag (includes/review-flags.php):
+ * a style finding you've decided to accept would otherwise flag the page
+ * for good, since an AI finding can't be dismissed.
+ */
+const TEXT_CHECK_STYLE_KINDS = ['duplicated', 'unneeded_section', 'house_style', 'advice'];
 
 /**
  * A fingerprint of the four fields, so a stored check can be matched to
@@ -314,29 +329,18 @@ function aiTextCheck(array $subject, array $facts, array $fields): array
         throw new RuntimeException('There is no text to check yet.');
     }
 
-    // --- The source pages the page's figures cite, read fresh. ---
-    $sources = [];
-    $sourceTexts = [];
-    foreach ($published as $fact) {
-        $url = $fact['source_url'] ?? null;
-        if (!$url || isset($sources[$url]) || in_array($url, SKIP_SOURCE_URLS, true)) {
-            continue;
-        }
-        $sources[$url] = ['name' => $fact['source_name'] ?? $url, 'url' => $url, 'read' => false, 'error' => null, 'hash' => null];
-        try {
-            $text = fetchPageText($url);
-            // Fingerprint of the whole page, worked out exactly as
-            // check-sources.php does, so scripts/check-page-text.php can tell
-            // when the page has changed since this check.
-            $sources[$url]['hash'] = hash('sha256', $text);
-            $sourceTexts[$url] = preg_match('/^.{0,' . TEXT_CHECK_SOURCE_CHARACTERS . '}/su', $text, $m) ? $m[0] : $text;
-            $sources[$url]['read'] = true;
-        } catch (Throwable $e) {
-            $sources[$url]['error'] = $e->getMessage();
-        }
-    }
+    // --- The source pages the page's figures cite, read fresh. Each page's
+    // fingerprint is kept too, so scripts/check-page-text.php can tell when
+    // a page has changed since this check. ---
+    $read = readSourcePagesForFacts($published, TEXT_CHECK_SOURCE_CHARACTERS);
+    $sources = $read['sources'];
+    $sourceTexts = $read['texts'];
 
-    $reply = callClaude(textCheckInstructions(), textCheckRequest($subject, $published, $filled, $sources, $sourceTexts), 3000);
+    $reply = callClaude(
+        textCheckInstructions((string) $subject['country_prefix'], $countryCode),
+        textCheckRequest($subject, $published, $filled, $sources, $sourceTexts),
+        4000
+    );
 
     // --- Read the reply, keeping only findings that quote the text exactly. ---
     // The JSON is taken from the first { to the last }, so a sentence or a
@@ -375,27 +379,49 @@ function aiTextCheck(array $subject, array $facts, array $fields): array
     return ['findings' => $findings, 'sources' => array_values($sources), 'dropped' => $dropped];
 }
 
-/** The standing instructions for the AI check. */
-function textCheckInstructions(): string
+/**
+ * The standing instructions for the AI check: the job, the kinds of
+ * finding, the reply format, then the house style and the lessons learned
+ * from past edits, so the check judges the text by the same rules the
+ * writer was given.
+ */
+function textCheckInstructions(string $countryPrefix = '', string $countryCode = ''): string
 {
-    return <<<'TXT'
+    $job = <<<'TXT'
 You check the written text of a page on Finance Fact Library, a personal finance website that publishes official figures. You're given the page's four text fields (intro, explanation, meta_title, meta_description) with the figures filled in, the figures shown on the page as cards, and the text of the official source pages those figures come from.
 
-Report only real problems, most serious first, at most 10. Kinds:
+Work through the explanation ONE HEADING AT A TIME. For each section ask:
+1. Is the heading true of the text under it, and of the sources? A heading that states or implies something the text then qualifies is wrong.
+2. Does the text state anything the sources contradict or don't support, including any count or total (such as "two rates" when a source lists four)?
+3. Is any rule or point stated again in another section?
+4. Does the section earn its place under the house style?
+Then check the intro and meta fields the same way. Finally, compare the whole explanation with the sources for exceptions, conditions and "what does not count" points that the sources state but the text leaves out or gets wrong.
+
+Report only real problems, most serious first, at most 12 in all. Report problems of fact before problems of style. Kinds:
 - contradicts_source: a statement the source pages contradict.
 - contradicts_figure: a statement that conflicts with the page's figures or their notes.
 - likely_wrong: a statement the sources don't cover that you have good reason to think is wrong or out of date. Say what is correct and why. Don't report a statement just because the sources don't mention it. Your own knowledge may be older than the sources and the figures: where they disagree with what you know, they win.
 - missing_region: a rule stated as applying across the whole country when part of it (for example Scotland, Wales or Northern Ireland in the UK) has different rules.
+- missing_exception: an exception, condition or "what does not count" point that the sources state and the text leaves out or states in a misleading way. Quote the sentence the omission affects.
+- heading_mismatch: a heading that is false, or overstated, given the text under it or the sources.
+- duplicated: a rule or point already made in another section. Quote the second place it appears.
+- unneeded_section: a section the house style says to leave out (a generic closing section, or one only saying a rule is the same everywhere), or one that adds nothing.
+- house_style: a clear breach of the house style or the lessons that none of the kinds above covers.
 - advice: text telling the reader what to do, or recommending products or providers.
 
-Don't report style, tone, wording, length or formatting. Figures you worked out yourself from the given figures are fine if the working is right; report them as contradicts_figure if it's wrong. In the source text, thousands separators have been removed (12570 means 12,570).
+Don't report matters of taste: tone, word choice, length or formatting that the house style doesn't mention. Figures you worked out yourself from the given figures are fine if the working is right; report them as contradicts_figure if it's wrong. In the source text, thousands separators have been removed (12570 means 12,570).
 
-For each problem, quote the exact words from the field, copied character for character, at most 25 words.
+For each problem, quote the exact words from the field, copied character for character, at most 25 words. For a heading, quote its words without the leading # characters.
 
 Reply with JSON only, no other text:
 {"findings": [{"field": "explanation", "kind": "likely_wrong", "quote": "...", "problem": "..."}]}
 or {"findings": []} if there are no problems.
+
+The house style follows, then the lessons learned from past edits. Judge the text against them.
+
 TXT;
+
+    return $job . writingGuidanceText($countryPrefix, $countryCode);
 }
 
 /** The request for one page: what it is, today's date, its figures, its text and its sources. */

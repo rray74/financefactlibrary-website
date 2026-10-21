@@ -66,3 +66,43 @@ function fetchPageText(string $url): string
 
     return $text;
 }
+
+/**
+ * Read the source pages that a page's figures cite, once each.
+ *
+ * Used by the AI drafts (so the writer works from the sources, not from
+ * memory) and by the AI check (so it can compare the text with them).
+ * Pages handled by other jobs (SKIP_SOURCE_URLS) are left out. A page that
+ * can't be read is reported, not fatal.
+ *
+ * $facts  facts with source_url and source_name (as getAdminFactsForSubject()
+ *         returns them); only published ones should be passed in
+ * $maxCharsEach  each page is cut to this many characters
+ *
+ * Returns:
+ *   sources  url => ['name', 'url', 'read' => bool, 'error', 'hash'], where
+ *            hash is the fingerprint check-sources.php also stores in
+ *            sources.content_hash, so a later change to the page shows
+ *   texts    url => the page's text, for the pages that were read
+ */
+function readSourcePagesForFacts(array $facts, int $maxCharsEach = 50000): array
+{
+    $sources = [];
+    $texts = [];
+    foreach ($facts as $fact) {
+        $url = $fact['source_url'] ?? null;
+        if (!$url || isset($sources[$url]) || in_array($url, SKIP_SOURCE_URLS, true)) {
+            continue;
+        }
+        $sources[$url] = ['name' => $fact['source_name'] ?? $url, 'url' => $url, 'read' => false, 'error' => null, 'hash' => null];
+        try {
+            $text = fetchPageText($url);
+            $sources[$url]['hash'] = hash('sha256', $text);
+            $texts[$url] = preg_match('/^.{0,' . $maxCharsEach . '}/su', $text, $m) ? $m[0] : $text;
+            $sources[$url]['read'] = true;
+        } catch (Throwable $e) {
+            $sources[$url]['error'] = $e->getMessage();
+        }
+    }
+    return ['sources' => $sources, 'texts' => $texts];
+}

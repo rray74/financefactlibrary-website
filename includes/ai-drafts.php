@@ -13,10 +13,17 @@
  * draft" button, and nothing changes until you click it, edit, and click
  * Save page details. They're a starting point, not finished copy.
  *
- * House style: the AI is sent docs/house-style/core.md and the page's
- * country file (e.g. docs/house-style/uk.md) with every request, so drafts
- * follow the same rules as hand-written pages. Edit those files to change
- * how drafts are written.
+ * Sources: the AI is given the text of the official pages the figures come
+ * from (read fresh, as the AI check reads them) and told to write from them
+ * rather than from memory. Before this, the writer saw only the figures and
+ * their notes, so it filled the gaps from what it remembered, and some of
+ * that was wrong (for example that the type of work doesn't change the
+ * minimum wage rate, when apprentices have their own).
+ *
+ * House style and lessons: the AI is sent docs/house-style/core.md, the
+ * page's country file (e.g. docs/house-style/uk.md) and the approved lessons
+ * learned from past edits (includes/lessons.php) with every request, so
+ * drafts follow the same rules as hand-written pages.
  *
  * Figures: the AI is given each figure with its placeholder
  * ({fact:fact_key}) and told to use the placeholder for anything that
@@ -30,9 +37,15 @@
 require_once __DIR__ . '/ai-proposer.php';
 require_once __DIR__ . '/admin-queries.php'; // getTopQueriesForPath() for the page's searches
 require_once __DIR__ . '/text-checks.php';   // findUnmatchedNumbers(), shared with the checks on saved text
+require_once __DIR__ . '/source-pages.php';  // readSourcePagesForFacts()
+require_once __DIR__ . '/lessons.php';       // writingGuidanceText(): house style and lessons
 
 /** The four fields a draft covers, in the order the editor shows them. */
 const DRAFT_FIELDS = ['intro', 'explanation', 'meta_title', 'meta_description'];
+
+/** Most characters of each source page, and of all of them together, sent to the writer. */
+const DRAFT_SOURCE_CHARACTERS_EACH = 30000;
+const DRAFT_SOURCE_CHARACTERS_TOTAL = 120000;
 
 /**
  * Draft all four fields for a subject.
@@ -52,9 +65,13 @@ function draftSubjectPage(PDO $pdo, array $subject, array $facts): array
         throw new RuntimeException('This page has no published figures yet, so there is nothing to write from. Add facts first.');
     }
 
+    // The official pages the figures come from, so the draft is written from
+    // them. A page that can't be read is reported to the AI, not fatal.
+    $read = readSourcePagesForFacts($published, DRAFT_SOURCE_CHARACTERS_EACH);
+
     $reply = callClaude(
-        pageDraftInstructions((string) $subject['country_prefix']),
-        pageDraftRequest($subject, $published),
+        pageDraftInstructions((string) $subject['country_prefix'], (string) $subject['country_code']),
+        pageDraftRequest($subject, $published, $read['sources'], $read['texts']),
         5000
     );
     $draft = parsePageDraft($reply);
@@ -81,28 +98,8 @@ function draftSubjectPage(PDO $pdo, array $subject, array $facts): array
     return $draft + ['problems' => $problems];
 }
 
-/**
- * The house style for a country: docs/house-style/core.md followed by the
- * country's own file (uk.md for /uk/ pages). The country file is optional,
- * so a new country works with the core rules until its file is written.
- */
-function houseStyleText(string $countryPrefix): string
-{
-    $folder = __DIR__ . '/../docs/house-style/';
-    if (!is_readable($folder . 'core.md')) {
-        throw new RuntimeException('docs/house-style/core.md is missing, so there is no house style to draft from.');
-    }
-
-    $text = file_get_contents($folder . 'core.md');
-    $countryFile = $folder . preg_replace('/[^a-z]/', '', strtolower($countryPrefix)) . '.md';
-    if (is_readable($countryFile)) {
-        $text .= "\n\n" . file_get_contents($countryFile);
-    }
-    return $text;
-}
-
-/** The standing instructions: the job and the reply format, then the house style. */
-function pageDraftInstructions(string $countryPrefix): string
+/** The standing instructions: the job and the reply format, then the house style and the lessons. */
+function pageDraftInstructions(string $countryPrefix, string $countryCode): string
 {
     $job = <<<'TXT'
 You write first drafts of the four text fields of a page on Finance Fact Library, a website that publishes official personal finance figures, each sourced from the government and similar official bodies. Each page shows its figures as cards; the explanation appears below them.
@@ -114,6 +111,15 @@ Draft all four fields: intro, meta_title, meta_description and explanation. Foll
 - If you're given the searches that showed this page on Google, use the words people actually search for in the meta title and description.
 - Count characters with placeholders filled in (you are told what each shows) when keeping to the house style's lengths.
 
+You are also given the text of the official source pages the figures come from. Write from them, not from memory:
+- Take every rule, condition, exception and example from the sources. Where a source and what you remember differ, the source wins.
+- Include the exceptions, special cases and "what does not count" points the sources list, near the top of the explanation. They are what readers most often get wrong.
+- Use the sources' own worked examples, with placeholders for any figures.
+- Never state a rule, count, age or date the sources don't support. If the sources don't say, leave it out.
+- If a source could not be read, say nothing that depends on it.
+- In the source text, thousands separators have been removed (12570 means 12,570).
+- Before you reply, check that each heading is true of the text under it, that no rule is stated twice, and that every section earns its place.
+
 Reply with the four fields between tags, in this order, and nothing else:
 <intro>...</intro>
 <meta_title>...</meta_title>
@@ -123,15 +129,22 @@ Reply with the four fields between tags, in this order, and nothing else:
 </explanation>
 The explanation uses the editor's format from the house style, written exactly as it should appear, with real line breaks.
 
-The house style follows.
+The house style follows, then the lessons learned from past edits.
 
 TXT;
 
-    return $job . houseStyleText($countryPrefix);
+    return $job . writingGuidanceText($countryPrefix, $countryCode);
 }
 
-/** The request for one subject: what the page is, its current text, its searches and its figures. */
-function pageDraftRequest(array $subject, array $facts): string
+/**
+ * The request for one subject: what the page is, its current text, its
+ * searches and its figures, then the source pages to write from.
+ *
+ * $sources / $sourceTexts come from readSourcePagesForFacts(). The pages
+ * are cut to fit DRAFT_SOURCE_CHARACTERS_TOTAL; a page left out for length
+ * or that couldn't be read is named, so the AI says nothing that depends on it.
+ */
+function pageDraftRequest(array $subject, array $facts, array $sources = [], array $sourceTexts = []): string
 {
     $lines = [];
     foreach ($facts as $fact) {
@@ -165,13 +178,36 @@ function pageDraftRequest(array $subject, array $facts): string
 
     $taxYear = pageTaxYear((string) $subject['country_code'], $facts);
 
+    // The source pages, within the total allowance.
+    $sourceBlock = '';
+    $used = 0;
+    foreach ($sources as $url => $source) {
+        if (!$source['read']) {
+            $sourceBlock .= "\n(Source {$source['name']}, $url, could not be read: {$source['error']})\n";
+            continue;
+        }
+        $text = $sourceTexts[$url];
+        $room = DRAFT_SOURCE_CHARACTERS_TOTAL - $used;
+        if ($room < 2000) {
+            $sourceBlock .= "\n(Source {$source['name']}, $url, left out for length.)\n";
+            continue;
+        }
+        if (strlen($text) > $room) {
+            $text = preg_match('/^.{0,' . $room . '}/su', $text, $m) ? $m[0] : substr($text, 0, $room);
+        }
+        $used += strlen($text);
+        $sourceBlock .= "\n<source name=\"{$source['name']}\" url=\"$url\">\n$text\n</source>\n";
+    }
+
     return "Page: {$subject['name']}\n"
         . "Country: {$subject['country_name']}\n"
         . "Section: {$subject['category_name']} > {$subject['subcategory_name']}\n"
         . "Tax year of the figures: $taxYear (placeholder: {tax_year})\n"
         . ($subject['intro'] ? "Current intro (improve on it or keep its substance): {$subject['intro']}\n" : '')
         . ($searches ? "\nSearches that showed this page on Google:\n" . implode("\n", $searches) . "\n" : '')
-        . "\nFigures on the page:\n" . implode("\n", $lines);
+        . "\nFigures on the page:\n" . implode("\n", $lines) . "\n"
+        . "\nSource pages (the official pages the figures come from; write from these):\n"
+        . ($sourceBlock !== '' ? $sourceBlock : "(none: the figures cite no readable source page)\n");
 }
 
 /**

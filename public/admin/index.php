@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/admin-auth.php';
 require_once __DIR__ . '/../../includes/admin-queries.php';
 require_once __DIR__ . '/../../includes/review-flags.php'; // the "Needs reviewing" list
+require_once __DIR__ . '/../../includes/lessons.php';       // lessons waiting for approval
 
 // Must be first: sends anyone not logged in to /admin/login.php.
 requireAdmin();
@@ -36,6 +37,10 @@ $counts = getDashboardCounts();
 
 // Written pages that need another look, most important first.
 $reviewFlagged = getReviewFlags();
+
+// Lessons for the AI waiting for a decision, and saved edits not yet looked at.
+$lessonsProposed = countProposedLessons(getDbConnection());
+$editsNotLookedAt = countPendingEditRecords(getDbConnection());
 
 // Pages still to be written, in the order the nightly drafts follow.
 // Only the top of the list is shown; the count covers all of it.
@@ -277,6 +282,14 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <?= count($writingQueueWaiting) ?> still waiting for theirs. Within each group, the most-searched
         come first.
         <?php endif; ?>
+    </p>
+
+    <?php // Lessons the AI has learned from your edits (includes/lessons.php). ?>
+    <p class="text-sm mb-6">
+        <a href="/admin/lessons.php" class="underline hover:text-accent font-semibold">Lessons for the AI</a>:
+        <?= $lessonsProposed ?> waiting for your decision<?= $editsNotLookedAt > 0
+            ? ', ' . $editsNotLookedAt . ' saved edit' . ($editsNotLookedAt === 1 ? '' : 's') . ' not looked at yet'
+            : '' ?>.
     </p>
 
     <?php if ($writingQueue): ?>

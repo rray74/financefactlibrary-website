@@ -35,17 +35,27 @@ require_once __DIR__ . '/../includes/admin-queries.php';
 require_once __DIR__ . '/../includes/ai-drafts.php';
 
 /**
- * Pages drafted per run. With about 50 pages waiting, the backlog is
- * cleared in about a week; after that only new pages need drafts.
- * Override in config/database.local.php with define('DRAFTS_PER_NIGHT', 5);
+ * Pages drafted per run. Each draft now reads the page's source pages as
+ * well as calling the AI, so a page takes a couple of minutes and a run is
+ * kept shorter than it used to be. Override in config/database.local.php
+ * with define('DRAFTS_PER_NIGHT', 3);
  */
 if (!defined('DRAFTS_PER_NIGHT')) {
-    define('DRAFTS_PER_NIGHT', 10);
+    define('DRAFTS_PER_NIGHT', 5);
 }
 
-$options = getopt('', ['dry-run', 'limit:']);
+/**
+ * Pause switch. With define('DRAFTS_PAUSED', true); in
+ * config/database.local.php, a scheduled run makes no drafts, but still
+ * records itself as a successful run ("Paused"), so the cron job can stay
+ * in place and the dashboard doesn't report it as stopped. Remove the line
+ * to resume. A run started by hand with --force ignores the pause, and
+ * --dry-run is never affected.
+ */
+$options = getopt('', ['dry-run', 'limit:', 'force']);
 $dryRun = isset($options['dry-run']);
 $limit = isset($options['limit']) ? max(1, (int) $options['limit']) : DRAFTS_PER_NIGHT;
+$paused = defined('DRAFTS_PAUSED') && DRAFTS_PAUSED && !isset($options['force']) && !$dryRun;
 
 $pdo = getDbConnection();
 
@@ -57,6 +67,16 @@ $runId = null;
 if (!$dryRun) {
     $pdo->prepare("INSERT INTO cron_runs (script) VALUES ('draft-pages.php')")->execute();
     $runId = (int) $pdo->lastInsertId();
+}
+
+// Paused: record a clean run and stop, before any AI call or page is touched.
+if ($paused) {
+    echo "Paused (DRAFTS_PAUSED is on in config/database.local.php). No drafts made.\n";
+    if ($runId) {
+        $pdo->prepare("UPDATE cron_runs SET status = 'ok', jobs_processed = 0, jobs_failed = 0, error = :note, finished_at = NOW() WHERE id = :id")
+            ->execute(['note' => 'Paused: no drafts made (DRAFTS_PAUSED is on)', 'id' => $runId]);
+    }
+    exit(0);
 }
 
 $drafted = 0;

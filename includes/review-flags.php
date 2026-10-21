@@ -112,11 +112,18 @@ function reviewFlagReasons(PDO $pdo, array $page): array
     $reasons = [];
 
     // --- ai_findings: only a check of exactly the saved text counts. ---
+    // Only findings about whether the text is right count. Style findings
+    // (said twice, section not needed...) are shown in the editor, but a
+    // finding can't be dismissed, so one you've decided to accept would flag
+    // the page for good.
     $check = getSubjectTextCheck($subjectId);
     if ($check && $check['findings'] && $check['text_hash'] === textCheckHash($fields)) {
-        $count = count($check['findings']);
-        $reasons[] = ['kind' => 'ai_findings', 'detail' => "$count problem" . ($count === 1 ? '' : 's')
-            . ' found on ' . date('j M', strtotime($check['checked_at'])) . '.'];
+        $accuracy = array_filter($check['findings'], fn($f) => !in_array($f['kind'], TEXT_CHECK_STYLE_KINDS, true));
+        $count = count($accuracy);
+        if ($count > 0) {
+            $reasons[] = ['kind' => 'ai_findings', 'detail' => "$count problem" . ($count === 1 ? '' : 's')
+                . ' found on ' . date('j M', strtotime($check['checked_at'])) . '.'];
+        }
     }
 
     // --- placeholder: errors in the saved text. ---
