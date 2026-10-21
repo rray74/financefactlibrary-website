@@ -147,6 +147,116 @@ function findUnmatchedNumbers(string $text, array $facts): array
 }
 
 // ------------------------------------------------------------
+// Sentences that follow a source too closely
+// ------------------------------------------------------------
+
+/** A sentence is flagged when this share of its words match a source sentence, in order. */
+const CLOSE_COPY_THRESHOLD = 0.6;
+
+/** Sentences with fewer words than this are not compared (short facts can't be reworded). */
+const CLOSE_COPY_MIN_WORDS = 8;
+
+/**
+ * Sentences in a text that follow a source page's wording too closely.
+ *
+ * When drafts are written from the sources, the writer tends to copy
+ * their sentences with a few words changed. That is poor for readers (the
+ * page adds nothing the source doesn't say) and for search (it is not
+ * original), and a person rewriting from the draft tends to keep the
+ * structure. The check is deterministic: each sentence is compared with
+ * each source sentence by the words they share IN THE SAME ORDER. A score
+ * of 1 is identical; the threshold is 0.6.
+ *
+ * $text         the text to check (Markdown headings are skipped)
+ * $sourceTexts  url => page text, from readSourcePagesForFacts()
+ * $sourceNames  url => name for the message (optional)
+ *
+ * Returns, strongest match first, a list of
+ *   ['quote' => the sentence as written, 'score' => 0..1, 'source' => name]
+ * The quote is an exact part of $text.
+ */
+function findCloseCopies(string $text, array $sourceTexts, array $sourceNames = []): array
+{
+    $words = function (string $s): array {
+        preg_match_all('/[\p{L}\p{N}]+/u', strtolower(str_replace(["\u{2019}", "\u{2018}"], "'", $s)), $m);
+        return $m[0];
+    };
+    $sentencesOf = fn(string $t): array => preg_split('/(?<=[.!?])\s+|\n+/u', $t, -1, PREG_SPLIT_NO_EMPTY);
+
+    // The source sentences, as word lists (and word sets, for a quick first test).
+    $source = [];
+    foreach ($sourceTexts as $url => $pageText) {
+        foreach (array_slice($sentencesOf($pageText), 0, 4000) as $sentence) {
+            $w = $words($sentence);
+            if (count($w) >= 6) {
+                $source[] = ['w' => $w, 'set' => array_flip($w), 'name' => $sourceNames[$url] ?? $url];
+            }
+        }
+    }
+    if (!$source) {
+        return [];
+    }
+
+    $found = [];
+    foreach ($sentencesOf($text) as $sentence) {
+        $sentence = trim($sentence);
+        // Headings are labels, not sentences.
+        if ($sentence === '' || $sentence[0] === '#') {
+            continue;
+        }
+        $a = $words(preg_replace('/^\s*(?:[-*]|\d+\.)\s+/', '', $sentence));
+        $n = count($a);
+        if ($n < CLOSE_COPY_MIN_WORDS) {
+            continue;
+        }
+
+        $best = 0.0;
+        $bestName = '';
+        foreach ($source as $candidate) {
+            $m = count($candidate['w']);
+            // A score of 0.6 needs the two sentences to share at least 0.3 x (n + m) words.
+            $shared = 0;
+            foreach ($a as $word) {
+                if (isset($candidate['set'][$word])) {
+                    $shared++;
+                }
+            }
+            if ($shared < CLOSE_COPY_THRESHOLD / 2 * ($n + $m)) {
+                continue;
+            }
+            // Words in common, in the same order (longest common subsequence).
+            $previous = array_fill(0, $m + 1, 0);
+            for ($i = 1; $i <= $n; $i++) {
+                $current = [0];
+                for ($j = 1; $j <= $m; $j++) {
+                    $current[$j] = $a[$i - 1] === $candidate['w'][$j - 1]
+                        ? $previous[$j - 1] + 1
+                        : max($previous[$j], $current[$j - 1]);
+                }
+                $previous = $current;
+            }
+            $score = 2 * $previous[$m] / ($n + $m);
+            if ($score > $best) {
+                $best = $score;
+                $bestName = $candidate['name'];
+            }
+        }
+        if ($best >= CLOSE_COPY_THRESHOLD) {
+            $found[] = ['quote' => $sentence, 'score' => $best, 'source' => $bestName];
+        }
+    }
+
+    usort($found, fn($x, $y) => $y['score'] <=> $x['score']);
+    return $found;
+}
+
+/** A quote cut to at most $max words, as an exact beginning of the sentence. */
+function quoteWords(string $sentence, int $max = 25): string
+{
+    return preg_match('/^(?:\S+\s+){0,' . ($max - 1) . '}\S+/u', $sentence, $m) ? $m[0] : $sentence;
+}
+
+// ------------------------------------------------------------
 // 1. Quick checks
 // ------------------------------------------------------------
 
@@ -231,7 +341,7 @@ function quickTextChecks(array $fields, array $facts): array
         // --- Words that date the text. "now" and "new" only in lower case,
         // so "New Zealand" and a sentence starting "Now" in a quote don't count. ---
         $dating = [];
-        if (preg_match_all('/\b(currently|this year|at the moment|recently|latest)\b/i', $text, $m)) {
+        if (preg_match_all('/\b(currently|this year|at the moment|recently|latest|today)\b/i', $text, $m)) {
             $dating = array_merge($dating, array_map('strtolower', $m[1]));
         }
         if (preg_match_all('/\b(now|new)\b/', $text, $m)) {
@@ -273,6 +383,7 @@ const TEXT_CHECK_KINDS = [
     'duplicated'         => 'Said twice',
     'unneeded_section'   => 'Section not needed',
     'house_style'        => 'Breaks the house style',
+    'copied_from_source' => 'Too close to a source',
     'advice'             => 'Reads as advice',
 ];
 
@@ -283,7 +394,7 @@ const TEXT_CHECK_KINDS = [
  * a style finding you've decided to accept would otherwise flag the page
  * for good, since an AI finding can't be dismissed.
  */
-const TEXT_CHECK_STYLE_KINDS = ['duplicated', 'unneeded_section', 'house_style', 'advice'];
+const TEXT_CHECK_STYLE_KINDS = ['duplicated', 'unneeded_section', 'house_style', 'copied_from_source', 'advice'];
 
 /**
  * A fingerprint of the four fields, so a stored check can be matched to
@@ -376,6 +487,23 @@ function aiTextCheck(array $subject, array $facts, array $fields): array
         $findings[] = ['field' => $field, 'kind' => $kind, 'quote' => $quote, 'problem' => $problem];
     }
 
+    // Sentences that follow a source's wording closely. These are worked out here
+    // rather than asked of the AI, which reads for meaning and doesn't notice
+    // near-copies. At most 6, the closest first; the quote is an exact part of
+    // the field, so it is shown like any other finding.
+    $names = array_map(fn($s) => $s['name'], $sources);
+    foreach (['explanation', 'intro'] as $field) {
+        foreach (array_slice(findCloseCopies($filled[$field], $sourceTexts, $names), 0, 6 - min(6, count(array_filter($findings, fn($f) => $f['kind'] === 'copied_from_source')))) as $copy) {
+            $findings[] = [
+                'field'   => $field,
+                'kind'    => 'copied_from_source',
+                'quote'   => quoteWords($copy['quote'], 25),
+                'problem' => 'Follows the wording of ' . $copy['source'] . ' closely (' . round($copy['score'] * 100)
+                    . '% of the words match, in order). Restate the point in your own words and your own order.',
+            ];
+        }
+    }
+
     return ['findings' => $findings, 'sources' => array_values($sources), 'dropped' => $dropped];
 }
 
@@ -405,7 +533,7 @@ Report only real problems, most serious first, at most 12 in all. Report problem
 - missing_exception: an exception, condition or "what does not count" point that the sources state and the text leaves out or states in a misleading way. Quote the sentence the omission affects.
 - heading_mismatch: a heading that is false, or overstated, given the text under it or the sources.
 - duplicated: a rule or point already made in another section. Quote the second place it appears.
-- unneeded_section: a section the house style says to leave out (a generic closing section, or one only saying a rule is the same everywhere), or one that adds nothing.
+- unneeded_section: a section the house style says to leave out (a generic closing section, one only saying a rule is the same everywhere, or one that only restates what the figure cards already show), or one that adds nothing.
 - house_style: a clear breach of the house style or the lessons that none of the kinds above covers.
 - advice: text telling the reader what to do, or recommending products or providers.
 

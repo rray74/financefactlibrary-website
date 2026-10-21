@@ -79,6 +79,19 @@ function draftSubjectPage(PDO $pdo, array $subject, array $facts): array
     // --- Checks, stored with the draft and shown in the editor. ---
     $problems = [];
 
+    // Sentences that follow a source's wording too closely. Drafts are written
+    // from the sources, and the writer tends to copy them with a few words changed.
+    $names = array_map(fn($s) => $s['name'], $read['sources']);
+    $copies = array_merge(
+        findCloseCopies((string) $draft['explanation'], $read['texts'], $names),
+        findCloseCopies((string) $draft['intro'], $read['texts'], $names)
+    );
+    if ($copies) {
+        $problems[] = count($copies) . ' sentence' . (count($copies) === 1 ? ' follows' : 's follow') . ' a source\'s wording closely, for example "'
+            . quoteWords($copies[0]['quote'], 14) . '..." (' . round($copies[0]['score'] * 100) . '% of the words match '
+            . $copies[0]['source'] . '). Rewrite them in your own words; the AI check lists each one.';
+    }
+
     // Numbers typed in any field that aren't among the page's figures.
     $unmatched = findUnmatchedNumbers(implode("\n", array_filter($draft)), $published);
     if ($unmatched) {
@@ -116,6 +129,7 @@ You are also given the text of the official source pages the figures come from. 
 - Include the exceptions, special cases and "what does not count" points the sources list, near the top of the explanation. They are what readers most often get wrong.
 - Use the sources' own worked examples, with placeholders for any figures.
 - Never state a rule, count, age or date the sources don't support. If the sources don't say, leave it out.
+- Write in your own words and your own order. Never reuse a sentence from a source, even with a few words changed: restate the point. Only fixed names, terms and figures may match. A tool compares every sentence with the sources and reports close copies.
 - If a source could not be read, say nothing that depends on it.
 - In the source text, thousands separators have been removed (12570 means 12,570).
 - Before you reply, check that each heading is true of the text under it, that no rule is stated twice, and that every section earns its place.

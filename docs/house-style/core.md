@@ -29,7 +29,8 @@ government writes it. Spelling follows the country file.
 regional differences.
 
 **No words that date the text.** Never "currently", "this year", "now",
-"recently", "new", "latest" or "at the moment". A page is read for years.
+"recently", "new", "latest", "today" or "at the moment", including in a
+contrast such as "not where it is today". A page is read for years.
 
 **One country per page.** When the same subject exists in two countries
 (minimum wage in the UK and in Australia, say), write each page from that
