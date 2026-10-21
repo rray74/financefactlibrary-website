@@ -21,3 +21,6 @@ define('ADMIN_PASSWORD_HASH', '************');
 // Alert email settings
 define('ALERT_EMAIL_TO', 'your@address.com');
 define('ALERT_EMAIL_FROM', 'alerts@financefactlibrary.com'); // optional
+
+// Drafts paused setting
+// define('DRAFTS_PAUSED', true);
