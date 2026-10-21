@@ -479,7 +479,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
     </div>
     <?php endif; ?>
 
-    <form method="post" class="space-y-6 max-w-2xl">
+    <form method="post" id="details-form" class="space-y-6 max-w-2xl">
         <?= adminCsrfField() ?>
         <input type="hidden" name="action" value="save_subject">
 
@@ -1034,6 +1034,55 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 field.focus();
             });
         });
+
+        // Saving with an explanation deletes the AI draft, including any field
+        // drafts not used. So before saving, name the drafts that haven't been
+        // dealt with and ask. A draft counts as dealt with if the box differs
+        // from what is SAVED: you used it, or you wrote your own text. (The
+        // saved text, not the page-load text, is compared, because Check with
+        // AI reloads the page with your edits in the boxes.)
+        var saved = <?= json_encode([
+            'intro'            => (string) ($subject['intro'] ?? ''),
+            'explanation'      => (string) ($subject['explanation'] ?? ''),
+            'meta_title'       => (string) ($subject['meta_title'] ?? ''),
+            'meta_description' => (string) ($subject['meta_description'] ?? ''),
+        ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?>;
+        var fieldLabels = {intro: 'Intro', explanation: 'Explanation', meta_title: 'Meta title', meta_description: 'Meta description'};
+
+        // Labels of the fields whose draft is unused: a draft exists that differs
+        // from the saved text, and the box is still the saved text.
+        function unusedDrafts(drafts, saved, current) {
+            var flat = function (text) { return String(text || '').replace(/\s+/g, ' ').trim(); };
+            var unused = [];
+            Object.keys(fieldLabels).forEach(function (name) {
+                var draft = flat(drafts[name]);
+                if (draft !== '' && draft !== flat(saved[name]) && flat(current[name]) === flat(saved[name])) {
+                    unused.push(fieldLabels[name]);
+                }
+            });
+            return unused;
+        }
+
+        var detailsForm = document.getElementById('details-form');
+        if (detailsForm) {
+            detailsForm.addEventListener('submit', function (event) {
+                // Only the Save button. Draft this page and Check with AI submit this form too.
+                var submitter = event.submitter;
+                if (!submitter || submitter.name === 'draft_page' || submitter.name === 'check_page') return;
+                // The draft is only deleted when the page is saved with an explanation.
+                if (document.getElementById('explanation').value.trim() === '') return;
+
+                var current = {};
+                Object.keys(fieldLabels).forEach(function (name) { current[name] = document.getElementById(name).value; });
+                var unused = unusedDrafts(drafts, saved, current);
+                if (unused.length && !confirm(
+                    'These AI drafts have not been used, and saving deletes the draft:\n\n\u2022 ' + unused.join('\n\u2022 ')
+                    + '\n\nSave anyway? Choose Cancel to go back, then use the Use draft button under the field.'
+                )) {
+                    event.preventDefault();
+                }
+            });
+        }
     })();
 </script>
 
