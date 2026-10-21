@@ -70,6 +70,29 @@ function factNumberForms(array $fact): array
 }
 
 /**
+ * The numbers in a fact's label: the 21 in "National Living Wage (21 and
+ * over)", the 18 and 20 in "18 to 20". Readers see the label on the figure
+ * card, so a text that mentions "21" is saying the same thing the page
+ * already does, and isn't flagged as an unknown number.
+ *
+ * Deliberately NOT part of factNumberForms(): those map a typed number to
+ * the fact it's the value of, to suggest its placeholder, and a label
+ * number is a category, not a value. (It could also hide a wrong figure that
+ * happens to equal a label number, which is why the AI check still reads
+ * the text.)
+ */
+function factLabelNumbers(array $fact): array
+{
+    $numbers = [];
+    if (preg_match_all('/(?<![\w.])\d[\d,]*(?:\.\d+)?/', (string) ($fact['label'] ?? ''), $m)) {
+        foreach ($m[0] as $written) {
+            $numbers[str_replace(',', '', rtrim($written, ',.'))] = true;
+        }
+    }
+    return array_keys($numbers);
+}
+
+/**
  * The numbers typed in a text, as written => plain (no commas). Left out:
  * anything in a {placeholder} (fact keys like sl_plan2_threshold), typed
  * tax years (checked separately), whole numbers under 10 ("Plan 2",
@@ -108,6 +131,9 @@ function findUnmatchedNumbers(string $text, array $facts): array
         foreach (factNumberForms($fact) as $form) {
             $known[$form] = true;
         }
+        foreach (factLabelNumbers($fact) as $number) {
+            $known[$number] = true;
+        }
     }
 
     $unmatched = [];
@@ -134,12 +160,17 @@ function quickTextChecks(array $fields, array $facts): array
 {
     $published = array_values(array_filter($facts, fn($f) => ($f['status'] ?? 'published') === 'published'));
 
-    // Which fact each typed number belongs to, and which facts are rates.
+    // Which fact each typed number belongs to, which numbers appear in the
+    // figures' labels (see factLabelNumbers()), and which facts are rates.
     $factForNumber = [];
+    $labelNumbers = [];
     $rateKeys = [];
     foreach ($published as $fact) {
         foreach (factNumberForms($fact) as $form) {
             $factForNumber[$form] ??= $fact;
+        }
+        foreach (factLabelNumbers($fact) as $number) {
+            $labelNumbers[$number] = true;
         }
         if ((int) $fact['review_frequency_days'] > 0 && (int) $fact['review_frequency_days'] <= RATE_REVIEW_DAYS) {
             $rateKeys[$fact['fact_key']] = $fact;
@@ -159,7 +190,10 @@ function quickTextChecks(array $fields, array $facts): array
         foreach (typedNumbers($text) as $written => $plain) {
             $fact = $factForNumber[$plain] ?? null;
             if ($fact === null) {
-                $unmatched[] = $written;
+                // A number in a card's label is on the page already, so it isn't unknown.
+                if (!isset($labelNumbers[$plain])) {
+                    $unmatched[] = $written;
+                }
             } elseif ($isMeta && (!empty($fact['tax_year']) || isset($rateKeys[$fact['fact_key']]))) {
                 // Search listings must stay current without anyone editing
                 // them. Only figures that change are flagged: rates, and
@@ -173,7 +207,7 @@ function quickTextChecks(array $fields, array $facts): array
         }
         if ($unmatched) {
             $notes[] = "$label: " . implode(', ', $unmatched) . ' '
-                . (count($unmatched) === 1 ? "isn't one of" : "aren't among") . ' the page\'s figures. '
+                . (count($unmatched) === 1 ? "isn't one of" : "aren't among") . ' the page\'s figures or their labels. '
                 . 'Fine if fixed or worked out from fixed figures; otherwise check '
                 . (count($unmatched) === 1 ? 'it.' : 'them.');
         }

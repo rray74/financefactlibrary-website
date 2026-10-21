@@ -57,6 +57,11 @@ changed in a Budget): never type them.** Use the placeholder.
 **Figures fixed in law until a known date: you may type them,** and give the
 end date if one is known. "£12,570, frozen until April 2031" is fine.
 
+**Numbers in a figure's label** (the 21 in "21 and over", the 2 in "Plan 2")
+are part of the page already and may be typed without being flagged. Other
+category numbers, such as an age that no label contains (apprentices under
+19), may be typed too but are flagged for you to check, since bands do change.
+
 **Figures you work out yourself** (such as the 60% effective rate between
 £100,000 and £125,140 in the UK) are allowed when they follow directly from
 fixed figures. Show how they're worked out in the same paragraph.

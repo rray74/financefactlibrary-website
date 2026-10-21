@@ -65,7 +65,7 @@ function draftSubjectPage(PDO $pdo, array $subject, array $facts): array
     // Numbers typed in any field that aren't among the page's figures.
     $unmatched = findUnmatchedNumbers(implode("\n", array_filter($draft)), $published);
     if ($unmatched) {
-        $problems[] = 'Check these numbers, which aren\'t among the page\'s figures: ' . implode(', ', $unmatched) . '.';
+        $problems[] = 'Check these numbers, which aren\'t among the page\'s figures or their labels: ' . implode(', ', $unmatched) . '.';
     }
 
     // Placeholders: invalid ones would be refused on save anyway, but
