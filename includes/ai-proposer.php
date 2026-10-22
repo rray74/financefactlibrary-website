@@ -100,6 +100,22 @@ function aiProposalsAvailable(): bool
 }
 
 /**
+ * How the most recent successful callClaude() ended: ['stop_reason' =>
+ * 'end_turn' (finished normally) or 'max_tokens' (cut off at the limit),
+ * 'input_tokens' => ..., 'output_tokens' => ...]. Lets a caller tell a reply
+ * that was cut off from one that was merely badly formed. Pass an array to
+ * set it (callClaude() does).
+ */
+function claudeLastCallInfo(?array $set = null): array
+{
+    static $info = [];
+    if ($set !== null) {
+        $info = $set;
+    }
+    return $info;
+}
+
+/**
  * Send one request to the API. Returns [HTTP status, response body, curl
  * error]. Kept apart from callClaude() so that function's handling of
  * replies (and its retry) can be tested without calling the API.
@@ -170,6 +186,11 @@ function callClaude(string $system, string $userText, int $maxTokens = 4000, ?ca
             }
         }
         if ($text !== '') {
+            claudeLastCallInfo([
+                'stop_reason'   => (string) ($data['stop_reason'] ?? ''),
+                'input_tokens'  => (int) ($data['usage']['input_tokens'] ?? 0),
+                'output_tokens' => (int) ($data['usage']['output_tokens'] ?? 0),
+            ]);
             return $text;
         }
 

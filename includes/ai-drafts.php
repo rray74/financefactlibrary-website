@@ -45,6 +45,13 @@ const DRAFT_FIELDS = ['intro', 'explanation', 'meta_title', 'meta_description'];
 
 /** Most characters of each source page, and of all of them together, sent to the writer. */
 const DRAFT_SOURCE_CHARACTERS_EACH = 30000;
+
+/**
+ * Most tokens the AI may write for a draft (about 6,000 words). A draft is
+ * normally under a tenth of that, but a page with many figures and sources
+ * (Universal Credit) wrote past the old limit of 5,000 and was cut off.
+ */
+const DRAFT_MAX_TOKENS = 8000;
 const DRAFT_SOURCE_CHARACTERS_TOTAL = 120000;
 
 /**
@@ -72,9 +79,11 @@ function draftSubjectPage(PDO $pdo, array $subject, array $facts): array
     $reply = callClaude(
         pageDraftInstructions((string) $subject['country_prefix'], (string) $subject['country_code']),
         pageDraftRequest($subject, $published, $read['sources'], $read['texts']),
-        5000
+        DRAFT_MAX_TOKENS
     );
-    $draft = parsePageDraft($reply);
+    // How the reply ended, so a reply cut off at the limit is told apart from
+    // one that was merely missing its last tag.
+    $draft = parsePageDraft($reply, claudeLastCallInfo());
 
     // --- Checks, stored with the draft and shown in the editor. ---
     $problems = [];
@@ -234,7 +243,7 @@ function pageDraftRequest(array $subject, array $facts, array $sources = [], arr
  * unreadable (the first live run failed on the minimum wage page). Text
  * outside the tags is ignored.
  */
-function parsePageDraft(string $reply): array
+function parsePageDraft(string $reply, array $info = []): array
 {
     $data = [];
     foreach (DRAFT_FIELDS as $field) {
@@ -244,12 +253,23 @@ function parsePageDraft(string $reply): array
     }
 
     if (!isset($data['explanation'])) {
-        // An opening tag with no closing one means the reply was cut off.
-        $cutOff = strpos($reply, '<explanation>') !== false;
-        throw new RuntimeException(($cutOff
-            ? 'The AI reply was cut off before the end of the explanation.'
-            : 'The AI reply was not in the expected format.')
-            . ' Try again. It began: "' . aiReplyStart($reply) . '"');
+        $stop = (string) ($info['stop_reason'] ?? '');
+        $opened = strpos($reply, '<explanation>');
+
+        if ($opened !== false && $stop === 'end_turn') {
+            // The AI finished normally but left off the closing tag. The
+            // explanation is the last field, so everything after the opening
+            // tag is the explanation, and is complete.
+            $data['explanation'] = substr($reply, $opened + strlen('<explanation>'));
+        } else {
+            // Cut off at the token limit, or not in the format asked for.
+            $tokens = isset($info['output_tokens']) ? ' It wrote ' . number_format((int) $info['output_tokens']) . ' tokens' : '';
+            throw new RuntimeException(($opened !== false
+                ? 'The AI reply was cut off before the end of the explanation.'
+                    . ($stop === 'max_tokens' ? $tokens . ', the most it was allowed.' : ($stop !== '' ? " (stop reason: $stop)." : ''))
+                : 'The AI reply was not in the expected format.' . ($stop !== '' ? " (stop reason: $stop)." : ''))
+                . ' Try again. It began: "' . aiReplyStart($reply) . '"');
+        }
     }
 
     $draft = [];
