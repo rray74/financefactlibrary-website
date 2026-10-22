@@ -100,19 +100,12 @@ function aiProposalsAvailable(): bool
 }
 
 /**
- * Send one request to the Anthropic Messages API and return the text of
- * the reply. Throws on any error. The API key is never included in an
- * error message, so it can't end up in logs.
+ * Send one request to the API. Returns [HTTP status, response body, curl
+ * error]. Kept apart from callClaude() so that function's handling of
+ * replies (and its retry) can be tested without calling the API.
  */
-function callClaude(string $system, string $userText, int $maxTokens = 4000): string
+function claudeTransport(string $body): array
 {
-    $body = json_encode([
-        'model'      => ANTHROPIC_MODEL,
-        'max_tokens' => $maxTokens,
-        'system'     => $system,
-        'messages'   => [['role' => 'user', 'content' => $userText]],
-    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
-
     $curl = curl_init('https://api.anthropic.com/v1/messages');
     curl_setopt_array($curl, [
         CURLOPT_RETURNTRANSFER => true,
@@ -129,28 +122,72 @@ function callClaude(string $system, string $userText, int $maxTokens = 4000): st
     $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     $curlError = curl_error($curl);
     curl_close($curl);
+    return [$status, $response, $curlError];
+}
 
-    if ($response === false) {
-        throw new RuntimeException("AI request failed: $curlError");
-    }
+/**
+ * Ask the AI one question and return its text reply.
+ *
+ * An EMPTY reply (the API answers normally but sends no text) is tried once
+ * more, since it is usually a one-off. It is not retried when the AI declined
+ * (stop reason "refusal") or ran out of room ("max_tokens"), since asking
+ * again wouldn't change that, nor when the first try was slow, since a second
+ * could outlast the time a page allows. If it is still empty, the error says
+ * why: the stop reason and how many tokens went in and came out.
+ *
+ * $transport sends the request body (default: claudeTransport()); tests
+ * replace it.
+ */
+function callClaude(string $system, string $userText, int $maxTokens = 4000, ?callable $transport = null): string
+{
+    $transport ??= 'claudeTransport';
+    $body = json_encode([
+        'model'      => ANTHROPIC_MODEL,
+        'max_tokens' => $maxTokens,
+        'system'     => $system,
+        'messages'   => [['role' => 'user', 'content' => $userText]],
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
 
-    $data = json_decode($response, true);
-    if ($status !== 200) {
-        // The API explains the problem (bad key, no credit, overloaded...).
-        $message = $data['error']['message'] ?? substr((string) $response, 0, 200);
-        throw new RuntimeException("AI request failed (HTTP $status): $message");
-    }
+    $started = microtime(true);
+    for ($attempt = 1; ; $attempt++) {
+        [$status, $response, $curlError] = $transport($body);
 
-    $text = '';
-    foreach ($data['content'] ?? [] as $block) {
-        if (($block['type'] ?? '') === 'text') {
-            $text .= $block['text'];
+        if ($response === false) {
+            throw new RuntimeException("AI request failed: $curlError");
         }
+
+        $data = json_decode($response, true);
+        if ($status !== 200) {
+            // The API explains the problem (bad key, no credit, overloaded...).
+            $message = $data['error']['message'] ?? substr((string) $response, 0, 200);
+            throw new RuntimeException("AI request failed (HTTP $status): $message");
+        }
+
+        $text = '';
+        foreach ($data['content'] ?? [] as $block) {
+            if (($block['type'] ?? '') === 'text') {
+                $text .= $block['text'];
+            }
+        }
+        if ($text !== '') {
+            return $text;
+        }
+
+        // Empty. Say why: the stop reason and the token counts.
+        $stop = (string) ($data['stop_reason'] ?? 'unknown');
+        $usage = $data['usage'] ?? [];
+        $detail = "stop reason: $stop, " . number_format((int) ($usage['input_tokens'] ?? 0)) . ' tokens in, '
+            . number_format((int) ($usage['output_tokens'] ?? 0)) . ' tokens out';
+
+        if ($attempt === 1 && !in_array($stop, ['refusal', 'max_tokens'], true) && microtime(true) - $started < 60) {
+            sleep(2);
+            continue;
+        }
+
+        throw new RuntimeException('AI reply was empty (' . $detail . ')' . ($attempt > 1 ? ', even after trying again.' : '.')
+            . ($stop === 'refusal' ? ' The AI declined to answer.' : '')
+            . ($stop === 'max_tokens' ? ' It ran out of room before writing anything.' : ''));
     }
-    if ($text === '') {
-        throw new RuntimeException('AI reply was empty');
-    }
-    return $text;
 }
 
 /**
