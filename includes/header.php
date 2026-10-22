@@ -15,6 +15,26 @@
 // has already loaded it.
 require_once __DIR__ . '/site-info.php';
 
+/**
+ * A site asset's address with its last-changed time on the end, such as
+ * /assets/css/tailwind.css?v=1761170000. When the file changes the address
+ * changes with it, so browsers and any server cache fetch the new file
+ * instead of keeping the old one. Without this, a rebuilt stylesheet can
+ * be deployed and still not show: the address never changed, so an old copy
+ * stays in use (this hid the dark-text and invisible-button fixes).
+ *
+ * $path is the address from the site root. Falls back to the plain address
+ * if the file can't be found.
+ */
+if (!function_exists('assetUrl')) {
+    function assetUrl(string $path): string
+    {
+        $file = __DIR__ . '/../public' . $path;
+        $modified = is_file($file) ? filemtime($file) : false;
+        return $modified ? $path . '?v=' . $modified : $path;
+    }
+}
+
 // Fall back to the site name on pages that don't set their own title.
 $pageTitle = $pageTitle ?? SITE_NAME;
 
@@ -60,14 +80,15 @@ if (!empty($metaDescription)) {
 
     <!-- Compiled by Tailwind CLI + DaisyUI (see package.json / README "Node build tooling").
          Run `npm run build` after any src/ change, then commit the output. -->
-    <link rel="stylesheet" href="/assets/css/tailwind.css">
+    <?php // assetUrl() puts the file's last-changed time on the address, so a rebuilt file is never missed. ?>
+    <link rel="stylesheet" href="<?= e(assetUrl('/assets/css/tailwind.css')) ?>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap"
         rel="stylesheet">
 
-    <script src="/assets/js/main.js" defer></script>
+    <script src="<?= e(assetUrl('/assets/js/main.js')) ?>" defer></script>
 </head>
 
 <body class="bg-base-100 text-primary font-sans min-h-screen flex flex-col">
