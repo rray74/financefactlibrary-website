@@ -33,6 +33,9 @@ const TEXT_FIELD_LABELS = [
     'meta_description' => 'Meta description',
 ];
 
+/** The house style's ceiling for an explanation (docs/house-style/core.md, section 6). */
+const EXPLANATION_MAX_WORDS = 800;
+
 /** A figure checked this often or more is a rate (house style, section 2). */
 const RATE_REVIEW_DAYS = 42;
 
@@ -357,6 +360,13 @@ function quickTextChecks(array $fields, array $facts): array
             $notes[] = "$label: \"" . implode('", "', array_unique(array_map('strtolower', $m[1]))) . '" reads as advice. '
                 . 'Say what the rules are rather than what to do.';
         }
+    }
+
+    // --- Length. ---
+    $explanationWords = preg_match_all('/\S+/u', (string) ($fields['explanation'] ?? ''));
+    if ($explanationWords > EXPLANATION_MAX_WORDS) {
+        $notes[] = "Explanation: $explanationWords words, over the house style's limit of " . EXPLANATION_MAX_WORDS
+            . '. Cut it to the points readers most often get wrong; the cards show the figures.';
     }
 
     // --- A generic closing section. ---

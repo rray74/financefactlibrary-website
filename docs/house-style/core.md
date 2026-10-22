@@ -120,8 +120,12 @@ so it must make sense on its own.
 
 The main text, below the figure cards.
 
-**Length.** Usually 300 to 600 words. Longer only when the rules genuinely
-need it.
+**Length.** Usually 300 to 600 words, and never more than 800. A page with
+many figures does not need a long explanation: the figure cards show the
+figures. Choose the few points readers most often get wrong, such as
+exceptions, conditions and what does not count, and leave the rest to the
+cards and the source pages. Never walk through the figures one by one. If a
+subject truly needs more, it is two subjects.
 
 **Structure.**
 - 3 to 5 sections, each with a `##` heading that states the point ("Above
@@ -156,4 +160,4 @@ The check on save will do this once it's built. Until then, check by hand:
 4. Regional differences are covered as the country file says.
 5. Nothing tells the reader what to do.
 6. Lengths: title about 42, description 140 to 155, intro 120 to 200
-   characters; explanation usually 300 to 600 words.
+   characters; explanation usually 300 to 600 words, never over 800.

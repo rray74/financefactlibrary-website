@@ -47,11 +47,17 @@ const DRAFT_FIELDS = ['intro', 'explanation', 'meta_title', 'meta_description'];
 const DRAFT_SOURCE_CHARACTERS_EACH = 30000;
 
 /**
- * Most tokens the AI may write for a draft (about 6,000 words). A draft is
- * normally under a tenth of that, but a page with many figures and sources
- * (Universal Credit) wrote past the old limit of 5,000 and was cut off.
+ * Most tokens the AI may write for a draft. A draft that follows the length
+ * limit (650 words) is about 1,500 tokens including the meta fields, so this
+ * leaves plenty of room, and stops a draft that ignores the limit from running
+ * on for minutes. Universal Credit, with about thirty figures and several long
+ * sources, once wrote past 8,000 tokens (about 6,000 words) with no limit
+ * stated; see DRAFT_MAX_WORDS.
  */
-const DRAFT_MAX_TOKENS = 8000;
+const DRAFT_MAX_TOKENS = 4500;
+
+/** The length the writer is told to stay within (the house style's own ceiling is 800). */
+const DRAFT_MAX_WORDS = 650;
 const DRAFT_SOURCE_CHARACTERS_TOTAL = 120000;
 
 /**
@@ -84,9 +90,21 @@ function draftSubjectPage(PDO $pdo, array $subject, array $facts): array
     // How the reply ended, so a reply cut off at the limit is told apart from
     // one that was merely missing its last tag.
     $draft = parsePageDraft($reply, claudeLastCallInfo());
+    $truncated = !empty($draft['truncated']);
+    unset($draft['truncated']);
 
     // --- Checks, stored with the draft and shown in the editor. ---
     $problems = [];
+
+    // Length. A reply cut off at the token limit ignored the limit completely.
+    $words = preg_match_all('/\S+/u', (string) $draft['explanation']);
+    if ($truncated) {
+        $problems[] = 'The draft ran past the length limit and was cut off, so the explanation stops at its last complete paragraph '
+            . "($words words kept). Choose the few points readers most often get wrong and leave the rest to the cards.";
+    } elseif ($words > EXPLANATION_MAX_WORDS) {
+        $problems[] = "The explanation is $words words, over the house style's limit of " . EXPLANATION_MAX_WORDS
+            . '. Cut it to the points readers most often get wrong.';
+    }
 
     // Sentences that follow a source's wording too closely. Drafts are written
     // from the sources, and the writer tends to copy them with a few words changed.
@@ -127,6 +145,7 @@ function pageDraftInstructions(string $countryPrefix, string $countryCode): stri
 You write first drafts of the four text fields of a page on Finance Fact Library, a website that publishes official personal finance figures, each sourced from the government and similar official bodies. Each page shows its figures as cards; the explanation appears below them.
 
 Draft all four fields: intro, meta_title, meta_description and explanation. Follow the house style below exactly, in particular:
+- LENGTH LIMIT: the explanation must be 300 to 650 words, and never more than 650, however much the sources cover and however many figures the page has. The figure cards show the figures, so do not walk through them. Choose the few points readers most often get wrong (exceptions, conditions, what does not count) and stop. A long, thorough explanation is a failure here, not a success.
 - Each figure you are given comes with its placeholder, such as {fact:personal_allowance}. Write the placeholder, not the figure, for anything that changes. Only type a figure if the house style allows it (fixed until a known date, which you must then give).
 - Never introduce any amount, rate, threshold or date you weren't given, and never calculate new figures, except a rate worked out directly from fixed figures, with the working shown.
 - A page whose figures are checked every 42 days or less is a rate page: don't state its rates at all.
@@ -230,7 +249,8 @@ function pageDraftRequest(array $subject, array $facts, array $sources = [], arr
         . ($searches ? "\nSearches that showed this page on Google:\n" . implode("\n", $searches) . "\n" : '')
         . "\nFigures on the page:\n" . implode("\n", $lines) . "\n"
         . "\nSource pages (the official pages the figures come from; write from these):\n"
-        . ($sourceBlock !== '' ? $sourceBlock : "(none: the figures cite no readable source page)\n");
+        . ($sourceBlock !== '' ? $sourceBlock : "(none: the figures cite no readable source page)\n")
+        . "\nReminder: the explanation must be " . DRAFT_MAX_WORDS . " words or fewer. Choose the points readers most often get wrong; leave the rest to the figure cards.\n";
 }
 
 /**
@@ -246,6 +266,7 @@ function pageDraftRequest(array $subject, array $facts, array $sources = [], arr
 function parsePageDraft(string $reply, array $info = []): array
 {
     $data = [];
+    $truncated = false;
     foreach (DRAFT_FIELDS as $field) {
         if (preg_match('#<' . $field . '>(.*?)</' . $field . '>#s', $reply, $m)) {
             $data[$field] = $m[1];
@@ -261,6 +282,16 @@ function parsePageDraft(string $reply, array $info = []): array
             // explanation is the last field, so everything after the opening
             // tag is the explanation, and is complete.
             $data['explanation'] = substr($reply, $opened + strlen('<explanation>'));
+        } elseif ($opened !== false && $stop === 'max_tokens') {
+            // Cut off at the token limit, which means the AI ignored the length
+            // limit. Rather than fail, keep what was written up to the last
+            // complete paragraph (dropping a heading left with nothing under
+            // it) and report it, so there is a draft to work from.
+            $partial = substr($reply, $opened + strlen('<explanation>'));
+            $break = strrpos($partial, "\n\n");
+            $partial = $break !== false ? substr($partial, 0, $break) : $partial;
+            $data['explanation'] = preg_replace('/\n+#{2,3} [^\n]*\s*$/', '', $partial);
+            $truncated = true;
         } else {
             // Cut off at the token limit, or not in the format asked for.
             $tokens = isset($info['output_tokens']) ? ' It wrote ' . number_format((int) $info['output_tokens']) . ' tokens' : '';
@@ -296,5 +327,6 @@ function parsePageDraft(string $reply, array $info = []): array
     if ($draft['explanation'] === null) {
         throw new RuntimeException('The AI returned an empty explanation. Try again.');
     }
-    return $draft;
+    // 'truncated' says the explanation was cut at the token limit (see above).
+    return $draft + ['truncated' => $truncated];
 }
