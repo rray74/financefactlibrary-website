@@ -21,6 +21,14 @@ $adminLinks = [
     'lessons'   => ['/admin/lessons.php', 'Lessons'],
 ];
 ?>
+<?php // Readable text on the admin's coloured boxes and filled buttons, whatever stylesheet the browser has.
+      // The site's theme gives these the right text colours (src/input.css), but an out-of-date copy of the
+      // compiled stylesheet leaves them dark on dark: unreadable boxes and buttons with no visible label.
+      // These rules come after the stylesheet, so they apply either way, and match the theme once it is current. ?>
+<style>
+    .alert-info, .alert-error, .btn-primary { color: #f7f5f0; }
+</style>
+
 <nav class="flex flex-wrap gap-5 items-center font-mono text-xs uppercase tracking-wide mb-8 pb-3 border-b border-primary/20">
     <span class="opacity-50">Admin</span>
     <?php foreach ($adminLinks as $key => [$href, $text]): ?>
