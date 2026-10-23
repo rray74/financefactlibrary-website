@@ -100,9 +100,29 @@ function aiProposalsAvailable(): bool
 }
 
 /**
+ * Whether to send "thinking: disabled" with each request. The model reasons by
+ * default, and those reasoning tokens count against max_tokens: a page with
+ * long sources made it reason for ~3,500 tokens, leaving ~1,000 to write with
+ * (so drafts were cut off after ~700 words), and with a ceiling of 3,000 it
+ * used all of it before writing anything. These jobs are structured writing
+ * from supplied text, which doesn't need it. If the API ever rejects the
+ * setting, this flips to false (callClaude() resends without it) and stays
+ * false for the rest of the request.
+ */
+function claudeThinkingParamAccepted(?bool $set = null): bool
+{
+    static $accepted = true;
+    if ($set !== null) {
+        $accepted = $set;
+    }
+    return $accepted;
+}
+
+/**
  * How the most recent successful callClaude() ended: ['stop_reason' =>
  * 'end_turn' (finished normally) or 'max_tokens' (cut off at the limit),
- * 'input_tokens' => ..., 'output_tokens' => ...]. Lets a caller tell a reply
+ * 'input_tokens' => ..., 'output_tokens' => ..., 'blocks' => the kinds of
+ * content in the reply, e.g. "thinking,text"]. Lets a caller tell a reply
  * that was cut off from one that was merely badly formed. Pass an array to
  * set it (callClaude() does).
  */
@@ -157,12 +177,15 @@ function claudeTransport(string $body): array
 function callClaude(string $system, string $userText, int $maxTokens = 4000, ?callable $transport = null): string
 {
     $transport ??= 'claudeTransport';
-    $body = json_encode([
+    $build = fn(bool $withThinkingOff) => json_encode(array_filter([
         'model'      => ANTHROPIC_MODEL,
         'max_tokens' => $maxTokens,
+        // No reasoning: see claudeThinkingParamAccepted().
+        'thinking'   => $withThinkingOff ? ['type' => 'disabled'] : null,
         'system'     => $system,
         'messages'   => [['role' => 'user', 'content' => $userText]],
-    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+    ], fn($v) => $v !== null), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+    $body = $build(claudeThinkingParamAccepted());
 
     $started = microtime(true);
     for ($attempt = 1; ; $attempt++) {
@@ -176,20 +199,32 @@ function callClaude(string $system, string $userText, int $maxTokens = 4000, ?ca
         if ($status !== 200) {
             // The API explains the problem (bad key, no credit, overloaded...).
             $message = $data['error']['message'] ?? substr((string) $response, 0, 200);
+            // If the API doesn't accept the "thinking" setting for this model,
+            // send the request again without it, once, and remember.
+            if ($status === 400 && claudeThinkingParamAccepted() && stripos((string) $message, 'thinking') !== false) {
+                claudeThinkingParamAccepted(false);
+                $body = $build(false);
+                $attempt--; // not a retry of an empty reply
+                continue;
+            }
             throw new RuntimeException("AI request failed (HTTP $status): $message");
         }
 
         $text = '';
+        $kinds = [];
         foreach ($data['content'] ?? [] as $block) {
+            $kinds[] = (string) ($block['type'] ?? '?');
             if (($block['type'] ?? '') === 'text') {
                 $text .= $block['text'];
             }
         }
+        $blocks = implode(',', array_unique($kinds));
         if ($text !== '') {
             claudeLastCallInfo([
                 'stop_reason'   => (string) ($data['stop_reason'] ?? ''),
                 'input_tokens'  => (int) ($data['usage']['input_tokens'] ?? 0),
                 'output_tokens' => (int) ($data['usage']['output_tokens'] ?? 0),
+                'blocks'        => $blocks,
             ]);
             return $text;
         }
@@ -198,7 +233,8 @@ function callClaude(string $system, string $userText, int $maxTokens = 4000, ?ca
         $stop = (string) ($data['stop_reason'] ?? 'unknown');
         $usage = $data['usage'] ?? [];
         $detail = "stop reason: $stop, " . number_format((int) ($usage['input_tokens'] ?? 0)) . ' tokens in, '
-            . number_format((int) ($usage['output_tokens'] ?? 0)) . ' tokens out';
+            . number_format((int) ($usage['output_tokens'] ?? 0)) . ' tokens out'
+            . ($blocks !== '' ? ", reply held: $blocks" : ', reply held nothing');
 
         if ($attempt === 1 && !in_array($stop, ['refusal', 'max_tokens'], true) && microtime(true) - $started < 60) {
             sleep(2);
@@ -207,7 +243,11 @@ function callClaude(string $system, string $userText, int $maxTokens = 4000, ?ca
 
         throw new RuntimeException('AI reply was empty (' . $detail . ')' . ($attempt > 1 ? ', even after trying again.' : '.')
             . ($stop === 'refusal' ? ' The AI declined to answer.' : '')
-            . ($stop === 'max_tokens' ? ' It ran out of room before writing anything.' : ''));
+            . ($stop === 'max_tokens'
+                ? (stripos($blocks, 'thinking') !== false
+                    ? ' All its room went on reasoning before it wrote anything.'
+                    : ' It ran out of room before writing anything.')
+                : ''));
     }
 }
 

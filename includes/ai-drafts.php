@@ -56,14 +56,16 @@ const DRAFT_FIELDS = ['intro', 'explanation', 'meta_title', 'meta_description'];
 const DRAFT_SOURCE_CHARACTERS_EACH = 30000;
 
 /**
- * Most tokens the AI may write for a draft. A draft that follows the length
- * limit (650 words) and writes its short plan first is about 1,500 tokens
- * including the meta fields, so this leaves plenty of room, and stops a draft
- * that ignores the limit from running on for minutes. Universal Credit and
- * Carer's Allowance, with many figures and long sources, both ran past 4,500
- * tokens even with a limit stated; see DRAFT_MAX_WORDS and the plan.
+ * Most tokens the AI may produce for a draft. This ceiling covers EVERYTHING
+ * it produces, including any reasoning before it writes (the model reasons by
+ * default; callClaude() asks it not to, see claudeThinkingParamAccepted()).
+ * A draft that keeps to the length limit (650 words) with its short plan is
+ * about 1,500 tokens. The ceiling is set well above that because pages with
+ * long sources made the model reason for ~3,500 tokens first: with 4,500 the
+ * writing was cut off after ~700 words, and with 3,000 nothing was written at
+ * all. If it can't be switched off, 6,000 still leaves room for both.
  */
-const DRAFT_MAX_TOKENS = 3000;
+const DRAFT_MAX_TOKENS = 6000;
 
 /** The length the writer is told to stay within (the house style's own ceiling is 800). */
 const DRAFT_MAX_WORDS = 650;
