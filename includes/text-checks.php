@@ -175,8 +175,10 @@ const CLOSE_COPY_MIN_WORDS = 8;
  * $sourceNames  url => name for the message (optional)
  *
  * Returns, strongest match first, a list of
- *   ['quote' => the sentence as written, 'score' => 0..1, 'source' => name]
- * The quote is an exact part of $text.
+ *   ['quote' => the sentence as written, 'score' => 0..1, 'source' => name,
+ *    'matched' => the source sentence it follows, as the source wrote it]
+ * The quote is an exact part of $text. 'matched' is shown to the writer by the
+ * automatic rewrite (includes/ai-drafts.php), so it knows what to avoid.
  */
 function findCloseCopies(string $text, array $sourceTexts, array $sourceNames = []): array
 {
@@ -192,7 +194,7 @@ function findCloseCopies(string $text, array $sourceTexts, array $sourceNames = 
         foreach (array_slice($sentencesOf($pageText), 0, 4000) as $sentence) {
             $w = $words($sentence);
             if (count($w) >= 6) {
-                $source[] = ['w' => $w, 'set' => array_flip($w), 'name' => $sourceNames[$url] ?? $url];
+                $source[] = ['w' => $w, 'set' => array_flip($w), 'name' => $sourceNames[$url] ?? $url, 'text' => trim($sentence)];
             }
         }
     }
@@ -215,6 +217,7 @@ function findCloseCopies(string $text, array $sourceTexts, array $sourceNames = 
 
         $best = 0.0;
         $bestName = '';
+        $bestText = '';
         foreach ($source as $candidate) {
             $m = count($candidate['w']);
             // A score of 0.6 needs the two sentences to share at least 0.3 x (n + m) words.
@@ -242,10 +245,11 @@ function findCloseCopies(string $text, array $sourceTexts, array $sourceNames = 
             if ($score > $best) {
                 $best = $score;
                 $bestName = $candidate['name'];
+                $bestText = $candidate['text'];
             }
         }
         if ($best >= CLOSE_COPY_THRESHOLD) {
-            $found[] = ['quote' => $sentence, 'score' => $best, 'source' => $bestName];
+            $found[] = ['quote' => $sentence, 'score' => $best, 'source' => $bestName, 'matched' => $bestText];
         }
     }
 

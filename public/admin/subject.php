@@ -146,6 +146,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // The draft is saved afterwards, so keep the connection open meanwhile.
             keepDbConnectionOpenForAi($pdo);
 
+            // One automatic rewrite round, and only if drafting left time for it
+            // (the defaults): a web request has limited time.
             $newDraft = draftSubjectPage($pdo, $subject, $facts);
             saveSubjectDraft($pdo, $subjectId, $newDraft, 'editor');
             rememberAdminInput($_POST);
@@ -504,10 +506,14 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <p class="text-xs opacity-70 mt-1">
                 <?= $draft
                     ? 'Shown under each field. "Use draft" copies it into the box to rewrite in your own words. Nothing changes until you save.'
-                    : 'Pages without an explanation are drafted overnight, most-searched first. Or draft this one now (up to a minute).' ?>
+                    : 'Pages without an explanation are drafted overnight, most-searched first. Or draft this one now: it reads the sources, writes the draft and fixes what it can, which takes two to four minutes.' ?>
             </p>
+            <?php // What the automatic rewrite did to this draft (migration 019), if anything. ?>
+            <?php if ($draft && !empty($draft['rewrite_note'])): ?>
+            <p class="text-xs mt-2"><strong>Automatic rewrite:</strong> <?= e($draft['rewrite_note']) ?></p>
+            <?php endif; ?>
             <?php if ($draft && $draft['problems']): ?>
-            <?php // Numbers that aren't among the page's figures, and placeholder problems. ?>
+            <?php // What is still wrong with the draft: near-copies, length, numbers, placeholders. ?>
             <div class="alert alert-error mt-3 text-sm">
                 <span>
                     <strong>Check before using:</strong>
@@ -1004,7 +1010,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
         var button = document.getElementById('draft-button');
         if (!button) return;
         button.addEventListener('click', function () {
-            button.textContent = 'Drafting… (up to a minute)';
+            button.textContent = 'Drafting… (two to four minutes)';
         });
     })();
 

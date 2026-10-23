@@ -109,10 +109,17 @@ try {
         // connection).
         try {
             $subject = getAdminSubject((int) $page['id']);
-            $draft = draftSubjectPage($pdo, $subject, getAdminFactsForSubject((int) $page['id']));
+            // Overnight there is time for two automatic rewrite rounds.
+            $draft = draftSubjectPage(
+                $pdo, $subject, getAdminFactsForSubject((int) $page['id']),
+                DRAFT_REVISIONS_NIGHTLY, DRAFT_REVISION_TIME_BUDGET_NIGHTLY
+            );
             saveSubjectDraft($pdo, (int) $page['id'], $draft, 'nightly');
             $drafted++;
             echo "  drafted: $label" . ($draft['problems'] ? ' (' . count($draft['problems']) . ' thing(s) to check)' : '') . "\n";
+            if ($draft['rewrite_note'] !== '') {
+                echo '    ' . $draft['rewrite_note'] . "\n";
+            }
         } catch (PDOException $e) {
             $failed++;
             echo "  FAILED: $label: " . $e->getMessage() . "\n";

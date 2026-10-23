@@ -20,6 +20,15 @@
  * that was wrong (for example that the type of work doesn't change the
  * minimum wage rate, when apprentices have their own).
  *
+ * Automatic rewrite: after drafting, the checks that need no AI (near-copies
+ * of the sources, length, typed figures in the meta fields, dating words,
+ * advice phrasing, bad placeholders) are run on the draft. If any fail, the
+ * writer is sent the draft back with ONLY those problems and asked to fix
+ * them, and the rewrite is kept only if it measurably improves the draft
+ * (reviseDraft()). One round in the editor, two overnight. It does not judge
+ * accuracy: that is still the AI check, which needs the sources and takes
+ * minutes.
+ *
  * House style and lessons: the AI is sent docs/house-style/core.md, the
  * page's country file (e.g. docs/house-style/uk.md) and the approved lessons
  * learned from past edits (includes/lessons.php) with every request, so
@@ -58,21 +67,45 @@ const DRAFT_MAX_TOKENS = 4500;
 
 /** The length the writer is told to stay within (the house style's own ceiling is 800). */
 const DRAFT_MAX_WORDS = 650;
+
+/**
+ * Automatic rewrite rounds: one in the editor, where a web request has
+ * limited time, and up to two overnight. In the editor the rewrite is
+ * skipped if drafting alone took longer than the time budget (seconds).
+ */
+const DRAFT_REVISIONS_EDITOR = 1;
+const DRAFT_REVISIONS_NIGHTLY = 2;
+const DRAFT_REVISION_TIME_BUDGET_EDITOR = 100;
+const DRAFT_REVISION_TIME_BUDGET_NIGHTLY = 900;
+
+/** A rewrite that shortens the explanation below this share of its length is rejected as having thrown content away. */
+const DRAFT_REVISION_MIN_LENGTH_SHARE = 0.6;
 const DRAFT_SOURCE_CHARACTERS_TOTAL = 120000;
 
 /**
- * Draft all four fields for a subject.
+ * Draft all four fields for a subject, then fix what can be fixed
+ * automatically.
  *
- * $subject  the subject row from getAdminSubject() (needs the country
- *           code and prefix it adds)
- * $facts    the page's facts, as getAdminFactsForSubject() returns them;
- *           only published ones are used, since only they're public
+ * $subject       the subject row from getAdminSubject() (needs the country
+ *                code and prefix it adds)
+ * $facts         the page's facts, as getAdminFactsForSubject() returns them;
+ *                only published ones are used, since only they're public
+ * $maxRevisions  how many automatic rewrite rounds to allow (0 for none)
+ * $timeBudget    seconds; the rewrite is skipped if drafting took longer
  *
  * Returns the four fields (text, or NULL if the AI left one empty) plus
- * 'problems': a list of things to check, in plain sentences.
+ * 'problems' (what is still wrong, in plain sentences) and 'rewrite_note'
+ * (what the automatic rewrite did, or '').
  */
-function draftSubjectPage(PDO $pdo, array $subject, array $facts): array
-{
+function draftSubjectPage(
+    PDO $pdo,
+    array $subject,
+    array $facts,
+    int $maxRevisions = DRAFT_REVISIONS_EDITOR,
+    int $timeBudget = DRAFT_REVISION_TIME_BUDGET_EDITOR
+): array {
+    $started = microtime(true);
+
     $published = array_values(array_filter($facts, fn($f) => $f['status'] === 'published'));
     if (!$published) {
         throw new RuntimeException('This page has no published figures yet, so there is nothing to write from. Add facts first.');
@@ -93,49 +126,271 @@ function draftSubjectPage(PDO $pdo, array $subject, array $facts): array
     $truncated = !empty($draft['truncated']);
     unset($draft['truncated']);
 
-    // --- Checks, stored with the draft and shown in the editor. ---
-    $problems = [];
+    $checks = draftChecks($pdo, $draft, $published, $read, $subject);
 
-    // Length. A reply cut off at the token limit ignored the limit completely.
-    $words = preg_match_all('/\S+/u', (string) $draft['explanation']);
-    if ($truncated) {
-        $problems[] = 'The draft ran past the length limit and was cut off, so the explanation stops at its last complete paragraph '
-            . "($words words kept). Choose the few points readers most often get wrong and leave the rest to the cards.";
-    } elseif ($words > EXPLANATION_MAX_WORDS) {
-        $problems[] = "The explanation is $words words, over the house style's limit of " . EXPLANATION_MAX_WORDS
-            . '. Cut it to the points readers most often get wrong.';
+    // --- Automatic rewrite of what the checks found. ---
+    $rewriteNotes = [];
+    if ($maxRevisions > 0 && draftFixList($checks) !== []) {
+        if ($truncated) {
+            $rewriteNotes[] = 'Not rewritten automatically, because the draft was cut off.';
+        } elseif (microtime(true) - $started > $timeBudget) {
+            $rewriteNotes[] = 'Not rewritten automatically: drafting took too long to leave time for it. Click Redraft this page to try again.';
+        } else {
+            [$draft, $checks, $rewriteNotes] = reviseDraft($pdo, $subject, $published, $read, $draft, $checks, $maxRevisions);
+        }
     }
 
-    // Sentences that follow a source's wording too closely. Drafts are written
-    // from the sources, and the writer tends to copy them with a few words changed.
+    return $draft + [
+        'problems'     => draftProblemLines($checks, $truncated),
+        'rewrite_note' => implode(' ', $rewriteNotes),
+    ];
+}
+
+// ------------------------------------------------------------
+// Checks that need no AI, on a draft
+// ------------------------------------------------------------
+
+/**
+ * Run the checks on a draft. Returns:
+ *   words               words in the explanation
+ *   copies              sentences that follow a source closely (text-checks.php)
+ *   unmatched           typed numbers that aren't among the page's figures or labels
+ *   placeholder_errors  placeholders that wouldn't be accepted on save
+ *   placeholder_warnings  placeholders for a figure not shown on this page
+ *   notes               house-style notes that can be fixed by rewriting: typed
+ *                       figures or years in the meta fields, dating words, advice
+ *                       phrasing, a generic closing section (not the number or
+ *                       length notes, which are handled separately)
+ */
+function draftChecks(PDO $pdo, array $draft, array $published, array $read, array $subject): array
+{
     $names = array_map(fn($s) => $s['name'], $read['sources']);
     $copies = array_merge(
         findCloseCopies((string) $draft['explanation'], $read['texts'], $names),
         findCloseCopies((string) $draft['intro'], $read['texts'], $names)
     );
+
+    $placeholders = checkPlaceholders($pdo, [
+        'Intro'            => $draft['intro'],
+        'Explanation'      => $draft['explanation'],
+        'Meta title'       => $draft['meta_title'],
+        'Meta description' => $draft['meta_description'],
+    ], array_column($published, 'fact_key'));
+
+    $notes = array_values(array_filter(
+        quickTextChecks([
+            'intro'            => $draft['intro'],
+            'explanation'      => $draft['explanation'],
+            'meta_title'       => $draft['meta_title'],
+            'meta_description' => $draft['meta_description'],
+        ], $published),
+        fn($note) => !preg_match("/isn't one of|aren't among|over the house style's limit/", $note)
+    ));
+
+    return [
+        'words'                => preg_match_all('/\S+/u', (string) $draft['explanation']),
+        'copies'               => $copies,
+        'unmatched'            => findUnmatchedNumbers(implode("\n", array_filter($draft)), $published),
+        'placeholder_errors'   => $placeholders['errors'],
+        'placeholder_warnings' => $placeholders['warnings'],
+        'notes'                => $notes,
+    ];
+}
+
+/** How many problems the automatic rewrite can be asked to fix. The rewrite must lower this to be kept. */
+function draftScore(array $checks): int
+{
+    return count($checks['copies'])
+        + ($checks['words'] > EXPLANATION_MAX_WORDS ? 1 : 0)
+        + count($checks['placeholder_errors'])
+        + count($checks['notes']);
+}
+
+/**
+ * The problems to send back to the writer, one instruction each. The near-
+ * copies come with the source sentence they follow, so the writer can avoid
+ * it. At most 12 near-copies, the closest first.
+ */
+function draftFixList(array $checks): array
+{
+    $fixes = [];
+
+    foreach (array_slice($checks['copies'], 0, 12) as $copy) {
+        $fixes[] = 'This sentence follows ' . $copy['source'] . ' too closely (' . round($copy['score'] * 100)
+            . '% of the words match, in order). Restate the same point in your own words AND a different sentence '
+            . 'structure, keeping every fact, condition and placeholder. Your sentence: "' . quoteWords($copy['quote'], 40)
+            . '" The source sentence it follows, to avoid: "' . quoteWords((string) $copy['matched'], 40) . '"';
+    }
+    if ($checks['words'] > EXPLANATION_MAX_WORDS) {
+        $fixes[] = 'The explanation is ' . $checks['words'] . ' words; the limit is ' . DRAFT_MAX_WORDS
+            . '. Cut it to ' . DRAFT_MAX_WORDS . ' words or fewer by leaving out the least important points, not by shortening '
+            . 'every sentence. Keep the exceptions and conditions readers most often get wrong.';
+    }
+    foreach ($checks['placeholder_errors'] as $error) {
+        $fixes[] = $error;
+    }
+    foreach ($checks['notes'] as $note) {
+        $fixes[] = $note;
+    }
+    return $fixes;
+}
+
+/**
+ * The problems still left in a draft, as the plain sentences the editor
+ * shows in its red box. $truncated means the explanation was cut at the
+ * token limit, which means the writer ignored the length limit completely.
+ */
+function draftProblemLines(array $checks, bool $truncated): array
+{
+    $problems = [];
+
+    if ($truncated) {
+        $problems[] = 'The draft ran past the length limit and was cut off, so the explanation stops at its last complete paragraph '
+            . "({$checks['words']} words kept). Choose the few points readers most often get wrong and leave the rest to the cards.";
+    } elseif ($checks['words'] > EXPLANATION_MAX_WORDS) {
+        $problems[] = "The explanation is {$checks['words']} words, over the house style's limit of " . EXPLANATION_MAX_WORDS
+            . '. Cut it to the points readers most often get wrong.';
+    }
+
+    $copies = $checks['copies'];
     if ($copies) {
         $problems[] = count($copies) . ' sentence' . (count($copies) === 1 ? ' follows' : 's follow') . ' a source\'s wording closely, for example "'
             . quoteWords($copies[0]['quote'], 14) . '..." (' . round($copies[0]['score'] * 100) . '% of the words match '
             . $copies[0]['source'] . '). Rewrite them in your own words; the AI check lists each one.';
     }
 
-    // Numbers typed in any field that aren't among the page's figures.
-    $unmatched = findUnmatchedNumbers(implode("\n", array_filter($draft)), $published);
-    if ($unmatched) {
-        $problems[] = 'Check these numbers, which aren\'t among the page\'s figures or their labels: ' . implode(', ', $unmatched) . '.';
+    if ($checks['unmatched']) {
+        $problems[] = 'Check these numbers, which aren\'t among the page\'s figures or their labels: ' . implode(', ', $checks['unmatched']) . '.';
     }
 
-    // Placeholders: invalid ones would be refused on save anyway, but
-    // it's better to see them now.
-    $check = checkPlaceholders($pdo, [
-        'Intro'            => $draft['intro'],
-        'Explanation'      => $draft['explanation'],
-        'Meta title'       => $draft['meta_title'],
-        'Meta description' => $draft['meta_description'],
-    ], array_column($published, 'fact_key'));
-    $problems = array_merge($problems, $check['errors'], $check['warnings']);
+    return array_merge($problems, $checks['placeholder_errors'], $checks['placeholder_warnings'], $checks['notes']);
+}
 
-    return $draft + ['problems' => $problems];
+// ------------------------------------------------------------
+// The automatic rewrite
+// ------------------------------------------------------------
+
+/**
+ * Send the draft back to the writer with the problems the checks found, and
+ * keep the rewrite only if it is better. Up to $maxRounds rounds; stops as
+ * soon as nothing is left to fix or a round doesn't help.
+ *
+ * A rewrite is rejected (and the earlier text kept) if the AI call fails, if
+ * the reply was cut off, if it doesn't lower draftScore(), or if it shortens
+ * the explanation below DRAFT_REVISION_MIN_LENGTH_SHARE of what it was, since
+ * that means it fixed the problems by throwing content away. Fields the
+ * rewrite leaves out keep their earlier text.
+ *
+ * Returns [the draft, its checks, notes about what happened].
+ */
+function reviseDraft(PDO $pdo, array $subject, array $published, array $read, array $draft, array $checks, int $maxRounds): array
+{
+    $notes = [];
+
+    for ($round = 1; $round <= $maxRounds; $round++) {
+        $fixes = draftFixList($checks);
+        if (!$fixes) {
+            break;
+        }
+        $before = draftScore($checks);
+
+        try {
+            $reply = callClaude(
+                pageRevisionInstructions((string) $subject['country_prefix'], (string) $subject['country_code']),
+                pageRevisionRequest($subject, $published, $draft, $fixes),
+                DRAFT_MAX_TOKENS
+            );
+            $revised = parsePageDraft($reply, claudeLastCallInfo());
+        } catch (Throwable $e) {
+            $notes[] = 'The automatic rewrite failed (' . $e->getMessage() . '), so the draft is as first written.';
+            break;
+        }
+
+        if (!empty($revised['truncated'])) {
+            $notes[] = 'The automatic rewrite ran past the length limit, so the earlier text was kept.';
+            break;
+        }
+        unset($revised['truncated']);
+
+        // A field the rewrite left out keeps its earlier text.
+        foreach (DRAFT_FIELDS as $field) {
+            if ($revised[$field] === null) {
+                $revised[$field] = $draft[$field];
+            }
+        }
+
+        $revisedChecks = draftChecks($pdo, $revised, $published, $read, $subject);
+        $after = draftScore($revisedChecks);
+        $wordsBefore = $checks['words'];
+
+        if ($wordsBefore <= EXPLANATION_MAX_WORDS && $revisedChecks['words'] < $wordsBefore * DRAFT_REVISION_MIN_LENGTH_SHARE) {
+            $notes[] = "Rewrite round $round fixed the problems by cutting the explanation from $wordsBefore to "
+                . "{$revisedChecks['words']} words, so the earlier text was kept.";
+            break;
+        }
+        if ($after >= $before) {
+            $notes[] = "Rewrite round $round did not improve it ($before problems before, $after after), so the earlier text was kept.";
+            break;
+        }
+
+        $draft = $revised;
+        $checks = $revisedChecks;
+        $notes[] = "Rewrite round $round: $before problems found, $after left.";
+    }
+
+    return [$draft, $checks, $notes];
+}
+
+/** The instructions for the rewrite: fix only what's listed, then the house style and the lessons. */
+function pageRevisionInstructions(string $countryPrefix, string $countryCode): string
+{
+    $job = <<<'TXT'
+You revise a first draft of the four text fields of a page on Finance Fact Library, a personal finance reference site: intro, meta_title, meta_description and explanation.
+
+Fix ONLY the problems listed in the request. Leave everything else exactly as it is. Do not rewrite sentences that are not listed, do not change headings or the order of sections unless a fix needs it, and do not add new content, figures, claims or links.
+
+- For a sentence that follows a source too closely: restate the same point in your own words AND a different sentence structure and order. Swapping a few words is not enough: a tool compares the result with the source again. Keep every fact, condition, exception and placeholder in the sentence. The source sentence is shown so you can avoid its wording.
+- For length: cut the least important points. Keep the exceptions and conditions readers most often get wrong.
+- For a typed figure or year in a meta field: use the placeholder named in the problem.
+- Never state a count, an age, a date or a rule that is not already in the draft.
+
+Reply with the four fields between tags, in this order, and nothing else:
+<intro>...</intro>
+<meta_title>...</meta_title>
+<meta_description>...</meta_description>
+<explanation>
+...
+</explanation>
+The explanation keeps the editor's format from the house style, with real line breaks.
+
+The house style follows, then the lessons learned from past edits. The rewrite must follow them too.
+
+TXT;
+
+    return $job . writingGuidanceText($countryPrefix, $countryCode);
+}
+
+/** The request for a rewrite: the draft, the placeholders it may use, and the numbered problems. */
+function pageRevisionRequest(array $subject, array $facts, array $draft, array $fixes): string
+{
+    $placeholders = ['- {tax_year}: the tax year of the figures'];
+    foreach ($facts as $fact) {
+        $placeholders[] = '- {fact:' . $fact['fact_key'] . '}: ' . $fact['label'] . ' (' . formatFactValue($fact) . ')';
+    }
+
+    $numbered = [];
+    foreach ($fixes as $i => $fix) {
+        $numbered[] = ($i + 1) . '. ' . $fix;
+    }
+
+    return "Page: {$subject['name']}\nCountry: {$subject['country_name']}\n\n"
+        . "The draft:\n"
+        . '<intro>' . (string) $draft['intro'] . "</intro>\n"
+        . '<meta_title>' . (string) $draft['meta_title'] . "</meta_title>\n"
+        . '<meta_description>' . (string) $draft['meta_description'] . "</meta_description>\n"
+        . "<explanation>\n" . (string) $draft['explanation'] . "\n</explanation>\n\n"
+        . "Placeholders you may use:\n" . implode("\n", $placeholders) . "\n\n"
+        . "Problems to fix (and nothing else):\n" . implode("\n", $numbered) . "\n";
 }
 
 /** The standing instructions: the job and the reply format, then the house style and the lessons. */
