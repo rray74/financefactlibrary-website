@@ -57,13 +57,13 @@ const DRAFT_SOURCE_CHARACTERS_EACH = 30000;
 
 /**
  * Most tokens the AI may write for a draft. A draft that follows the length
- * limit (650 words) is about 1,500 tokens including the meta fields, so this
- * leaves plenty of room, and stops a draft that ignores the limit from running
- * on for minutes. Universal Credit, with about thirty figures and several long
- * sources, once wrote past 8,000 tokens (about 6,000 words) with no limit
- * stated; see DRAFT_MAX_WORDS.
+ * limit (650 words) and writes its short plan first is about 1,500 tokens
+ * including the meta fields, so this leaves plenty of room, and stops a draft
+ * that ignores the limit from running on for minutes. Universal Credit and
+ * Carer's Allowance, with many figures and long sources, both ran past 4,500
+ * tokens even with a limit stated; see DRAFT_MAX_WORDS and the plan.
  */
-const DRAFT_MAX_TOKENS = 4500;
+const DRAFT_MAX_TOKENS = 3000;
 
 /** The length the writer is told to stay within (the house style's own ceiling is 800). */
 const DRAFT_MAX_WORDS = 650;
@@ -124,24 +124,26 @@ function draftSubjectPage(
     // one that was merely missing its last tag.
     $draft = parsePageDraft($reply, claudeLastCallInfo());
     $truncated = !empty($draft['truncated']);
-    unset($draft['truncated']);
+    $dropped = ['words' => (int) ($draft['dropped_words'] ?? 0), 'start' => (string) ($draft['dropped_start'] ?? '')];
+    unset($draft['truncated'], $draft['dropped_words'], $draft['dropped_start']);
 
     $checks = draftChecks($pdo, $draft, $published, $read, $subject);
 
     // --- Automatic rewrite of what the checks found. ---
     $rewriteNotes = [];
     if ($maxRevisions > 0 && draftFixList($checks) !== []) {
-        if ($truncated) {
-            $rewriteNotes[] = 'Not rewritten automatically, because the draft was cut off.';
-        } elseif (microtime(true) - $started > $timeBudget) {
+        if (microtime(true) - $started > $timeBudget) {
             $rewriteNotes[] = 'Not rewritten automatically: drafting took too long to leave time for it. Click Redraft this page to try again.';
         } else {
-            [$draft, $checks, $rewriteNotes] = reviseDraft($pdo, $subject, $published, $read, $draft, $checks, $maxRevisions);
+            // A cut-off draft is still a usable draft (it stops at its last complete
+            // paragraph), so it is rewritten too: the rewrite fixes its near-copies
+            // and brings it within the length limit.
+            [$draft, $checks, $rewriteNotes] = reviseDraft($pdo, $subject, $published, $read, $draft, $checks, $maxRevisions, $truncated);
         }
     }
 
     return $draft + [
-        'problems'     => draftProblemLines($checks, $truncated),
+        'problems'     => draftProblemLines($checks, $truncated, $dropped),
         'rewrite_note' => implode(' ', $rewriteNotes),
     ];
 }
@@ -240,13 +242,16 @@ function draftFixList(array $checks): array
  * shows in its red box. $truncated means the explanation was cut at the
  * token limit, which means the writer ignored the length limit completely.
  */
-function draftProblemLines(array $checks, bool $truncated): array
+function draftProblemLines(array $checks, bool $truncated, array $dropped = []): array
 {
     $problems = [];
 
     if ($truncated) {
         $problems[] = 'The draft ran past the length limit and was cut off, so the explanation stops at its last complete paragraph '
-            . "({$checks['words']} words kept). Choose the few points readers most often get wrong and leave the rest to the cards.";
+            . "({$checks['words']} words kept). Choose the few points readers most often get wrong and leave the rest to the cards."
+            . (($dropped['words'] ?? 0) > 0
+                ? " The writer then went on for about {$dropped['words']} more words without a paragraph break, beginning: \"{$dropped['start']}...\""
+                : '');
     } elseif ($checks['words'] > EXPLANATION_MAX_WORDS) {
         $problems[] = "The explanation is {$checks['words']} words, over the house style's limit of " . EXPLANATION_MAX_WORDS
             . '. Cut it to the points readers most often get wrong.';
@@ -283,7 +288,7 @@ function draftProblemLines(array $checks, bool $truncated): array
  *
  * Returns [the draft, its checks, notes about what happened].
  */
-function reviseDraft(PDO $pdo, array $subject, array $published, array $read, array $draft, array $checks, int $maxRounds): array
+function reviseDraft(PDO $pdo, array $subject, array $published, array $read, array $draft, array $checks, int $maxRounds, bool $cutOff = false): array
 {
     $notes = [];
 
@@ -297,7 +302,7 @@ function reviseDraft(PDO $pdo, array $subject, array $published, array $read, ar
         try {
             $reply = callClaude(
                 pageRevisionInstructions((string) $subject['country_prefix'], (string) $subject['country_code']),
-                pageRevisionRequest($subject, $published, $draft, $fixes),
+                pageRevisionRequest($subject, $published, $draft, $fixes, $cutOff && $round === 1),
                 DRAFT_MAX_TOKENS
             );
             $revised = parsePageDraft($reply, claudeLastCallInfo());
@@ -371,7 +376,7 @@ TXT;
 }
 
 /** The request for a rewrite: the draft, the placeholders it may use, and the numbered problems. */
-function pageRevisionRequest(array $subject, array $facts, array $draft, array $fixes): string
+function pageRevisionRequest(array $subject, array $facts, array $draft, array $fixes, bool $cutOff = false): string
 {
     $placeholders = ['- {tax_year}: the tax year of the figures'];
     foreach ($facts as $fact) {
@@ -390,6 +395,7 @@ function pageRevisionRequest(array $subject, array $facts, array $draft, array $
         . '<meta_description>' . (string) $draft['meta_description'] . "</meta_description>\n"
         . "<explanation>\n" . (string) $draft['explanation'] . "\n</explanation>\n\n"
         . "Placeholders you may use:\n" . implode("\n", $placeholders) . "\n\n"
+        . ($cutOff ? "Note: the draft was cut off at the length limit, so its last section may be missing. Do not try to complete it or add a section.\n\n" : '')
         . "Problems to fix (and nothing else):\n" . implode("\n", $numbered) . "\n";
 }
 
@@ -408,8 +414,8 @@ Draft all four fields: intro, meta_title, meta_description and explanation. Foll
 - Count characters with placeholders filled in (you are told what each shows) when keeping to the house style's lengths.
 
 You are also given the text of the official source pages the figures come from. Write from them, not from memory:
-- Take every rule, condition, exception and example from the sources. Where a source and what you remember differ, the source wins.
-- Include the exceptions, special cases and "what does not count" points the sources list, near the top of the explanation. They are what readers most often get wrong.
+- Everything you state must come from the sources, not from memory: take rules, conditions, exceptions and examples from them. Where a source and what you remember differ, the source wins. The sources hold far more than fits, so you must CHOOSE: leave out whatever the figure cards or the sources already make clear.
+- Of what you choose, the exceptions, special cases and "what does not count" points come first. They are what readers most often get wrong.
 - Use the sources' own worked examples, with placeholders for any figures.
 - Never state a rule, count, age or date the sources don't support. If the sources don't say, leave it out.
 - Write in your own words and your own order. Never reuse a sentence from a source, even with a few words changed: restate the point. Only fixed names, terms and figures may match. A tool compares every sentence with the sources and reports close copies.
@@ -417,14 +423,17 @@ You are also given the text of the official source pages the figures come from. 
 - In the source text, thousands separators have been removed (12570 means 12,570).
 - Before you reply, check that each heading is true of the text under it, that no rule is stated twice, and that every section earns its place.
 
-Reply with the four fields between tags, in this order, and nothing else:
+Reply with a plan and then the four fields between tags, in this order, and nothing else:
+<plan>
+One line per section of the explanation, at most five lines, as "Heading: the one point it makes". Pick the points readers most often get wrong. Whatever you leave out is covered by the figure cards and the source pages.
+</plan>
 <intro>...</intro>
 <meta_title>...</meta_title>
 <meta_description>...</meta_description>
 <explanation>
 ...
 </explanation>
-The explanation uses the editor's format from the house style, written exactly as it should appear, with real line breaks.
+Write exactly the sections in your plan, each in one to three short paragraphs of at most 130 words in all. No tables, no numbered walkthroughs, and no more than one bullet list of at most four items. The explanation uses the editor's format from the house style, written exactly as it should appear, with real line breaks.
 
 The house style follows, then the lessons learned from past edits.
 
@@ -522,6 +531,8 @@ function parsePageDraft(string $reply, array $info = []): array
 {
     $data = [];
     $truncated = false;
+    $droppedWords = 0;
+    $droppedStart = '';
     foreach (DRAFT_FIELDS as $field) {
         if (preg_match('#<' . $field . '>(.*?)</' . $field . '>#s', $reply, $m)) {
             $data[$field] = $m[1];
@@ -544,9 +555,14 @@ function parsePageDraft(string $reply, array $info = []): array
             // it) and report it, so there is a draft to work from.
             $partial = substr($reply, $opened + strlen('<explanation>'));
             $break = strrpos($partial, "\n\n");
+            $dropped = $break !== false ? substr($partial, $break) : '';
             $partial = $break !== false ? substr($partial, 0, $break) : $partial;
             $data['explanation'] = preg_replace('/\n+#{2,3} [^\n]*\s*$/', '', $partial);
             $truncated = true;
+            // What was dropped, so the editor can say what the writer was doing
+            // after its last blank line (a long list, say).
+            $droppedWords = preg_match_all('/\S+/u', $dropped);
+            $droppedStart = preg_match('/^.{0,220}/su', trim(preg_replace('/\s+/u', ' ', $dropped)), $m) ? $m[0] : '';
         } else {
             // Cut off at the token limit, or not in the format asked for.
             $tokens = isset($info['output_tokens']) ? ' It wrote ' . number_format((int) $info['output_tokens']) . ' tokens' : '';
@@ -582,6 +598,11 @@ function parsePageDraft(string $reply, array $info = []): array
     if ($draft['explanation'] === null) {
         throw new RuntimeException('The AI returned an empty explanation. Try again.');
     }
-    // 'truncated' says the explanation was cut at the token limit (see above).
-    return $draft + ['truncated' => $truncated];
+    // 'truncated' says the explanation was cut at the token limit (see above),
+    // and what was dropped.
+    return $draft + [
+        'truncated'       => $truncated,
+        'dropped_words'   => $droppedWords ?? 0,
+        'dropped_start'   => $droppedStart ?? '',
+    ];
 }
