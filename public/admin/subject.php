@@ -1011,23 +1011,137 @@ include __DIR__ . '/../../includes/admin-nav.php';
 </script>
 
 <script>
-    // "Draft this page": show that it's working, since the AI can take up
-    // to a minute. What's typed in the boxes is kept either way.
+    // ---- Confirmation before the AI buttons ----
+    // Draft / Redraft and Check with AI each take minutes, and Redraft replaces the
+    // drafts under the fields, so each asks first, in a box that DEFAULTS TO CANCEL:
+    // Enter and Escape cancel, and the action has to be clicked on purpose. The box
+    // also says if the four text boxes hold changes that aren't saved yet.
     (function () {
-        var button = document.getElementById('draft-button');
-        if (!button) return;
-        button.addEventListener('click', function () {
-            button.textContent = 'Drafting… (two to four minutes)';
-        });
-    })();
+        var ids = ['intro', 'explanation', 'meta_title', 'meta_description'];
+        var saved = <?= json_encode([
+            'intro'            => (string) ($subject['intro'] ?? ''),
+            'explanation'      => (string) ($subject['explanation'] ?? ''),
+            'meta_title'       => (string) ($subject['meta_title'] ?? ''),
+            'meta_description' => (string) ($subject['meta_description'] ?? ''),
+        ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?>;
+        var flat = function (text) { return String(text || '').replace(/\s+/g, ' ').trim(); };
 
-    // "Check with AI": show that it's working while the sources are read.
-    (function () {
-        var button = document.getElementById('check-button');
-        if (!button) return;
-        button.addEventListener('click', function () {
-            button.textContent = 'Checking… (up to two minutes)';
-        });
+        // True if any of the four boxes differs from the text saved on the page.
+        function hasUnsavedChanges() {
+            return ids.some(function (id) {
+                var box = document.getElementById(id);
+                return box && flat(box.value) !== flat(saved[id]);
+            });
+        }
+
+        // Ask in a box. Resolves true only if the action button is clicked.
+        // lines: paragraphs of plain text. warning: an extra, highlighted paragraph (or '').
+        function ask(title, lines, warning, actionLabel) {
+            return new Promise(function (resolve) {
+                if (typeof HTMLDialogElement !== 'function') { // a very old browser
+                    resolve(window.confirm(title + '\n\n' + lines.concat(warning ? [warning] : []).join('\n\n')));
+                    return;
+                }
+                if (!document.getElementById('ffl-ask-style')) {
+                    var style = document.createElement('style');
+                    style.id = 'ffl-ask-style';
+                    style.textContent = 'dialog.ffl-ask::backdrop { background: rgba(27, 42, 74, 0.55); }';
+                    document.head.appendChild(style);
+                }
+
+                var dialog = document.createElement('dialog');
+                dialog.className = 'ffl-ask';
+                dialog.style.cssText = 'width: min(32rem, calc(100% - 2rem)); padding: 1.5rem; border: 2px solid #1b2a4a; '
+                    + 'background: #f7f5f0; color: #1b2a4a; box-shadow: 6px 6px 0 rgba(27, 42, 74, 0.25);';
+
+                var heading = document.createElement('h3');
+                heading.textContent = title;
+                heading.style.cssText = 'font-weight: 700; font-size: 1.125rem; margin: 0 0 0.75rem;';
+                dialog.appendChild(heading);
+
+                lines.forEach(function (line) {
+                    var p = document.createElement('p');
+                    p.textContent = line;
+                    p.style.cssText = 'margin: 0 0 0.75rem;';
+                    dialog.appendChild(p);
+                });
+                if (warning) {
+                    var note = document.createElement('p');
+                    note.textContent = warning;
+                    note.style.cssText = 'margin: 0 0 0.75rem; padding: 0.5rem 0.75rem; border-left: 4px solid #b3452c; background: #ece6da; font-weight: 600;';
+                    dialog.appendChild(note);
+                }
+
+                var row = document.createElement('div');
+                row.style.cssText = 'display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem;';
+                var cancel = document.createElement('button');
+                cancel.type = 'button';
+                cancel.className = 'btn btn-outline';
+                cancel.textContent = 'Cancel';
+                var go = document.createElement('button');
+                go.type = 'button';
+                go.className = 'btn btn-primary';
+                go.textContent = actionLabel;
+                row.appendChild(cancel);
+                row.appendChild(go);
+                dialog.appendChild(row);
+
+                var answer = false;
+                go.addEventListener('click', function () { answer = true; dialog.close(); });
+                cancel.addEventListener('click', function () { dialog.close(); });
+                // Escape closes the box too, which counts as Cancel.
+                dialog.addEventListener('close', function () { dialog.remove(); resolve(answer); });
+
+                document.body.appendChild(dialog);
+                dialog.showModal();
+                cancel.focus(); // the safe answer is the default
+            });
+        }
+        window.fflAsk = ask;
+        window.fflHasUnsavedChanges = hasUnsavedChanges;
+
+        var UNSAVED = 'You have changes in the boxes that are not saved. They are kept here and in this browser, '
+            + 'but they are not on the live page yet.';
+
+        // Put the question in front of an AI button. After a Yes the button is clicked
+        // again for real, so the form is sent with that button as its submitter.
+        function guard(buttonId, question, workingLabel) {
+            var button = document.getElementById(buttonId);
+            if (!button) return;
+            var confirmed = false;
+            button.addEventListener('click', function (event) {
+                if (confirmed) { confirmed = false; return; } // second pass, after Yes
+                event.preventDefault();
+                var q = question(button);
+                ask(q.title, q.lines, hasUnsavedChanges() ? UNSAVED : '', q.action).then(function (yes) {
+                    if (!yes) return;
+                    if (window.fflRememberNow) window.fflRememberNow(); // keep a copy of what's typed
+                    button.textContent = workingLabel;
+                    confirmed = true;
+                    button.click();
+                });
+            });
+        }
+
+        guard('draft-button', function (button) {
+            var again = /^Redraft/i.test(button.textContent.trim());
+            return {
+                title: again ? 'Redraft this page?' : 'Draft this page with the AI?',
+                lines: (again ? ['This replaces the AI drafts under each field with new ones. The old drafts cannot be brought back.'] : [])
+                    .concat(['It reads the source pages and takes two to four minutes.',
+                             'What is in the boxes is kept, and nothing on the page is saved.']),
+                action: again ? 'Yes, redraft' : 'Yes, draft'
+            };
+        }, 'Drafting… (two to four minutes)');
+
+        guard('check-button', function () {
+            return {
+                title: 'Check this page with the AI?',
+                lines: ['It reads the text in the boxes against the sources and the house style, and takes up to two minutes.',
+                        'Nothing is saved or changed.'],
+                action: 'Yes, check'
+            };
+        }, 'Checking… (up to two minutes)');
     })();
 
     // "Use draft": copy a field's stored draft into its box, asking first
@@ -1094,6 +1208,100 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 )) {
                     event.preventDefault();
                 }
+            });
+        }
+    })();
+</script>
+
+<script>
+    // ---- Safety net for typed text ----
+    // The four text boxes are copied into this browser's local storage every couple
+    // of seconds once they differ from what the page loaded with. If the page is
+    // ever opened without that text (a button pressed by mistake, a timeout, a
+    // crash), a bar offers to put it back. Nothing is sent anywhere: it stays in
+    // this browser, for this page only.
+    (function () {
+        var ids = ['intro', 'explanation', 'meta_title', 'meta_description'];
+        var key = 'ffl-unsaved-text-<?= (int) $subject['id'] ?>';
+        var fields = {};
+        for (var i = 0; i < ids.length; i++) {
+            fields[ids[i]] = document.getElementById(ids[i]);
+            if (!fields[ids[i]]) return;
+        }
+
+        function read() {
+            var values = {};
+            ids.forEach(function (id) { values[id] = fields[id].value; });
+            return values;
+        }
+        function same(a, b) {
+            return ids.every(function (id) { return (a[id] || '') === (b[id] || ''); });
+        }
+        function blank(values) {
+            return ids.every(function (id) { return (values[id] || '').trim() === ''; });
+        }
+
+        var baseline = read(); // what the page loaded with
+        var stored = null;
+        try { stored = JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { stored = null; }
+        var lastWritten = stored && stored.fields ? JSON.stringify(stored.fields) : '';
+        var paused = false;
+
+        // Copy the boxes, but only when they differ from the page as loaded and aren't all
+        // empty (so an empty page never overwrites good text), and not while the bar below
+        // is waiting for an answer.
+        function remember() {
+            if (paused) return;
+            var now = read();
+            if (same(now, baseline) || blank(now)) return;
+            var text = JSON.stringify(now);
+            if (text === lastWritten) return;
+            try {
+                localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), fields: now }));
+                lastWritten = text;
+            } catch (e) { /* storage full or off: nothing to do */ }
+        }
+        window.fflRememberNow = remember; // the AI buttons call this just before they submit
+        setInterval(remember, 2000);
+
+        // Earlier text that this page doesn't show: offer it back.
+        if (stored && stored.fields && !blank(stored.fields) && !same(stored.fields, baseline)) {
+            paused = true;
+            var when = '';
+            try {
+                when = ' from ' + new Date(stored.savedAt).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+            } catch (e) { /* leave the time out */ }
+
+            var bar = document.createElement('div');
+            bar.className = 'alert alert-info mb-6 flex flex-wrap items-center gap-3';
+            bar.setAttribute('role', 'alert');
+            bar.innerHTML = '<span>Text you typed' + when + ' was kept in this browser, and the boxes below show something different. '
+                + 'Restoring puts it back in the boxes; nothing is saved until you click Save page details.</span>'
+                + '<span class="flex gap-2"><button type="button" class="btn btn-sm btn-primary" data-restore>Restore it</button>'
+                + '<button type="button" class="btn btn-sm btn-outline" data-dismiss>No thanks</button></span>';
+
+            var form = document.getElementById('details-form');
+            var heading = document.querySelector('#subject-details h2');
+            if (heading && heading.parentNode) {
+                heading.parentNode.insertBefore(bar, heading.nextSibling);
+            } else if (form && form.parentNode) {
+                form.parentNode.insertBefore(bar, form);
+            }
+
+            bar.querySelector('[data-restore]').addEventListener('click', function () {
+                ids.forEach(function (id) {
+                    fields[id].value = stored.fields[id] || '';
+                    fields[id].dispatchEvent(new Event('input', { bubbles: true })); // updates counts and previews
+                });
+                paused = false;
+                lastWritten = JSON.stringify(stored.fields);
+                bar.remove();
+            });
+            bar.querySelector('[data-dismiss]').addEventListener('click', function () {
+                try { localStorage.removeItem(key); } catch (e) { /* ignore */ }
+                lastWritten = '';
+                paused = false;
+                bar.remove();
             });
         }
     })();
