@@ -112,7 +112,7 @@ try {
             // Overnight there is time for two automatic rewrite rounds.
             $draft = draftSubjectPage(
                 $pdo, $subject, getAdminFactsForSubject((int) $page['id']),
-                DRAFT_REVISIONS_NIGHTLY, DRAFT_REVISION_TIME_BUDGET_NIGHTLY
+                DRAFT_REVISIONS_NIGHTLY, DRAFT_REVISION_TIME_BUDGET_NIGHTLY, DRAFT_RETRY_MAX_TOKENS_NIGHTLY
             );
             saveSubjectDraft($pdo, (int) $page['id'], $draft, 'nightly');
             $drafted++;

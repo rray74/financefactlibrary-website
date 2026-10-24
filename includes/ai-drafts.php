@@ -75,6 +75,26 @@ const DRAFT_MAX_WORDS = 650;
  * limited time, and up to two overnight. In the editor the rewrite is
  * skipped if drafting alone took longer than the time budget (seconds).
  */
+/**
+ * The model for drafting and rewriting: AI_DRAFT_MODEL from
+ * config/database.local.php if set, else the site's usual ANTHROPIC_MODEL. A
+ * model that reasons by default spends its token ceiling on reasoning before
+ * it writes, which cut drafts off or left them empty. Drafting is structured
+ * writing from supplied text, so a model that doesn't reason by default is
+ * the better fit. The AI check keeps using ANTHROPIC_MODEL.
+ */
+function draftModel(): ?string
+{
+    return defined('AI_DRAFT_MODEL') && AI_DRAFT_MODEL !== '' ? AI_DRAFT_MODEL : null;
+}
+
+/**
+ * Overnight only: if a draft's reply is empty because all the room went on
+ * reasoning, ask once more with this larger ceiling. There is no web time
+ * limit overnight; the editor doesn't retry.
+ */
+const DRAFT_RETRY_MAX_TOKENS_NIGHTLY = 20000;
+
 const DRAFT_REVISIONS_EDITOR = 1;
 const DRAFT_REVISIONS_NIGHTLY = 2;
 const DRAFT_REVISION_TIME_BUDGET_EDITOR = 100;
@@ -94,6 +114,8 @@ const DRAFT_SOURCE_CHARACTERS_TOTAL = 120000;
  *                only published ones are used, since only they're public
  * $maxRevisions  how many automatic rewrite rounds to allow (0 for none)
  * $timeBudget    seconds; the rewrite is skipped if drafting took longer
+ * $retryTokens   a larger token ceiling to retry with if all the room went on
+ *                reasoning (0: don't retry; see DRAFT_RETRY_MAX_TOKENS_NIGHTLY)
  *
  * Returns the four fields (text, or NULL if the AI left one empty) plus
  * 'problems' (what is still wrong, in plain sentences) and 'rewrite_note'
@@ -104,7 +126,8 @@ function draftSubjectPage(
     array $subject,
     array $facts,
     int $maxRevisions = DRAFT_REVISIONS_EDITOR,
-    int $timeBudget = DRAFT_REVISION_TIME_BUDGET_EDITOR
+    int $timeBudget = DRAFT_REVISION_TIME_BUDGET_EDITOR,
+    int $retryTokens = 0
 ): array {
     $started = microtime(true);
 
@@ -120,7 +143,11 @@ function draftSubjectPage(
     $reply = callClaude(
         pageDraftInstructions((string) $subject['country_prefix'], (string) $subject['country_code']),
         pageDraftRequest($subject, $published, $read['sources'], $read['texts']),
-        DRAFT_MAX_TOKENS
+        DRAFT_MAX_TOKENS,
+        null,
+        draftModel(),
+        true,
+        $retryTokens
     );
     // How the reply ended, so a reply cut off at the limit is told apart from
     // one that was merely missing its last tag.
@@ -144,7 +171,7 @@ function draftSubjectPage(
             // A cut-off draft is still a usable draft (it stops at its last complete
             // paragraph), so it is rewritten too: the rewrite fixes its near-copies
             // and brings it within the length limit.
-            $result = reviseDraft($pdo, $subject, $published, $read, $draft, $checks, $maxRevisions, $truncated);
+            $result = reviseDraft($pdo, $subject, $published, $read, $draft, $checks, $maxRevisions, $truncated, $retryTokens);
             [$draft, $checks, $rewriteNotes] = [$result['draft'], $result['checks'], $result['notes']];
             $rewriteAccepted = $result['accepted'];
             $rewriteTokens = $result['tokens'];
@@ -156,7 +183,9 @@ function draftSubjectPage(
     // the writing (see claudeThinkingParamAccepted()). Shown small, under the note.
     $details = 'First draft: ' . number_format((int) ($firstInfo['output_tokens'] ?? 0)) . ' tokens written, '
         . $firstWords . ' words kept' . ($truncated ? ' (cut off)' : '')
-        . ', reply held ' . (($firstInfo['blocks'] ?? '') !== '' ? $firstInfo['blocks'] : 'unknown') . '.';
+        . ', reply held ' . (($firstInfo['blocks'] ?? '') !== '' ? $firstInfo['blocks'] : 'unknown')
+        . ', model ' . (($firstInfo['model'] ?? '') !== '' ? $firstInfo['model'] : 'unknown')
+        . ', no-reasoning setting ' . (($firstInfo['thinking_switch'] ?? '') !== '' ? $firstInfo['thinking_switch'] : 'unknown') . '.';
     foreach ($rewriteTokens as $i => $tokens) {
         $details .= ' Rewrite ' . ($i + 1) . ': ' . number_format($tokens) . ' tokens written.';
     }
@@ -317,7 +346,7 @@ function draftProblemLines(array $checks, bool $truncated, array $dropped = []):
  * 'accepted' (whether any round's rewrite was kept), 'tokens' (tokens each
  * round's reply used)].
  */
-function reviseDraft(PDO $pdo, array $subject, array $published, array $read, array $draft, array $checks, int $maxRounds, bool $cutOff = false): array
+function reviseDraft(PDO $pdo, array $subject, array $published, array $read, array $draft, array $checks, int $maxRounds, bool $cutOff = false, int $retryTokens = 0): array
 {
     $notes = [];
     $tokens = [];
@@ -334,7 +363,11 @@ function reviseDraft(PDO $pdo, array $subject, array $published, array $read, ar
             $reply = callClaude(
                 pageRevisionInstructions((string) $subject['country_prefix'], (string) $subject['country_code']),
                 pageRevisionRequest($subject, $published, $draft, $fixes, $cutOff && $round === 1),
-                DRAFT_MAX_TOKENS
+                DRAFT_MAX_TOKENS,
+                null,
+                draftModel(),
+                true,
+                $retryTokens
             );
             $revised = parsePageDraft($reply, claudeLastCallInfo());
             $tokens[] = (int) (claudeLastCallInfo()['output_tokens'] ?? 0);
