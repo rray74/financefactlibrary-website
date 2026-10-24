@@ -14,8 +14,10 @@
  * through draftSubjectPage() in includes/ai-drafts.php.
  *
  * Drafts go into subject_drafts (migration 012). They never change a live
- * page: you use them from the editor. Each page is one AI call, roughly a
- * minute, at well under 5p.
+ * page: you use them from the editor. Each page is drafted, then polished
+ * (see includes/ai-polish.php): about ten minutes, and roughly 120,000
+ * tokens read per page across the checks and rewrites, so tens of pence a
+ * page at current prices (see your Anthropic usage page for the real figure).
  *
  * Needs ANTHROPIC_API_KEY in config/database.local.php, like the other AI
  * features.
@@ -33,15 +35,17 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/fact-writer.php';
 require_once __DIR__ . '/../includes/admin-queries.php';
 require_once __DIR__ . '/../includes/ai-drafts.php';
+require_once __DIR__ . '/../includes/ai-polish.php';
 
 /**
- * Pages drafted per run. Each draft now reads the page's source pages as
- * well as calling the AI, so a page takes a couple of minutes and a run is
- * kept shorter than it used to be. Override in config/database.local.php
- * with define('DRAFTS_PER_NIGHT', 3);
+ * Pages drafted per run. Each page is now drafted AND polished (up to three
+ * AI checks and two rewrites, see includes/ai-polish.php), which takes about
+ * ten minutes, so a run of 3 is about half an hour. Override in
+ * config/database.local.php with define('DRAFTS_PER_NIGHT', 5); polishing
+ * can be switched off there with define('POLISH_ENABLED', false);
  */
 if (!defined('DRAFTS_PER_NIGHT')) {
-    define('DRAFTS_PER_NIGHT', 5);
+    define('DRAFTS_PER_NIGHT', 3);
 }
 
 /**
@@ -109,12 +113,10 @@ try {
         // connection).
         try {
             $subject = getAdminSubject((int) $page['id']);
-            // Overnight there is time for two automatic rewrite rounds.
-            $draft = draftSubjectPage(
-                $pdo, $subject, getAdminFactsForSubject((int) $page['id']),
-                DRAFT_REVISIONS_NIGHTLY, DRAFT_REVISION_TIME_BUDGET_NIGHTLY, DRAFT_RETRY_MAX_TOKENS_NIGHTLY
-            );
-            saveSubjectDraft($pdo, (int) $page['id'], $draft, 'nightly');
+            // Draft with two automatic rewrite rounds, then the polish loop (AI
+            // check, rewrite the findings, check again), and store the best
+            // version as the page's draft.
+            $draft = polishPageEndToEnd($pdo, $subject, getAdminFactsForSubject((int) $page['id']), 'nightly');
             $drafted++;
             echo "  drafted: $label" . ($draft['problems'] ? ' (' . count($draft['problems']) . ' thing(s) to check)' : '') . "\n";
             if (trim($draft['rewrite_note'], ' |') !== '') {

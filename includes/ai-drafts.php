@@ -551,6 +551,31 @@ function pageDraftRequest(array $subject, array $facts, array $sources = [], arr
     $taxYear = pageTaxYear((string) $subject['country_code'], $facts);
 
     // The source pages, within the total allowance.
+    $sourceBlock = requestSourceBlock($sources, $sourceTexts);
+
+    return "Page: {$subject['name']}\n"
+        . "Country: {$subject['country_name']}\n"
+        . "Section: {$subject['category_name']} > {$subject['subcategory_name']}\n"
+        . "Tax year of the figures: $taxYear (placeholder: {tax_year})\n"
+        . ($subject['intro'] ? "Current intro (improve on it or keep its substance): {$subject['intro']}\n" : '')
+        . ($searches ? "\nSearches that showed this page on Google:\n" . implode("\n", $searches) . "\n" : '')
+        . "\nFigures on the page:\n" . implode("\n", $lines) . "\n"
+        . "\nSource pages (the official pages the figures come from; write from these):\n"
+        . ($sourceBlock !== '' ? $sourceBlock : "(none: the figures cite no readable source page)\n")
+        . "\nReminder: the explanation must be " . DRAFT_MAX_WORDS . " words or fewer. Choose the points readers most often get wrong; leave the rest to the figure cards.\n";
+}
+
+/**
+ * The source pages as the AI is shown them: each between <source> tags, within
+ * the total allowance (DRAFT_SOURCE_CHARACTERS_TOTAL), with a note for any page
+ * that could not be read or was left out for length. Used by the draft request
+ * and by the polish rewrite (ai-polish.php), so both see the same pages.
+ *
+ * $sources      url => ['name', 'read' => bool, 'error'], from readSourcePagesForFacts()
+ * $sourceTexts  url => the page's text
+ */
+function requestSourceBlock(array $sources, array $sourceTexts): string
+{
     $sourceBlock = '';
     $used = 0;
     foreach ($sources as $url => $source) {
@@ -570,17 +595,7 @@ function pageDraftRequest(array $subject, array $facts, array $sources = [], arr
         $used += strlen($text);
         $sourceBlock .= "\n<source name=\"{$source['name']}\" url=\"$url\">\n$text\n</source>\n";
     }
-
-    return "Page: {$subject['name']}\n"
-        . "Country: {$subject['country_name']}\n"
-        . "Section: {$subject['category_name']} > {$subject['subcategory_name']}\n"
-        . "Tax year of the figures: $taxYear (placeholder: {tax_year})\n"
-        . ($subject['intro'] ? "Current intro (improve on it or keep its substance): {$subject['intro']}\n" : '')
-        . ($searches ? "\nSearches that showed this page on Google:\n" . implode("\n", $searches) . "\n" : '')
-        . "\nFigures on the page:\n" . implode("\n", $lines) . "\n"
-        . "\nSource pages (the official pages the figures come from; write from these):\n"
-        . ($sourceBlock !== '' ? $sourceBlock : "(none: the figures cite no readable source page)\n")
-        . "\nReminder: the explanation must be " . DRAFT_MAX_WORDS . " words or fewer. Choose the points readers most often get wrong; leave the rest to the figure cards.\n";
+    return $sourceBlock;
 }
 
 /**

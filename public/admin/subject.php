@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../includes/fact-writer.php';
 require_once __DIR__ . '/../../includes/admin-auth.php';
 require_once __DIR__ . '/../../includes/admin-queries.php';
 require_once __DIR__ . '/../../includes/ai-drafts.php'; // AI drafts of the four text fields
+require_once __DIR__ . '/../../includes/ai-polish.php'; // the polish loop and its background queue
 require_once __DIR__ . '/../../includes/text-checks.php'; // quick checks and the AI check of the text
 require_once __DIR__ . '/../../includes/review-flags.php'; // why this page needs reviewing, if it does
 require_once __DIR__ . '/../../includes/lessons.php';       // keeps drafts with the saved text, to learn from the edits
@@ -91,6 +92,8 @@ $fillPreview = fn(?string $text) => fillPlaceholders($text, $countryCode, $facts
 
 // This page's stored AI draft (subject_drafts), or NULL.
 $draft = getSubjectDraft($subjectId);
+// This page's latest polish job (migration 020), or NULL.
+$polishJob = getPolishJob($subjectId);
 
 // This page's latest AI text check (subject_text_checks), or NULL.
 $textCheck = getSubjectTextCheck($subjectId);
@@ -133,6 +136,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setAdminFlash($found ? 'info' : 'success', ($found
                 ? "AI check: $found thing" . ($found === 1 ? '' : 's') . ' to look at, listed under Page details.'
                 : 'AI check: no problems found.') . ' Nothing has been saved.');
+
+        } elseif ($action === 'save_subject' && !empty($_POST['queue_polish'])) {
+            // "Draft and polish in the background": add the page to the polish
+            // queue (migration 020). A cron job (scripts/run-polish-jobs.php)
+            // drafts it, runs the AI check and rewrite loop, stores the result
+            // as the page's draft and emails. Nothing is drafted here, so this
+            // returns at once; what is typed comes back unchanged.
+            $returnAnchor = '#subject-details';
+            $jobId = queuePolishJob($pdo, $subjectId);
+            rememberAdminInput($_POST);
+
+            if ($jobId === null) {
+                setAdminFlash('info', 'This page is already waiting in the polish queue, or being polished now.');
+            } else {
+                setAdminFlash('info', 'Queued. The draft will be written and polished in the background, which takes about ten minutes. '
+                    . 'You will get an email, and the draft appears here. You can leave this page.');
+            }
 
         } elseif ($action === 'save_subject' && !empty($_POST['draft_page'])) {
             // "Draft this page": the button is inside the page details form,
@@ -498,9 +518,14 @@ include __DIR__ . '/../../includes/admin-nav.php';
                     <?php endif; ?>
                 </p>
                 <?php if (aiProposalsAvailable()): ?>
-                <?php // Submits this form with draft_page set: what's typed comes back unchanged. ?>
-                <button type="submit" name="draft_page" value="1" formnovalidate
-                    class="btn btn-xs btn-outline" id="draft-button"><?= $draft ? 'Redraft this page' : 'Draft this page' ?></button>
+                <div class="flex flex-wrap gap-2">
+                    <?php // Submits this form with queue_polish set: nothing is drafted here, a job is queued. ?>
+                    <button type="submit" name="queue_polish" value="1" formnovalidate
+                        class="btn btn-xs btn-outline" id="polish-button">Draft and polish in the background</button>
+                    <?php // Submits this form with draft_page set: what's typed comes back unchanged. ?>
+                    <button type="submit" name="draft_page" value="1" formnovalidate
+                        class="btn btn-xs btn-outline" id="draft-button"><?= $draft ? 'Redraft this page' : 'Draft this page' ?></button>
+                </div>
                 <?php endif; ?>
             </div>
             <p class="text-xs opacity-70 mt-1">
@@ -508,6 +533,17 @@ include __DIR__ . '/../../includes/admin-nav.php';
                     ? 'Shown under each field. "Use draft" copies it into the box to rewrite in your own words. Nothing changes until you save.'
                     : 'Pages without an explanation are drafted overnight, most-searched first. Or draft this one now: it reads the sources, writes the draft and fixes what it can, which takes two to four minutes.' ?>
             </p>
+            <?php // Where this page's polish job has got to (migration 020). A finished job needs no line: its draft is below. ?>
+            <?php if ($polishJob && in_array($polishJob['status'], ['queued', 'running'], true)): ?>
+            <p class="text-xs mt-2">
+                <strong>Polish:</strong>
+                <?= $polishJob['status'] === 'queued'
+                    ? 'waiting in the queue since ' . e(date('H:i', strtotime($polishJob['requested_at']))) . '. A cron job starts it within a minute or two; if nothing has started after ten minutes, the cron job for scripts/run-polish-jobs.php may not be set up.'
+                    : 'being drafted and polished now (started ' . e(date('H:i', strtotime($polishJob['started_at']))) . '). It takes about ten minutes; reload to see it.' ?>
+            </p>
+            <?php elseif ($polishJob && $polishJob['status'] === 'failed'): ?>
+            <p class="text-xs mt-2"><strong>Polish failed</strong> (<?= e(date('j M, H:i', strtotime($polishJob['finished_at']))) ?>): <?= e((string) $polishJob['note']) ?></p>
+            <?php endif; ?>
             <?php // What the automatic rewrite did to this draft (migration 019), if anything. ?>
             <?php if ($draft && !empty($draft['rewrite_note'])): ?>
             <?php // The note, then (after " | Details: ") how many tokens the writing took, in small type. ?>
@@ -1134,6 +1170,17 @@ include __DIR__ . '/../../includes/admin-nav.php';
             };
         }, 'Drafting… (two to four minutes)');
 
+        guard('polish-button', function () {
+            var hasDraft = !!document.getElementById('draft-button') && /^Redraft/i.test(document.getElementById('draft-button').textContent.trim());
+            return {
+                title: 'Draft and polish this page in the background?',
+                lines: (hasDraft ? ['This replaces the current AI drafts under the fields. The old drafts cannot be brought back.'] : [])
+                    .concat(['It writes a draft, then checks it with the AI and rewrites what the check finds, up to three times. This takes about ten minutes and runs in the background, so you can leave this page.',
+                             'You will get an email when it is ready. What is in the boxes is kept, and nothing on the page is saved.']),
+                action: 'Yes, queue it'
+            };
+        }, 'Queued…');
+
         guard('check-button', function () {
             return {
                 title: 'Check this page with the AI?',
@@ -1195,7 +1242,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             detailsForm.addEventListener('submit', function (event) {
                 // Only the Save button. Draft this page and Check with AI submit this form too.
                 var submitter = event.submitter;
-                if (!submitter || submitter.name === 'draft_page' || submitter.name === 'check_page') return;
+                if (!submitter || submitter.name === 'draft_page' || submitter.name === 'check_page' || submitter.name === 'queue_polish') return;
                 // The draft is only deleted when the page is saved with an explanation.
                 if (document.getElementById('explanation').value.trim() === '') return;
 
