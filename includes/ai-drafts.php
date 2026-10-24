@@ -124,15 +124,19 @@ function draftSubjectPage(
     );
     // How the reply ended, so a reply cut off at the limit is told apart from
     // one that was merely missing its last tag.
-    $draft = parsePageDraft($reply, claudeLastCallInfo());
+    $firstInfo = claudeLastCallInfo();
+    $draft = parsePageDraft($reply, $firstInfo);
     $truncated = !empty($draft['truncated']);
     $dropped = ['words' => (int) ($draft['dropped_words'] ?? 0), 'start' => (string) ($draft['dropped_start'] ?? '')];
     unset($draft['truncated'], $draft['dropped_words'], $draft['dropped_start']);
 
     $checks = draftChecks($pdo, $draft, $published, $read, $subject);
+    $firstWords = $checks['words'];
 
     // --- Automatic rewrite of what the checks found. ---
     $rewriteNotes = [];
+    $rewriteAccepted = false;
+    $rewriteTokens = [];
     if ($maxRevisions > 0 && draftFixList($checks) !== []) {
         if (microtime(true) - $started > $timeBudget) {
             $rewriteNotes[] = 'Not rewritten automatically: drafting took too long to leave time for it. Click Redraft this page to try again.';
@@ -140,13 +144,34 @@ function draftSubjectPage(
             // A cut-off draft is still a usable draft (it stops at its last complete
             // paragraph), so it is rewritten too: the rewrite fixes its near-copies
             // and brings it within the length limit.
-            [$draft, $checks, $rewriteNotes] = reviseDraft($pdo, $subject, $published, $read, $draft, $checks, $maxRevisions, $truncated);
+            $result = reviseDraft($pdo, $subject, $published, $read, $draft, $checks, $maxRevisions, $truncated);
+            [$draft, $checks, $rewriteNotes] = [$result['draft'], $result['checks'], $result['notes']];
+            $rewriteAccepted = $result['accepted'];
+            $rewriteTokens = $result['tokens'];
         }
     }
 
+    // What the draft cost, in tokens, and what the reply held. "thinking" in the
+    // blocks means the model reasoned before writing, which uses the same room as
+    // the writing (see claudeThinkingParamAccepted()). Shown small, under the note.
+    $details = 'First draft: ' . number_format((int) ($firstInfo['output_tokens'] ?? 0)) . ' tokens written, '
+        . $firstWords . ' words kept' . ($truncated ? ' (cut off)' : '')
+        . ', reply held ' . (($firstInfo['blocks'] ?? '') !== '' ? $firstInfo['blocks'] : 'unknown') . '.';
+    foreach ($rewriteTokens as $i => $tokens) {
+        $details .= ' Rewrite ' . ($i + 1) . ': ' . number_format($tokens) . ' tokens written.';
+    }
+
+    // A successful rewrite replaces the cut-off text, so the red box doesn't
+    // describe it as if it were still there (the note says what happened).
+    $stillCutOff = $truncated && !$rewriteAccepted;
+    if ($truncated && $rewriteAccepted) {
+        array_unshift($rewriteNotes, 'The first draft ran past the length limit and was cut off.');
+    }
+
     return $draft + [
-        'problems'     => draftProblemLines($checks, $truncated, $dropped),
-        'rewrite_note' => implode(' ', $rewriteNotes),
+        'problems'     => draftProblemLines($checks, $stillCutOff, $dropped),
+        // The editor shows what follows " | Details: " in small type.
+        'rewrite_note' => implode(' ', $rewriteNotes) . ' | Details: ' . $details,
     ];
 }
 
@@ -288,11 +313,15 @@ function draftProblemLines(array $checks, bool $truncated, array $dropped = []):
  * that means it fixed the problems by throwing content away. Fields the
  * rewrite leaves out keep their earlier text.
  *
- * Returns [the draft, its checks, notes about what happened].
+ * Returns ['draft', 'checks', 'notes' (what happened, in sentences),
+ * 'accepted' (whether any round's rewrite was kept), 'tokens' (tokens each
+ * round's reply used)].
  */
 function reviseDraft(PDO $pdo, array $subject, array $published, array $read, array $draft, array $checks, int $maxRounds, bool $cutOff = false): array
 {
     $notes = [];
+    $tokens = [];
+    $accepted = false;
 
     for ($round = 1; $round <= $maxRounds; $round++) {
         $fixes = draftFixList($checks);
@@ -308,6 +337,7 @@ function reviseDraft(PDO $pdo, array $subject, array $published, array $read, ar
                 DRAFT_MAX_TOKENS
             );
             $revised = parsePageDraft($reply, claudeLastCallInfo());
+            $tokens[] = (int) (claudeLastCallInfo()['output_tokens'] ?? 0);
         } catch (Throwable $e) {
             $notes[] = 'The automatic rewrite failed (' . $e->getMessage() . '), so the draft is as first written.';
             break;
@@ -342,10 +372,11 @@ function reviseDraft(PDO $pdo, array $subject, array $published, array $read, ar
 
         $draft = $revised;
         $checks = $revisedChecks;
+        $accepted = true;
         $notes[] = "Rewrite round $round: $before problems found, $after left.";
     }
 
-    return [$draft, $checks, $notes];
+    return ['draft' => $draft, 'checks' => $checks, 'notes' => $notes, 'accepted' => $accepted, 'tokens' => $tokens];
 }
 
 /** The instructions for the rewrite: fix only what's listed, then the house style and the lessons. */

@@ -117,8 +117,8 @@ try {
             saveSubjectDraft($pdo, (int) $page['id'], $draft, 'nightly');
             $drafted++;
             echo "  drafted: $label" . ($draft['problems'] ? ' (' . count($draft['problems']) . ' thing(s) to check)' : '') . "\n";
-            if ($draft['rewrite_note'] !== '') {
-                echo '    ' . $draft['rewrite_note'] . "\n";
+            if (trim($draft['rewrite_note'], ' |') !== '') {
+                echo '    ' . ltrim($draft['rewrite_note'], ' |') . "\n";
             }
         } catch (PDOException $e) {
             $failed++;

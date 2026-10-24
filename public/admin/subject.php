@@ -510,7 +510,14 @@ include __DIR__ . '/../../includes/admin-nav.php';
             </p>
             <?php // What the automatic rewrite did to this draft (migration 019), if anything. ?>
             <?php if ($draft && !empty($draft['rewrite_note'])): ?>
-            <p class="text-xs mt-2"><strong>Automatic rewrite:</strong> <?= e($draft['rewrite_note']) ?></p>
+            <?php // The note, then (after " | Details: ") how many tokens the writing took, in small type. ?>
+            <?php [$rewriteSummary, $rewriteDetails] = array_pad(explode(' | Details: ', (string) $draft['rewrite_note'], 2), 2, ''); ?>
+            <?php if ($rewriteSummary !== ''): ?>
+            <p class="text-xs mt-2"><strong>Automatic rewrite:</strong> <?= e($rewriteSummary) ?></p>
+            <?php endif; ?>
+            <?php if ($rewriteDetails !== ''): ?>
+            <p class="text-xs mt-1 opacity-60"><?= e($rewriteDetails) ?></p>
+            <?php endif; ?>
             <?php endif; ?>
             <?php if ($draft && $draft['problems']): ?>
             <?php // What is still wrong with the draft: near-copies, length, numbers, placeholders. ?>
