@@ -498,6 +498,14 @@ function aiTextCheck(array $subject, array $facts, array $fields): array
             $dropped++;
             continue;
         }
+        // A "typed figure" complaint is always a mistake here: the AI reads the text
+        // with placeholders already filled in, so it can't tell them from typed
+        // figures. Typed figures are checked on the original text by quickTextChecks().
+        if (in_array($kind, ['house_style', 'likely_wrong'], true)
+            && preg_match('/\b(typed|hard-?coded|should be a placeholder|use \{?(fact|tax_year)|must use \{)/i', $problem)) {
+            $dropped++;
+            continue;
+        }
         $findings[] = ['field' => $field, 'kind' => $kind, 'quote' => $quote, 'problem' => $problem];
     }
 
@@ -550,6 +558,8 @@ Report only real problems, most serious first, at most 12 in all. Report problem
 - unneeded_section: a section the house style says to leave out (a generic closing section, one only saying a rule is the same everywhere, or one that only restates what the figure cards already show), or one that adds nothing.
 - house_style: a clear breach of the house style or the lessons that none of the kinds above covers.
 - advice: text telling the reader what to do, or recommending products or providers.
+
+Every {fact:...} and {tax_year} placeholder in the text has been replaced by its current value before you read it, so you CANNOT tell a typed figure from a placeholder. Never report that a figure, rate or year is typed, hard-coded or "should be a placeholder", and ignore that rule of the house style: a program checks it on the original text.
 
 Don't report matters of taste: tone, word choice, length or formatting that the house style doesn't mention. Figures you worked out yourself from the given figures are fine if the working is right; report them as contradicts_figure if it's wrong. In the source text, thousands separators have been removed (12570 means 12,570).
 
