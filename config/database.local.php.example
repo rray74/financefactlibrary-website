@@ -18,6 +18,13 @@ define('SITE_URL', 'http://financefactlibrary.com');
 define('ADMIN_USERNAME', 'admin');
 define('ADMIN_PASSWORD_HASH', '************');
 
+// Anthropics API key
+define('ANTHROPIC_API_KEY', '************');
+
+// AI draft model
+define('AI_DRAFT_MODEL', 'example-model');
+
+
 // Alert email settings
 define('ALERT_EMAIL_TO', 'your@address.com');
 define('ALERT_EMAIL_FROM', 'alerts@financefactlibrary.com'); // optional
