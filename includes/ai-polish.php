@@ -90,6 +90,8 @@ How to fix each kind of problem:
 - Duplicated, or a section that is not needed: merge or remove it.
 - Never state a count, an age, a date or a rule that the source pages do not give.
 
+Every sentence you add or change must be in your own words and your own sentence structure. A program compares the result with the source pages sentence by sentence, and a sentence that follows a source closely is rejected, so restate the source's point, never its sentence.
+
 The explanation may grow to make room for what was missing, but must stay within {$limit} words in all. If it would not fit, tighten the wording of unlisted text only where the meaning is unchanged.
 
 Reply with the four fields between tags, in this order, and nothing else:
@@ -164,10 +166,40 @@ function polishRejects(PDO $pdo, array $subject, array $published, array $read, 
     }
     $checksBefore = draftChecks($pdo, $before, $published, $read, $subject);
     if (draftScore($checksAfter) > draftScore($checksBefore)) {
-        return 'it made the program checks worse (' . draftScore($checksBefore) . ' problems before, '
-            . draftScore($checksAfter) . ' after)';
+        return 'it made the program checks worse (' . polishWhatGotWorse($checksBefore, $checksAfter) . ')';
     }
     return null;
+}
+
+/** The program-check categories that rose, e.g. "near-copies 0 to 5, house-style notes 1 to 2". */
+function polishWhatGotWorse(array $before, array $after): string
+{
+    $pairs = [
+        'near-copies of a source'   => [count($before['copies']), count($after['copies'])],
+        'explanation over the limit' => [$before['words'] > EXPLANATION_MAX_WORDS ? 1 : 0, $after['words'] > EXPLANATION_MAX_WORDS ? 1 : 0],
+        'bad placeholders'          => [count($before['placeholder_errors']), count($after['placeholder_errors'])],
+        'house-style notes'         => [count($before['notes']), count($after['notes'])],
+    ];
+    $rose = [];
+    foreach ($pairs as $name => [$was, $now]) {
+        if ($now > $was) {
+            $rose[] = "$name $was to $now";
+        }
+    }
+    return $rose ? implode(', ', $rose) : draftScore($before) . ' problems before, ' . draftScore($after) . ' after';
+}
+
+/**
+ * Whether a refused rewrite is worth repairing: the problems the program
+ * checks name (near-copies, length, typed figures, bad placeholders) are the
+ * ones the automatic rewrite fixes. A rewrite that threw the text away or came
+ * back empty can't be repaired.
+ */
+function polishRejectIsRepairable(string $why): bool
+{
+    return strpos($why, 'it made the program checks worse') === 0
+        || strpos($why, 'the explanation grew') === 0
+        || strpos($why, 'it used a placeholder') === 0;
 }
 
 // ------------------------------------------------------------
@@ -262,6 +294,36 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
         $revised = array_intersect_key($revised, array_flip(DRAFT_FIELDS));
 
         $why = polishRejects($pdo, $subject, $published, $read, $current, $revised);
+
+        // A refused rewrite is usually good text with a mechanical fault, most often
+        // sentences that follow a source too closely, because it was told to add
+        // what the source says. The automatic rewrite fixes those, so try it once
+        // before giving up on the whole round.
+        if ($why !== null && polishRejectIsRepairable($why)) {
+            try {
+                $repair = reviseDraft(
+                    $pdo, $subject, $published, $read, $revised,
+                    draftChecks($pdo, $revised, $published, $read, $subject), 2, false, $retryTokens
+                );
+            } catch (Throwable $e) {
+                $repair = ['accepted' => false, 'draft' => $revised, 'tokens' => []];
+            }
+            $tokens = array_merge($tokens, $repair['tokens']);
+            if ($repair['accepted']) {
+                $repaired = array_intersect_key($repair['draft'], array_flip(DRAFT_FIELDS));
+                $whyAfterRepair = polishRejects($pdo, $subject, $published, $read, $current, $repaired);
+                if ($whyAfterRepair === null) {
+                    $notes[] = "The rewrite after check $check was first refused ($why) and was repaired.";
+                    $revised = $repaired;
+                    $why = null;
+                } else {
+                    $why .= "; after a repair attempt: $whyAfterRepair";
+                }
+            } else {
+                $why .= '; the repair attempt did not help';
+            }
+        }
+
         if ($why !== null) {
             $notes[] = "The rewrite after check $check was not used: $why.";
             break;
@@ -369,12 +431,33 @@ function polishPageEndToEnd(PDO $pdo, array $subject, array $facts, string $made
 // The background queue (polish_jobs, migration 020)
 // ------------------------------------------------------------
 
+/** True if migration 020 has been applied, so the polish_jobs table exists. */
+function polishQueueReady(PDO $pdo): bool
+{
+    static $ready = null;
+    if ($ready === null) {
+        try {
+            $pdo->query('SELECT 1 FROM polish_jobs LIMIT 1');
+            $ready = true;
+        } catch (PDOException $e) {
+            $ready = false;
+        }
+    }
+    return $ready;
+}
+
 /**
  * Add a page to the queue. Returns the job id, or NULL if the page already
  * has a job waiting or running (so a second click does nothing).
+ *
+ * Throws a plain-English error if migration 020 has not been applied, rather
+ * than a database error.
  */
 function queuePolishJob(PDO $pdo, int $subjectId): ?int
 {
+    if (!polishQueueReady($pdo)) {
+        throw new RuntimeException('The polish queue is not set up yet: migration 020 (polish_jobs) has not been applied on this server.');
+    }
     $open = $pdo->prepare("SELECT id FROM polish_jobs WHERE subject_id = :sid AND status IN ('queued', 'running') LIMIT 1");
     $open->execute(['sid' => $subjectId]);
     if ($open->fetch()) {
@@ -384,10 +467,16 @@ function queuePolishJob(PDO $pdo, int $subjectId): ?int
     return (int) $pdo->lastInsertId();
 }
 
-/** The page's most recent job, or NULL. */
+/**
+ * The page's most recent job, or NULL. Also NULL if migration 020 has not been
+ * applied yet, so the editor still opens (it asks for this on every load).
+ */
 function getPolishJob(int $subjectId): ?array
 {
     $pdo = getDbConnection();
+    if (!polishQueueReady($pdo)) {
+        return null;
+    }
     $stmt = $pdo->prepare('SELECT * FROM polish_jobs WHERE subject_id = :sid ORDER BY id DESC LIMIT 1');
     $stmt->execute(['sid' => $subjectId]);
     return $stmt->fetch() ?: null;
