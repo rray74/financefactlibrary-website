@@ -245,6 +245,17 @@ function draftChecks(PDO $pdo, array $draft, array $published, array $read, arra
         fn($note) => !preg_match("/isn't one of|aren't among|over the house style's limit/", $note)
     ));
 
+    // A note about a word ("today" dates the text) doesn't say where the word is,
+    // and the automatic rewrite twice failed to find a single "today" in 470 words.
+    // So say which sentence it is in, both here and in what the writer is sent.
+    $fieldText = [
+        'Intro'            => (string) $draft['intro'],
+        'Explanation'      => (string) $draft['explanation'],
+        'Meta title'       => (string) $draft['meta_title'],
+        'Meta description' => (string) $draft['meta_description'],
+    ];
+    $notes = array_map(fn($note) => noteWithSentence($note, $fieldText), $notes);
+
     return [
         'words'                => preg_match_all('/\S+/u', (string) $draft['explanation']),
         'copies'               => $copies,
@@ -253,6 +264,34 @@ function draftChecks(PDO $pdo, array $draft, array $published, array $read, arra
         'placeholder_warnings' => $placeholders['warnings'],
         'notes'                => $notes,
     ];
+}
+
+/**
+ * A house-style note about particular words ('Explanation: "today" dates the
+ * text.' or '... "you should" reads as advice.'), with the sentence each word
+ * is in added, so it can be found and fixed. Other notes come back unchanged.
+ *
+ * $fieldText  the field's label (as in the note) => its text
+ */
+function noteWithSentence(string $note, array $fieldText): string
+{
+    if (!preg_match('/^(Intro|Explanation|Meta title|Meta description): "(.+?)" (?:dates the text|reads as advice)/', $note, $m)
+        || !isset($fieldText[$m[1]])) {
+        return $note;
+    }
+
+    $sentences = [];
+    foreach (explode('", "', $m[2]) as $word) {
+        foreach (preg_split('/(?<=[.!?])\s+|\n+/u', $fieldText[$m[1]], -1, PREG_SPLIT_NO_EMPTY) as $sentence) {
+            if (preg_match('/\b' . preg_quote($word, '/') . '\b/i', $sentence)) {
+                $sentences[trim($sentence)] = true;
+            }
+        }
+    }
+    if (!$sentences) {
+        return $note;
+    }
+    return $note . ' It is in: "' . quoteWords(implode('" and "', array_slice(array_keys($sentences), 0, 2)), 60) . '"';
 }
 
 /** How many problems the automatic rewrite can be asked to fix. The rewrite must lower this to be kept. */
