@@ -256,6 +256,22 @@ function draftChecks(PDO $pdo, array $draft, array $published, array $read, arra
     ];
     $notes = array_map(fn($note) => noteWithSentence($note, $fieldText), $notes);
 
+    // The meta title has a limit too, because the site name is added after it.
+    $title = trim((string) $draft['meta_title']);
+    if ($title !== '' && function_exists('fillPlaceholders')) {
+        try {
+            $titleFilled = trim((string) fillPlaceholders($title, (string) $subject['country_code'], $published));
+        } catch (Throwable $e) {
+            $titleFilled = '';
+        }
+        $titleLength = (int) preg_match_all('/./us', $titleFilled);
+        if ($titleFilled !== '' && $titleLength > META_TITLE_MAX) {
+            $notes[] = "Meta title: $titleLength characters with the figures filled in; the house style asks for "
+                . META_TITLE_MAX . ' or fewer, since the site name is added after it. Cut at least '
+                . ($titleLength - META_TITLE_MAX) . ' characters. It reads: "' . $titleFilled . '"';
+        }
+    }
+
     // The meta description is counted as search results show it, with the figures
     // filled in. The writer can't count characters: one draft came back at 158 and
     // the rewrite of it at 129, against a house style of 140 to 155.

@@ -38,6 +38,8 @@ const EXPLANATION_MAX_WORDS = 800;
 /** The meta description's length in characters, with figures filled in (the editor's counter uses the same). */
 const META_DESCRIPTION_MIN = 140;
 const META_DESCRIPTION_MAX = 155;
+/** The meta title's most characters with figures filled in; " — Finance Fact Library" is added after it (docs/house-style/core.md). */
+const META_TITLE_MAX = 42;
 
 /** A figure checked this often or more is a rate (house style, section 2). */
 const RATE_REVIEW_DAYS = 42;
@@ -161,11 +163,8 @@ const CLOSE_COPY_THRESHOLD = 0.6;
 
 /** Sentences with fewer words than this are not compared (short facts can't be reworded). */
 const CLOSE_COPY_MIN_WORDS = 8;
-/** Source lines joined, up to this many in a row, when a source sentence is wrapped or bulleted over several. */
-const CLOSE_COPY_JOIN_LINES = 3;
-/** Only lines this short or shorter are joined: a long line is a whole sentence already. */
-const CLOSE_COPY_JOIN_MAX_WORDS = 22;
-
+/** The most words of each source page the second (word-stream) pass reads. */
+const CLOSE_COPY_STREAM_WORDS = 40000;
 /**
  * Sentences in a text that follow a source page's wording too closely.
  *
@@ -196,40 +195,31 @@ function findCloseCopies(string $text, array $sourceTexts, array $sourceNames = 
     $sentencesOf = fn(string $t): array => preg_split('/(?<=[.!?])\s+|\n+/u', $t, -1, PREG_SPLIT_NO_EMPTY);
 
     // The source sentences, as word lists (and word sets, for a quick first test).
-    //
-    // Each line of a source is a candidate, and so are runs of up to
-    // CLOSE_COPY_JOIN_LINES short lines in a row. Pages saved from a PDF break
-    // lines in the middle of a sentence, and lists put the parts of one sentence
-    // on separate lines, so a draft sentence that follows the whole thing would
-    // otherwise be compared with a fragment at a time and score too low.
     $source = [];
     foreach ($sourceTexts as $url => $pageText) {
-        $name = $sourceNames[$url] ?? $url;
-        $lines = [];
         foreach (array_slice($sentencesOf($pageText), 0, 4000) as $sentence) {
             $w = $words($sentence);
-            if ($w) {
-                $lines[] = ['w' => $w, 'text' => trim($sentence)];
+            if (count($w) >= 6) {
+                $source[] = ['w' => $w, 'set' => array_flip($w), 'name' => $sourceNames[$url] ?? $url, 'text' => trim($sentence)];
             }
         }
-        $total = count($lines);
-        for ($i = 0; $i < $total; $i++) {
-            if (count($lines[$i]['w']) >= 6) {
-                $source[] = ['w' => $lines[$i]['w'], 'set' => array_flip($lines[$i]['w']), 'name' => $name, 'text' => $lines[$i]['text']];
-            }
-            $joinedWords = $lines[$i]['w'];
-            $joinedText = $lines[$i]['text'];
-            for ($k = 1; $k < CLOSE_COPY_JOIN_LINES && $i + $k < $total; $k++) {
-                if (count($lines[$i + $k - 1]['w']) > CLOSE_COPY_JOIN_MAX_WORDS
-                    || count($lines[$i + $k]['w']) > CLOSE_COPY_JOIN_MAX_WORDS) {
-                    break;
-                }
-                $joinedWords = array_merge($joinedWords, $lines[$i + $k]['w']);
-                $joinedText .= ' ' . $lines[$i + $k]['text'];
-                if (count($joinedWords) >= 6) {
-                    $source[] = ['w' => $joinedWords, 'set' => array_flip($joinedWords), 'name' => $name, 'text' => $joinedText];
-                }
-            }
+    }
+
+    // The source pages as streams of words, for the second pass below. The pages
+    // the site reads have every run of whitespace turned into one space (see
+    // readPageText()), so they have no line breaks: a bullet with no full stop is
+    // glued to the sentences around it, and splitting into sentences can't be relied on.
+    $streams = [];
+    foreach ($sourceTexts as $url => $pageText) {
+        if (preg_match_all('/[\p{L}\p{N}]+/u', (string) $pageText, $m, PREG_OFFSET_CAPTURE)) {
+            $tokens = array_slice($m[0], 0, CLOSE_COPY_STREAM_WORDS);
+            $streams[] = [
+                'name' => $sourceNames[$url] ?? $url,
+                'text' => (string) $pageText,
+                'w'    => array_map(fn($t) => strtolower($t[0]), $tokens),
+                'from' => array_column($tokens, 1),
+                'to'   => array_map(fn($t) => $t[1] + strlen($t[0]), $tokens),
+            ];
         }
     }
     if (!$source) {
@@ -282,6 +272,17 @@ function findCloseCopies(string $text, array $sourceTexts, array $sourceNames = 
                 $bestText = $candidate['text'];
             }
         }
+        // Second pass, for what the sentence-by-sentence comparison can miss: a
+        // sentence that follows a stretch of the page that doesn't line up with
+        // the page's own sentences (a list, a wrapped line, a heading in between).
+        if ($best < CLOSE_COPY_THRESHOLD && $streams) {
+            $window = closeCopyWindowMatch($a, $streams);
+            if ($window !== null && $window['score'] > $best) {
+                $best = $window['score'];
+                $bestName = $window['name'];
+                $bestText = $window['text'];
+            }
+        }
         if ($best >= CLOSE_COPY_THRESHOLD) {
             $found[] = ['quote' => $sentence, 'score' => $best, 'source' => $bestName, 'matched' => preg_replace('/\s+/u', ' ', $bestText)];
         }
@@ -289,6 +290,97 @@ function findCloseCopies(string $text, array $sourceTexts, array $sourceNames = 
 
     usort($found, fn($x, $y) => $y['score'] <=> $x['score']);
     return $found;
+}
+
+/**
+ * The stretch of a source page's words that a sentence follows most closely,
+ * wherever it sits, whatever the page's sentence or line breaks.
+ *
+ * A window a little longer than the sentence slides along each page's words.
+ * Where the window shares enough words with the sentence, the words they
+ * have in common IN THE SAME ORDER are counted, and the score is the same as in
+ * findCloseCopies() (2 x common / (sentence + stretch)), where the stretch is the
+ * part of the window from the first matching word to the last, so a window that
+ * is longer than the passage doesn't lower the score.
+ *
+ * $a        the sentence's words (lower case)
+ * $streams  the pages, as built in findCloseCopies()
+ *
+ * Returns ['score', 'name', 'text' (the source's own words for the stretch)] or null.
+ */
+function closeCopyWindowMatch(array $a, array $streams): ?array
+{
+    $n = count($a);
+    $length = max($n + 6, (int) ceil($n * 1.4));
+    $step = max(2, intdiv($n, 4));
+    $set = array_flip($a);
+    $best = null;
+
+    foreach ($streams as $stream) {
+        $w = $stream['w'];
+        $total = count($w);
+        if ($total < 6) {
+            continue;
+        }
+        // prefix[i]: how many of the first i words are words the sentence uses.
+        $prefix = [0];
+        foreach ($w as $i => $word) {
+            $prefix[$i + 1] = $prefix[$i] + (isset($set[$word]) ? 1 : 0);
+        }
+
+        $start = 0;
+        while (true) {
+            $end = min($start + $length, $total);
+            $m = $end - $start;
+            if ($prefix[$end] - $prefix[$start] >= CLOSE_COPY_THRESHOLD / 2 * ($n + $m)) {
+                // Longest common subsequence of the sentence and this window.
+                $table = array_fill(0, $n + 1, array_fill(0, $m + 1, 0));
+                for ($i = 1; $i <= $n; $i++) {
+                    for ($j = 1; $j <= $m; $j++) {
+                        $table[$i][$j] = $a[$i - 1] === $w[$start + $j - 1]
+                            ? $table[$i - 1][$j - 1] + 1
+                            : max($table[$i - 1][$j], $table[$i][$j - 1]);
+                    }
+                }
+                $common = $table[$n][$m];
+                if ($common >= CLOSE_COPY_MIN_WORDS && $common >= CLOSE_COPY_THRESHOLD / 2 * $n) {
+                    // Walk back through the table to find where the match begins and ends.
+                    $i = $n;
+                    $j = $m;
+                    $lastJ = null;
+                    $firstJ = null;
+                    while ($i > 0 && $j > 0) {
+                        if ($a[$i - 1] === $w[$start + $j - 1]) {
+                            $lastJ ??= $j;
+                            $firstJ = $j;
+                            $i--;
+                            $j--;
+                        } elseif ($table[$i - 1][$j] >= $table[$i][$j - 1]) {
+                            $i--;
+                        } else {
+                            $j--;
+                        }
+                    }
+                    $span = $lastJ - $firstJ + 1;
+                    $score = 2 * $common / ($n + $span);
+                    if ($best === null || $score > $best['score']) {
+                        $from = $stream['from'][$start + $firstJ - 1];
+                        $to = $stream['to'][$start + $lastJ - 1];
+                        $best = [
+                            'score' => $score,
+                            'name'  => $stream['name'],
+                            'text'  => substr($stream['text'], $from, min($to - $from, 600)),
+                        ];
+                    }
+                }
+            }
+            if ($end >= $total) {
+                break;
+            }
+            $start += $step;
+        }
+    }
+    return $best;
 }
 
 /** A quote cut to at most $max words, as an exact beginning of the sentence. */
