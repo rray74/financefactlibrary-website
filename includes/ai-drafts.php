@@ -256,6 +256,27 @@ function draftChecks(PDO $pdo, array $draft, array $published, array $read, arra
     ];
     $notes = array_map(fn($note) => noteWithSentence($note, $fieldText), $notes);
 
+    // The meta description is counted as search results show it, with the figures
+    // filled in. The writer can't count characters: one draft came back at 158 and
+    // the rewrite of it at 129, against a house style of 140 to 155.
+    $meta = trim((string) $draft['meta_description']);
+    if ($meta !== '' && function_exists('fillPlaceholders')) {
+        try {
+            $metaFilled = trim((string) fillPlaceholders($meta, (string) $subject['country_code'], $published));
+        } catch (Throwable $e) {
+            $metaFilled = '';
+        }
+        $length = (int) preg_match_all('/./us', $metaFilled); // characters, without needing mbstring
+        if ($metaFilled !== '' && ($length < META_DESCRIPTION_MIN || $length > META_DESCRIPTION_MAX)) {
+            $notes[] = "Meta description: $length characters with the figures filled in; the house style asks for "
+                . META_DESCRIPTION_MIN . ' to ' . META_DESCRIPTION_MAX . '. '
+                . ($length < META_DESCRIPTION_MIN
+                    ? 'Add at least ' . (META_DESCRIPTION_MIN - $length) . ' characters'
+                    : 'Cut at least ' . ($length - META_DESCRIPTION_MAX) . ' characters')
+                . ', aiming for about ' . intdiv(META_DESCRIPTION_MIN + META_DESCRIPTION_MAX, 2) . '. It reads: "' . $metaFilled . '"';
+        }
+    }
+
     return [
         'words'                => preg_match_all('/\S+/u', (string) $draft['explanation']),
         'copies'               => $copies,

@@ -35,6 +35,9 @@ const TEXT_FIELD_LABELS = [
 
 /** The house style's ceiling for an explanation (docs/house-style/core.md, section 6). */
 const EXPLANATION_MAX_WORDS = 800;
+/** The meta description's length in characters, with figures filled in (the editor's counter uses the same). */
+const META_DESCRIPTION_MIN = 140;
+const META_DESCRIPTION_MAX = 155;
 
 /** A figure checked this often or more is a rate (house style, section 2). */
 const RATE_REVIEW_DAYS = 42;
@@ -158,6 +161,10 @@ const CLOSE_COPY_THRESHOLD = 0.6;
 
 /** Sentences with fewer words than this are not compared (short facts can't be reworded). */
 const CLOSE_COPY_MIN_WORDS = 8;
+/** Source lines joined, up to this many in a row, when a source sentence is wrapped or bulleted over several. */
+const CLOSE_COPY_JOIN_LINES = 3;
+/** Only lines this short or shorter are joined: a long line is a whole sentence already. */
+const CLOSE_COPY_JOIN_MAX_WORDS = 22;
 
 /**
  * Sentences in a text that follow a source page's wording too closely.
@@ -189,12 +196,39 @@ function findCloseCopies(string $text, array $sourceTexts, array $sourceNames = 
     $sentencesOf = fn(string $t): array => preg_split('/(?<=[.!?])\s+|\n+/u', $t, -1, PREG_SPLIT_NO_EMPTY);
 
     // The source sentences, as word lists (and word sets, for a quick first test).
+    //
+    // Each line of a source is a candidate, and so are runs of up to
+    // CLOSE_COPY_JOIN_LINES short lines in a row. Pages saved from a PDF break
+    // lines in the middle of a sentence, and lists put the parts of one sentence
+    // on separate lines, so a draft sentence that follows the whole thing would
+    // otherwise be compared with a fragment at a time and score too low.
     $source = [];
     foreach ($sourceTexts as $url => $pageText) {
+        $name = $sourceNames[$url] ?? $url;
+        $lines = [];
         foreach (array_slice($sentencesOf($pageText), 0, 4000) as $sentence) {
             $w = $words($sentence);
-            if (count($w) >= 6) {
-                $source[] = ['w' => $w, 'set' => array_flip($w), 'name' => $sourceNames[$url] ?? $url, 'text' => trim($sentence)];
+            if ($w) {
+                $lines[] = ['w' => $w, 'text' => trim($sentence)];
+            }
+        }
+        $total = count($lines);
+        for ($i = 0; $i < $total; $i++) {
+            if (count($lines[$i]['w']) >= 6) {
+                $source[] = ['w' => $lines[$i]['w'], 'set' => array_flip($lines[$i]['w']), 'name' => $name, 'text' => $lines[$i]['text']];
+            }
+            $joinedWords = $lines[$i]['w'];
+            $joinedText = $lines[$i]['text'];
+            for ($k = 1; $k < CLOSE_COPY_JOIN_LINES && $i + $k < $total; $k++) {
+                if (count($lines[$i + $k - 1]['w']) > CLOSE_COPY_JOIN_MAX_WORDS
+                    || count($lines[$i + $k]['w']) > CLOSE_COPY_JOIN_MAX_WORDS) {
+                    break;
+                }
+                $joinedWords = array_merge($joinedWords, $lines[$i + $k]['w']);
+                $joinedText .= ' ' . $lines[$i + $k]['text'];
+                if (count($joinedWords) >= 6) {
+                    $source[] = ['w' => $joinedWords, 'set' => array_flip($joinedWords), 'name' => $name, 'text' => $joinedText];
+                }
             }
         }
     }
@@ -249,7 +283,7 @@ function findCloseCopies(string $text, array $sourceTexts, array $sourceNames = 
             }
         }
         if ($best >= CLOSE_COPY_THRESHOLD) {
-            $found[] = ['quote' => $sentence, 'score' => $best, 'source' => $bestName, 'matched' => $bestText];
+            $found[] = ['quote' => $sentence, 'score' => $best, 'source' => $bestName, 'matched' => preg_replace('/\s+/u', ' ', $bestText)];
         }
     }
 
