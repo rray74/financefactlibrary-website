@@ -157,11 +157,11 @@ A checker has read the draft against the official source pages and the house sty
 
 How to fix each kind of problem:
 - Missing exception or condition: add the missing point in one or two plain sentences, using ONLY what the source pages in the request say, in your own words. Work it into the paragraph it belongs to. Add a new section only if no section fits.
-- Contradicts a source, probably wrong, overstated, or an unsupported claim: say what the source says, in the strength the source uses ("could" stays "could"; "usually" stays "usually"). If the source does not support a claim at all, remove it.
+- Contradicts a source, probably wrong, overstated, or an unsupported claim: say what the source says, in the strength the source uses ("could" stays "could"; "usually" stays "usually"). If the source does not support a claim at all, remove it. EXCEPTION: if the sentence is about how or when a figure changed (rose, fell, "from X to Y", "older guidance", the year it changed), DELETE the whole sentence. Do not correct it: the figure cards keep each figure's history, and the text must not date itself. A corrected version of such a sentence only brings back a typed figure or year that the program checks then refuse.
 - Heading that doesn't match its text: change the heading or move the point so they agree. A heading states a point; it is not a label.
 - Reads as advice: state the rule instead of telling the reader what to do ("DWP has to be told", not "tell DWP").
 - Too close to a source: restate the point in your own words AND a different sentence structure.
-- Duplicated, or a section that is not needed: DELETE it, or merge what is worth keeping into the one section where the point belongs. You may delete whole sections and paragraphs for this, and you need not keep their text. A point is made once. A section that only restates what the figure cards show can go. Do not delete the only place where a point marked MUST in the coverage list is handled.
+- Duplicated, or a section that is not needed: the finding quotes one of the places the point is made. Keep the fuller or better-placed statement and DELETE the other, or merge what is worth keeping into the one section where the point belongs. A sentence that only points to another section ("this is covered in the next section") is deleted, not reworded. You may delete whole sections and paragraphs for this, and you need not keep their text. A point is made once. A section that only restates what the figure cards show can go. Do not delete the only place where a point marked MUST in the coverage list is handled.
 - Meta title or meta description of the wrong length: the problem gives the count with the figures filled in and what to cut or add. Count again after you change it.
 - Never state a count, an age, a date or a rule that the source pages do not give.
 
@@ -276,7 +276,19 @@ function polishWhatGotWorse(array $before, array $after): string
             $rose[] = "$name $was to $now";
         }
     }
-    return $rose ? implode(', ', $rose) : draftScore($before) . ' problems before, ' . draftScore($after) . ' after';
+    $what = $rose ? implode(', ', $rose) : draftScore($before) . ' problems before, ' . draftScore($after) . ' after';
+
+    // Say WHICH new problem it is: a count alone gave nothing to act on (four
+    // rewrites in a row were refused for "house-style notes 0 to 1").
+    $newNotes = array_slice(array_values(array_diff($after['notes'], $before['notes'])), 0, 2);
+    $newCopies = array_slice(array_values(array_diff(array_column($after['copies'], 'quote'), array_column($before['copies'], 'quote'))), 0, 1);
+    foreach ($newNotes as $note) {
+        $what .= '; new note: "' . quoteWords($note, 35) . '"';
+    }
+    foreach ($newCopies as $quote) {
+        $what .= '; new near-copy: "' . quoteWords((string) $quote, 20) . '"';
+    }
+    return $what;
 }
 
 /**
@@ -314,6 +326,7 @@ function polishRejectIsRepairable(string $why): bool
  *   findings  the findings left in it
  *   counts    findings found by each check, in order, e.g. [7, 3, 1]
  *   splits    the same with substance and style, e.g. ["7 (3 substance, 4 style)", ...]
+ *   log       what each check found, one line per check (shown in the draft's details)
  *   best      which check's version was kept (1 = the draft as it came)
  *   stop_met  true if the kept version met the stop rule
  *   clean     true if the kept version had no findings at all
@@ -340,6 +353,7 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
     $versions = [];   // each checked version: ['fields', 'result', 'checks', 'score', 'met']
     $counts = [];
     $splits = [];
+    $log = [];        // what each check found, in words, for the draft's details line
     $notes = [];
     $tokens = [];
     $best = null;
@@ -362,6 +376,14 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
 
         $versions[] = ['fields' => $current, 'result' => $result, 'checks' => $programChecks, 'score' => $score, 'met' => $met];
         $counts[] = count($result['findings']);
+        // What this check found: each finding's kind and its first words, and the
+        // program checks' problems, so a finding that survives rewrites can be seen.
+        $logLine = "Check $check: ";
+        foreach ($result['findings'] as $f) {
+            $logLine .= (in_array($f['kind'], TEXT_CHECK_STYLE_KINDS, true) ? 'style' : 'SUBSTANCE') . ' '
+                . (TEXT_CHECK_KINDS[$f['kind']] ?? $f['kind']) . ' "' . quoteWords($f['quote'], 10) . '"; ';
+        }
+        $log[] = rtrim($logLine . ($programProblems ? "$programProblems program problem(s)" : ($result['findings'] ? '' : 'nothing found')), '; ') . '.';
         $splits[] = count($result['findings']) . " ($substance substance, $style style"
             . ($programProblems ? ", $programProblems program" : '') . ')';
 
@@ -460,7 +482,7 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
     if ($best === null) {
         // No check ran at all: the draft goes back as it was.
         return [
-            'fields' => $current, 'result' => null, 'findings' => [], 'counts' => [], 'splits' => [], 'best' => 0,
+            'fields' => $current, 'result' => null, 'findings' => [], 'counts' => [], 'splits' => [], 'log' => $log, 'best' => 0,
             'stop_met' => false, 'clean' => false, 'left' => [0, 0, 0], 'model' => (string) $model,
             'notes' => $notes, 'tokens' => $tokens, 'problems' => [],
         ];
@@ -479,6 +501,7 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
         'findings' => $kept['result']['findings'],
         'counts'   => $counts,
         'splits'   => $splits,
+        'log'      => $log,
         'best'     => $best + 1,
         'stop_met' => $kept['met'],
         'clean'    => !$kept['result']['findings'],
@@ -558,6 +581,7 @@ function polishPageEndToEnd(PDO $pdo, array $subject, array $facts, string $made
         // The note keeps the draft's own summary and details, with the polish between them.
         [$summary, $details] = array_pad(explode(' | Details: ', (string) $draft['rewrite_note'], 2), 2, '');
         $details .= $polish['tokens'] ? ' Polish rewrites: ' . implode(', ', array_map('number_format', $polish['tokens'])) . ' tokens written.' : '';
+        $details .= $polish['log'] ? ' ' . implode(' ', $polish['log']) : '';
         $draft['rewrite_note'] = trim($summary . ' ' . polishNote($polish)) . ' | Details: ' . trim($details);
     }
 

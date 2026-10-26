@@ -79,7 +79,7 @@ const DRAFT_CHECKLIST = [
     'Each rule or point is made once, in one section only. A point made in the intro or meta fields is not made again as a section.',
     'Every heading states a point that is true of everything under it and of the sources. A heading must not promise more than its text says.',
     'Hedging matches the sources: "could", "may", "usually" and "in some cases" stay as the source has them. Nothing is stated more strongly or more broadly than the source states it.',
-    'No dating words (currently, now, new, latest, today, this year, recently, at the moment), no typed tax year, and no typed figure that changes.',
+    'No dating words (currently, now, new, latest, today, this year, recently, at the moment), no typed tax year, and no typed figure that changes. No history of a figure either: never say a figure rose, fell, changed or was introduced, or give an earlier amount or the year it changed, unless a figure card or its note says so. The page\'s tax year is the year its figures are for, not the year they changed (the cards keep each figure\'s history).',
     'Nothing tells the reader what to do, and there is no generic closing section.',
     'Meta title 42 characters or fewer and meta description 140 to 155 characters, counted with the figures filled in. The intro is one sentence of 120 to 200 characters with no figures.',
 ];
