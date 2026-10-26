@@ -261,6 +261,44 @@ function polishRejects(PDO $pdo, array $subject, array $published, array $read, 
     return null;
 }
 
+/**
+ * The fields a rewrite may change: the explanation always, and the intro, meta
+ * title and meta description only if something was listed against them (an AI
+ * finding in that field, a program problem that names it, or for the intro a
+ * near-copy sentence that is in it). Anything else is put back as it was.
+ *
+ * $findings       the AI check's findings
+ * $programFixes   draftFixList() of the program checks (notes begin "Intro:",
+ *                 "Meta title:" or "Meta description:" when they are about those)
+ * $programChecks  draftChecks() of the same text, for the near-copies
+ * $current        the text being rewritten
+ */
+function polishFieldsToChange(array $findings, array $programFixes, array $programChecks, array $current): array
+{
+    $allowed = ['explanation'];
+    $labels = ['intro' => 'Intro', 'meta_title' => 'Meta title', 'meta_description' => 'Meta description'];
+
+    foreach ($labels as $field => $label) {
+        $listed = (bool) array_filter($findings, fn($f) => $f['field'] === $field);
+        foreach ($programFixes as $fix) {
+            if (preg_match('/^' . preg_quote($label, '/') . '\b/', $fix)) {
+                $listed = true;
+            }
+        }
+        if ($field === 'intro') {
+            foreach ($programChecks['copies'] as $copy) {
+                if (stripos((string) $current['intro'], trim((string) $copy['quote'], " .\"")) !== false) {
+                    $listed = true;
+                }
+            }
+        }
+        if ($listed) {
+            $allowed[] = $field;
+        }
+    }
+    return $allowed;
+}
+
 /** The program-check categories that rose, e.g. "near-copies 0 to 5, house-style notes 1 to 2". */
 function polishWhatGotWorse(array $before, array $after): string
 {
@@ -440,6 +478,18 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
             }
         }
         $revised = array_intersect_key($revised, array_flip(DRAFT_FIELDS));
+
+        // The rewrite is asked to touch only what was listed, but it rewrites all four
+        // fields every time and the meta fields drift: on Pension Tax Relief two
+        // rewrites in a row came back with a meta description of 172 and 176
+        // characters (limit 155), and each was refused. A field nothing was listed
+        // against keeps its text.
+        $mayChange = polishFieldsToChange($result['findings'], $programFixes, $programChecks, $current);
+        foreach (['intro', 'meta_title', 'meta_description'] as $field) {
+            if (!in_array($field, $mayChange, true)) {
+                $revised[$field] = $current[$field];
+            }
+        }
 
         $why = polishRejects($pdo, $subject, $published, $read, $current, $revised, $deletionAllowed);
 
