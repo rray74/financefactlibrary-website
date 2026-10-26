@@ -40,6 +40,19 @@
  * checked: numbers typed in it that aren't among the page's figures, and
  * any placeholder problems, are stored with it and shown in the editor.
  *
+ * Checklist and self-check: the writer's prompt now opens with a short
+ * priority checklist (DRAFT_CHECKLIST), the rules past drafts broke most even
+ * though the house style and lessons state them. The writer answers it in a
+ * <selfcheck> block after the fields; every "no" is sent back to it as a fix
+ * through the same automatic rewrite as the program checks (see
+ * parseSelfCheck() and reviseDraft()).
+ *
+ * Coverage list: in the background paths (nightly and the polish queue) the
+ * sources are read first by a separate call (includes/ai-coverage.php) that
+ * lists the rules, exceptions, removal and appeal routes and worked examples
+ * the page has to handle. The writer plans against that list. The editor's
+ * "Draft this page" button skips it (a web request has a time limit).
+ *
  * Uses callClaude() and the API key from includes/ai-proposer.php.
  */
 
@@ -48,9 +61,28 @@ require_once __DIR__ . '/admin-queries.php'; // getTopQueriesForPath() for the p
 require_once __DIR__ . '/text-checks.php';   // findUnmatchedNumbers(), shared with the checks on saved text
 require_once __DIR__ . '/source-pages.php';  // readSourcePagesForFacts()
 require_once __DIR__ . '/lessons.php';       // writingGuidanceText(): house style and lessons
+require_once __DIR__ . '/ai-coverage.php';   // buildCoverage(): what the page must handle, read from the sources first
 
 /** The four fields a draft covers, in the order the editor shows them. */
 const DRAFT_FIELDS = ['intro', 'explanation', 'meta_title', 'meta_description'];
+
+/**
+ * The priority checklist: the rules the writer broke most often, in the order
+ * that matters. It is shown at the top of the writer's prompt (before the long
+ * house style, where the lessons used to be buried at the bottom) and answered
+ * item by item in the writer's <selfcheck> block. The numbers matter: a "no" at
+ * item 3 is turned back into the text of item 3 by parseSelfCheck().
+ */
+const DRAFT_CHECKLIST = [
+    'Every sentence is in your own words AND your own sentence structure. No sentence follows a source, even with a few words changed.',
+    'Nothing repeats what the figure cards already show, and no section walks through the figures one by one.',
+    'Each rule or point is made once, in one section only. A point made in the intro or meta fields is not made again as a section.',
+    'Every heading states a point that is true of everything under it and of the sources. A heading must not promise more than its text says.',
+    'Hedging matches the sources: "could", "may", "usually" and "in some cases" stay as the source has them. Nothing is stated more strongly or more broadly than the source states it.',
+    'No dating words (currently, now, new, latest, today, this year, recently, at the moment), no typed tax year, and no typed figure that changes.',
+    'Nothing tells the reader what to do, and there is no generic closing section.',
+    'Meta title 42 characters or fewer and meta description 140 to 155 characters, counted with the figures filled in. The intro is one sentence of 120 to 200 characters with no figures.',
+];
 
 /** Most characters of each source page, and of all of them together, sent to the writer. */
 const DRAFT_SOURCE_CHARACTERS_EACH = 30000;
@@ -116,10 +148,15 @@ const DRAFT_SOURCE_CHARACTERS_TOTAL = 120000;
  * $timeBudget    seconds; the rewrite is skipped if drafting took longer
  * $retryTokens   a larger token ceiling to retry with if all the room went on
  *                reasoning (0: don't retry; see DRAFT_RETRY_MAX_TOKENS_NIGHTLY)
+ * $withCoverage  read the sources first and list what the page must handle
+ *                (includes/ai-coverage.php). The background paths pass true;
+ *                the editor's button doesn't, to stay inside a web request.
  *
  * Returns the four fields (text, or NULL if the AI left one empty) plus
  * 'problems' (what is still wrong, in plain sentences) and 'rewrite_note'
- * (what the automatic rewrite did, or '').
+ * (what the automatic rewrite did, or ''). With $withCoverage it also has
+ * 'coverage': the list, for the polish loop. The caller must take that key
+ * out before storing the draft (polishPageEndToEnd() does).
  */
 function draftSubjectPage(
     PDO $pdo,
@@ -127,7 +164,8 @@ function draftSubjectPage(
     array $facts,
     int $maxRevisions = DRAFT_REVISIONS_EDITOR,
     int $timeBudget = DRAFT_REVISION_TIME_BUDGET_EDITOR,
-    int $retryTokens = 0
+    int $retryTokens = 0,
+    bool $withCoverage = false
 ): array {
     $started = microtime(true);
 
@@ -140,9 +178,17 @@ function draftSubjectPage(
     // them. A page that can't be read is reported to the AI, not fatal.
     $read = readSourcePagesForFacts($published, DRAFT_SOURCE_CHARACTERS_EACH);
 
+    // The coverage pass: what the sources say the page must handle, listed
+    // before the writer starts. Never fatal; without a list the page is
+    // drafted as before.
+    $coverage = ['items' => [], 'tokens' => 0, 'note' => ''];
+    if ($withCoverage) {
+        $coverage = buildCoverage($subject, $published, requestSourceBlock($read['sources'], $read['texts']));
+    }
+
     $reply = callClaude(
         pageDraftInstructions((string) $subject['country_prefix'], (string) $subject['country_code']),
-        pageDraftRequest($subject, $published, $read['sources'], $read['texts']),
+        pageDraftRequest($subject, $published, $read['sources'], $read['texts'], coverageText($coverage['items'])),
         DRAFT_MAX_TOKENS,
         null,
         draftModel(),
@@ -160,18 +206,24 @@ function draftSubjectPage(
     $checks = draftChecks($pdo, $draft, $published, $read, $subject);
     $firstWords = $checks['words'];
 
+    // What the writer said about its own draft (the <selfcheck> block): each
+    // "no" becomes a fix for the automatic rewrite below. And which "must"
+    // points of the coverage list its plan did not account for (for the details line).
+    $selfFixes = parseSelfCheck($reply);
+    $planGaps = coveragePlanGaps($coverage['items'], $reply);
+
     // --- Automatic rewrite of what the checks found. ---
     $rewriteNotes = [];
     $rewriteAccepted = false;
     $rewriteTokens = [];
-    if ($maxRevisions > 0 && draftFixList($checks) !== []) {
+    if ($maxRevisions > 0 && (draftFixList($checks) !== [] || $selfFixes !== [])) {
         if (microtime(true) - $started > $timeBudget) {
             $rewriteNotes[] = 'Not rewritten automatically: drafting took too long to leave time for it. Click Redraft this page to try again.';
         } else {
             // A cut-off draft is still a usable draft (it stops at its last complete
             // paragraph), so it is rewritten too: the rewrite fixes its near-copies
             // and brings it within the length limit.
-            $result = reviseDraft($pdo, $subject, $published, $read, $draft, $checks, $maxRevisions, $truncated, $retryTokens);
+            $result = reviseDraft($pdo, $subject, $published, $read, $draft, $checks, $maxRevisions, $truncated, $retryTokens, $selfFixes);
             [$draft, $checks, $rewriteNotes] = [$result['draft'], $result['checks'], $result['notes']];
             $rewriteAccepted = $result['accepted'];
             $rewriteTokens = $result['tokens'];
@@ -189,6 +241,16 @@ function draftSubjectPage(
     foreach ($rewriteTokens as $i => $tokens) {
         $details .= ' Rewrite ' . ($i + 1) . ': ' . number_format($tokens) . ' tokens written.';
     }
+    // The writer's own self-check, and the coverage list, so a run can be read afterwards.
+    $details .= ' Writer self-check: ' . (strpos($reply, '<selfcheck>') === false
+        ? 'not given.'
+        : ($selfFixes ? count($selfFixes) . ' item(s) answered no.' : 'all yes.'));
+    if ($withCoverage) {
+        $details .= ' ' . $coverage['note'];
+        if ($planGaps) {
+            $details .= ' The writer\'s plan did not account for: ' . implode(', ', $planGaps) . '.';
+        }
+    }
 
     // A successful rewrite replaces the cut-off text, so the red box doesn't
     // describe it as if it were still there (the note says what happened).
@@ -201,7 +263,37 @@ function draftSubjectPage(
         'problems'     => draftProblemLines($checks, $stillCutOff, $dropped),
         // The editor shows what follows " | Details: " in small type.
         'rewrite_note' => implode(' ', $rewriteNotes) . ' | Details: ' . $details,
-    ];
+    ] + ($withCoverage ? ['coverage' => $coverage['items']] : []);
+}
+
+/**
+ * The writer's own self-check, as fixes. The reply has a <selfcheck> block with
+ * a line per checklist item, "3: yes" or "3: no — what is wrong". Each "no"
+ * becomes one instruction for the automatic rewrite, naming the checklist rule
+ * and what the writer said was wrong. A missing block, or one with no "no",
+ * gives an empty list.
+ *
+ * $reply  the writer's whole reply
+ */
+function parseSelfCheck(string $reply): array
+{
+    if (!preg_match('#<selfcheck>(.*?)</selfcheck>#s', $reply, $block)) {
+        return [];
+    }
+    $fixes = [];
+    foreach (preg_split('/\R/u', $block[1]) as $line) {
+        if (!preg_match('/^\s*(\d+)\s*[:.)\-]\s*(yes|no)\b[\s:,\-\x{2013}\x{2014}]*(.*)$/iu', $line, $m)) {
+            continue;
+        }
+        $number = (int) $m[1];
+        if (strtolower($m[2]) !== 'no' || !isset(DRAFT_CHECKLIST[$number - 1])) {
+            continue;
+        }
+        $detail = trim($m[3]);
+        $fixes[] = 'Your own self-check says the draft breaks this rule: "' . DRAFT_CHECKLIST[$number - 1] . '" '
+            . ($detail !== '' ? 'What you found: ' . $detail : 'Find where, and fix it.');
+    }
+    return $fixes;
 }
 
 // ------------------------------------------------------------
@@ -418,18 +510,25 @@ function draftProblemLines(array $checks, bool $truncated, array $dropped = []):
  * that means it fixed the problems by throwing content away. Fields the
  * rewrite leaves out keep their earlier text.
  *
+ * $extraFixes  fixes that are not program checks (the writer's own self-check,
+ * parseSelfCheck()), added to the first round only. The program score can't
+ * show whether they were fixed, so in that round a rewrite is kept as long as
+ * it does not make the program score WORSE; later rounds, and every round
+ * without extra fixes, still need a strict improvement.
+ *
  * Returns ['draft', 'checks', 'notes' (what happened, in sentences),
  * 'accepted' (whether any round's rewrite was kept), 'tokens' (tokens each
  * round's reply used)].
  */
-function reviseDraft(PDO $pdo, array $subject, array $published, array $read, array $draft, array $checks, int $maxRounds, bool $cutOff = false, int $retryTokens = 0): array
+function reviseDraft(PDO $pdo, array $subject, array $published, array $read, array $draft, array $checks, int $maxRounds, bool $cutOff = false, int $retryTokens = 0, array $extraFixes = []): array
 {
     $notes = [];
     $tokens = [];
     $accepted = false;
 
     for ($round = 1; $round <= $maxRounds; $round++) {
-        $fixes = draftFixList($checks);
+        $useExtra = $round === 1 && $extraFixes !== [];
+        $fixes = array_merge(draftFixList($checks), $useExtra ? $extraFixes : []);
         if (!$fixes) {
             break;
         }
@@ -474,7 +573,10 @@ function reviseDraft(PDO $pdo, array $subject, array $published, array $read, ar
                 . "{$revisedChecks['words']} words, so the earlier text was kept.";
             break;
         }
-        if ($after >= $before) {
+        // With only the writer's own self-check to fix, the program score may not
+        // move at all, so "not worse" is the test; otherwise it has to improve.
+        $worse = $useExtra ? ($after > $before) : ($after >= $before);
+        if ($worse) {
             $notes[] = "Rewrite round $round did not improve it ($before problems before, $after after), so the earlier text was kept.";
             break;
         }
@@ -482,7 +584,8 @@ function reviseDraft(PDO $pdo, array $subject, array $published, array $read, ar
         $draft = $revised;
         $checks = $revisedChecks;
         $accepted = true;
-        $notes[] = "Rewrite round $round: $before problems found, $after left.";
+        $notes[] = "Rewrite round $round: $before problems found, $after left"
+            . ($useExtra ? ', plus ' . count($extraFixes) . " from the writer's own self-check." : '.');
     }
 
     return ['draft' => $draft, 'checks' => $checks, 'notes' => $notes, 'accepted' => $accepted, 'tokens' => $tokens];
@@ -563,11 +666,12 @@ You are also given the text of the official source pages the figures come from. 
 - Write in your own words and your own order. Never reuse a sentence from a source, even with a few words changed: restate the point. Only fixed names, terms and figures may match. A tool compares every sentence with the sources and reports close copies.
 - If a source could not be read, say nothing that depends on it.
 - In the source text, thousands separators have been removed (12570 means 12,570).
-- Before you reply, check that each heading is true of the text under it, that no rule is stated twice, and that every section earns its place.
+- If the request has a coverage list (points C1, C2 and so on, read from the sources), it is what the page has to handle. Plan against it: every point marked MUST is either covered by a section of your plan, or left out for a real reason. Points marked "if room" are optional. The list is a guide to what the sources say, so it never overrides the length limit or the checklist: a MUST point can usually be one or two sentences inside a section, not a section of its own.
 
-Reply with a plan and then the four fields between tags, in this order, and nothing else:
+Reply with a plan, then the four fields between tags, then your self-check, in this order, and nothing else:
 <plan>
 One line per section of the explanation, at most five lines, as "Heading: the one point it makes". Pick the points readers most often get wrong. Whatever you leave out is covered by the figure cards and the source pages.
+If the request has a coverage list, end each of those lines with " Covers: C2, C5", and add one last line "Left out: C7 (reason), C9 (reason)" naming every MUST point no section covers. A reason is a real one, such as "the figure card shows it" or "applies only in a rare case"; "no room" is not one.
 </plan>
 <intro>...</intro>
 <meta_title>...</meta_title>
@@ -575,13 +679,33 @@ One line per section of the explanation, at most five lines, as "Heading: the on
 <explanation>
 ...
 </explanation>
+<selfcheck>
+One line per checklist item, in order: "1: yes" or "2: no - what is wrong, quoting the words".
+</selfcheck>
 Write exactly the sections in your plan, each in one to three short paragraphs of at most 130 words in all. No tables, no numbered walkthroughs, and no more than one bullet list of at most four items. The explanation uses the editor's format from the house style, written exactly as it should appear, with real line breaks.
+
+The self-check: after </explanation>, re-read your fields as written, not as you meant them, and answer every item of the checklist. Be honest. A program sends every "no" back to you to fix, so a "no" costs little; a false "yes" lets the problem through to a stricter checker that reads the text against the sources.
 
 The house style follows, then the lessons learned from past edits.
 
 TXT;
 
-    return $job . writingGuidanceText($countryPrefix, $countryCode);
+    return draftChecklistText() . "\n\n" . $job . writingGuidanceText($countryPrefix, $countryCode);
+}
+
+/**
+ * The priority checklist as the top of the writer's prompt. It comes BEFORE
+ * the job and the house style, which run to about 200 lines with the lessons
+ * at the very end, so the rules the writer breaks most are the first thing it
+ * reads and the last thing it answers (in its <selfcheck>).
+ */
+function draftChecklistText(): string
+{
+    $text = "CHECKLIST. These are the rules drafts break most, although the house style and the lessons below state them. A strict checker enforces every one, and you answer each in your <selfcheck> after the fields. Keep them in mind as you write, not only at the end.\n";
+    foreach (DRAFT_CHECKLIST as $i => $item) {
+        $text .= ($i + 1) . '. ' . $item . "\n";
+    }
+    return $text;
 }
 
 /**
@@ -591,8 +715,9 @@ TXT;
  * $sources / $sourceTexts come from readSourcePagesForFacts(). The pages
  * are cut to fit DRAFT_SOURCE_CHARACTERS_TOTAL; a page left out for length
  * or that couldn't be read is named, so the AI says nothing that depends on it.
+ * $coverageBlock is the coverage list as text (coverageText()), or '' for none.
  */
-function pageDraftRequest(array $subject, array $facts, array $sources = [], array $sourceTexts = []): string
+function pageDraftRequest(array $subject, array $facts, array $sources = [], array $sourceTexts = [], string $coverageBlock = ''): string
 {
     $lines = [];
     foreach ($facts as $fact) {
@@ -636,9 +761,12 @@ function pageDraftRequest(array $subject, array $facts, array $sources = [], arr
         . ($subject['intro'] ? "Current intro (improve on it or keep its substance): {$subject['intro']}\n" : '')
         . ($searches ? "\nSearches that showed this page on Google:\n" . implode("\n", $searches) . "\n" : '')
         . "\nFigures on the page:\n" . implode("\n", $lines) . "\n"
+        . ($coverageBlock !== ''
+            ? "\nCoverage list (read from the sources before you started: what this page has to handle; plan against it, see your instructions):\n" . $coverageBlock
+            : '')
         . "\nSource pages (the official pages the figures come from; write from these):\n"
         . ($sourceBlock !== '' ? $sourceBlock : "(none: the figures cite no readable source page)\n")
-        . "\nReminder: the explanation must be " . DRAFT_MAX_WORDS . " words or fewer. Choose the points readers most often get wrong; leave the rest to the figure cards.\n";
+        . "\nReminder: the explanation must be " . DRAFT_MAX_WORDS . " words or fewer. Choose the points readers most often get wrong; leave the rest to the figure cards. Answer the checklist in <selfcheck> when you have written the fields.\n";
 }
 
 /**
@@ -704,7 +832,8 @@ function parsePageDraft(string $reply, array $info = []): array
             // The AI finished normally but left off the closing tag. The
             // explanation is the last field, so everything after the opening
             // tag is the explanation, and is complete.
-            $data['explanation'] = substr($reply, $opened + strlen('<explanation>'));
+            // (A <selfcheck> block after it is not part of the explanation.)
+            $data['explanation'] = preg_replace('#<selfcheck>.*$#s', '', substr($reply, $opened + strlen('<explanation>')));
         } elseif ($opened !== false && $stop === 'max_tokens') {
             // Cut off at the token limit, which means the AI ignored the length
             // limit. Rather than fail, keep what was written up to the last

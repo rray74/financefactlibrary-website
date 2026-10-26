@@ -11,13 +11,14 @@
  * draft pages with no explanation, most-searched first, the same order as
  * the dashboard), skips pages that already have a draft or have no
  * published figures, and drafts all four text fields of the next few
- * through draftSubjectPage() in includes/ai-drafts.php.
+ * through draftSubjectPage() in includes/ai-drafts.php (after a coverage
+ * pass that reads the sources first, includes/ai-coverage.php).
  *
  * Drafts go into subject_drafts (migration 012). They never change a live
  * page: you use them from the editor. Each page is drafted, then polished
- * (see includes/ai-polish.php): about ten minutes, and roughly 120,000
- * tokens read per page across the checks and rewrites, so tens of pence a
- * page at current prices (see your Anthropic usage page for the real figure).
+ * (see includes/ai-polish.php): up to about twenty minutes a page, since the
+ * polish loop now makes up to five checks and stops as soon as its stop rule
+ * is met. See your Anthropic usage page for what it costs.
  *
  * Needs ANTHROPIC_API_KEY in config/database.local.php, like the other AI
  * features.
@@ -38,9 +39,9 @@ require_once __DIR__ . '/../includes/ai-drafts.php';
 require_once __DIR__ . '/../includes/ai-polish.php';
 
 /**
- * Pages drafted per run. Each page is now drafted AND polished (up to three
- * AI checks and two rewrites, see includes/ai-polish.php), which takes about
- * ten minutes, so a run of 3 is about half an hour. Override in
+ * Pages drafted per run. Each page is now drafted AND polished (a coverage
+ * pass, then up to five AI checks and four rewrites, see includes/ai-polish.php),
+ * which takes up to about twenty minutes, so a run of 3 can take an hour. Override in
  * config/database.local.php with define('DRAFTS_PER_NIGHT', 5); polishing
  * can be switched off there with define('POLISH_ENABLED', false);
  */

@@ -1,29 +1,48 @@
 <?php
 /**
- * The polish loop: take a draft through the AI check and a rewrite of just
- * what the check found, up to three times, so the text that reaches you has
- * already been through the same checks you would otherwise run by hand.
+ * The polish loop: take a draft through the AI check and a rewrite of what
+ * the check and the program checks found, up to POLISH_MAX_CHECKS times, so
+ * the text that reaches you has already been through the same checks you
+ * would otherwise run by hand.
  *
- *   draft (ai-drafts.php, with its automatic rewrite)
- *     -> AI check (aiTextCheck, text-checks.php)
- *     -> rewrite ONLY the findings, from the source pages
- *     -> AI check again ... up to POLISH_MAX_CHECKS checks
+ *   draft (ai-drafts.php: coverage list, writer, its automatic rewrite)
+ *     -> AI check (aiTextCheck, text-checks.php) + the program checks
+ *     -> STOP if the stop rule is met (below)
+ *     -> rewrite the findings, from the source pages (it may delete)
+ *     -> check again ... up to POLISH_MAX_CHECKS checks
  *     -> the best version is kept, not the last
  *
- * Why "best, not last": the AI check is not repeatable (the same text has
- * passed one run and failed the next) and a rewrite can fix one thing and
- * break another. Every version is checked once, and the one with the fewest
- * findings wins (a substance finding weighs 3, a style finding 1; a tie keeps
- * the earlier version). A rewrite is also refused outright, before it costs
- * another check, if it breaks the program checks (length, placeholders,
- * near-copies, typed figures) or throws away most of the text.
+ * The stop rule (polishStopRuleMet()): the AI check has NO substance
+ * findings (contradicts a source or figure, probably wrong, regional
+ * difference or exception missing, heading mismatch), at most
+ * POLISH_STOP_MAX_STYLE style findings (said twice, section not needed, house
+ * style, too close to a source, advice), and the program checks are clean
+ * (no near-copies, length within limits, valid placeholders, no house-style
+ * notes such as dating words, advice phrasing or meta lengths). "Zero
+ * findings" is a moving target, because the check is not repeatable and
+ * is not capped (it reports up to 12); two minor style findings are the
+ * tolerance that makes the rule reachable.
  *
- * What it does NOT do: judge what is missing. The check only sees problems
- * in what was written, so a clean result means "the checker found nothing",
- * not "nothing is wrong". You still read every page before saving.
+ * Why "best, not last": a rewrite can fix one thing and break another. Every
+ * version is checked once. If none meets the stop rule, the one with the
+ * lowest score wins (a substance finding weighs 3, a style finding 1, a
+ * program-check problem 1; a tie keeps the earlier version). A rewrite is
+ * also refused outright, before it costs another check, if it breaks the
+ * program checks (length, placeholders, near-copies, typed figures) or throws
+ * away the text it was not asked to touch.
  *
- * It takes about ten minutes a page (three checks of up to two minutes, two
- * rewrites of about one), too long for a web request, so it runs in the
+ * The rewrite may DELETE: a section the check calls a duplicate or not needed
+ * can be removed or merged, down to POLISH_MIN_WORDS words. Before this it
+ * could only add and reword, so duplicates survived every round.
+ *
+ * What it does NOT do: judge what is missing beyond what the check sees. The
+ * check only sees problems in what was written, so a result that meets the
+ * stop rule means "the checker found nothing serious", not "nothing is
+ * wrong". You still read every page before saving.
+ *
+ * It takes about fifteen to twenty minutes a page (up to five checks of up to
+ * two minutes, four rewrites of about one or two, the coverage pass and the
+ * draft), too long for a web request, so it runs in the
  * background: overnight from scripts/draft-pages.php, or on demand through
  * the polish_jobs queue (migration 020) that scripts/run-polish-jobs.php
  * works through, one job per run, started every minute by cron. The editor's
@@ -34,15 +53,31 @@
  * (subject_text_checks) so the editor can show it.
  */
 
-/** Most AI checks per page. That is up to two rewrites: there is no rewrite after the last check. */
-const POLISH_MAX_CHECKS = 3;
+require_once __DIR__ . '/ai-drafts.php'; // draftChecks(), reviseDraft(), requestSourceBlock(), the coverage list
+
+/** Most AI checks per page. That is up to four rewrites: there is no rewrite after the last check. */
+const POLISH_MAX_CHECKS = 5;
+
+/** The stop rule allows this many style findings (and no substance findings, and clean program checks). */
+const POLISH_STOP_MAX_STYLE = 2;
+
+/**
+ * When a rewrite is allowed to delete (the findings include a duplicate or an
+ * unneeded section), the explanation may shrink as far as this many words, but
+ * no further. Otherwise a rewrite that cuts the explanation below
+ * DRAFT_REVISION_MIN_LENGTH_SHARE of its length is refused.
+ */
+const POLISH_MIN_WORDS = 300;
+
+/** The finding kinds that justify deleting or merging a section. */
+const POLISH_DELETION_KINDS = ['duplicated', 'unneeded_section'];
 
 /** How much a finding counts when choosing the best version. */
 const POLISH_WEIGHT_SUBSTANCE = 3;
 const POLISH_WEIGHT_STYLE = 1;
 
-/** A job still "running" after this many minutes is taken to have died. */
-const POLISH_STALE_MINUTES = 45;
+/** A job still "running" after this many minutes is taken to have died. A full run (coverage, draft, five checks, four rewrites) can take twenty to thirty. */
+const POLISH_STALE_MINUTES = 60;
 
 /** Polishing can be switched off with define('POLISH_ENABLED', false); in config/database.local.php. */
 function polishEnabled(): bool
@@ -58,6 +93,44 @@ function polishScore(array $findings): int
         $score += in_array($finding['kind'], TEXT_CHECK_STYLE_KINDS, true) ? POLISH_WEIGHT_STYLE : POLISH_WEIGHT_SUBSTANCE;
     }
     return $score;
+}
+
+/** [substance findings, style findings] in a list of findings. */
+function polishCounts(array $findings): array
+{
+    $style = 0;
+    foreach ($findings as $finding) {
+        if (in_array($finding['kind'], TEXT_CHECK_STYLE_KINDS, true)) {
+            $style++;
+        }
+    }
+    return [count($findings) - $style, $style];
+}
+
+/**
+ * The stop rule: no substance findings, at most POLISH_STOP_MAX_STYLE style
+ * findings, and the program checks clean. "Clean" is draftScore() = 0: no
+ * near-copies, explanation within the length limit, no bad placeholders, no
+ * house-style notes (dating words, advice phrasing, meta lengths, typed
+ * figures in the meta fields). Typed numbers that "aren't among the page's
+ * figures" are not counted: they are a prompt to look, and a fixed figure
+ * typed on purpose (frozen until a known date) would otherwise block the rule.
+ */
+function polishStopRuleMet(array $findings, array $programChecks): bool
+{
+    [$substance, $style] = polishCounts($findings);
+    return $substance === 0 && $style <= POLISH_STOP_MAX_STYLE && draftScore($programChecks) === 0;
+}
+
+/**
+ * The model for the polish REWRITE: AI_POLISH_MODEL from config/database.local.php
+ * if set (an experiment: a stronger model for the one step that has to fix
+ * findings without breaking the rest), else the drafting model. The AI check and
+ * the coverage pass are not affected.
+ */
+function polishModel(): ?string
+{
+    return defined('AI_POLISH_MODEL') && AI_POLISH_MODEL !== '' ? AI_POLISH_MODEL : draftModel();
 }
 
 /** One finding as a plain sentence: "Heading doesn't match its text in the Explanation: "..." — reason". */
@@ -76,10 +149,11 @@ function polishFindingLine(array $finding): string
 function polishRewriteInstructions(string $countryPrefix, string $countryCode): string
 {
     $limit = EXPLANATION_MAX_WORDS;
+    $min = POLISH_MIN_WORDS;
     $job = <<<TXT
 You polish a draft of the four text fields of a page on Finance Fact Library, a personal finance reference site: intro, meta_title, meta_description and explanation.
 
-A checker has read the draft against the official source pages and the house style, and listed problems. Fix ONLY those problems. Leave everything else exactly as it is: do not rewrite sentences that are not listed, do not shorten other text, keep every placeholder, and keep the order of the sections unless a fix needs it.
+A checker has read the draft against the official source pages and the house style, and listed problems. Some come from the AI checker and some from program checks (near-copies, lengths, dating words and so on). Fix those problems. Leave everything else as it is: do not rewrite sentences that are not listed, do not shorten other text for its own sake, keep every placeholder, and keep the order of the sections unless a fix needs it. The one exception is removing a duplicate or an unneeded section, below.
 
 How to fix each kind of problem:
 - Missing exception or condition: add the missing point in one or two plain sentences, using ONLY what the source pages in the request say, in your own words. Work it into the paragraph it belongs to. Add a new section only if no section fits.
@@ -87,12 +161,15 @@ How to fix each kind of problem:
 - Heading that doesn't match its text: change the heading or move the point so they agree. A heading states a point; it is not a label.
 - Reads as advice: state the rule instead of telling the reader what to do ("DWP has to be told", not "tell DWP").
 - Too close to a source: restate the point in your own words AND a different sentence structure.
-- Duplicated, or a section that is not needed: merge or remove it.
+- Duplicated, or a section that is not needed: DELETE it, or merge what is worth keeping into the one section where the point belongs. You may delete whole sections and paragraphs for this, and you need not keep their text. A point is made once. A section that only restates what the figure cards show can go. Do not delete the only place where a point marked MUST in the coverage list is handled.
+- Meta title or meta description of the wrong length: the problem gives the count with the figures filled in and what to cut or add. Count again after you change it.
 - Never state a count, an age, a date or a rule that the source pages do not give.
 
 Every sentence you add or change must be in your own words and your own sentence structure. A program compares the result with the source pages sentence by sentence, and a sentence that follows a source closely is rejected, so restate the source's point, never its sentence.
 
-The explanation may grow to make room for what was missing, but must stay within {$limit} words in all. If it would not fit, tighten the wording of unlisted text only where the meaning is unchanged.
+The explanation may grow to make room for what was missing, but must stay within {$limit} words in all. If it would not fit, tighten the wording of unlisted text only where the meaning is unchanged. Deleting may take it down, but not below {$min} words.
+
+If the request has a coverage list, it is what the sources say the page has to handle, read before the draft was written. Use it for two things only: to see which source says a missing point and where in the text it belongs, and to avoid deleting the only place a MUST point is handled. It is not a list of problems: do not add a point to the draft just because it is on the list.
 
 Reply with the four fields between tags, in this order, and nothing else:
 <intro>...</intro>
@@ -116,8 +193,10 @@ TXT;
  *
  * $fields   intro, explanation, meta_title, meta_description (placeholders unfilled)
  * $findings from aiTextCheck()
+ * $programFixes  the program checks' problems as instructions (draftFixList())
+ * $coverageBlock the coverage list as text (coverageText()), or ''
  */
-function polishRewriteRequest(array $subject, array $facts, array $fields, array $findings, string $sourceBlock): string
+function polishRewriteRequest(array $subject, array $facts, array $fields, array $findings, string $sourceBlock, array $programFixes = [], string $coverageBlock = ''): string
 {
     $placeholders = ['- {tax_year}: the tax year of the figures'];
     foreach ($facts as $fact) {
@@ -125,8 +204,11 @@ function polishRewriteRequest(array $subject, array $facts, array $fields, array
     }
 
     $numbered = [];
-    foreach (array_values($findings) as $i => $finding) {
-        $numbered[] = ($i + 1) . '. ' . polishFindingLine($finding);
+    foreach (array_values($findings) as $finding) {
+        $numbered[] = (count($numbered) + 1) . '. ' . polishFindingLine($finding);
+    }
+    foreach ($programFixes as $fix) {
+        $numbered[] = (count($numbered) + 1) . '. Program check: ' . $fix;
     }
 
     return "Page: {$subject['name']}\n"
@@ -136,8 +218,9 @@ function polishRewriteRequest(array $subject, array $facts, array $fields, array
         . '<meta_title>' . (string) ($fields['meta_title'] ?? '') . "</meta_title>\n"
         . '<meta_description>' . (string) ($fields['meta_description'] ?? '') . "</meta_description>\n"
         . "<explanation>\n" . (string) ($fields['explanation'] ?? '') . "\n</explanation>\n\n"
-        . "Problems the checker found (fix these and nothing else):\n" . implode("\n", $numbered) . "\n\n"
+        . "Problems the checks found (fix these and nothing else, except that a duplicate or unneeded section may be deleted):\n" . implode("\n", $numbered) . "\n\n"
         . "Placeholders you may use:\n" . implode("\n", $placeholders) . "\n\n"
+        . ($coverageBlock !== '' ? "Coverage list (what the page has to handle; see your instructions for how to use it):\n" . $coverageBlock . "\n" : '')
         . "Source pages (the only source of anything you add):\n" . $sourceBlock;
 }
 
@@ -145,7 +228,7 @@ function polishRewriteRequest(array $subject, array $facts, array $fields, array
  * Why a rewrite should not be used, or NULL if it is fine. Cheap program
  * checks, run before the rewrite is spent on another AI check.
  */
-function polishRejects(PDO $pdo, array $subject, array $published, array $read, array $before, array $after): ?string
+function polishRejects(PDO $pdo, array $subject, array $published, array $read, array $before, array $after, bool $deletionAllowed = false): ?string
 {
     $wordsBefore = preg_match_all('/\S+/u', (string) $before['explanation']);
     $wordsAfter = preg_match_all('/\S+/u', (string) $after['explanation']);
@@ -156,7 +239,14 @@ function polishRejects(PDO $pdo, array $subject, array $published, array $read, 
     if ($wordsAfter > EXPLANATION_MAX_WORDS) {
         return "the explanation grew to $wordsAfter words, over the limit of " . EXPLANATION_MAX_WORDS;
     }
-    if ($wordsBefore <= EXPLANATION_MAX_WORDS && $wordsAfter < $wordsBefore * DRAFT_REVISION_MIN_LENGTH_SHARE) {
+    if ($deletionAllowed) {
+        // The findings include a duplicate or an unneeded section, so cutting is
+        // expected. The floor is POLISH_MIN_WORDS: a page may shrink down to it,
+        // and a page already under it may not shrink at all.
+        if ($wordsAfter < POLISH_MIN_WORDS && $wordsAfter < $wordsBefore) {
+            return "it cut the explanation from $wordsBefore to $wordsAfter words, below the floor of " . POLISH_MIN_WORDS;
+        }
+    } elseif ($wordsBefore <= EXPLANATION_MAX_WORDS && $wordsAfter < $wordsBefore * DRAFT_REVISION_MIN_LENGTH_SHARE) {
         return "it cut the explanation from $wordsBefore to $wordsAfter words";
     }
 
@@ -208,38 +298,48 @@ function polishRejectIsRepairable(string $why): bool
 
 /**
  * Take a draft through up to $maxChecks AI checks, rewriting what each
- * finds, and return the best version.
+ * finds, and return the best version. Stops early at the first version that
+ * meets the stop rule (polishStopRuleMet()).
  *
  * $subject, $facts   as for draftSubjectPage()
  * $draft             the draft's four fields (placeholders unfilled)
  * $retryTokens       a larger token ceiling for the rewrite if all its room
  *                    went on reasoning (0: don't retry)
+ * $coverage          the coverage list from the drafting step (ai-coverage.php),
+ *                    or [] for none; given to the rewrite, never to the check
  *
  * Returns:
  *   fields    the four fields of the best version
  *   result    that version's aiTextCheck() result (null if no check ran)
  *   findings  the findings left in it
  *   counts    findings found by each check, in order, e.g. [7, 3, 1]
+ *   splits    the same with substance and style, e.g. ["7 (3 substance, 4 style)", ...]
  *   best      which check's version was kept (1 = the draft as it came)
- *   clean     true if the kept version had no findings
+ *   stop_met  true if the kept version met the stop rule
+ *   clean     true if the kept version had no findings at all
+ *   left      [substance, style, program-check problems] still in the kept version
+ *   model     the model that made the rewrites ('' = the site's usual one)
  *   notes     things that stopped or limited the loop, in sentences
  *   tokens    tokens written by each rewrite
  *   problems  plain lines for the draft's red box: the program-check problems
  *             in the kept text, then the findings left
  */
-function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft, int $maxChecks = POLISH_MAX_CHECKS, int $retryTokens = 0): array
+function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft, int $maxChecks = POLISH_MAX_CHECKS, int $retryTokens = 0, array $coverage = []): array
 {
     $published = array_values(array_filter($facts, fn($f) => $f['status'] === 'published'));
     $read = readSourcePagesForFacts($published, DRAFT_SOURCE_CHARACTERS_EACH);
     $sourceBlock = requestSourceBlock($read['sources'], $read['texts']);
+    $coverageBlock = coverageText($coverage);
+    $model = polishModel();
 
     $current = [];
     foreach (DRAFT_FIELDS as $field) {
         $current[$field] = (string) ($draft[$field] ?? '');
     }
 
-    $versions = [];   // each checked version: ['fields', 'result', 'score']
+    $versions = [];   // each checked version: ['fields', 'result', 'checks', 'score', 'met']
     $counts = [];
+    $splits = [];
     $notes = [];
     $tokens = [];
     $best = null;
@@ -252,26 +352,52 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
             break;
         }
 
-        $score = polishScore($result['findings']);
-        $versions[] = ['fields' => $current, 'result' => $result, 'score' => $score];
+        // The program checks on the same text: the stop rule needs them clean, and
+        // the rewrite is told what they found (the AI check does not see most of it).
+        $programChecks = draftChecks($pdo, $current, $published, $read, $subject);
+        $programProblems = draftScore($programChecks);
+        $met = polishStopRuleMet($result['findings'], $programChecks);
+        $score = polishScore($result['findings']) + $programProblems;
+        [$substance, $style] = polishCounts($result['findings']);
+
+        $versions[] = ['fields' => $current, 'result' => $result, 'checks' => $programChecks, 'score' => $score, 'met' => $met];
         $counts[] = count($result['findings']);
-        // A tie keeps the earlier version: only a strictly lower score replaces it.
+        $splits[] = count($result['findings']) . " ($substance substance, $style style"
+            . ($programProblems ? ", $programProblems program" : '') . ')';
+
+        // The first version that meets the stop rule is the one kept, and the
+        // loop ends. Otherwise a tie keeps the earlier version: only a strictly
+        // lower score replaces it.
+        if ($met) {
+            $best = count($versions) - 1;
+            break;
+        }
         if ($best === null || $score < $versions[$best]['score']) {
             $best = count($versions) - 1;
         }
 
-        // Clean, or out of checks: no rewrite after the last check.
-        if (!$result['findings'] || $check === $maxChecks) {
+        // Out of checks: no rewrite after the last check.
+        if ($check === $maxChecks) {
             break;
         }
+
+        // What to fix: the AI check's findings, and the program checks' problems.
+        // A near-copy is in both (the AI check adds them itself); the program
+        // list is the fuller one, with the source sentence to avoid, so when it
+        // has near-copies the AI check's copies are left out of the request.
+        $programFixes = draftFixList($programChecks);
+        $findingsForRewrite = $programChecks['copies']
+            ? array_values(array_filter($result['findings'], fn($f) => $f['kind'] !== 'copied_from_source'))
+            : $result['findings'];
+        $deletionAllowed = (bool) array_filter($result['findings'], fn($f) => in_array($f['kind'], POLISH_DELETION_KINDS, true));
 
         try {
             $reply = callClaude(
                 polishRewriteInstructions((string) $subject['country_prefix'], (string) $subject['country_code']),
-                polishRewriteRequest($subject, $published, $current, $result['findings'], $sourceBlock),
+                polishRewriteRequest($subject, $published, $current, $findingsForRewrite, $sourceBlock, $programFixes, $coverageBlock),
                 DRAFT_MAX_TOKENS,
                 null,
-                draftModel(),
+                $model,
                 true,
                 $retryTokens
             );
@@ -293,7 +419,7 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
         }
         $revised = array_intersect_key($revised, array_flip(DRAFT_FIELDS));
 
-        $why = polishRejects($pdo, $subject, $published, $read, $current, $revised);
+        $why = polishRejects($pdo, $subject, $published, $read, $current, $revised, $deletionAllowed);
 
         // A refused rewrite is usually good text with a mechanical fault, most often
         // sentences that follow a source too closely, because it was told to add
@@ -311,7 +437,7 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
             $tokens = array_merge($tokens, $repair['tokens']);
             if ($repair['accepted']) {
                 $repaired = array_intersect_key($repair['draft'], array_flip(DRAFT_FIELDS));
-                $whyAfterRepair = polishRejects($pdo, $subject, $published, $read, $current, $repaired);
+                $whyAfterRepair = polishRejects($pdo, $subject, $published, $read, $current, $repaired, $deletionAllowed);
                 if ($whyAfterRepair === null) {
                     $notes[] = "The rewrite after check $check was first refused ($why) and was repaired.";
                     $revised = $repaired;
@@ -334,15 +460,16 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
     if ($best === null) {
         // No check ran at all: the draft goes back as it was.
         return [
-            'fields' => $current, 'result' => null, 'findings' => [], 'counts' => [], 'best' => 0,
-            'clean' => false, 'notes' => $notes, 'tokens' => $tokens, 'problems' => [],
+            'fields' => $current, 'result' => null, 'findings' => [], 'counts' => [], 'splits' => [], 'best' => 0,
+            'stop_met' => false, 'clean' => false, 'left' => [0, 0, 0], 'model' => (string) $model,
+            'notes' => $notes, 'tokens' => $tokens, 'problems' => [],
         ];
     }
 
     $kept = $versions[$best];
-    $keptChecks = draftChecks($pdo, $kept['fields'], $published, $read, $subject);
+    [$leftSubstance, $leftStyle] = polishCounts($kept['result']['findings']);
     $problems = array_merge(
-        draftProblemLines($keptChecks, false),
+        draftProblemLines($kept['checks'], false),
         array_map(fn($f) => 'AI check: ' . polishFindingLine($f), $kept['result']['findings'])
     );
 
@@ -351,33 +478,45 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
         'result'   => $kept['result'],
         'findings' => $kept['result']['findings'],
         'counts'   => $counts,
+        'splits'   => $splits,
         'best'     => $best + 1,
+        'stop_met' => $kept['met'],
         'clean'    => !$kept['result']['findings'],
+        'left'     => [$leftSubstance, $leftStyle, draftScore($kept['checks'])],
+        'model'    => (string) $model,
         'notes'    => $notes,
         'tokens'   => $tokens,
         'problems' => $problems,
     ];
 }
 
-/** What the polish did, as a sentence for the draft panel, e.g. "Polished: 3 checks found 7, 3 and 1 problems; kept the version after check 3, with 1 left." */
+/**
+ * What the polish did, as a sentence for the draft panel, e.g.
+ * "Polished: 3 checks found 7 (3 substance, 4 style), 3 (0 substance, 3 style) and
+ * 1 (0 substance, 1 style). Stop rule met after check 3 (...)."
+ */
 function polishNote(array $polish): string
 {
     if (!$polish['counts']) {
         return implode(' ', $polish['notes']) ?: 'Not polished.';
     }
-    $counts = $polish['counts'];
-    $last = array_pop($counts);
-    $found = $counts ? implode(', ', $counts) . ' and ' . $last : (string) $last;
+    $splits = $polish['splits'];
+    $last = array_pop($splits);
+    $found = $splits ? implode(', ', $splits) . ' and ' . $last : (string) $last;
     $checks = count($polish['counts']);
 
-    $line = 'Polished: ' . $checks . ' check' . ($checks === 1 ? '' : 's') . ' found ' . $found
-        . ' problem' . (count($polish['counts']) === 1 && $last === 1 ? '' : 's') . '.';
-    if ($polish['clean']) {
-        $line .= $polish['best'] === 1 ? ' The first draft was already clean.' : " The version after check {$polish['best']} came back clean.";
-    } else {
+    $line = 'Polished: ' . $checks . ' check' . ($checks === 1 ? '' : 's') . ' found ' . $found . '.';
+    if ($polish['stop_met']) {
         $line .= $polish['best'] === 1
-            ? ' The first draft was kept as the best version, with ' . count($polish['findings']) . ' left.'
-            : " The best version (after check {$polish['best']}) is kept, with " . count($polish['findings']) . ' left.';
+            ? ' The first draft already met the stop rule (no substance findings, at most ' . POLISH_STOP_MAX_STYLE . ' style findings, program checks clean).'
+            : " Stop rule met after check {$polish['best']} (no substance findings, at most " . POLISH_STOP_MAX_STYLE . ' style findings, program checks clean).';
+    } else {
+        [$substance, $style, $program] = $polish['left'];
+        $line .= " Stop rule NOT met. The best version (after check {$polish['best']}) is kept, with $substance substance and $style style finding" . ($style === 1 ? '' : 's')
+            . " left and $program program-check problem" . ($program === 1 ? '' : 's') . '.';
+    }
+    if (($polish['model'] ?? '') !== '') {
+        $line .= ' Rewrites by ' . $polish['model'] . '.';
     }
     return trim($line . ' ' . implode(' ', $polish['notes']));
 }
@@ -388,7 +527,7 @@ function polishNote(array $polish): string
 
 /**
  * Draft a page, polish it, and store the result as the page's AI draft.
- * Two automatic rewrite rounds as in the nightly job, then the polish loop.
+ * Coverage list, the draft with two automatic rewrite rounds, then the polish loop.
  * Returns the stored draft (with 'polish' = the polishSubjectPage() result,
  * or NULL when polishing is switched off).
  *
@@ -401,11 +540,15 @@ function polishPageEndToEnd(PDO $pdo, array $subject, array $facts, string $made
 {
     $subjectId = (int) $subject['id'];
 
-    $draft = draftSubjectPage($pdo, $subject, $facts, DRAFT_REVISIONS_NIGHTLY, DRAFT_REVISION_TIME_BUDGET_NIGHTLY, $retryTokens);
+    // Both background paths read the sources first for a coverage list. It
+    // goes to the polish rewrite and is taken out of the draft before storing.
+    $draft = draftSubjectPage($pdo, $subject, $facts, DRAFT_REVISIONS_NIGHTLY, DRAFT_REVISION_TIME_BUDGET_NIGHTLY, $retryTokens, true);
+    $coverage = $draft['coverage'] ?? [];
+    unset($draft['coverage']);
     $polish = null;
 
     if (polishEnabled()) {
-        $polish = polishSubjectPage($pdo, $subject, $facts, $draft, POLISH_MAX_CHECKS, $retryTokens);
+        $polish = polishSubjectPage($pdo, $subject, $facts, $draft, POLISH_MAX_CHECKS, $retryTokens, $coverage);
         if ($polish['result'] !== null) {
             foreach (DRAFT_FIELDS as $field) {
                 $draft[$field] = $polish['fields'][$field];
