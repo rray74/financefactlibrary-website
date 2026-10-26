@@ -47,6 +47,9 @@ const RATE_REVIEW_DAYS = 42;
 /** Most characters of each source page sent to the AI check. */
 const TEXT_CHECK_SOURCE_CHARACTERS = 50000;
 
+/** Most tokens the AI check's reply may use. The check asks for at most 12 findings; the ceiling is well above that so a long list is not cut off mid-finding. */
+const TEXT_CHECK_MAX_TOKENS = 8000;
+
 // ------------------------------------------------------------
 // Numbers in text
 // ------------------------------------------------------------
@@ -587,22 +590,44 @@ function aiTextCheck(array $subject, array $facts, array $fields): array
     $sources = $read['sources'];
     $sourceTexts = $read['texts'];
 
-    $reply = callClaude(
-        textCheckInstructions((string) $subject['country_prefix'], $countryCode),
-        textCheckRequest($subject, $published, $filled, $sources, $sourceTexts),
-        4000
-    );
-
-    // --- Read the reply, keeping only findings that quote the text exactly. ---
+    // --- Ask, and read the reply. ---
     // The JSON is taken from the first { to the last }, so a sentence or a
     // ```json fence around it doesn't matter. (Findings are short, so JSON
     // is safe here, unlike the long explanations in AI drafts.)
-    $start = strpos($reply, '{');
-    $end = strrpos($reply, '}');
-    $data = ($start !== false && $end > $start) ? json_decode(substr($reply, $start, $end - $start + 1), true) : null;
-    if (!is_array($data) || !isset($data['findings']) || !is_array($data['findings'])) {
-        throw new RuntimeException('The AI reply was not in the expected format. Try again. It began: "'
-            . aiReplyStart($reply) . '"');
+    //
+    // A reply that is not valid JSON as a whole is no longer fatal. The first
+    // polish test on Pension Tax Relief failed at check 1 with a reply that
+    // began as a findings list and then stopped being valid JSON (cut off at the
+    // old 4,000-token ceiling, or an unescaped quote inside a finding). So:
+    //   1. the ceiling is 8,000 tokens (findings are short, the ceiling is not
+    //      what makes them long, it only stops a long list being cut off);
+    //   2. if the whole reply won't parse, the complete findings in it are
+    //      kept (salvageCheckFindings()), and only a broken or cut-off one is lost;
+    //   3. if nothing at all can be read, the check is asked once more before
+    //      it fails.
+    $data = null;
+    $reply = '';
+    $stop = '';
+    for ($attempt = 1; $attempt <= 2 && $data === null; $attempt++) {
+        $reply = callClaude(
+            textCheckInstructions((string) $subject['country_prefix'], $countryCode),
+            textCheckRequest($subject, $published, $filled, $sources, $sourceTexts),
+            TEXT_CHECK_MAX_TOKENS
+        );
+        $stop = (string) (claudeLastCallInfo()['stop_reason'] ?? '');
+
+        $start = strpos($reply, '{');
+        $end = strrpos($reply, '}');
+        $parsed = ($start !== false && $end > $start) ? json_decode(substr($reply, $start, $end - $start + 1), true) : null;
+        if (is_array($parsed) && isset($parsed['findings']) && is_array($parsed['findings'])) {
+            $data = $parsed;
+        } elseif ($items = salvageCheckFindings($reply)) {
+            $data = ['findings' => $items];
+        }
+    }
+    if ($data === null) {
+        throw new RuntimeException('The AI reply was not in the expected format, even after asking again'
+            . ($stop !== '' ? " (stop reason: $stop)" : '') . '. It began: "' . aiReplyStart($reply) . '"');
     }
 
     // Compare without caring about spacing or curly versus straight quotes.
@@ -653,6 +678,62 @@ function aiTextCheck(array $subject, array $facts, array $fields): array
     }
 
     return ['findings' => $findings, 'sources' => array_values($sources), 'dropped' => $dropped];
+}
+
+/**
+ * The complete findings in a check reply that is not valid JSON as a whole
+ * (cut off at the token ceiling, or with a broken finding in the middle).
+ * It walks the text after "findings": [ and decodes each top-level {...} on its
+ * own, tracking quotes and escapes so braces inside a finding's text don't
+ * confuse it. An object that won't decode (the cut-off last one, say) is
+ * skipped. Returns the findings that decoded, possibly none.
+ */
+function salvageCheckFindings(string $reply): array
+{
+    $key = strpos($reply, '"findings"');
+    $open = $key === false ? false : strpos($reply, '[', $key);
+    if ($open === false) {
+        return [];
+    }
+
+    $found = [];
+    $depth = 0;
+    $inString = false;
+    $escaped = false;
+    $objectStart = null;
+    for ($i = $open + 1, $length = strlen($reply); $i < $length; $i++) {
+        $ch = $reply[$i];
+        if ($inString) {
+            if ($escaped) {
+                $escaped = false;
+            } elseif ($ch === '\\') {
+                $escaped = true;
+            } elseif ($ch === '"') {
+                $inString = false;
+            }
+            continue;
+        }
+        if ($ch === '"') {
+            $inString = true;
+        } elseif ($ch === '{') {
+            if ($depth === 0) {
+                $objectStart = $i;
+            }
+            $depth++;
+        } elseif ($ch === '}' && $depth > 0) {
+            $depth--;
+            if ($depth === 0 && $objectStart !== null) {
+                $object = json_decode(substr($reply, $objectStart, $i - $objectStart + 1), true);
+                if (is_array($object)) {
+                    $found[] = $object;
+                }
+                $objectStart = null;
+            }
+        } elseif ($ch === ']' && $depth === 0) {
+            break;
+        }
+    }
+    return $found;
 }
 
 /**
