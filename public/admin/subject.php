@@ -702,6 +702,10 @@ include __DIR__ . '/../../includes/admin-nav.php';
                         <?php if ($proposal['reason'] !== ''): ?>
                         <p><?= e($proposal['reason']) ?></p>
                         <?php endif; ?>
+                        <?php // A meta field of the wrong length is shown, not refused: trim it by hand after applying. ?>
+                        <?php foreach (($proposal['warnings'] ?? []) as $warning): ?>
+                        <p class="text-warning"><?= e($warning) ?></p>
+                        <?php endforeach; ?>
                         <p>
                             <?php // The page's JavaScript makes the changes in the boxes, all or none; each passage must still be in its box exactly once. ?>
                             <button type="button" class="btn btn-xs btn-primary" data-fix-apply

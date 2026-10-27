@@ -58,6 +58,7 @@ You fix ONE problem that a checker found in the text of a page on Finance Fact L
 You are given the problem (the words quoted are as the checker saw them, with figures filled in), the four fields as typed (with {placeholders} where figures are), the placeholders you may use, and the official source pages. Rules:
 - A finding can name more than one problem. Fix the first, main one with the smallest change. If it says something is unsupported or added by the writer, REMOVE that part. Do not add new content just because the finding also mentions that something is left out: add a point only when the finding is about a missing point and nothing else.
 - Use a placeholder only for the figure it stands for. If no placeholder in the list stands for a figure, do not type the figure and do not borrow another figure's placeholder: leave the figure out.
+- You cannot count characters reliably, and a program checks the meta fields (title 42 characters or fewer, description 140 to 155, counted with the figures filled in). When you write a meta description aim for about 22 to 25 words; for a meta title, a short phrase.
 - Say only what the source pages say, in your own words AND your own sentence structure. Never follow a source sentence, even with a few words changed. Keep the strength of the source's hedges ("could", "usually", "may"): never state something more strongly or more broadly than the source does.
 - Never type a figure that changes: use a placeholder from the list. Never say how or when a figure changed, or give an earlier amount.
 - Exception or condition missing: add it where it belongs, in one or two sentences, and only if the source pages state it. If it needs a figure the page does not have, answer "none" and say which figure is needed.
@@ -173,7 +174,7 @@ function fixApply(string $field, string $old, string $new): string
  *
  * $before, $after  the four fields, keyed by DRAFT_FIELDS
  */
-function fixRejects(PDO $pdo, array $subject, array $published, array $read, array $before, array $after): ?string
+function fixRejects(PDO $pdo, array $subject, array $published, array $read, array $before, array $after, array &$warnings = []): ?string
 {
     $wordsBefore = preg_match_all('/\S+/u', (string) $before['explanation']);
     $wordsAfter = preg_match_all('/\S+/u', (string) $after['explanation']);
@@ -190,6 +191,19 @@ function fixRejects(PDO $pdo, array $subject, array $published, array $read, arr
         return 'it used a placeholder that is not valid';
     }
     $checksBefore = draftChecks($pdo, $before, $published, $read, $subject);
+
+    // A meta title or description of the wrong length is not a reason to refuse: the AI cannot count
+    // characters, so insisting made proposals fail twice over a few words. If that is the ONLY new
+    // problem, the proposal is kept and the person is told, to trim it by hand. Anything else is as before.
+    $isLengthNote = fn($note) => (bool) preg_match('/^Meta (title|description): \d+ characters/', (string) $note);
+    $newLengthNotes = array_values(array_filter(
+        array_diff($checksAfter['notes'], $checksBefore['notes']),
+        $isLengthNote
+    ));
+    if ($newLengthNotes) {
+        $checksAfter['notes'] = array_values(array_filter($checksAfter['notes'], fn($note) => !in_array($note, $newLengthNotes, true)));
+    }
+
     if (draftScore($checksAfter) > draftScore($checksBefore)) {
         $why = 'it made the program checks worse (' . polishWhatGotWorse($checksBefore, $checksAfter) . ')';
         // For a near-copy, show the source text it followed, so the next try can say it differently.
@@ -201,6 +215,9 @@ function fixRejects(PDO $pdo, array $subject, array $published, array $read, arr
             }
         }
         return $why;
+    }
+    foreach ($newLengthNotes as $note) {
+        $warnings[] = 'Check the length: ' . $note;
     }
     return null;
 }
@@ -217,6 +234,7 @@ function fixRejects(PDO $pdo, array $subject, array $published, array $read, arr
  *   field    the field the finding was in
  *   changes  one to three ['field', 'old', 'new'] (an empty 'new' is a deletion); [] for none
  *   reason   a sentence for the person: why this change, why none, or why it failed
+ *   warnings a list of things to check before applying (a meta field of the wrong length); [] if none
  *
  * An AI or network failure throws, as the other AI features do.
  */
@@ -294,14 +312,15 @@ function proposeFix(PDO $pdo, array $subject, array $facts, array $fields, array
             continue;
         }
 
-        $why = fixRejects($pdo, $subject, $published, $read, $fields, $after);
+        $warnings = [];
+        $why = fixRejects($pdo, $subject, $published, $read, $fields, $after, $warnings);
         if ($why !== null) {
             $lastWhy = $why;
             $retryNote = "it was refused because $why. Try again, or answer \"none\" if it cannot be fixed that way.";
             continue;
         }
 
-        return ['ok' => true, 'action' => 'replace', 'field' => $field, 'changes' => $fix['changes'], 'reason' => $fix['reason']];
+        return ['ok' => true, 'action' => 'replace', 'field' => $field, 'changes' => $fix['changes'], 'reason' => $fix['reason'], 'warnings' => $warnings];
     }
 
     return ['ok' => false, 'action' => 'none', 'field' => $field, 'changes' => [],
