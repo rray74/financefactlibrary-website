@@ -2,12 +2,20 @@
 /**
  * "Propose fix": a fix for ONE finding of the editor's AI check.
  *
+ * A proposal is one to three changes, each in one of the four fields. The
+ * finding names where the problem was seen, but the right fix is sometimes
+ * elsewhere: on VAT Rates, "the intro promises all three rates but the
+ * explanation never covers them" was best fixed in the intro and meta
+ * description, not by adding a section to the explanation, and a fix limited to
+ * the explanation could only try to write the section and failed the near-copy
+ * check.
+ *
  * Why it exists: the polish loop rewrites the whole text, so each round can fix
  * one thing and disturb another, and on Pension Tax Relief it never reached a
  * clean check by itself. This works the other way round. After "Check with AI"
  * lists its findings, each has a "Propose fix" button. The AI is given just that
  * finding, the field it is in and the source pages, and proposes the smallest
- * change: replace one passage, delete it, or none (when the checker is wrong, or
+ * change: replace or delete a passage (or one in each of up to three places), or none (when the checker is wrong, or
  * the fix needs a figure the page does not have). Everything else in the text is
  * untouched, because the program, not the AI, applies the change.
  *
@@ -47,20 +55,22 @@ function fixInstructions(string $countryPrefix, string $countryCode): string
     $job = <<<'TXT'
 You fix ONE problem that a checker found in the text of a page on Finance Fact Library, a personal finance reference site. A person will read your proposed change and accept or reject it, so make the smallest change that fixes the problem.
 
-You are given the problem (the words quoted are as the checker saw them, with figures filled in), the field it is in as typed (with {placeholders} where figures are), the placeholders you may use, and the official source pages. Rules:
+You are given the problem (the words quoted are as the checker saw them, with figures filled in), the four fields as typed (with {placeholders} where figures are), the placeholders you may use, and the official source pages. Rules:
 - Say only what the source pages say, in your own words AND your own sentence structure. Never follow a source sentence, even with a few words changed. Keep the strength of the source's hedges ("could", "usually", "may"): never state something more strongly or more broadly than the source does.
 - Never type a figure that changes: use a placeholder from the list. Never say how or when a figure changed, or give an earlier amount.
 - Exception or condition missing: add it where it belongs, in one or two sentences, and only if the source pages state it. If it needs a figure the page does not have, answer "none" and say which figure is needed.
 - Contradicts a source, probably wrong, or overstated: correct it to what the source says. If the sentence is about how or when a figure changed, or no source supports it, DELETE it. Do not correct it.
 - Said twice: delete the weaker statement (or the pointer sentence, such as "this is covered in the next section"), keeping the one where the point belongs.
-- Heading that does not match its text: change the heading so it states a point that is true of ALL the text under it.
+- Heading that does not match its text, or an intro or meta description that promises what the explanation does not cover: either change the heading so it states a point true of ALL the text under it, or remove the unkept promise from the intro or meta description. The figure cards already show the figures, so the explanation does not need a section that walks through them: prefer cutting the promise to adding a section.
 - Breaks the house style, or too close to a source: reword just that sentence.
+- Never copy a source sentence's structure. If a sentence lists examples from a source (goods, services, groups, forms), do not reproduce the list: use at most one or two examples in a different construction, or leave the examples out and say what the category is. A program check refuses any sentence that follows a source's wording.
 - If the checker is wrong (the text is right, or the problem asks for something the house style or a lesson forbids), answer "none" and say why in a sentence.
 
 Reply with JSON only, no other text:
-{"action": "replace" | "delete" | "none", "old": "...", "new": "...", "reason": "one sentence for the person reading the proposal"}
-- "old" is copied EXACTLY, character for character, from the field as typed (placeholders and all): the smallest passage that holds the problem, usually one sentence or one heading line. It must occur once in the field. To add a point, make "old" the sentence it follows and "new" that sentence plus the addition.
-- "new" is what replaces it (empty for "delete"). Keep to the editor's format from the house style. Do not touch anything outside "old".
+{"action": "replace" | "none", "changes": [{"field": "explanation", "old": "...", "new": "..."}], "reason": "one sentence for the person reading the proposal"}
+- "changes" has one to three entries. Each names the "field" (intro, explanation, meta_title or meta_description) it is in. Use more than one only when the fix needs it, for example an intro and a meta description that make the same unkept promise.
+- "old" is copied EXACTLY, character for character, from that field as typed (placeholders and all): the smallest passage that holds the problem, usually one sentence or one heading line. It must occur once in that field. To add a point, make "old" the sentence it follows and "new" that sentence plus the addition.
+- "new" is what replaces it. An empty "new" deletes the passage. Keep to the editor's format from the house style. Do not touch anything outside "old".
 TXT;
     return $job . "\n\n" . writingGuidanceText($countryPrefix, $countryCode);
 }
@@ -79,42 +89,64 @@ function fixRequest(array $subject, array $facts, array $fields, array $finding,
         $placeholders[] = '- {fact:' . $fact['fact_key'] . '}: ' . $fact['label'] . ' (' . formatFactValue($fact) . ')';
     }
 
-    $target = (string) $finding['field'];
-    $context = '';
+    // All four fields, as typed: the finding names where the problem was seen, but the
+    // fix may belong in another field (see the header).
+    $fieldText = '';
     foreach (DRAFT_FIELDS as $field) {
-        if ($field !== $target && trim((string) ($fields[$field] ?? '')) !== '') {
-            $context .= "<$field>" . (string) $fields[$field] . "</$field>\n";
-        }
+        $fieldText .= "<$field>" . ($field === 'explanation' ? "\n" : '') . (string) ($fields[$field] ?? '')
+            . ($field === 'explanation' ? "\n" : '') . "</$field>\n";
     }
 
     return "Page: {$subject['name']}\n"
         . "Country: {$subject['country_name']}\n\n"
         . "The problem the checker found:\n" . polishFindingLine($finding) . "\n\n"
         . ($retryNote !== '' ? "Your last try was not used: $retryNote\n\n" : '')
-        . "The field the problem is in, as typed (this is the text \"old\" must be copied from):\n"
-        . "<field>\n" . (string) ($fields[$target] ?? '') . "\n</field>\n\n"
-        . "The other fields, for context only (do not change them):\n" . ($context !== '' ? $context : "(empty)\n") . "\n"
+        . "The four fields as typed (\"old\" must be copied exactly from the field it is in):\n" . $fieldText . "\n"
         . "Placeholders you may use:\n" . implode("\n", $placeholders) . "\n\n"
         . "Source pages (the only source of anything you add):\n" . $sourceBlock;
 }
 
 /**
- * Read the AI's reply: ['action' => replace|delete|none, 'old', 'new', 'reason'].
- * Throws if it is not JSON in that shape.
+ * Read the AI's reply: ['action' => replace|none, 'changes' => [['field', 'old', 'new'], ...],
+ * 'reason']. A reply in the older single-change shape ("old" and "new" at the top
+ * level, optionally with "field") is read as one change in that field. Throws if the
+ * reply is not JSON in either shape.
+ *
+ * $defaultField  the field of the finding, for a change that names none
  */
-function parseFixReply(string $reply): array
+function parseFixReply(string $reply, string $defaultField = 'explanation'): array
 {
     $start = strpos($reply, '{');
     $end = strrpos($reply, '}');
     $data = ($start !== false && $end > $start) ? json_decode(substr($reply, $start, $end - $start + 1), true) : null;
-    if (!is_array($data) || !in_array($data['action'] ?? '', ['replace', 'delete', 'none'], true)) {
+    $action = is_array($data) ? (string) ($data['action'] ?? '') : '';
+    // The first version of this reply had "delete" as an action: that is a change with an empty "new".
+    if (!in_array($action, ['replace', 'delete', 'none'], true)) {
         throw new RuntimeException('the reply was not in the expected format. It began: "' . aiReplyStart($reply) . '"');
     }
+
+    $rows = [];
+    if (isset($data['changes']) && is_array($data['changes'])) {
+        $rows = $data['changes'];
+    } elseif (isset($data['old'])) {
+        $rows = [['field' => $data['field'] ?? $defaultField, 'old' => $data['old'], 'new' => $action === 'delete' ? '' : ($data['new'] ?? '')]];
+    }
+
+    $changes = [];
+    foreach (array_slice($rows, 0, 3) as $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+        $changes[] = [
+            'field' => (string) ($row['field'] ?? $defaultField),
+            'old'   => str_replace("\r\n", "\n", (string) ($row['old'] ?? '')),
+            'new'   => str_replace("\r\n", "\n", (string) ($row['new'] ?? '')),
+        ];
+    }
     return [
-        'action' => (string) $data['action'],
-        'old'    => str_replace("\r\n", "\n", (string) ($data['old'] ?? '')),
-        'new'    => str_replace("\r\n", "\n", (string) ($data['new'] ?? '')),
-        'reason' => trim((string) ($data['reason'] ?? '')),
+        'action'  => $action === 'none' ? 'none' : 'replace',
+        'changes' => $changes,
+        'reason'  => trim((string) ($data['reason'] ?? '')),
     ];
 }
 
@@ -157,7 +189,16 @@ function fixRejects(PDO $pdo, array $subject, array $published, array $read, arr
     }
     $checksBefore = draftChecks($pdo, $before, $published, $read, $subject);
     if (draftScore($checksAfter) > draftScore($checksBefore)) {
-        return 'it made the program checks worse (' . polishWhatGotWorse($checksBefore, $checksAfter) . ')';
+        $why = 'it made the program checks worse (' . polishWhatGotWorse($checksBefore, $checksAfter) . ')';
+        // For a near-copy, show the source text it followed, so the next try can say it differently.
+        $seen = array_column($checksBefore['copies'], 'quote');
+        foreach ($checksAfter['copies'] as $copy) {
+            if (!in_array($copy['quote'], $seen, true) && !empty($copy['matched'])) {
+                $why .= '. The source says: "' . quoteWords((string) $copy['matched'], 30) . '". Use a different structure, or leave the examples out';
+                break;
+            }
+        }
+        return $why;
     }
     return null;
 }
@@ -170,9 +211,9 @@ function fixRejects(PDO $pdo, array $subject, array $published, array $read, arr
  *
  * Returns:
  *   ok       false only if no usable proposal could be made (see reason)
- *   action   'replace', 'delete' or 'none' (none: no change proposed)
- *   field    which field it is in
- *   old,new  the passage and what replaces it (for 'none', both '')
+ *   action   'replace' or 'none' (none: no change proposed)
+ *   field    the field the finding was in
+ *   changes  one to three ['field', 'old', 'new'] (an empty 'new' is a deletion); [] for none
  *   reason   a sentence for the person: why this change, why none, or why it failed
  *
  * An AI or network failure throws, as the other AI features do.
@@ -210,39 +251,47 @@ function proposeFix(PDO $pdo, array $subject, array $facts, array $fields, array
         );
 
         try {
-            $fix = parseFixReply($reply);
+            $fix = parseFixReply($reply, $field);
         } catch (RuntimeException $e) {
             $lastWhy = $e->getMessage();
             $retryNote = 'it ' . $e->getMessage();
             continue;
         }
 
-        if ($fix['action'] === 'none') {
-            return ['ok' => true, 'action' => 'none', 'field' => $field, 'old' => '', 'new' => '',
+        if ($fix['action'] === 'none' || !$fix['changes']) {
+            return ['ok' => true, 'action' => 'none', 'field' => $field, 'changes' => [],
                 'reason' => $fix['reason'] !== '' ? $fix['reason'] : 'The AI proposed no change.'];
         }
 
-        // The passage must be in the field exactly once, so the program can apply the change.
-        $count = $fix['old'] === '' ? 0 : substr_count($fields[$field], $fix['old']);
-        if ($count !== 1) {
-            $lastWhy = $count === 0
-                ? 'the passage to change was not found, character for character, in the text'
-                : "the passage to change occurs $count times in the text";
-            $retryNote = $count === 0
-                ? 'the "old" text was not found, character for character, in the field. Copy it exactly from the field text.'
-                : "the \"old\" text occurs $count times in the field. Use a longer passage that occurs only once.";
-            continue;
-        }
-
-        $new = $fix['action'] === 'delete' ? '' : $fix['new'];
-        if ($new === $fix['old']) {
-            $lastWhy = 'the proposed text was the same as the existing text';
-            $retryNote = 'the "new" text was the same as the "old" text. Make the change, or answer "none".';
-            continue;
-        }
-
+        // Each passage must be in its field exactly once, so the program can apply the change.
+        // Changes are applied in order to a working copy, so two in one field are checked in turn.
         $after = $fields;
-        $after[$field] = fixApply($fields[$field], $fix['old'], $new);
+        $problem = '';
+        foreach ($fix['changes'] as $change) {
+            $where = $change['field'];
+            if (!in_array($where, DRAFT_FIELDS, true)) {
+                $problem = '"' . $where . '" is not one of the fields (intro, explanation, meta_title, meta_description)';
+                break;
+            }
+            $count = $change['old'] === '' ? 0 : substr_count($after[$where], $change['old']);
+            if ($count !== 1) {
+                $problem = $count === 0
+                    ? 'the "old" text for the ' . $where . ' was not found, character for character. Copy it exactly from that field'
+                    : 'the "old" text for the ' . $where . " occurs $count times. Use a longer passage that occurs once";
+                break;
+            }
+            if ($change['new'] === $change['old']) {
+                $problem = 'a "new" text was the same as its "old" text. Make the change, or answer "none"';
+                break;
+            }
+            $after[$where] = fixApply($after[$where], $change['old'], $change['new']);
+        }
+        if ($problem !== '') {
+            $lastWhy = $problem;
+            $retryNote = $problem . '.';
+            continue;
+        }
+
         $why = fixRejects($pdo, $subject, $published, $read, $fields, $after);
         if ($why !== null) {
             $lastWhy = $why;
@@ -250,10 +299,9 @@ function proposeFix(PDO $pdo, array $subject, array $facts, array $fields, array
             continue;
         }
 
-        return ['ok' => true, 'action' => $new === '' ? 'delete' : 'replace', 'field' => $field,
-            'old' => $fix['old'], 'new' => $new, 'reason' => $fix['reason']];
+        return ['ok' => true, 'action' => 'replace', 'field' => $field, 'changes' => $fix['changes'], 'reason' => $fix['reason']];
     }
 
-    return ['ok' => false, 'action' => 'none', 'field' => $field, 'old' => '', 'new' => '',
+    return ['ok' => false, 'action' => 'none', 'field' => $field, 'changes' => [],
         'reason' => "No safe fix was found (last try: $lastWhy). You can fix this one by hand."];
 }

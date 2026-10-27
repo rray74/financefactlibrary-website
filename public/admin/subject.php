@@ -673,30 +673,39 @@ include __DIR__ . '/../../includes/admin-nav.php';
                     <?php endif; ?>
 
                     <?php if ($proposal): ?>
+                    <?php
+                    // The proposal's changes. A proposal made before changes could span fields has
+                    // one change in 'field', 'old' and 'new': read that as a list of one.
+                    $changes = $proposal['changes'] ?? (($proposal['old'] ?? '') !== ''
+                        ? [['field' => $proposal['field'], 'old' => $proposal['old'], 'new' => $proposal['new'] ?? '']]
+                        : []);
+                    ?>
                     <div class="mt-2 rounded border border-base-300 p-3 text-xs space-y-2">
-                        <?php if ($proposal['ok'] && $proposal['action'] !== 'none'): ?>
-                        <p class="font-semibold">
-                            <?= $proposal['action'] === 'delete' ? 'Proposed: delete this text' : 'Proposed: replace this text' ?>
-                            (<?= e(TEXT_FIELD_LABELS[$proposal['field']] ?? $proposal['field']) ?>)
-                        </p>
-                        <p class="opacity-60 uppercase tracking-wide">Now</p>
-                        <p class="font-mono whitespace-pre-wrap line-through opacity-80"><?= e($proposal['old']) ?></p>
-                        <?php if ($proposal['action'] !== 'delete'): ?>
-                        <p class="opacity-60 uppercase tracking-wide">Instead</p>
-                        <p class="font-mono whitespace-pre-wrap"><?= e($proposal['new']) ?></p>
-                        <?php if (strpos($proposal['new'], '{') !== false): ?>
-                        <p class="opacity-70">Shows as: <?= e($fillPreview($proposal['new'])) ?></p>
-                        <?php endif; ?>
-                        <?php endif; ?>
+                        <?php if ($proposal['ok'] && $changes): ?>
+                        <p class="font-semibold">Proposed change<?= count($changes) === 1 ? '' : 's (' . count($changes) . ', applied together)' ?></p>
+                        <?php foreach ($changes as $change): ?>
+                        <div class="space-y-1">
+                            <p class="opacity-60 uppercase tracking-wide">
+                                <?= e(TEXT_FIELD_LABELS[$change['field']] ?? $change['field']) ?>:
+                                <?= $change['new'] === '' ? 'delete this text' : 'replace this text' ?>
+                            </p>
+                            <p class="font-mono whitespace-pre-wrap line-through opacity-80"><?= e($change['old']) ?></p>
+                            <?php if ($change['new'] !== ''): ?>
+                            <p class="opacity-60 uppercase tracking-wide">Instead</p>
+                            <p class="font-mono whitespace-pre-wrap"><?= e($change['new']) ?></p>
+                            <?php if (strpos($change['new'], '{') !== false): ?>
+                            <p class="opacity-70">Shows as: <?= e($fillPreview($change['new'])) ?></p>
+                            <?php endif; ?>
+                            <?php endif; ?>
+                        </div>
+                        <?php endforeach; ?>
                         <?php if ($proposal['reason'] !== ''): ?>
                         <p><?= e($proposal['reason']) ?></p>
                         <?php endif; ?>
                         <p>
-                            <?php // The page's JavaScript makes the change in the box; the passage must still be in it exactly once. ?>
+                            <?php // The page's JavaScript makes the changes in the boxes, all or none; each passage must still be in its box exactly once. ?>
                             <button type="button" class="btn btn-xs btn-primary" data-fix-apply
-                                data-fix-field="<?= e($proposal['field']) ?>"
-                                data-fix-old="<?= e($proposal['old']) ?>"
-                                data-fix-new="<?= e($proposal['new']) ?>">Apply to the box</button>
+                                data-fix-changes="<?= e(json_encode($changes, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) ?>">Apply to the box<?= count($changes) === 1 ? '' : 'es' ?></button>
                             <span class="opacity-70 ml-1" data-fix-status>Nothing is saved until you save the page.</span>
                         </p>
                         <?php else: ?>
@@ -1526,29 +1535,42 @@ include __DIR__ . '/../../includes/admin-nav.php';
 
 <script>
     // ---- Propose fix: Apply to the box, and a working label on the button ----
-    // "Apply to the box" makes the proposed change in the text box, and nothing
-    // else: the passage must still be in the box exactly once, or nothing is
-    // changed and you are told. The blank lines a deletion leaves are tidied the
+    // "Apply to the box" makes the proposed changes in the text boxes, and nothing
+    // else: each passage must still be in its box exactly once, or nothing is
+    // changed and you are told. A proposal can change up to three places, in
+    // different boxes; they are applied together or not at all. The blank lines a deletion leaves are tidied the
     // same way as on the server (3 or more in a row become one blank line), so the
     // text that was checked there is the text that ends up here. Nothing is saved.
     (function () {
         document.querySelectorAll('[data-fix-apply]').forEach(function (button) {
             button.addEventListener('click', function () {
-                var box = document.getElementById(button.dataset.fixField);
                 var status = button.parentNode.querySelector('[data-fix-status]');
-                if (!box) return;
-                var text = box.value.replace(/\r\n/g, '\n');
-                var old = button.dataset.fixOld;
-                var first = text.indexOf(old);
-                if (first === -1 || text.indexOf(old, first + 1) !== -1) {
-                    if (status) status.textContent = 'The text in the box has changed, so this cannot be applied safely. Run Check with AI again.';
-                    return;
+                var changes;
+                try { changes = JSON.parse(button.dataset.fixChanges); } catch (e) { changes = []; }
+                if (!changes.length) return;
+
+                // All or none: work out every new value first, on copies of the boxes' text.
+                var values = {};
+                for (var i = 0; i < changes.length; i++) {
+                    var box = document.getElementById(changes[i].field);
+                    if (!box) return;
+                    if (!(changes[i].field in values)) values[changes[i].field] = box.value.replace(/\r\n/g, '\n');
+                    var text = values[changes[i].field];
+                    var first = text.indexOf(changes[i].old);
+                    if (first === -1 || text.indexOf(changes[i].old, first + 1) !== -1) {
+                        if (status) status.textContent = 'The text in a box has changed, so this cannot be applied safely. Run Check with AI again.';
+                        return;
+                    }
+                    values[changes[i].field] = (text.slice(0, first) + changes[i].new + text.slice(first + changes[i].old.length)).replace(/\n{3,}/g, '\n\n');
                 }
-                box.value = (text.slice(0, first) + button.dataset.fixNew + text.slice(first + old.length)).replace(/\n{3,}/g, '\n\n');
-                box.dispatchEvent(new Event('input')); // updates the count and preview
+                Object.keys(values).forEach(function (field) {
+                    var box = document.getElementById(field);
+                    box.value = values[field];
+                    box.dispatchEvent(new Event('input')); // updates the count and preview
+                });
                 button.disabled = true;
                 button.textContent = 'Applied';
-                if (status) status.textContent = 'Changed in the box. Save the page to keep it, or run Check with AI again first.';
+                if (status) status.textContent = 'Changed in the box' + (Object.keys(values).length === 1 ? '' : 'es') + '. Save the page to keep it, or run Check with AI again first.';
             });
         });
 
