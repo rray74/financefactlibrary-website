@@ -24,6 +24,8 @@ define('ANTHROPIC_API_KEY', '************');
 // AI draft model
 define('AI_DRAFT_MODEL', 'example-model');
 
+// AI prices for different models
+define('AI_PRICES', ['claude-sonnet-4-6' => [*.**, *.**], 'claude-sonnet-5-5' => [*.**, *.**]]);
 
 // Alert email settings
 define('ALERT_EMAIL_TO', 'your@address.com');
