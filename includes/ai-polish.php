@@ -40,9 +40,8 @@
  * stop rule means "the checker found nothing serious", not "nothing is
  * wrong". You still read every page before saving.
  *
- * It takes about fifteen to twenty minutes a page (up to five checks of up to
- * two minutes, four rewrites of about one or two, the coverage pass and the
- * draft), too long for a web request, so it runs in the
+ * It takes about five to ten minutes a page (the draft, two checks of up to two
+ * minutes and one rewrite), too long for a web request, so it runs in the
  * background: overnight from scripts/draft-pages.php, or on demand through
  * the polish_jobs queue (migration 020) that scripts/run-polish-jobs.php
  * works through, one job per run, started every minute by cron. The editor's
@@ -55,8 +54,17 @@
 
 require_once __DIR__ . '/ai-drafts.php'; // draftChecks(), reviseDraft(), requestSourceBlock(), the coverage list
 
-/** Most AI checks per page. That is up to four rewrites: there is no rewrite after the last check. */
-const POLISH_MAX_CHECKS = 5;
+/**
+ * Most AI checks per page by default: two, so one rewrite (there is no rewrite
+ * after the last check). It was five, up to four rewrites, until the Pension Tax
+ * Relief runs: both full runs got nearly all of their improvement from the first
+ * rewrite (10 findings to 2, 8 to 5), and the later rounds only added cost, since
+ * every check and rewrite reads all the source pages again. The kept version is
+ * still the best one, and what is left is for the person to fix, with the editor's
+ * "Propose fix" buttons (includes/ai-fixes.php). To change it, add
+ * define('AI_POLISH_MAX_CHECKS', 3); (1 to 5) to config/database.local.php.
+ */
+const POLISH_MAX_CHECKS = 2;
 
 /** The stop rule allows this many style findings (and no substance findings, and clean program checks). */
 const POLISH_STOP_MAX_STYLE = 2;
@@ -76,7 +84,7 @@ const POLISH_DELETION_KINDS = ['duplicated', 'unneeded_section'];
 const POLISH_WEIGHT_SUBSTANCE = 3;
 const POLISH_WEIGHT_STYLE = 1;
 
-/** A job still "running" after this many minutes is taken to have died. A full run (coverage, draft, five checks, four rewrites) can take twenty to thirty. */
+/** A job still "running" after this many minutes is taken to have died. A normal run takes five to ten; this leaves room for a slow one or for AI_POLISH_MAX_CHECKS raised to 5. */
 const POLISH_STALE_MINUTES = 60;
 
 /** Polishing can be switched off with define('POLISH_ENABLED', false); in config/database.local.php. */
@@ -120,6 +128,15 @@ function polishStopRuleMet(array $findings, array $programChecks): bool
 {
     [$substance, $style] = polishCounts($findings);
     return $substance === 0 && $style <= POLISH_STOP_MAX_STYLE && draftScore($programChecks) === 0;
+}
+
+/** Most AI checks per page: AI_POLISH_MAX_CHECKS if set (1 to 5), else POLISH_MAX_CHECKS. */
+function polishMaxChecks(): int
+{
+    if (defined('AI_POLISH_MAX_CHECKS')) {
+        return max(1, min(5, (int) AI_POLISH_MAX_CHECKS));
+    }
+    return POLISH_MAX_CHECKS;
 }
 
 /**
@@ -571,7 +588,7 @@ function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft,
 function polishNote(array $polish): string
 {
     if (!$polish['counts']) {
-        return implode(' ', $polish['notes']) ?: 'Not polished.';
+        return trim((implode(' ', $polish['notes']) ?: 'Not polished.') . ' ' . ($polish['usage_note'] ?? ''));
     }
     $splits = $polish['splits'];
     $last = array_pop($splits);
@@ -591,7 +608,7 @@ function polishNote(array $polish): string
     if (($polish['model'] ?? '') !== '') {
         $line .= ' Rewrites by ' . $polish['model'] . '.';
     }
-    return trim($line . ' ' . implode(' ', $polish['notes']));
+    return trim($line . ' ' . implode(' ', $polish['notes']) . ' ' . ($polish['usage_note'] ?? ''));
 }
 
 // ------------------------------------------------------------
@@ -613,15 +630,21 @@ function polishPageEndToEnd(PDO $pdo, array $subject, array $facts, string $made
 {
     $subjectId = (int) $subject['id'];
 
-    // Both background paths read the sources first for a coverage list. It
-    // goes to the polish rewrite and is taken out of the draft before storing.
-    $draft = draftSubjectPage($pdo, $subject, $facts, DRAFT_REVISIONS_NIGHTLY, DRAFT_REVISION_TIME_BUDGET_NIGHTLY, $retryTokens, true);
+    // Count this page's AI use from here, so its Details line can say what it cost.
+    claudeUsageLedger(null, true);
+
+    // The coverage pass (reads the sources first) is OFF unless coverageEnabled().
+    // If it ran, its list goes to the polish rewrite and is taken out of the
+    // draft before storing.
+    $draft = draftSubjectPage($pdo, $subject, $facts, DRAFT_REVISIONS_NIGHTLY, DRAFT_REVISION_TIME_BUDGET_NIGHTLY, $retryTokens, coverageEnabled());
     $coverage = $draft['coverage'] ?? [];
     unset($draft['coverage']);
     $polish = null;
 
     if (polishEnabled()) {
-        $polish = polishSubjectPage($pdo, $subject, $facts, $draft, POLISH_MAX_CHECKS, $retryTokens, $coverage);
+        $polish = polishSubjectPage($pdo, $subject, $facts, $draft, polishMaxChecks(), $retryTokens, $coverage);
+        // What the whole page used, for the job note and the Details line.
+        $polish['usage_note'] = claudeUsageText(claudeUsageLedger());
         if ($polish['result'] !== null) {
             foreach (DRAFT_FIELDS as $field) {
                 $draft[$field] = $polish['fields'][$field];
@@ -633,6 +656,15 @@ function polishPageEndToEnd(PDO $pdo, array $subject, array $facts, string $made
         $details .= $polish['tokens'] ? ' Polish rewrites: ' . implode(', ', array_map('number_format', $polish['tokens'])) . ' tokens written.' : '';
         $details .= $polish['log'] ? ' ' . implode(' ', $polish['log']) : '';
         $draft['rewrite_note'] = trim($summary . ' ' . polishNote($polish)) . ' | Details: ' . trim($details);
+    }
+
+    // Without polishing there is no polish note to carry the usage, so it goes in the details.
+    if (!$polish) {
+        $usageText = claudeUsageText(claudeUsageLedger());
+        if ($usageText !== '') {
+            [$summary, $details] = array_pad(explode(' | Details: ', (string) $draft['rewrite_note'], 2), 2, '');
+            $draft['rewrite_note'] = trim($summary) . ' | Details: ' . trim($details . ' ' . $usageText);
+        }
     }
 
     saveSubjectDraft($pdo, $subjectId, $draft, $madeBy);

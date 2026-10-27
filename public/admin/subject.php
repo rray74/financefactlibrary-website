@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../includes/admin-queries.php';
 require_once __DIR__ . '/../../includes/ai-drafts.php'; // AI drafts of the four text fields
 require_once __DIR__ . '/../../includes/ai-polish.php'; // the polish loop and its background queue
 require_once __DIR__ . '/../../includes/text-checks.php'; // quick checks and the AI check of the text
+require_once __DIR__ . '/../../includes/ai-fixes.php';     // "Propose fix": an AI fix for one finding of the check
 require_once __DIR__ . '/../../includes/review-flags.php'; // why this page needs reviewing, if it does
 require_once __DIR__ . '/../../includes/lessons.php';       // keeps drafts with the saved text, to learn from the edits
 
@@ -23,6 +24,13 @@ requireAdmin();
  * under each field with a "Use draft" button, which copies it into the
  * box. Nothing reaches the live page until you click Save page details,
  * and saving with an explanation clears the draft.
+ *
+ * Propose fix (includes/ai-fixes.php): each finding of the AI check has a
+ * button that asks the AI for the smallest change that fixes just that finding.
+ * The proposal (old words, new words, why) is shown under the finding, with
+ * "Apply to the box", which changes that one passage in the text box. Nothing is
+ * saved until you save the page. Proposals are kept in the session, per page and
+ * finding number, and cleared when the AI check is run again or the page is saved.
  *
  * Checks (includes/text-checks.php): quick house-style checks run on the
  * saved text whenever the page opens. "Check with AI" reads whatever is in
@@ -98,6 +106,10 @@ $polishJob = getPolishJob($subjectId);
 // This page's latest AI text check (subject_text_checks), or NULL.
 $textCheck = getSubjectTextCheck($subjectId);
 
+// Fixes proposed for that check's findings, by finding number (1 = the first), kept in
+// the session by the "Propose fix" buttons. See includes/ai-fixes.php.
+$fixProposals = $_SESSION['fix_proposals'][$subjectId] ?? [];
+
 // Where in the page to land after saving, so you're returned to the form
 // you just used rather than the top.
 $returnAnchor = '';
@@ -130,6 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $result = aiTextCheck($subject, $facts, $typed);
             saveSubjectTextCheck($pdo, $subjectId, $result, textCheckHash($typed));
+            // The old finding numbers no longer mean anything, so neither do proposals made for them.
+            unset($_SESSION['fix_proposals'][$subjectId]);
             rememberAdminInput($_POST);
 
             $found = count($result['findings']);
@@ -150,9 +164,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($jobId === null) {
                 setAdminFlash('info', 'This page is already waiting in the polish queue, or being polished now.');
             } else {
-                setAdminFlash('info', 'Queued. The draft will be written and polished in the background, which takes about ten minutes. '
+                setAdminFlash('info', 'Queued. The draft will be written and polished in the background, which takes about five to ten minutes. '
                     . 'You will get an email, and the draft appears here. You can leave this page.');
             }
+
+        } elseif ($action === 'save_subject' && isset($_POST['propose_fix'])) {
+            // "Propose fix" beside one finding of the AI check. The button is inside
+            // the page details form, so everything typed comes back too and is put
+            // back in the boxes unchanged. Nothing is saved or changed: the proposal
+            // is shown under the finding, and "Apply to the box" (JavaScript) makes the
+            // change in the text box. The number is the finding's place in the check
+            // plus one, so that the first finding's value is not 0 (which isset()
+            // accepts but which reads as empty elsewhere).
+            $returnAnchor = '#text-check';
+
+            // Reading the source pages and the AI together can take a minute or two.
+            set_time_limit(300);
+            keepDbConnectionOpenForAi($pdo);
+
+            $typed = [];
+            foreach (array_keys(TEXT_FIELD_LABELS) as $field) {
+                $typed[$field] = (string) ($_POST[$field] ?? '');
+            }
+            $number = (int) $_POST['propose_fix'];
+            $finding = $textCheck['findings'][$number - 1] ?? null;
+            if (!$finding) {
+                throw new RuntimeException('That finding is not in the latest AI check any more. Run Check with AI again.');
+            }
+
+            $proposal = proposeFix($pdo, $subject, $facts, $typed, $finding);
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
+            $_SESSION['fix_proposals'][$subjectId][$number] = $proposal;
+            rememberAdminInput($_POST);
+
+            setAdminFlash('info', ($proposal['ok'] && $proposal['action'] !== 'none')
+                ? 'Fix proposed under the finding. Nothing has changed: click "Apply to the box" to use it, then save the page as usual.'
+                : 'No change proposed: ' . $proposal['reason']);
 
         } elseif ($action === 'save_subject' && !empty($_POST['draft_page'])) {
             // "Draft this page": the button is inside the page details form,
@@ -177,6 +226,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         } elseif ($action === 'save_subject') {
             $returnAnchor = '#subject-details';
+            // Proposals were made for the text as it was; once it is saved they are done with.
+            unset($_SESSION['fix_proposals'][$subjectId]);
             updateSubjectDetails($pdo, $subjectId, [
                 'intro'            => $_POST['intro'] ?? null,
                 'explanation'      => $_POST['explanation'] ?? null,
@@ -539,7 +590,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 <strong>Polish:</strong>
                 <?= $polishJob['status'] === 'queued'
                     ? 'waiting in the queue since ' . e(date('H:i', strtotime($polishJob['requested_at']))) . '. A cron job starts it within a minute or two; if nothing has started after ten minutes, the cron job for scripts/run-polish-jobs.php may not be set up.'
-                    : 'being drafted and polished now (started ' . e(date('H:i', strtotime($polishJob['started_at']))) . '). It takes about ten minutes; reload to see it.' ?>
+                    : 'being drafted and polished now (started ' . e(date('H:i', strtotime($polishJob['started_at']))) . '). It takes about five to ten minutes; reload to see it.' ?>
             </p>
             <?php elseif ($polishJob && $polishJob['status'] === 'failed'): ?>
             <p class="text-xs mt-2"><strong>Polish failed</strong> (<?= e(date('j M, H:i', strtotime($polishJob['finished_at']))) ?>): <?= e((string) $polishJob['note']) ?></p>
@@ -602,7 +653,8 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <p class="mt-3 text-secondary">No problems found.</p>
             <?php else: ?>
             <ul class="mt-3 space-y-3">
-                <?php foreach ($textCheck['findings'] as $finding): ?>
+                <?php foreach ($textCheck['findings'] as $findingIndex => $finding): ?>
+                <?php $findingNumber = $findingIndex + 1; $proposal = $fixProposals[$findingNumber] ?? null; ?>
                 <li class="border-l-2 border-error/50 pl-3">
                     <span class="font-mono text-xs uppercase tracking-wide text-error">
                         <?= e(TEXT_CHECK_KINDS[$finding['kind']] ?? $finding['kind']) ?>
@@ -610,6 +662,48 @@ include __DIR__ . '/../../includes/admin-nav.php';
                     </span>
                     <span class="block italic opacity-80">&ldquo;<?= e($finding['quote']) ?>&rdquo;</span>
                     <span class="block"><?= e($finding['problem']) ?></span>
+
+                    <?php // Propose fix: submits this form with the finding's number, as Check with AI does. ?>
+                    <?php if (aiProposalsAvailable()): ?>
+                    <span class="block mt-2">
+                        <button type="submit" name="propose_fix" value="<?= (int) $findingNumber ?>" formnovalidate
+                            class="btn btn-xs btn-outline" data-propose-fix>Propose fix</button>
+                        <span class="text-xs opacity-60 ml-1">asks the AI for the smallest change that fixes this one; nothing changes until you apply it</span>
+                    </span>
+                    <?php endif; ?>
+
+                    <?php if ($proposal): ?>
+                    <div class="mt-2 rounded border border-base-300 p-3 text-xs space-y-2">
+                        <?php if ($proposal['ok'] && $proposal['action'] !== 'none'): ?>
+                        <p class="font-semibold">
+                            <?= $proposal['action'] === 'delete' ? 'Proposed: delete this text' : 'Proposed: replace this text' ?>
+                            (<?= e(TEXT_FIELD_LABELS[$proposal['field']] ?? $proposal['field']) ?>)
+                        </p>
+                        <p class="opacity-60 uppercase tracking-wide">Now</p>
+                        <p class="font-mono whitespace-pre-wrap line-through opacity-80"><?= e($proposal['old']) ?></p>
+                        <?php if ($proposal['action'] !== 'delete'): ?>
+                        <p class="opacity-60 uppercase tracking-wide">Instead</p>
+                        <p class="font-mono whitespace-pre-wrap"><?= e($proposal['new']) ?></p>
+                        <?php if (strpos($proposal['new'], '{') !== false): ?>
+                        <p class="opacity-70">Shows as: <?= e($fillPreview($proposal['new'])) ?></p>
+                        <?php endif; ?>
+                        <?php endif; ?>
+                        <?php if ($proposal['reason'] !== ''): ?>
+                        <p><?= e($proposal['reason']) ?></p>
+                        <?php endif; ?>
+                        <p>
+                            <?php // The page's JavaScript makes the change in the box; the passage must still be in it exactly once. ?>
+                            <button type="button" class="btn btn-xs btn-primary" data-fix-apply
+                                data-fix-field="<?= e($proposal['field']) ?>"
+                                data-fix-old="<?= e($proposal['old']) ?>"
+                                data-fix-new="<?= e($proposal['new']) ?>">Apply to the box</button>
+                            <span class="opacity-70 ml-1" data-fix-status>Nothing is saved until you save the page.</span>
+                        </p>
+                        <?php else: ?>
+                        <p><strong>No change proposed.</strong> <?= e($proposal['reason']) ?></p>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
                 </li>
                 <?php endforeach; ?>
             </ul>
@@ -1175,7 +1269,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             return {
                 title: 'Draft and polish this page in the background?',
                 lines: (hasDraft ? ['This replaces the current AI drafts under the fields. The old drafts cannot be brought back.'] : [])
-                    .concat(['It writes a draft, then checks it with the AI and rewrites what the check finds, up to three times. This takes about ten minutes and runs in the background, so you can leave this page.',
+                    .concat(['It writes a draft, checks it with the AI, rewrites what the check finds, and checks again. This takes about five to ten minutes and runs in the background, so you can leave this page. What is left over is for you to fix, with the Propose fix buttons.',
                              'You will get an email when it is ready. What is in the boxes is kept, and nothing on the page is saved.']),
                 action: 'Yes, queue it'
             };
@@ -1242,7 +1336,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             detailsForm.addEventListener('submit', function (event) {
                 // Only the Save button. Draft this page and Check with AI submit this form too.
                 var submitter = event.submitter;
-                if (!submitter || submitter.name === 'draft_page' || submitter.name === 'check_page' || submitter.name === 'queue_polish') return;
+                if (!submitter || submitter.name === 'draft_page' || submitter.name === 'check_page' || submitter.name === 'queue_polish' || submitter.name === 'propose_fix') return;
                 // The draft is only deleted when the page is saved with an explanation.
                 if (document.getElementById('explanation').value.trim() === '') return;
 
@@ -1425,6 +1519,44 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 lastField.setSelectionRange(start + token.length, start + token.length);
                 // Updates the count and preview.
                 lastField.dispatchEvent(new Event('input'));
+            });
+        });
+    })();
+</script>
+
+<script>
+    // ---- Propose fix: Apply to the box, and a working label on the button ----
+    // "Apply to the box" makes the proposed change in the text box, and nothing
+    // else: the passage must still be in the box exactly once, or nothing is
+    // changed and you are told. The blank lines a deletion leaves are tidied the
+    // same way as on the server (3 or more in a row become one blank line), so the
+    // text that was checked there is the text that ends up here. Nothing is saved.
+    (function () {
+        document.querySelectorAll('[data-fix-apply]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var box = document.getElementById(button.dataset.fixField);
+                var status = button.parentNode.querySelector('[data-fix-status]');
+                if (!box) return;
+                var text = box.value.replace(/\r\n/g, '\n');
+                var old = button.dataset.fixOld;
+                var first = text.indexOf(old);
+                if (first === -1 || text.indexOf(old, first + 1) !== -1) {
+                    if (status) status.textContent = 'The text in the box has changed, so this cannot be applied safely. Run Check with AI again.';
+                    return;
+                }
+                box.value = (text.slice(0, first) + button.dataset.fixNew + text.slice(first + old.length)).replace(/\n{3,}/g, '\n\n');
+                box.dispatchEvent(new Event('input')); // updates the count and preview
+                button.disabled = true;
+                button.textContent = 'Applied';
+                if (status) status.textContent = 'Changed in the box. Save the page to keep it, or run Check with AI again first.';
+            });
+        });
+
+        // Propose fix reads the source pages and asks the AI, which takes up to a minute.
+        // The label changes after the form is on its way (a disabled button would not be sent).
+        document.querySelectorAll('[data-propose-fix]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                setTimeout(function () { button.textContent = 'Working… (up to a minute)'; }, 50);
             });
         });
     })();

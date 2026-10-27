@@ -148,6 +148,92 @@ function claudeLastCallInfo(?array $set = null): array
 }
 
 /**
+ * The tokens every callClaude() has used since the ledger was last reset, per
+ * model: ['model' => ['calls', 'input', 'output', 'cache_read', 'cache_write']].
+ * 'input' is what the API reports as input tokens (not counting cached ones).
+ * The background jobs reset it at the start of a page and print it at the end
+ * (claudeUsageText()), so the cost of a page can be seen in its Details line
+ * rather than guessed from the Anthropic usage page. Every successful (HTTP 200)
+ * reply is counted, including empty ones, which are billed too.
+ *
+ * $add    one call's usage: ['model', 'input', 'output', 'cache_read', 'cache_write']
+ * $reset  empty the ledger first
+ */
+function claudeUsageLedger(?array $add = null, bool $reset = false): array
+{
+    static $ledger = [];
+    if ($reset) {
+        $ledger = [];
+    }
+    if ($add !== null) {
+        $row = $ledger[$add['model']] ?? ['calls' => 0, 'input' => 0, 'output' => 0, 'cache_read' => 0, 'cache_write' => 0];
+        $row['calls']++;
+        foreach (['input', 'output', 'cache_read', 'cache_write'] as $key) {
+            $row[$key] += (int) ($add[$key] ?? 0);
+        }
+        $ledger[$add['model']] = $row;
+    }
+    return $ledger;
+}
+
+/**
+ * Prices per million tokens for a model, [input, output], from AI_PRICES in
+ * config/database.local.php, or NULL if none is set for it. AI_PRICES maps the
+ * start of a model name to its prices, for example:
+ *   define('AI_PRICES', ['claude-sonnet-4-6' => [3.00, 15.00], 'claude-sonnet-5-5' => [3.00, 15.00]]);
+ * The prices are NOT built in, because they change and are yours to check on
+ * Anthropic's pricing page. Without them the usage line shows tokens only.
+ */
+function claudeModelPrice(string $model): ?array
+{
+    if (!defined('AI_PRICES') || !is_array(AI_PRICES)) {
+        return null;
+    }
+    foreach (AI_PRICES as $prefix => $prices) {
+        if (strpos($model, (string) $prefix) === 0 && is_array($prices) && count($prices) >= 2) {
+            return [(float) $prices[0], (float) $prices[1]];
+        }
+    }
+    return null;
+}
+
+/**
+ * The ledger as one sentence for a Details line or a job note, e.g.
+ * "AI use: claude-sonnet-4-6: 6 calls, 148,200 tokens read, 7,100 written;
+ * claude-sonnet-5-5: 3 calls, 121,000 read, 2,400 written." With AI_PRICES set
+ * for every model used, it ends with an estimated cost. Returns '' if no
+ * calls were made.
+ */
+function claudeUsageText(array $ledger): string
+{
+    if (!$ledger) {
+        return '';
+    }
+    $parts = [];
+    $cost = 0.0;
+    $allPriced = true;
+    foreach ($ledger as $model => $row) {
+        $read = $row['input'] + $row['cache_read'] + $row['cache_write'];
+        $parts[] = "$model: {$row['calls']} call" . ($row['calls'] === 1 ? '' : 's') . ', '
+            . number_format($read) . ' tokens read, ' . number_format($row['output']) . ' written';
+        $price = claudeModelPrice((string) $model);
+        if ($price === null) {
+            $allPriced = false;
+            continue;
+        }
+        // Cached input is read at a tenth of the price and written at a quarter more. The
+        // site does not ask for caching, so these are normally zero.
+        $cost += ($row['input'] + $row['cache_write'] * 1.25 + $row['cache_read'] * 0.1) / 1000000 * $price[0]
+            + $row['output'] / 1000000 * $price[1];
+    }
+    $text = 'AI use: ' . implode('; ', $parts) . '.';
+    if ($allPriced && $cost > 0) {
+        $text .= ' Estimated cost about $' . number_format($cost, 2) . ' at the prices in AI_PRICES.';
+    }
+    return $text;
+}
+
+/**
  * Send one request to the API. Returns [HTTP status, response body, curl
  * error]. Kept apart from callClaude() so that function's handling of
  * replies (and its retries) can be tested without calling the API.
@@ -255,6 +341,15 @@ function callClaude(
             }
             throw new RuntimeException("AI request failed (HTTP $status): $message");
         }
+
+        // Billed whether or not the reply has any text in it.
+        claudeUsageLedger([
+            'model'       => (string) ($data['model'] ?? ($model ?? ANTHROPIC_MODEL)),
+            'input'       => (int) ($data['usage']['input_tokens'] ?? 0),
+            'output'      => (int) ($data['usage']['output_tokens'] ?? 0),
+            'cache_read'  => (int) ($data['usage']['cache_read_input_tokens'] ?? 0),
+            'cache_write' => (int) ($data['usage']['cache_creation_input_tokens'] ?? 0),
+        ]);
 
         $text = '';
         $kinds = [];

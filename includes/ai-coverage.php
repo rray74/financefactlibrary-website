@@ -23,13 +23,26 @@
  * writer's own homework.
  *
  * It runs only in the background paths (the nightly job and the polish queue),
- * not in the editor's "Draft this page" button, which has a web request's time
- * limit. A failure here is never fatal: the page is drafted without a list.
+ * and only when coverageEnabled() (off by default), never in the editor's "Draft
+ * this page" button, which has a web request's time limit. A failure here is
+ * never fatal: the page is drafted without a list.
  *
  * Nothing here is stored. The list lives for the length of one job.
  */
 
 require_once __DIR__ . '/ai-proposer.php'; // callClaude()
+
+/**
+ * Whether the background paths run the coverage pass. OFF by default: it is an
+ * extra AI call that reads every source page, and on Pension Tax Relief the
+ * first draft still came back with 9 or 10 substance findings with it on, so it
+ * did not earn its cost. To switch it on, add define('AI_COVERAGE_ENABLED', true);
+ * to config/database.local.php.
+ */
+function coverageEnabled(): bool
+{
+    return defined('AI_COVERAGE_ENABLED') && AI_COVERAGE_ENABLED;
+}
 
 /** Most tokens the coverage reply may use. The list is short; this leaves room. */
 const COVERAGE_MAX_TOKENS = 4000;
