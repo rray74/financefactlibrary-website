@@ -32,6 +32,13 @@ requireAdmin();
  * saved until you save the page. Proposals are kept in the session, per page and
  * finding number, and cleared when the AI check is run again or the page is saved.
  *
+ * "Propose fixes for all findings" asks for a proposal for every finding that has
+ * none yet (substance findings first), reading the source pages once. A request has a
+ * time limit, so it stops after about a minute and says how many are left; click it
+ * again for the rest. "Apply all proposals" applies every proposal shown, one at a time,
+ * each all-or-nothing. After either, the message at the top gives the AI use and its
+ * estimated cost (see AI_PRICES), so what the editor's AI buttons cost is visible.
+ *
  * Checks (includes/text-checks.php): quick house-style checks run on the
  * saved text whenever the page opens. "Check with AI" reads whatever is in
  * the boxes against the page's figures and source pages, without saving,
@@ -181,6 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Reading the source pages and the AI together can take a minute or two.
             set_time_limit(300);
             keepDbConnectionOpenForAi($pdo);
+            claudeUsageLedger(null, true); // so the message can say what this cost
 
             $typed = [];
             foreach (array_keys(TEXT_FIELD_LABELS) as $field) {
@@ -199,9 +207,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['fix_proposals'][$subjectId][$number] = $proposal;
             rememberAdminInput($_POST);
 
-            setAdminFlash('info', ($proposal['ok'] && $proposal['action'] !== 'none')
+            setAdminFlash('info', (($proposal['ok'] && $proposal['action'] !== 'none')
                 ? 'Fix proposed under the finding. Nothing has changed: click "Apply to the box" to use it, then save the page as usual.'
-                : 'No change proposed: ' . $proposal['reason']);
+                : 'No change proposed: ' . $proposal['reason'])
+                . ' ' . claudeUsageText(claudeUsageLedger()));
+
+        } elseif ($action === 'save_subject' && isset($_POST['propose_all'])) {
+            // "Propose fixes for all findings": a proposal for every finding of the stored AI
+            // check that has none yet. As for one finding, nothing is changed or saved: the
+            // proposals are shown under their findings and applied from there. The batch stops
+            // after about a minute (a request's time limit) and says how many are left; clicking
+            // again does those, because findings that already have a proposal are skipped.
+            $returnAnchor = '#text-check';
+            set_time_limit(300);
+            keepDbConnectionOpenForAi($pdo);
+            claudeUsageLedger(null, true);
+
+            if (!$textCheck || !$textCheck['findings']) {
+                throw new RuntimeException('There are no findings to propose fixes for. Run Check with AI first.');
+            }
+            $typed = [];
+            foreach (array_keys(TEXT_FIELD_LABELS) as $field) {
+                $typed[$field] = (string) ($_POST[$field] ?? '');
+            }
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
+            $already = array_keys($_SESSION['fix_proposals'][$subjectId] ?? []);
+            $batch = proposeFixes($pdo, $subject, $facts, $typed, $textCheck['findings'], $already);
+            foreach ($batch['proposals'] as $number => $made) {
+                $_SESSION['fix_proposals'][$subjectId][$number] = $made;
+            }
+            rememberAdminInput($_POST);
+
+            $withChange = count(array_filter($batch['proposals'], fn($p) => $p['ok'] && $p['action'] !== 'none'));
+            $message = count($batch['proposals']) . ' proposal' . (count($batch['proposals']) === 1 ? '' : 's') . ' made'
+                . ' (' . $withChange . ' with a change). Nothing has changed: read them under the findings and apply the ones that are right, then save the page as usual.';
+            if ($batch['remaining'] > 0) {
+                $message .= ' ' . $batch['remaining'] . ' finding' . ($batch['remaining'] === 1 ? '' : 's') . ' still without one'
+                    . ($batch['error'] === '' ? ': click the button again for the rest.' : '.');
+            }
+            if ($batch['error'] !== '') {
+                $message .= ' It stopped on an error: ' . $batch['error'];
+            }
+            setAdminFlash('info', $message . ' ' . claudeUsageText(claudeUsageLedger()));
 
         } elseif ($action === 'save_subject' && !empty($_POST['draft_page'])) {
             // "Draft this page": the button is inside the page details form,
@@ -556,6 +605,22 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <?= adminCsrfField() ?>
         <input type="hidden" name="action" value="save_subject">
 
+        <?php // The checklist for finishing a page. The same text is in docs/page-checklist.md. ?>
+        <details class="fact-card p-4 text-sm">
+            <summary class="font-semibold cursor-pointer">Checklist for finishing a page</summary>
+            <ol class="list-decimal pl-5 mt-3 space-y-2">
+                <li><strong>Draft.</strong> Draft and polish in the background, then run the job. Keep its "AI use" line. Open this page and click Use draft on all four fields.</li>
+                <li><strong>Rate pages</strong> (a figure checked every 42 days or less): no rate or odds in any field, not even as a placeholder, and nothing about it rising or falling. The checks below say so after you save.</li>
+                <li><strong>Typed figures.</strong> Replace any figure typed by hand that is on a card with its placeholder. The checks list them.</li>
+                <li><strong>Check with AI once</strong>, then <strong>Propose fixes for all findings</strong>. Apply a proposal only if the new words are true to the source, in your own words, and say nothing the sources don't.</li>
+                <li><strong>Substance findings</strong> (contradicts, probably wrong, missing exception, heading mismatch, regional): fix them, or decide they're wrong. <strong>Style findings:</strong> ignore them unless they are a typed figure, a stated rate or a dating word.</li>
+                <li><strong>Skip</strong> any finding that asks for a typed figure that changes, the history of a figure, or a section that only repeats the cards.</li>
+                <li><strong>Read the intro and meta description against the headings.</strong> Nothing may be promised that the page doesn't cover, and a topic the cards show counts as covered. Meta description 140 to 155 characters. No Oxford comma.</li>
+                <li><strong>Save</strong>, hard-refresh the live page, then use Look for lessons. Approve a lesson only if it is general and doesn't contradict the house style. Lessons can't be edited: retire and add.</li>
+                <li><strong>Note the time</strong> and the cost (the "AI use" lines).</li>
+            </ol>
+        </details>
+
         <?php // AI draft: what's stored, anything to check, and the button to redraft now. ?>
         <?php if ($draft || aiProposalsAvailable()): ?>
         <div class="fact-card p-4 text-sm">
@@ -637,9 +702,19 @@ include __DIR__ . '/../../includes/admin-nav.php';
                     <?php endif; ?>
                 </p>
                 <?php if (aiProposalsAvailable()): ?>
-                <?php // Submits this form with check_page set: nothing is saved, what's typed comes back. ?>
-                <button type="submit" name="check_page" value="1" formnovalidate
-                    class="btn btn-xs btn-outline" id="check-button">Check with AI</button>
+                <span class="flex flex-wrap gap-2">
+                    <?php if ($textCheck && $textCheck['findings']): ?>
+                    <?php // Proposals for every finding without one (see the file header). Nothing is changed. ?>
+                    <button type="submit" name="propose_all" value="1" formnovalidate
+                        class="btn btn-xs btn-outline" data-propose-all>Propose fixes for all findings</button>
+                    <?php if ($fixProposals): ?>
+                    <button type="button" class="btn btn-xs btn-primary" data-fix-apply-all>Apply all proposals</button>
+                    <?php endif; ?>
+                    <?php endif; ?>
+                    <?php // Submits this form with check_page set: nothing is saved, what's typed comes back. ?>
+                    <button type="submit" name="check_page" value="1" formnovalidate
+                        class="btn btn-xs btn-outline" id="check-button">Check with AI</button>
+                </span>
                 <?php endif; ?>
             </div>
             <p class="text-xs opacity-70 mt-1">
@@ -1349,7 +1424,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             detailsForm.addEventListener('submit', function (event) {
                 // Only the Save button. Draft this page and Check with AI submit this form too.
                 var submitter = event.submitter;
-                if (!submitter || submitter.name === 'draft_page' || submitter.name === 'check_page' || submitter.name === 'queue_polish' || submitter.name === 'propose_fix') return;
+                if (!submitter || submitter.name === 'draft_page' || submitter.name === 'check_page' || submitter.name === 'queue_polish' || submitter.name === 'propose_fix' || submitter.name === 'propose_all') return;
                 // The draft is only deleted when the page is saved with an explanation.
                 if (document.getElementById('explanation').value.trim() === '') return;
 
@@ -1575,6 +1650,29 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 button.disabled = true;
                 button.textContent = 'Applied';
                 if (status) status.textContent = 'Changed in the box' + (Object.keys(values).length === 1 ? '' : 'es') + '. Save the page to keep it, or run Check with AI again first.';
+            });
+        });
+
+        // Apply all proposals: click every Apply button that is still enabled, one after another.
+        // Each is all-or-nothing, so one that no longer fits (its text has changed, or an earlier
+        // proposal changed the same sentence) says so under itself and the others still apply.
+        document.querySelectorAll('[data-fix-apply-all]').forEach(function (all) {
+            all.addEventListener('click', function () {
+                var applied = 0;
+                document.querySelectorAll('[data-fix-apply]').forEach(function (button) {
+                    if (button.disabled) return;
+                    button.click();
+                    if (button.disabled) applied++;
+                });
+                all.textContent = applied + ' applied. Save the page to keep them';
+                all.disabled = true;
+            });
+        });
+
+        // Propose fixes for all findings can take two minutes (one proposal after another).
+        document.querySelectorAll('[data-propose-all]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                setTimeout(function () { button.textContent = 'Working… (up to two minutes)'; }, 50);
             });
         });
 

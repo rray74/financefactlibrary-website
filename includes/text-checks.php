@@ -392,6 +392,30 @@ function quoteWords(string $sentence, int $max = 25): string
     return preg_match('/^(?:\S+\s+){0,' . ($max - 1) . '}\S+/u', $sentence, $m) ? $m[0] : $sentence;
 }
 
+/**
+ * The numbers a fact's VALUE is written as (12570 for £12,570; 4.35 and 4.350 for 4.35%),
+ * without the tax-year parts that factNumberForms() also returns. Used to tell when a
+ * typed number is a card's figure typed out by hand (see quickTextChecks()). The tax-year
+ * parts are left out because "27" in "2026/27" is not the figure.
+ */
+function factValueForms(array $fact): array
+{
+    $forms = [];
+    foreach ([$fact['value'] ?? '', formatFactValue($fact)] as $written) {
+        if (preg_match_all('/\d[\d,]*(?:\.\d+)?/', (string) $written, $m)) {
+            foreach ($m[0] as $number) {
+                $forms[str_replace(',', '', rtrim($number, ',.'))] = true;
+            }
+        }
+    }
+    if (($fact['value_numeric'] ?? null) !== null) {
+        $n = (float) $fact['value_numeric'];
+        $forms[rtrim(rtrim(number_format($n, 4, '.', ''), '0'), '.')] = true;
+        $forms[number_format($n, 2, '.', '')] = true;
+    }
+    return array_keys($forms);
+}
+
 // ------------------------------------------------------------
 // 1. Quick checks
 // ------------------------------------------------------------
@@ -410,11 +434,15 @@ function quickTextChecks(array $fields, array $facts): array
     // Which fact each typed number belongs to, which numbers appear in the
     // figures' labels (see factLabelNumbers()), and which facts are rates.
     $factForNumber = [];
+    $valueForNumber = []; // as $factForNumber, but only the figures' values (no tax-year parts)
     $labelNumbers = [];
     $rateKeys = [];
     foreach ($published as $fact) {
         foreach (factNumberForms($fact) as $form) {
             $factForNumber[$form] ??= $fact;
+        }
+        foreach (factValueForms($fact) as $form) {
+            $valueForNumber[$form] ??= $fact;
         }
         foreach (factLabelNumbers($fact) as $number) {
             $labelNumbers[$number] = true;
@@ -446,10 +474,24 @@ function quickTextChecks(array $fields, array $facts): array
                 // them. Only figures that change are flagged: rates, and
                 // figures tied to a tax year. Fixed ones (like the £100,000
                 // taper threshold) may be typed, as the house style allows.
-                $notes[] = "$label: $written is typed. Use {fact:{$fact['fact_key']}} so it stays current.";
+                if ($field === 'meta_description' && isset($rateKeys[$fact['fact_key']])) {
+                    // A search description is text too: the rate-page rule applies (see below).
+                    $notes[] = "$label: $written is typed, and it's a rate ({$fact['label']}). "
+                        . "The house style is not to state rates on rate pages, and a search description counts as text.";
+                } else {
+                    $notes[] = "$label: $written is typed. Use {fact:{$fact['fact_key']}} so it stays current.";
+                }
             } elseif (!$isMeta && isset($rateKeys[$fact['fact_key']])) {
                 $notes[] = "$label: $written is typed, and it's a rate ({$fact['label']}). "
                     . "The house style is not to state rates in the text.";
+            } elseif (!$isMeta && ($valueFact = $valueForNumber[$plain] ?? null) !== null && !isset($labelNumbers[$plain])) {
+                // A card's figure typed by hand. The card updates when the figure changes and the text
+                // doesn't: on VAT a typed 90,000 and 88,000 sat in the text and nothing flagged them,
+                // because they matched the cards. (If it is a different figure that happens to be
+                // equal, or one fixed in law until a date the text gives, it can stay.)
+                $notes[] = "$label: $written is typed, and it is the same as the {$valueFact['label']} figure. "
+                    . "Use {fact:{$valueFact['fact_key']}} so it updates with the card, unless it is a different figure "
+                    . "that happens to be equal or one fixed in law until a date the text gives.";
             }
         }
         if ($unmatched) {
@@ -459,12 +501,16 @@ function quickTextChecks(array $fields, array $facts): array
                 . (count($unmatched) === 1 ? 'it.' : 'them.');
         }
 
-        // --- Rates shown through a placeholder, in the intro or explanation. ---
-        if (!$isMeta && preg_match_all('/\{fact:([a-z0-9_]+)\}/', $text, $m)) {
+        // --- Rates shown through a placeholder, in the intro, explanation or meta description. ---
+        // The meta description is included: on Premium Bonds the first draft stated the prize
+        // fund rate and the odds there, through placeholders, and only the AI check noticed.
+        // (The meta TITLE is left alone: rate pages' titles name the subject, not its rate.)
+        if ($field !== 'meta_title' && preg_match_all('/\{fact:([a-z0-9_]+)\}/', $text, $m)) {
             foreach (array_unique($m[1]) as $key) {
                 if (isset($rateKeys[$key])) {
                     $notes[] = "$label: {fact:$key} shows a rate ({$rateKeys[$key]['label']}). "
-                        . 'The house style is not to state rates in the text, even as a placeholder.';
+                        . 'The house style is not to state rates in the text, even as a placeholder'
+                        . ($isMeta ? ', and a search description counts as text.' : '.');
                 }
             }
         }

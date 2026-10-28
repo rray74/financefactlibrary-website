@@ -223,10 +223,30 @@ function fixRejects(PDO $pdo, array $subject, array $published, array $read, arr
 }
 
 /**
+ * What every proposal for one page needs and that is slow to get: the published
+ * figures, the source pages (read once, over HTTP) and the instructions. A batch
+ * of proposals (proposeFixes()) builds it once and shares it.
+ *
+ * Returns ['published', 'read', 'sourceBlock', 'instructions'].
+ */
+function fixContext(array $subject, array $facts): array
+{
+    $published = array_values(array_filter($facts, fn($f) => $f['status'] === 'published'));
+    $read = readSourcePagesForFacts($published, DRAFT_SOURCE_CHARACTERS_EACH);
+    return [
+        'published'    => $published,
+        'read'         => $read,
+        'sourceBlock'  => requestSourceBlock($read['sources'], $read['texts']),
+        'instructions' => fixInstructions((string) $subject['country_prefix'], (string) $subject['country_code']),
+    ];
+}
+
+/**
  * Propose a fix for one finding.
  *
  * $fields   the four fields as typed in the boxes (placeholders unfilled)
  * $finding  one finding from the stored AI check
+ * $context  fixContext() for this page, or NULL to build it here
  *
  * Returns:
  *   ok       false only if no usable proposal could be made (see reason)
@@ -238,7 +258,7 @@ function fixRejects(PDO $pdo, array $subject, array $published, array $read, arr
  *
  * An AI or network failure throws, as the other AI features do.
  */
-function proposeFix(PDO $pdo, array $subject, array $facts, array $fields, array $finding): array
+function proposeFix(PDO $pdo, array $subject, array $facts, array $fields, array $finding, ?array $context = null): array
 {
     $field = (string) $finding['field'];
     if (!in_array($field, DRAFT_FIELDS, true)) {
@@ -252,10 +272,11 @@ function proposeFix(PDO $pdo, array $subject, array $facts, array $fields, array
         throw new RuntimeException('That box is empty now, so there is nothing to fix. Run Check with AI again.');
     }
 
-    $published = array_values(array_filter($facts, fn($f) => $f['status'] === 'published'));
-    $read = readSourcePagesForFacts($published, DRAFT_SOURCE_CHARACTERS_EACH);
-    $sourceBlock = requestSourceBlock($read['sources'], $read['texts']);
-    $instructions = fixInstructions((string) $subject['country_prefix'], (string) $subject['country_code']);
+    $context ??= fixContext($subject, $facts);
+    $published = $context['published'];
+    $read = $context['read'];
+    $sourceBlock = $context['sourceBlock'];
+    $instructions = $context['instructions'];
 
     $retryNote = '';
     $lastWhy = 'no usable reply';
@@ -325,4 +346,67 @@ function proposeFix(PDO $pdo, array $subject, array $facts, array $fields, array
 
     return ['ok' => false, 'action' => 'none', 'field' => $field, 'changes' => [],
         'reason' => "No safe fix was found (last try: $lastWhy). You can fix this one by hand."];
+}
+
+/**
+ * Proposals for every finding of a check that has none yet: the "Propose fixes for all
+ * findings" button. The source pages are read once for the whole batch. Substance findings
+ * go first, then style ones, so if the time runs out it is the style ones that wait.
+ *
+ * A web request has a time limit, so the batch stops starting new proposals after
+ * $budgetSeconds, or after $maxCount, and says how many are left: the button can be
+ * clicked again and carries on with those. An AI or network failure stops the batch
+ * (the next ones would fail the same way) and is returned as 'error'; the proposals made
+ * before it are kept.
+ *
+ * $fields         the four fields as typed
+ * $findings       the stored check's findings, in order (finding number = position + 1)
+ * $skip           finding numbers that already have a proposal
+ * $budgetSeconds  stop starting new proposals after this long
+ * $maxCount       most proposals in one batch
+ *
+ * Returns:
+ *   proposals  finding number => the proposeFix() result
+ *   remaining  how many findings still have no proposal after this batch
+ *   error      the failure that stopped the batch, or ''
+ */
+function proposeFixes(PDO $pdo, array $subject, array $facts, array $fields, array $findings, array $skip = [], int $budgetSeconds = 70, int $maxCount = 8): array
+{
+    // Finding numbers still to do, substance first.
+    $substance = [];
+    $style = [];
+    foreach (array_values($findings) as $index => $finding) {
+        $number = $index + 1;
+        if (in_array($number, $skip, true)) {
+            continue;
+        }
+        if (in_array($finding['kind'], TEXT_CHECK_STYLE_KINDS, true)) {
+            $style[] = $number;
+        } else {
+            $substance[] = $number;
+        }
+    }
+    $todo = array_merge($substance, $style);
+
+    $result = ['proposals' => [], 'remaining' => count($todo), 'error' => ''];
+    if (!$todo) {
+        return $result;
+    }
+
+    $started = microtime(true);
+    $context = null;
+    foreach ($todo as $number) {
+        if (count($result['proposals']) >= $maxCount || (microtime(true) - $started) > $budgetSeconds) {
+            break;
+        }
+        try {
+            $context ??= fixContext($subject, $facts);
+            $result['proposals'][$number] = proposeFix($pdo, $subject, $facts, $fields, $findings[$number - 1], $context);
+        } catch (Throwable $e) {
+            $result['error'] = $e->getMessage();
+            break;
+        }
+    }
+    $result['remaining'] = count($todo) - count($result['proposals']);
+    return $result;
 }
