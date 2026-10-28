@@ -77,6 +77,20 @@ function getApprovedLessons(string $countryCode = ''): array
     }
 }
 
+/**
+ * A lesson's fixed reference, "L14": its database id, which never changes when other
+ * lessons are retired or added. The lessons page shows it, and the AI is sent the lessons
+ * under the same references, so "L14" in an AI check finding is always the same lesson.
+ *
+ * Before this the AI was sent the lessons numbered by their POSITION in the list ("12."),
+ * which moves whenever a lesson is retired or added, so a finding that said "lesson 12"
+ * could not be matched to a lesson on the page.
+ */
+function lessonReference(int $lessonId): string
+{
+    return 'L' . $lessonId;
+}
+
 /** The approved lessons as a block of text for the AI, or '' if there are none. */
 function lessonsPromptText(string $countryCode = ''): string
 {
@@ -86,9 +100,10 @@ function lessonsPromptText(string $countryCode = ''): string
     }
     $lessons = array_slice($lessons, -LESSONS_SENT_MAX);
 
-    $text = "LESSONS LEARNED FROM PAST EDITS\nThese come from mistakes already found and corrected on real pages. Follow every one.\n";
-    foreach ($lessons as $i => $lesson) {
-        $text .= ($i + 1) . '. ' . trim(preg_replace('/\s+/u', ' ', $lesson['lesson'])) . "\n";
+    $text = "LESSONS LEARNED FROM PAST EDITS\nThese come from mistakes already found and corrected on real pages. Follow every one. "
+        . "Each has a fixed reference (L3, L14 and so on): when you say a text breaks a lesson, give its reference.\n";
+    foreach ($lessons as $lesson) {
+        $text .= lessonReference((int) $lesson['id']) . '. ' . trim(preg_replace('/\s+/u', ' ', $lesson['lesson'])) . "\n";
     }
     return $text;
 }
@@ -380,8 +395,9 @@ function addLesson(PDO $pdo, string $lesson, string $scope, string $status, stri
 }
 
 /**
- * Change a lesson's wording (while it's proposed or approved), so an AI
- * suggestion can be tidied before it's approved.
+ * Change a lesson's wording (while it's proposed or approved): so an AI
+ * suggestion can be tidied before it's approved, and an approved lesson edited in
+ * place from the lessons page. The lesson keeps its id, so its reference (L14) stays.
  */
 function setLessonText(PDO $pdo, int $lessonId, string $lesson): void
 {

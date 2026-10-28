@@ -19,7 +19,14 @@ requireAdmin();
  *     approved here. (scripts/learn-from-edits.php does the same by cron.)
  *   - Proposed lessons can have their wording tidied before approval.
  *   - You can also write a lesson yourself.
+ *   - An approved lesson's wording can be edited in place (Edit the wording). It
+ *     keeps its reference, so findings that quote it stay meaningful.
  *   - A retired lesson stops being used but is kept.
+ *
+ * Every lesson has a fixed reference, "L14" (its id, see lessonReference() in
+ * includes/lessons.php). The AI is sent the lessons under the same references and
+ * quotes them in its findings, so a finding that says "L14" is always this lesson.
+ * They are no longer numbered by position, which moved whenever one was retired.
  *
  * Nothing here changes a page.
  */
@@ -47,6 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($action === 'reject_lesson') {
             setLessonStatus($pdo, $lessonId, 'rejected');
             setAdminFlash('success', 'Lesson rejected.');
+
+        } elseif ($action === 'edit_lesson') {
+            // An approved lesson's wording, edited in place. Its reference stays the same.
+            setLessonText($pdo, $lessonId, (string) ($_POST['lesson'] ?? ''));
+            setAdminFlash('success', 'Lesson ' . lessonReference($lessonId) . ' updated. The new wording is used from the next draft or AI check.');
 
         } elseif ($action === 'retire_lesson') {
             setLessonStatus($pdo, $lessonId, 'retired');
@@ -146,6 +158,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <?= adminCsrfField() ?>
             <input type="hidden" name="lesson_id" value="<?= (int) $lesson['id'] ?>">
             <p class="font-mono text-xs uppercase tracking-wide text-secondary mb-2">
+                <?= e(lessonReference((int) $lesson['id'])) ?> &middot;
                 <?= e($scopeLabel($lesson['scope'])) ?>
                 <?php if ($lesson['subject_name']): ?>
                 &middot; from <?= e($lesson['subject_name']) ?>
@@ -210,7 +223,9 @@ include __DIR__ . '/../../includes/admin-nav.php';
 <section class="mb-12">
     <h2 class="font-display text-2xl font-semibold mb-2">In use (<?= count($approved) ?>)</h2>
     <p class="opacity-80 text-sm max-w-2xl mb-4">
-        Sent to the AI with every draft and AI check, oldest first. If this list grows past
+        Sent to the AI with every draft and AI check, oldest first, each under its fixed reference
+        (L14 and so on): the AI check quotes the reference when a text breaks a lesson, and it never
+        changes when other lessons are retired or added. If this list grows past
         <?= (int) LESSONS_SENT_MAX ?>, only the newest <?= (int) LESSONS_SENT_MAX ?> are sent, so retire the
         ones that no longer earn their place.
     </p>
@@ -219,21 +234,37 @@ include __DIR__ . '/../../includes/admin-nav.php';
     <?php else: ?>
     <ul class="space-y-3 max-w-3xl">
         <?php foreach (array_reverse($approved) as $lesson): ?>
-        <li class="border-l-2 border-primary/30 pl-4">
-            <form method="post" class="flex items-start gap-4">
-                <?= adminCsrfField() ?>
-                <input type="hidden" name="lesson_id" value="<?= (int) $lesson['id'] ?>">
-                <input type="hidden" name="action" value="retire_lesson">
+        <li class="border-l-2 border-primary/30 pl-4" id="lesson-<?= (int) $lesson['id'] ?>">
+            <div class="flex items-start gap-4">
                 <div class="flex-1">
                     <span class="font-mono text-xs uppercase tracking-wide text-secondary block">
-                        <?= e($scopeLabel($lesson['scope'])) ?>
+                        <?= e(lessonReference((int) $lesson['id'])) ?>
+                        &middot; <?= e($scopeLabel($lesson['scope'])) ?>
                         &middot; <?= e(date('j M Y', strtotime($lesson['decided_at'] ?? $lesson['created_at']))) ?>
                         &middot; <?= e($lesson['origin'] === 'manual' ? 'written by you' : ($lesson['origin'] === 'chat' ? 'from a review' : 'from an edit')) ?>
                     </span>
                     <span class="text-sm"><?= e($lesson['lesson']) ?></span>
+
+                    <?php // Edit in place: the wording changes, the reference and the scope do not. ?>
+                    <details class="mt-2">
+                        <summary class="cursor-pointer text-xs text-secondary">Edit the wording</summary>
+                        <form method="post" class="mt-2 space-y-2">
+                            <?= adminCsrfField() ?>
+                            <input type="hidden" name="action" value="edit_lesson">
+                            <input type="hidden" name="lesson_id" value="<?= (int) $lesson['id'] ?>">
+                            <textarea name="lesson" rows="3" maxlength="1000" required
+                                class="textarea textarea-bordered w-full text-sm"><?= e($lesson['lesson']) ?></textarea>
+                            <button type="submit" class="btn btn-xs btn-primary">Save wording</button>
+                        </form>
+                    </details>
                 </div>
-                <button type="submit" class="btn btn-xs btn-outline shrink-0">Retire</button>
-            </form>
+                <form method="post" class="shrink-0">
+                    <?= adminCsrfField() ?>
+                    <input type="hidden" name="lesson_id" value="<?= (int) $lesson['id'] ?>">
+                    <input type="hidden" name="action" value="retire_lesson">
+                    <button type="submit" class="btn btn-xs btn-outline">Retire</button>
+                </form>
+            </div>
         </li>
         <?php endforeach; ?>
     </ul>
