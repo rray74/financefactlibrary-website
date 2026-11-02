@@ -9,3 +9,6 @@ config/database.local.php
 
 # Google Search Console key file
 config/search-console-key.json
+
+# Log files
+logs/
