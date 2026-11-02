@@ -3,7 +3,19 @@
  * CSV -> database import for Finance Fact Library.
  *
  * Usage:
- *   php scripts/import-facts.php path/to/your-facts.csv
+ *   php scripts/import-facts.php path/to/your-facts.csv [--country=GB]
+ *
+ * Every row must say which country it is for: in a jurisdiction_code
+ * column, or for the whole file with --country=XX (a row's own cell wins,
+ * but must be in the same country as the flag, so a file for one country
+ * can't end up in another). A row with neither is refused. Older UK files
+ * that have no jurisdiction_code column just need --country=GB added.
+ *
+ * Two rules keep countries apart, because fact keys and subject slugs are
+ * unique across ALL countries: a row can't take over another country's
+ * subject page by reusing its slug, or another country's fact by reusing
+ * its key. Give each country's pages and figures names of their own (for
+ * example fact keys starting au_).
  *
  * One row per fact. Category/subcategory/subject are resolved by slug and
  * created automatically if they don't exist yet (using the *_name /
@@ -25,7 +37,8 @@
  *   source_name, source_url, last_updated, review_frequency_days
  *
  * Optional columns added with the new database structure:
- *   jurisdiction_code        e.g. GB (default), GB-SCT for a Scotland-only figure
+ *   jurisdiction_code        e.g. GB, AU, or GB-SCT for a Scotland-only figure.
+ *                            Required unless --country=XX is given (see Usage)
  *   link_type                'primary' (default), 'also' or 'unlink' (see below)
  *   value_display            display override, e.g. '£0 to £125,000'
  *   effective_from           YYYY-MM-DD the figure took effect (not in the future)
@@ -36,7 +49,10 @@
  *   subject_meta_title       SEO title for the subject page
  *   subject_meta_description SEO description for the subject page
  *   subject_status           draft | published | retired, to publish, hide
- *                            or retire a subject page
+ *                            or retire a subject page. A page this row
+ *                            CREATES is published straight away unless this
+ *                            says draft: use draft to stage pages for the
+ *                            drip publisher to release
  *   previous_value           the value before the current one (e.g. last
  *                            tax year's rate), recorded in the fact's
  *                            history and dated by effective_from
@@ -79,12 +95,29 @@
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/fact-writer.php';
 
-if ($argc < 2) {
-    fwrite(STDERR, "Usage: php scripts/import-facts.php path/to/facts.csv\n");
+// One CSV file, plus an optional --country=XX. The flag says which country
+// the whole file is for. It fills in rows that leave jurisdiction_code blank,
+// and it is also a safety check: a row that names a different country is
+// refused, so a file meant for one country can't end up in another.
+$csvPath = null;
+$defaultCountryCode = '';
+foreach (array_slice($argv, 1) as $arg) {
+    if (preg_match('/^--country=([A-Za-z0-9-]{1,10})$/', $arg, $argMatch)) {
+        $defaultCountryCode = strtoupper($argMatch[1]);
+    } elseif (strpos($arg, '--') === 0) {
+        fwrite(STDERR, "Unknown option: $arg\n");
+        exit(1);
+    } elseif ($csvPath === null) {
+        $csvPath = $arg;
+    } else {
+        fwrite(STDERR, "Only one CSV file at a time.\n");
+        exit(1);
+    }
+}
+if ($csvPath === null) {
+    fwrite(STDERR, "Usage: php scripts/import-facts.php path/to/facts.csv [--country=GB]\n");
     exit(1);
 }
-
-$csvPath = $argv[1];
 if (!is_readable($csvPath)) {
     fwrite(STDERR, "Cannot read file: $csvPath\n");
     exit(1);
@@ -139,12 +172,39 @@ while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
         // Each row is all-or-nothing: if anything fails, nothing from
         // that row is saved (e.g. no half-created subject).
         $message = withTransaction($pdo, function () use (
-            $pdo, $get, &$categoryCache, &$subcategoryCache, &$subjectCache, &$stats
+            $pdo, $get, $defaultCountryCode, &$categoryCache, &$subcategoryCache, &$subjectCache, &$stats
         ) {
             // Jurisdiction decides which country the category belongs to.
             // A Scotland-only fact still sits in the UK's categories.
-            $jurisdiction = getJurisdictionByCode($pdo, $get('jurisdiction_code') ?: 'GB');
+            //
+            // The country must be stated: in the row's jurisdiction_code, or
+            // for the whole file with --country=XX. There is no silent
+            // default any more. It used to be "GB", which was harmless with
+            // one country, but with several a blank cell would quietly put
+            // that row's category, page and figure in the UK.
+            $code = strtoupper($get('jurisdiction_code'));
+            if ($code === '') {
+                $code = $defaultCountryCode;
+            }
+            if ($code === '') {
+                throw new RuntimeException(
+                    'jurisdiction_code is required (for example GB or AU). Fill in the column, '
+                    . 'or run the import with --country=GB'
+                );
+            }
+            $jurisdiction = getJurisdictionByCode($pdo, $code);
             $countryId = getCountryId($jurisdiction);
+
+            // With --country, a row for a different country is a mistake.
+            // (A sub-region of the flagged country, such as GB-SCT with
+            // --country=GB, is the same country and is fine.)
+            if ($defaultCountryCode !== ''
+                && (int) $countryId !== (int) getCountryId(getJurisdictionByCode($pdo, $defaultCountryCode))) {
+                throw new RuntimeException(
+                    "this row is for $code but the import was started with --country=$defaultCountryCode. "
+                    . 'Fix the row or the flag, so a file cannot end up in the wrong country'
+                );
+            }
 
             $categorySlug = $get('category_slug');
             if ($categorySlug === '') {
@@ -194,11 +254,28 @@ while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
                 'subject_meta_description' => $get('subject_meta_description'),
             ]);
             if (!isset($subjectCache[$subjectSlug])) {
+                // A page this row creates starts with the row's subject_status,
+                // so staged pages are born as drafts (see getOrCreateSubject()).
                 $subjectCache[$subjectSlug] = getOrCreateSubject(
-                    $pdo, $subcategoryId, $subjectSlug, $get('subject_name'), $get('subject_intro')
+                    $pdo, $subcategoryId, $subjectSlug, $get('subject_name'), $get('subject_intro'),
+                    strtolower($get('subject_status'))
                 );
             }
             $subjectId = $subjectCache[$subjectSlug];
+
+            // Subject slugs are unique across ALL countries (the public site finds
+            // a page by its slug alone), and getOrCreateSubject() finds a subject
+            // by slug alone. So a row for one country that reuses another country's
+            // slug would quietly attach its figures to that other country's page.
+            // Refuse it; the row is rolled back, so nothing is half-created.
+            $subjectCountry = subjectCountry($pdo, $subjectId);
+            if ($subjectCountry && (int) $subjectCountry['country_id'] !== (int) $countryId) {
+                throw new RuntimeException(
+                    "subject '$subjectSlug' already exists as a {$subjectCountry['code']} page. Subject slugs are "
+                    . "unique across all countries, so a $code page needs a slug of its own "
+                    . '(for example one that ends with the country name)'
+                );
+            }
 
             // Name, intro and SEO fields are applied whenever they're filled
             // in, so existing subjects can be edited from the spreadsheet.
@@ -236,6 +313,14 @@ while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
                 if (!$factId) {
                     throw new RuntimeException("fact '$factKey' doesn't exist yet, so it can't be linked. Add its primary row first");
                 }
+                // One country per page: another country's figure can't be shown here.
+                $factCountry = factCountry($pdo, $factId);
+                if ($factCountry && (int) $factCountry['country_id'] !== (int) $countryId) {
+                    throw new RuntimeException(
+                        "fact '$factKey' belongs to {$factCountry['code']}, so it can't be shown on a $code page. "
+                        . "Add $code's own figure instead"
+                    );
+                }
                 $created = linkFactToSubject($pdo, $subjectId, $factId, $get('context') ?: null);
                 $stats['linked']++;
                 return ($created ? 'linked' : 'already linked') . " fact '$factKey' to '$subjectSlug'";
@@ -263,6 +348,21 @@ while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
             }
 
             $factId = findFactIdByKey($pdo, $factKey);
+
+            // Fact keys are unique across ALL countries, and a row for an
+            // existing fact re-parents it to this row's page. So a row that
+            // reuses another country's key would pull that country's figure
+            // onto this page. Refuse it (the row is rolled back).
+            if ($factId) {
+                $factCountry = factCountry($pdo, $factId);
+                if ($factCountry && (int) $factCountry['country_id'] !== (int) $countryId) {
+                    throw new RuntimeException(
+                        "fact '$factKey' already exists in {$factCountry['code']}. Fact keys are unique across all "
+                        . "countries, so a $code figure needs a key of its own (for example one that starts with "
+                        . strtolower($code) . '_). Nothing was changed'
+                    );
+                }
+            }
 
             if (!$factId) {
                 // New facts need a label and value. Status defaults to
@@ -444,9 +544,21 @@ function getOrCreateSubcategory(PDO $pdo, int $categoryId, string $slug, string 
  * Subjects created by the importer are published straight away, since
  * you're the one authoring them. New subjects default to draft in the
  * database, so the pipeline's subjects won't go live unless it says so.
+ *
+ * The exception is a row whose subject_status says otherwise: a page created
+ * with subject_status = draft is born a draft, with no published_at date.
+ * That is how a country is staged for the drip publisher
+ * (includes/job-handlers/drip.php), which later publishes each page once its
+ * text is written. Before this, such a page was created published, with
+ * published_at stamped at import, and flipped to draft a moment later.
+ *
+ * $initialStatus only matters when the subject is created here. A value that
+ * isn't draft, published or retired is ignored (the row is then refused by
+ * updateSubjectStatus(), and rolled back).
  */
-function getOrCreateSubject(PDO $pdo, int $subcategoryId, string $slug, string $name, string $intro): int
+function getOrCreateSubject(PDO $pdo, int $subcategoryId, string $slug, string $name, string $intro, string $initialStatus = ''): int
 {
+    $status = in_array($initialStatus, ['draft', 'published', 'retired'], true) ? $initialStatus : 'published';
     $stmt = $pdo->prepare('SELECT id FROM subjects WHERE slug = :slug');
     $stmt->execute(['slug' => $slug]);
     $id = $stmt->fetchColumn();
@@ -458,9 +570,12 @@ function getOrCreateSubject(PDO $pdo, int $subcategoryId, string $slug, string $
     }
     $stmt = $pdo->prepare(
         "INSERT INTO subjects (subcategory_id, name, slug, intro, status, published_at)
-         VALUES (:scid, :name, :slug, :intro, 'published', NOW())"
+         VALUES (:scid, :name, :slug, :intro, :status, CASE WHEN :status2 = 'published' THEN NOW() ELSE NULL END)"
     );
-    $stmt->execute(['scid' => $subcategoryId, 'name' => $name, 'slug' => $slug, 'intro' => $intro ?: null]);
+    $stmt->execute([
+        'scid' => $subcategoryId, 'name' => $name, 'slug' => $slug, 'intro' => $intro ?: null,
+        'status' => $status, 'status2' => $status,
+    ]);
     return (int) $pdo->lastInsertId();
 }
 
@@ -530,4 +645,40 @@ function unlinkFactFromSubject(PDO $pdo, int $subjectId, int $factId): bool
     $stmt->execute(['sid' => $subjectId, 'fid' => $factId]);
 
     return $stmt->rowCount() > 0;
+}
+
+/**
+ * The country (id and code) a subject page belongs to, found through its
+ * category, which belongs to a country. Null if the subject doesn't exist.
+ */
+function subjectCountry(PDO $pdo, int $subjectId): ?array
+{
+    $stmt = $pdo->prepare(
+        'SELECT j.id AS country_id, j.code
+         FROM subjects s
+         JOIN subcategories sc ON sc.id = s.subcategory_id
+         JOIN categories c ON c.id = sc.category_id
+         JOIN jurisdictions j ON j.id = c.jurisdiction_id
+         WHERE s.id = :id'
+    );
+    $stmt->execute(['id' => $subjectId]);
+    return $stmt->fetch() ?: null;
+}
+
+/**
+ * The country (id and code) a fact belongs to. A sub-region's fact, such as
+ * a GB-SCT one, counts as its parent country's. Null if the fact doesn't
+ * exist.
+ */
+function factCountry(PDO $pdo, int $factId): ?array
+{
+    $stmt = $pdo->prepare(
+        'SELECT root.id AS country_id, root.code
+         FROM facts f
+         JOIN jurisdictions j ON j.id = f.jurisdiction_id
+         JOIN jurisdictions root ON root.id = COALESCE(j.parent_id, j.id)
+         WHERE f.id = :id'
+    );
+    $stmt->execute(['id' => $factId]);
+    return $stmt->fetch() ?: null;
 }

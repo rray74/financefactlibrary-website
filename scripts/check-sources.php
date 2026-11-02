@@ -1,8 +1,9 @@
 <?php
 /**
  * Checks that every published figure still appears on its official
- * source page (GOV.UK, HMRC, DWP, the Scottish and Welsh governments,
- * NS&I and so on).
+ * source page (GOV.UK, HMRC, the Australian Taxation Office, Inland
+ * Revenue and so on, for whichever countries have allowlisted sources).
+ * The country of each figure decides how its tax year is read.
  *
  * Usage, from the project root:
  *   php scripts/check-sources.php --dry-run   report only, write nothing
@@ -31,9 +32,10 @@
  * but nothing is written. This script itself never changes a figure;
  * only the gated AI step can, and only with AI_AUTO_APPLY on.
  *
- * Figures for a tax year that has ended (e.g. 2026/27 after 5 April 2027)
- * are flagged too, even if their page still shows them, because pages for
- * a specific year never change.
+ * Figures for a tax year that has ended (e.g. 2026/27 after 5 April 2027
+ * in the UK, or after 30 June 2027 in Australia) are flagged too, even if
+ * their page still shows them, because pages for a specific year never
+ * change.
  *
  * Limits worth knowing: this confirms a figure is still on the page, not
  * that it's in the right place on it. Very short numbers (like 2 or 8)
@@ -144,7 +146,9 @@ try {
             // A figure for a tax year that has finished needs replacing,
             // even if its source page still shows it (pages for a specific
             // year, like "2026 to 2027", never change).
-            if (taxYearHasEnded($fact['tax_year'] ?? null)) {
+            // (Which country's tax year? The figure's own: Australia's ends
+            // on 30 June, the UK's on 5 April.)
+            if (taxYearHasEnded($fact['tax_year'] ?? null, aiCountryCodeForJurisdictionId($pdo, (int) $fact['jurisdiction_id']))) {
                 echo "  !  {$fact['fact_key']}: tax year {$fact['tax_year']} has ended\n";
                 $counts['tax_year_ended']++;
                 if (!$dryRun) {
@@ -322,16 +326,42 @@ function valueCandidates(array $fact): array
 }
 
 /**
- * True once a UK tax year such as '2026/27' has finished (after 5 April
- * 2027). Figures without a tax year never expire this way.
+ * True once a tax year has finished. Figures without a tax year never
+ * expire this way.
+ *
+ * Each country's year ends the day before its next one starts, so the end
+ * date comes from COUNTRY_TAX_YEARS (includes/placeholders.php), the same
+ * table that decides what {tax_year} shows:
+ *
+ *   UK            2026/27 ends 5 April 2027
+ *   New Zealand   2026/27 ends 31 March 2027
+ *   Australia     2026/27 ends 30 June 2027
+ *   US, Canada    2026 ends 31 December 2026 (the calendar year)
+ *
+ * Only the start year is read from $taxYear, so 2026/27, 2026-27 and
+ * 2026–27 all count the same, and so does a bare 2026. This used to be
+ * hard-wired to the UK: it wanted 2026/27 exactly and always used 5 April,
+ * so no Australian, New Zealand, US or Canadian figure could ever be flagged.
+ *
+ * @param string|null $countryCode the figure's country (GB, AU...). A country
+ *                                 missing from the table is treated as a
+ *                                 calendar-year country, as placeholders.php
+ *                                 does. Null means the UK, as before.
+ * @param string|null $today       YYYY-MM-DD, for testing; defaults to today
  */
-function taxYearHasEnded(?string $taxYear): bool
+function taxYearHasEnded(?string $taxYear, ?string $countryCode = null, ?string $today = null): bool
 {
-    if (!$taxYear || !preg_match('#^(\d{4})/(\d{2})$#', $taxYear, $m)) {
+    if (!$taxYear || !preg_match('/^(\d{4})/', $taxYear, $m)) {
         return false;
     }
-    $endYear = (int) substr($m[1], 0, 2) . $m[2];
-    return date('Y-m-d') > sprintf('%04d-04-05', $endYear);
+    $startYear = (int) $m[1];
+    $rule = COUNTRY_TAX_YEARS[$countryCode ?? 'GB'] ?? ['month' => 1, 'day' => 1];
+
+    // mktime() reads day 0 as "the last day of the previous month", so
+    // 1 January gives 31 December and 6 April gives 5 April.
+    $lastDay = date('Y-m-d', mktime(0, 0, 0, $rule['month'], $rule['day'] - 1, $startYear + 1));
+
+    return ($today ?? date('Y-m-d')) > $lastDay;
 }
 
 /** Record the outcome of a check for a fact. */

@@ -32,6 +32,10 @@
  */
 
 require_once __DIR__ . '/fact-writer.php';
+// COUNTRY_WORDING (each country's adjective and official sources) lives in
+// functions.php. Nothing in that file runs on load (no sessions, no output),
+// so it is safe to load from the cron scripts too.
+require_once __DIR__ . '/functions.php';
 
 // ------------------------------------------------------------
 // Settings. Each can be overridden in config/database.local.php by
@@ -59,6 +63,108 @@ if (!defined('AI_MAX_CHANGE_RATIO')) {
 
 /** Longest page text sent to the AI (characters). GOV.UK pages are far shorter. */
 const AI_MAX_PAGE_CHARACTERS = 100000;
+
+// ------------------------------------------------------------
+// Which country is a figure for?
+//
+// The prompt names the country and its official sources, and tax years are
+// written and validated the country's way, so the AI step has to know
+// whose figure it is looking at. Before the site had a second country this
+// was simply "the UK".
+// ------------------------------------------------------------
+
+/**
+ * The COUNTRY a jurisdiction belongs to, as its jurisdictions row
+ * (id, parent_id, code, name). A sub-region such as Scotland belongs to its
+ * parent, the UK. Null if the id is empty or unknown.
+ *
+ * Cached for the run: a source check asks this for every figure.
+ */
+function aiCountryForJurisdictionId(PDO $pdo, ?int $jurisdictionId): ?array
+{
+    static $cache = [];
+    if (!$jurisdictionId) {
+        return null;
+    }
+    if (array_key_exists($jurisdictionId, $cache)) {
+        return $cache[$jurisdictionId];
+    }
+
+    $stmt = $pdo->prepare('SELECT id, parent_id, code, name FROM jurisdictions WHERE id = :id');
+    $row = null;
+    $id = $jurisdictionId;
+    // A country has no parent and a sub-region has one (the country). The
+    // loop is capped so a broken hierarchy can never run away.
+    for ($depth = 0; $depth < 5 && $id; $depth++) {
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch() ?: null;
+        if ($row === null || $row['parent_id'] === null) {
+            break;
+        }
+        $id = (int) $row['parent_id'];
+    }
+    if ($row !== null && $row['parent_id'] !== null) {
+        $row = null; // never reached a top-level country
+    }
+
+    return $cache[$jurisdictionId] = $row;
+}
+
+/** The country code ('GB' for Scotland's figures too) for a jurisdiction id, or null. */
+function aiCountryCodeForJurisdictionId(PDO $pdo, ?int $jurisdictionId): ?string
+{
+    $country = aiCountryForJurisdictionId($pdo, $jurisdictionId);
+    return $country ? $country['code'] : null;
+}
+
+/**
+ * Turn a tax year the AI read off a page into the form the database stores.
+ *
+ *   countries whose tax year doesn't start on 1 January (UK, Australia,
+ *   New Zealand): 2026/27, the same for all of them
+ *   countries whose tax year is the calendar year (US, Canada): 2026
+ *
+ * It accepts the ways pages write the year: 2026/27, 2026-27, 2026–27
+ * (en dash), 2026/2027. Anything where the second year isn't the year after
+ * the first (2026/29) is rejected, as is a bare "2026" for a country whose
+ * year spans two calendar years, because the page could mean either end.
+ * Returns null when the value can't be trusted: no tax year is safer than
+ * a wrong one.
+ *
+ * How a country WRITES the year (Australia's en dash, as in 2026–27) is
+ * applied when a page is shown, by formatTaxYear() in placeholders.php, so
+ * the stored form is the same for every two-year country.
+ *
+ * With no country code the UK rule applies, which is what every figure got
+ * before there was a second country.
+ *
+ * @param mixed $raw whatever the AI put in "tax_year"
+ */
+function aiNormaliseTaxYear($raw, ?string $countryCode): ?string
+{
+    if (!is_string($raw)) {
+        return null;
+    }
+    $raw = trim($raw);
+    $style = $countryCode === null ? 'slash' : (COUNTRY_TAX_YEARS[$countryCode]['style'] ?? 'single');
+
+    if ($style === 'single') {
+        return preg_match('/^\d{4}$/', $raw) ? $raw : null;
+    }
+
+    // Start year, a slash / hyphen / en dash / em dash, then the end year as
+    // two or four digits.
+    if (!preg_match('/^(\d{4})\s*[\/\-\x{2013}\x{2014}]\s*(\d{2}|\d{4})$/u', $raw, $m)) {
+        return null;
+    }
+    $start = (int) $m[1];
+    $end = (int) $m[2];
+    $endMatches = strlen($m[2]) === 4 ? $end === $start + 1 : $end === ($start + 1) % 100;
+    if (!$endMatches) {
+        return null;
+    }
+    return sprintf('%d/%02d', $start, ($start + 1) % 100);
+}
 
 /**
  * The first 150 characters of an AI reply, on one line, for error
@@ -426,14 +532,26 @@ function callClaude(
  */
 function proposeUpdatesFromPage(PDO $pdo, array $source, string $pageText, array $facts, bool $dryRun): array
 {
-    $reply = callClaude(aiPageReadingInstructions(), aiPageReadingRequest($source, $pageText, $facts));
+    // Whose rules is this page about? The country of the figures that cite
+    // it; failing that, the source's own jurisdiction. With neither, the
+    // prompt is worded without a country rather than guessing the UK.
+    $firstFact = $facts[0] ?? [];
+    $country = aiCountryForJurisdictionId(
+        $pdo,
+        !empty($firstFact['jurisdiction_id']) ? (int) $firstFact['jurisdiction_id']
+            : (!empty($source['jurisdiction_id']) ? (int) $source['jurisdiction_id'] : null)
+    );
+
+    $reply = callClaude(aiPageReadingInstructions($country), aiPageReadingRequest($source, $pageText, $facts));
     $answers = parseAiAnswers($reply);
 
     $results = [];
     foreach ($facts as $fact) {
         $answer = $answers[$fact['fact_key']] ?? null;
         try {
-            $results[$fact['id']] = handleAiAnswer($pdo, $source, $pageText, $fact, $answer, $dryRun);
+            // Each figure's own country decides how its tax year is read.
+            $factCountryCode = aiCountryCodeForJurisdictionId($pdo, (int) ($fact['jurisdiction_id'] ?? 0));
+            $results[$fact['id']] = handleAiAnswer($pdo, $source, $pageText, $fact, $answer, $dryRun, $factCountryCode);
         } catch (Throwable $e) {
             $results[$fact['id']] = ['outcome' => 'skipped', 'message' => 'not handled: ' . $e->getMessage()];
         }
@@ -441,11 +559,38 @@ function proposeUpdatesFromPage(PDO $pdo, array $source, string $pageText, array
     return $results;
 }
 
-/** The standing instructions for reading a page. */
-function aiPageReadingInstructions(): string
+/**
+ * The standing instructions for reading a page.
+ *
+ * $country is the jurisdictions row of the country the figures belong to
+ * (see aiCountryForJurisdictionId()). It sets three things: how the website
+ * is described ("an Australian personal finance website"), which official
+ * sources are named, and the example date and tax year, which are written
+ * the way that country writes them. With null the instructions name no
+ * country at all.
+ *
+ * For the UK the text matches the original wording, except that the sources
+ * now come from COUNTRY_WORDING (GOV.UK, HMRC, the Scottish and Welsh
+ * governments and NS&I) rather than a hard-coded "GOV.UK, HMRC, DWP".
+ */
+function aiPageReadingInstructions(?array $country = null): string
 {
-    return <<<'TXT'
-You check figures for a UK personal finance website against official source pages (GOV.UK, HMRC, DWP and similar).
+    $code = $country['code'] ?? null;
+    $adjective = $country ? countryAdjective($country) : '';
+    $sources = $country ? countrySourceExamples($country) : '';
+
+    $site = trim($adjective . ' personal finance website');
+    $official = $sources !== '' ? "official source pages ($sources and similar)" : 'official source pages';
+
+    // The example date is the start of that country's tax year in 2026, and
+    // the example tax year is written the country's way. Both show the AI
+    // the shape of a good answer. (No country: the UK's, as before.)
+    $rule = COUNTRY_TAX_YEARS[$code ?? 'GB'] ?? ['month' => 1, 'day' => 1];
+    $exampleDate = sprintf('2026-%02d-%02d', $rule['month'], $rule['day']);
+    $exampleTaxYear = formatTaxYear(2026, $code ?? 'GB');
+
+    $template = <<<'TXT'
+You check figures for a [[SITE]] against [[OFFICIAL]].
 
 You will be given the plain text of one page, and a list of figures the website shows from that page which could no longer be found on it. For each figure, find what the page now states for exactly the same thing: the same allowance, rate or threshold, for the same people, and for the current or latest period the page covers.
 
@@ -457,10 +602,17 @@ Rules:
 - If the page doesn't clearly state the figure, or you are unsure it's the same thing, set "found" to false and say why in "note". A wrong answer is far worse than no answer.
 
 Reply with JSON only, no other text, in this shape:
-{"results": [{"fact_key": "...", "found": true, "value": "12570", "evidence": "...", "effective_from": "2026-04-06", "tax_year": "2026/27", "note": "..."}]}
+{"results": [{"fact_key": "...", "found": true, "value": "12570", "evidence": "...", "effective_from": "[[DATE]]", "tax_year": "[[TAXYEAR]]", "note": "..."}]}
 
-"value" is the bare number: digits and at most one decimal point, no £, % or commas. "effective_from" (YYYY-MM-DD) and "tax_year" (e.g. 2026/27) are null unless the page states them for this figure.
+"value" is the bare number: digits and at most one decimal point, no currency symbol, % or commas. "effective_from" (YYYY-MM-DD) and "tax_year" (e.g. [[TAXYEAR]]) are null unless the page states them for this figure.
 TXT;
+
+    return strtr($template, [
+        '[[SITE]]'     => $site,
+        '[[OFFICIAL]]' => $official,
+        '[[DATE]]'     => $exampleDate,
+        '[[TAXYEAR]]'  => $exampleTaxYear,
+    ]);
 }
 
 /** The request for one page: the figures to look for, then the page text. */
@@ -512,7 +664,7 @@ function parseAiAnswers(string $reply): array
  * Gate one answer and act on it: publish, hold, mark verified, or leave
  * it for "Needs a look" (not found).
  */
-function handleAiAnswer(PDO $pdo, array $source, string $pageText, array $fact, ?array $answer, bool $dryRun): array
+function handleAiAnswer(PDO $pdo, array $source, string $pageText, array $fact, ?array $answer, bool $dryRun, ?string $countryCode = null): array
 {
     if ($answer === null) {
         return ['outcome' => 'not_found', 'message' => 'AI gave no answer for this figure'];
@@ -534,7 +686,10 @@ function handleAiAnswer(PDO $pdo, array $source, string $pageText, array $fact, 
     // Dates and tax years in the wrong format are dropped rather than trusted.
     $effectiveFrom = is_string($effectiveFrom) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $effectiveFrom)
         && strtotime($effectiveFrom) !== false ? $effectiveFrom : null;
-    $taxYear = is_string($taxYear) && preg_match('#^\d{4}/\d{2}$#', $taxYear) ? $taxYear : null;
+    // The tax year is read the way the figure's country writes it and stored
+    // in one form (see aiNormaliseTaxYear()). Before this, only the UK form
+    // 2026/27 survived, so an Australian 2026–27 was silently dropped.
+    $taxYear = aiNormaliseTaxYear($taxYear, $countryCode);
 
     $newNumber = (float) $value;
     $oldNumber = $fact['value_numeric'] !== null ? (float) $fact['value_numeric'] : null;
