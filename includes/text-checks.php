@@ -421,15 +421,98 @@ function factValueForms(array $fact): array
 // ------------------------------------------------------------
 
 /**
+ * Rules from a country's style file (docs/house-style/XX.md) that a program can check exactly,
+ * keyed by jurisdiction code, like COUNTRY_WORDING and COUNTRY_TAX_YEARS.
+ *
+ * The style file tells the writer a rule, but a long prompt is easy to miss: the first Australian
+ * draft used two em dashes although au.md says not to, and the writer's own checklist (which has
+ * only eight items) did not catch it. A rule written here is checked on every draft and on every
+ * saved page, and a breach is sent back to the writer to fix through the same rewrite as the other
+ * quick checks.
+ *
+ * Each rule has:
+ *   pattern  a regular expression run on the text of each field
+ *   label    what it finds, in a few words
+ *   fix      what to do instead, written as an instruction
+ *
+ * Only rules that cannot give false alarms belong here. A rule such as "no comma before the last
+ * 'and'" can't be told apart from an ordinary clause by a program, so that one stays in the style
+ * file. A country with no entry has no extra checks, and the UK has none: uk.md has no rule of
+ * this kind.
+ */
+const COUNTRY_TEXT_RULES = [
+    'AU' => [
+        // au.md: "Don't use em dashes." The en dash in a financial year (2026–27) is a different
+        // character (U+2013) and is not matched.
+        [
+            'pattern' => '/\x{2014}/u',
+            'label'   => 'an em dash',
+            'fix'     => 'Australian house style does not use em dashes. Use a comma, a colon or a full stop instead.',
+        ],
+        // au.md: dates are written 1 July 2026, with no ordinal and no comma before the year.
+        [
+            'pattern' => '/\b\d{1,2}(?:st|nd|rd|th)\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\b/',
+            'label'   => 'a date with an ordinal',
+            'fix'     => 'Write dates as in 1 July 2026, with no "st", "nd", "rd" or "th".',
+        ],
+        [
+            'pattern' => '/\b\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December),\s+\d{4}\b/',
+            'label'   => 'a comma between the month and the year',
+            'fix'     => 'Write dates as in 1 July 2026, with no comma between the month and the year.',
+        ],
+        // au.md: "Use single quotation marks."
+        [
+            'pattern' => '/["\x{201C}\x{201D}]/u',
+            'label'   => 'double quotation marks',
+            'fix'     => 'Australian house style uses single quotation marks.',
+        ],
+        // au.md: "program (never programme)".
+        [
+            'pattern' => '/\bprogrammes?\b/i',
+            'label'   => 'the spelling "programme"',
+            'fix'     => 'Australian English spells it "program".',
+        ],
+    ],
+];
+
+/**
+ * The country whose rules apply to a page: the country of its figures (a figure for one state or
+ * nation counts as its country's, so a Scotland figure is the UK's). '' if it can't be worked out,
+ * in which case no country rules are applied and the checks behave as they always did.
+ */
+function countryCodeOfFacts(array $facts): string
+{
+    foreach ($facts as $fact) {
+        $jurisdictionId = (int) ($fact['jurisdiction_id'] ?? 0);
+        if ($jurisdictionId > 0 && function_exists('aiCountryCodeForJurisdictionId')) {
+            try {
+                return (string) aiCountryCodeForJurisdictionId(getDbConnection(), $jurisdictionId);
+            } catch (Throwable $e) {
+                return '';
+            }
+        }
+    }
+    return '';
+}
+/**
  * House style rules checked exactly, on the text as typed (placeholders
  * not filled in). Returns a list of sentences, one per problem.
  *
  * $fields  intro, explanation, meta_title, meta_description => text
  * $facts   the page's facts (only published ones count)
+ * $countryCode  the country's code (GB, AU...), for that country's own rules in
+ *          COUNTRY_TEXT_RULES. When it isn't given (the editor's checks on a saved
+ *          page don't pass it) it is read from the page's figures.
  */
-function quickTextChecks(array $fields, array $facts): array
+function quickTextChecks(array $fields, array $facts, ?string $countryCode = null): array
 {
     $published = array_values(array_filter($facts, fn($f) => ($f['status'] ?? 'published') === 'published'));
+
+    // This country's extra rules, if it has any.
+    if ($countryCode === null) {
+        $countryCode = countryCodeOfFacts($published);
+    }
+    $countryRules = COUNTRY_TEXT_RULES[$countryCode] ?? [];
 
     // Which fact each typed number belongs to, which numbers appear in the
     // figures' labels (see factLabelNumbers()), and which facts are rates.
@@ -538,6 +621,20 @@ function quickTextChecks(array $fields, array $facts): array
         if (preg_match_all('/\b(you should|we recommend|we suggest|it\'?s best to|make sure you)\b/i', $text, $m)) {
             $notes[] = "$label: \"" . implode('", "', array_unique(array_map('strtolower', $m[1]))) . '" reads as advice. '
                 . 'Say what the rules are rather than what to do.';
+        }
+
+        // --- This country's own rules (COUNTRY_TEXT_RULES). ---
+        foreach ($countryRules as $rule) {
+            if (preg_match_all($rule['pattern'], $text, $found) > 0) {
+                // Show the first place it happens, so the writer (or you) can find it.
+                $first = $found[0][0];
+                $context = preg_match('/(.{0,45})' . preg_quote($first, '/') . '(.{0,45})/us', $text, $around)
+                    ? trim(preg_replace('/\s+/u', ' ', $around[1] . $first . $around[2]))
+                    : $first;
+                $times = count($found[0]);
+                $notes[] = "$label: {$rule['label']} found" . ($times > 1 ? " $times times" : '')
+                    . ', for example "' . $context . '". ' . $rule['fix'];
+            }
         }
     }
 
@@ -804,7 +901,7 @@ Report only real problems, most serious first, at most 12 in all. Report problem
 - contradicts_source: a statement the source pages contradict.
 - contradicts_figure: a statement that conflicts with the page's figures or their notes.
 - likely_wrong: a statement the sources don't cover that you have good reason to think is wrong or out of date. Say what is correct and why. Don't report a statement just because the sources don't mention it. Your own knowledge may be older than the sources and the figures: where they disagree with what you know, they win.
-- missing_region: a rule stated as applying across the whole country when part of it (for example Scotland, Wales or Northern Ireland in the UK) has different rules.
+- missing_region: a rule stated as applying across the whole country when part of it (for example Scotland, Wales or Northern Ireland in the UK, or a state or territory in Australia) has different rules. Only report it where the sources or the figures show a regional difference.
 - missing_exception: an exception, condition or "what does not count" point that the sources state and the text leaves out or states in a misleading way. Quote the sentence the omission affects.
 - heading_mismatch: a heading that is false, or overstated, given the text under it or the sources.
 - duplicated: a rule or point already made in another section. Quote the second place it appears.

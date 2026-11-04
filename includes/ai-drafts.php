@@ -328,12 +328,14 @@ function draftChecks(PDO $pdo, array $draft, array $published, array $read, arra
     ], array_column($published, 'fact_key'));
 
     $notes = array_values(array_filter(
+        // The country is passed so its own rules (COUNTRY_TEXT_RULES in text-checks.php)
+        // are checked here too, and a breach goes back to the writer to fix.
         quickTextChecks([
             'intro'            => $draft['intro'],
             'explanation'      => $draft['explanation'],
             'meta_title'       => $draft['meta_title'],
             'meta_description' => $draft['meta_description'],
-        ], $published),
+        ], $published, (string) $subject['country_code']),
         fn($note) => !preg_match("/isn't one of|aren't among|over the house style's limit/", $note)
     ));
 
