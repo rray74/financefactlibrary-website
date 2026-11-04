@@ -1,0 +1,192 @@
+# Australia content map (pilot)
+
+Status: planning only, written 4 November 2026. There are **no figure values in
+this file**. A value goes into a CSV only after it has been read off its
+official source page on the day the CSV is built, as `core.md` and the handover
+require. The source addresses below are the ones in migrations 023 and 024 (`sql/migrations/`).
+
+Australia is hidden (`is_active = 0`). Pages are imported as drafts, written,
+then released by the drip publisher once Australia is launched.
+
+## The launch set: 19 pages
+
+The plan is to launch at 15 to 20 pages and then drip 2 to 4 a week. Slugs are
+proposed, and the collision check further down settles the final ones. Fact keys
+start `au_`.
+
+### Tax (6 pages, 3 subcategories)
+
+| # | Page and proposed slug | Planned figures (labels only) | Source | Changes when |
+|---|---|---|---|---|
+| 1 | **Tax-free threshold** `tax-free-threshold` (the reference page) | Tax-free threshold for a full-year resident | ATO how to claim the tax-free threshold (confirmed) | When the law changes |
+| 2 | **Income tax rates** `income-tax-rates-australia` | Four bracket thresholds, four marginal rates (8) | ATO tax rates, Australian resident (confirmed) | 1 July, and when a tax cut is legislated |
+| 3 | **Medicare levy** `medicare-levy` | Levy rate, low-income thresholds (2 to 3) | ATO what is the Medicare levy (confirmed) | Thresholds usually each year |
+| 4 | **GST** `gst` | GST rate, registration turnover threshold, non-profit threshold (3) | ATO registering for GST (confirmed for the thresholds) | Rate is fixed in law |
+| 5 | **Capital gains tax discount** `capital-gains-tax-discount` | Discount for individuals, minimum ownership period (2) | ATO CGT discount (confirmed). **Read first:** the page carries an alert that capital gains tax changes announced in the 2026–27 Federal Budget do not apply to Tax Time 2026, so the discount may change. Read the ATO's what's new page before writing | When the law changes, and possibly soon |
+| 6 | **HELP loan repayments** `help-loan-repayments` | Repayment income thresholds and rates (about 5) | ATO study and training loan thresholds (**to confirm** the exact address) | 1 July |
+
+Subcategories: Income tax (1 to 3), GST and capital gains tax (4 and 5), Study loans (6).
+
+### Savings and investments (2 pages, 1 subcategory: Savings and interest rates)
+
+| # | Page and proposed slug | Planned figures | Source | Changes when |
+|---|---|---|---|---|
+| 7 | **Cash rate target** `cash-rate-target` (the **rate page**) | Cash rate target (1) | RBA cash rate target (confirmed) | At eight Board meetings a year |
+| 8 | **Financial Claims Scheme** `financial-claims-scheme` | Protected amount per depositor per institution (1) | fcs.gov.au (**to confirm** the page) | Rarely |
+
+### Super and retirement (4 pages, 2 subcategories)
+
+| # | Page and proposed slug | Planned figures | Source | Changes when |
+|---|---|---|---|---|
+| 9 | **Super guarantee rate** `super-guarantee-rate` | Guarantee rate, maximum contribution base (2) | ATO key super rates (**to confirm** the part of the page) | 1 July |
+| 10 | **Super contribution caps** `super-contribution-caps` | Concessional cap, non-concessional cap, bring-forward amounts (3 to 4) | ATO contributions caps (confirmed) | 1 July |
+| 11 | **Preservation age** `preservation-age` | Preservation age (1) | ATO key super rates, preservation age table (**to confirm** the address) | Fixed in law |
+| 12 | **Age Pension** `age-pension` | Age Pension age, maximum fortnightly rate for a single person and for a couple (4) | Services Australia Age Pension rates (confirmed) | 20 March and 20 September |
+
+Subcategories: Super contributions (9 and 10), Retirement (11 and 12).
+
+### Mortgages and property (2 pages, 1 subcategory: First home buyers)
+
+| # | Page and proposed slug | Planned figures | Source | Changes when |
+|---|---|---|---|---|
+| 13 | **First Home Guarantee** `first-home-guarantee` (the **state test**) | Minimum deposit, then price caps for each state and territory (about 16, see below) | Housing Australia FAQs (confirmed) and its price caps page (**to confirm**) | When Housing Australia revises the caps |
+| 14 | **First Home Super Saver Scheme** `first-home-super-saver-scheme` | Annual release limit, total release limit (2) | ATO about FHSS release amounts (confirmed) | When the law changes |
+
+### Work and benefits (5 pages, 2 subcategories)
+
+| # | Page and proposed slug | Planned figures | Source | Changes when |
+|---|---|---|---|---|
+| 15 | **Minimum wage** `minimum-wage-australia` | National Minimum Wage per hour and per week (2) | Fair Work Ombudsman minimum wages (confirmed) | 1 July |
+| 16 | **Annual leave** `annual-leave-australia` | Weeks of paid leave, extra week for some shift workers (2) | Fair Work Commission NES (confirmed) | Fixed in law |
+| 17 | **Personal and carer's leave** `personal-and-carers-leave` | Paid days, unpaid carer's days, compassionate days, family and domestic violence leave (4) | Fair Work Commission NES (confirmed) | Fixed in law |
+| 18 | **JobSeeker Payment** `jobseeker-payment` | Age range, maximum fortnightly rates by circumstance (about 5) | Services Australia JobSeeker (confirmed for eligibility, **confirm** the rates page) | 20 March and 20 September |
+| 19 | **Parental Leave Pay** `parental-leave-pay` | Number of days, weekly rate (3) | Services Australia Parental Leave Pay rates (confirmed) | 1 July |
+
+Subcategories: Pay and leave (15 to 17), Government payments (18 and 19).
+
+About 70 figures in all, against about 5.7 a page on the UK site.
+
+## What each page exercises
+
+| Pipeline part | Pages |
+|---|---|
+| Reference page, with no UK equivalent | 1 |
+| Rate page (checked every 42 days or less, no rate typed in the text) | 7 |
+| State and territory layer, from a single federal source | 13 |
+| Figures that change on 1 July, so `{tax_year}` and `previous_value` | 2, 3, 9, 10, 15, 19 |
+| Payments indexed twice a year, on 20 March and 20 September | 12, 18 |
+| Same subject in two countries (the slug rule) | 2, 15, 16 |
+| Figures fixed in law, which may be typed with an end date if one is known | 4, 5, 11, 16, 17 |
+
+Two things to check before building the pages:
+
+- **Page 13 name.** Some lender material now calls this scheme the "5% Deposit
+  Scheme". Housing Australia is the source, so use whatever name its own pages use.
+- **Page 13 caps.** Housing Australia publishes caps for a capital city and
+  regional centres and a lower cap for the rest of each state, and the areas are
+  defined differently by state. One federal table covers all of them, which is why
+  this page, not stamp duty, tests the state layer. It also means the card count
+  on this page will be high.
+
+## Slugs
+
+Subject slugs are unique across all countries, because the public site finds a page
+by its slug alone. The rule is a plain descriptive slug, with `-australia` added
+only where the UK has a page on the same subject. Pages 2, 15 and 16 carry the
+suffix already because I expect UK equivalents. Run this on the local database
+before importing anything. Any row it returns needs a different Australian slug:
+
+```
+SELECT slug, status FROM subjects WHERE slug IN (
+  'tax-free-threshold','income-tax-rates-australia','medicare-levy','gst',
+  'capital-gains-tax-discount','help-loan-repayments','cash-rate-target',
+  'financial-claims-scheme','super-guarantee-rate','super-contribution-caps',
+  'preservation-age','age-pension','first-home-guarantee',
+  'first-home-super-saver-scheme','minimum-wage-australia','annual-leave-australia',
+  'personal-and-carers-leave','jobseeker-payment','parental-leave-pay');
+```
+
+The importer also refuses a clash, but checking first avoids a failed file.
+
+## The source allowlist
+
+Fourteen official pages are in the allowlist. Migration 023 added sixteen, and
+024 corrected three ATO addresses that redirect (tax rates, the CGT discount and
+the contributions caps) and removed two that were only seen in a search result.
+These pages are needed by the plan but are not in it yet:
+
+| Needed for | Page to find and confirm |
+|---|---|
+| Page 6 | The ATO's address for study and training loan repayment thresholds. The ATO's short link `ato.gov.au/ThresholdsAndRates` showed the right page, but the full address was not seen |
+| Page 8 | A specific page on fcs.gov.au stating the protected amount |
+| Page 9 | The part of the ATO key super rates page that holds the guarantee rate table |
+| Page 4 | The ATO's GST overview, for the rate itself |
+| Page 18 | Services Australia's JobSeeker Payment rates page |
+| Pages 16 and 17 | The Fair Work Ombudsman's own leave pages, as a second source beside the Commission's |
+| Page 13 | The page on housingaustralia.gov.au that holds the price caps table |
+| Page 11 | The ATO's address for the preservation age table |
+
+Each of these needs the page fetched and checked before its figure is entered.
+`check-sources.php` can only verify a figure against a page that is in the table.
+
+## Order of work
+
+1. Apply migrations 023 and 024 (022 is applied locally already).
+2. Run the slug check above.
+3. Page 1 first, since it is the reference page: build its CSV, import it with
+   `subject_status` set to `draft`, write its explanation, and approve it. Add the
+   "Reference page" section to `au.md` once it is approved.
+4. Then the other pages in the order above, in batches of about four. Page 13 goes
+   in the first batch so the state layer is tested early.
+5. Launch at 19 written pages by setting `is_active` to 1 on the `AU` row, then
+   start the drip: `php scripts/run-jobs.php --enqueue=drip_country --payload='{"country":"AU","per_week":3}' --unique=drip_country:AU`
+
+### How the CSVs are laid out
+
+Settled while building page 1, and used for every page after it:
+
+- Same 28 columns, in the same order, as the UK files (`data/imports/mortgages-boe-2026-10.csv`).
+- `jurisdiction_code` is `AU` on every row, so no `--country` flag is needed.
+- The first row of a page creates its category, subcategory and subject, with
+  `subject_status` set to `draft`.
+- A page's intro and meta text go on a **later row than the figures they name**. The
+  importer refuses a placeholder that names a figure created on the same row.
+- `source_url` is copied exactly from the allowlist, and the page is fetched on the day
+  its CSV is built, so a redirect shows up before the CSV does.
+- `last_updated` is the date the figure was read off its source page.
+- `review_frequency_days` is left blank (the default of 90) except for a rate, which is 42
+  or less, as the UK Bank Rate row does.
+- `tax_year` is left blank for a figure that is not set year by year, such as the
+  tax-free threshold. A figure that is set each year (tax rates, caps, the minimum wage)
+  carries `2026/27`, with `previous_value` and `effective_from`. A year tag on a
+  figure that never changes would make the weekly check flag it every 1 July.
+
+Cost, from the UK figures in the handover: about $8 to $12 of AI use for 15 to 20
+pages, plus your time.
+
+## Second wave (the drip)
+
+Not in the launch set. Each needs its sources found first.
+
+| Page | Why it waits |
+|---|---|
+| Stamp duty on property | Needs all eight state revenue offices. Their official names for the tax differ and the sources I found disagreed, so each must be read from the revenue office itself |
+| First home buyer grants and concessions by state | Same eight sources |
+| Land tax by state | Same eight sources |
+| Medicare levy surcharge | Builds on page 3 |
+| Low income tax offset | Builds on page 2 |
+| Super co-contribution | Builds on pages 9 and 10 |
+| Transfer balance cap | Builds on page 12 and the ATO super pages |
+| Carer Payment | Services Australia |
+| Family Tax Benefit | Services Australia, changes on 1 July |
+| Child Care Subsidy | Services Australia |
+| Redundancy pay | Fair Work Commission NES |
+| Long service leave | State laws, so state sources |
+| Public holidays by state | State sources |
+| Variable home loan rate | RBA statistical table, which needs its own fetcher because it is not an ordinary web page |
+
+## Build log
+
+| Page | Status |
+|---|---|
+| 1 Tax-free threshold | CSV built and tested on 4 November 2026: `data/imports/au-01-tax-free-threshold.csv`. Three figures read off the ATO page (the full threshold and the two part-year amounts). Imports as a draft with intro and meta text, and no explanation yet |
