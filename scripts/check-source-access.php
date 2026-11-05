@@ -15,24 +15,34 @@
  * tries to find out what would get the blocked ones through.
  *
  * Usage, from the project root:
- *   php scripts/check-source-access.php                  every allowlisted source
- *   php scripts/check-source-access.php --country=AU     only one country's sources
- *   php scripts/check-source-access.php --url=https://...   one address, whether or not it is in the table
+ *   php scripts/check-source-access.php                      every allowlisted source
+ *   php scripts/check-source-access.php --country=AU         only one country's sources
+ *   php scripts/check-source-access.php --url=https://...    one address, in the table or not
+ *   php scripts/check-source-access.php --url=A --url=B      several addresses (repeat --url)
  *
  * For each source it tries, in order, stopping at the first that works:
  *   1. THE FETCHER AS IT IS: fetchPageText() from includes/source-pages.php, so
- *      "OK" here means the writer, the AI check and the weekly check can read it.
- *   2. AS PRODUCTION, to show what the site sends back when it refuses (the
- *      Server header and the first words of the refusal page). Diagnosis only.
- *   3. BROWSER HEADERS: the same request with the full set of headers a browser
- *      sends (Accept, Accept-Language, Upgrade-Insecure-Requests, Sec-Fetch-*).
- *   4. BROWSER HEADERS over HTTP/1.1 only.
- * Variants 3 and 4 are only tried for a source the fetcher could not read.
+ *      "OK" means the writer, the AI check and the weekly check can read it.
+ * and, only for a source that failed, these variants (the first four show what
+ * the site sends back, then climb from honest to less honest):
+ *   a. AS PRODUCTION: only a user agent, as the fetcher sends. Diagnosis only:
+ *      it shows the Server header and the first words of the refusal page.
+ *   b. BROWSER HEADERS, OUR OWN USER AGENT: the full set of headers a browser
+ *      sends (Accept, Accept-Language, Sec-Fetch-*), still saying who we are.
+ *   c. the same over HTTP/1.1 only.
+ *   d. BROWSER HEADERS, PLAIN BROWSER USER AGENT: also drops the name of this
+ *      site and looks like an ordinary Chrome. A judgement call, see below.
+ *   e. the same over HTTP/1.1 only.
  *
- * If a variant gets every blocked source through, the fix is to send those
- * headers from fetchPageText(). If none does, the site is refusing by something
- * a header can't change (the connection's fingerprint, or this machine's
- * address), and the options are listed at the end.
+ * WHY THE ORDER MATTERS. Variants b and c keep the fetcher honest: the site is
+ * told who is asking. Variants d and e pretend to be a person with a browser
+ * to get past a site's bot protection. That may go against a site's terms of
+ * use, so any source that only works at d or e is called out at the end for
+ * you to decide, rather than being fixed quietly.
+ *
+ * If no variant gets a source through, the site is refusing by something a
+ * header can't change (a JavaScript challenge, the fingerprint of the
+ * connection, or this machine's address) and the options are listed at the end.
  *
  * Polite by design: one request at a time, a pause between sources, and no
  * page is kept.
@@ -52,6 +62,14 @@ require_once __DIR__ . '/../includes/source-pages.php';
 /** Seconds to wait between sources, to be polite to the sites we read. */
 const ACCESS_CHECK_PAUSE_SECONDS = 1;
 
+/** The user agent includes/source-pages.php sends: it says who is asking. */
+const OWN_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+    . 'Chrome/124.0 Safari/537.36 (financefactlibrary.com data check)';
+
+/** An ordinary desktop Chrome, naming nobody. */
+const PLAIN_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) '
+    . 'Chrome/126.0.0.0 Safari/537.36';
+
 /** The headers a desktop browser sends when you open a page by typing its address. */
 function browserHeaders(): array
 {
@@ -68,16 +86,25 @@ function browserHeaders(): array
 }
 
 /**
- * One request, described by what came back.
- *
- * $kind 'production' sends only a user agent, like includes/source-pages.php;
- * 'browser' adds browserHeaders(). $httpVersion is a CURL_HTTP_VERSION_ value or
- * null to let curl choose.
- *
- * Returns status, the curl error text, the Server header, the first words of
- * the body, and how many characters of text the page has once tags are removed.
+ * The variants, from the one that changes least to the one that changes most.
+ * 'headers' adds browserHeaders(); 'agent' is 'own' or 'plain'; 'http11' forces
+ * HTTP/1.1; 'diagnosis' marks the one that is only there to show the refusal;
+ * 'plain' marks the ones that stop saying who we are.
  */
-function probeUrl(string $url, string $kind, ?int $httpVersion = null): array
+const PROBE_VARIANTS = [
+    'as production (diagnosis)'             => ['headers' => false, 'agent' => 'own',   'http11' => false, 'diagnosis' => true,  'plain' => false],
+    'browser headers, our user agent'       => ['headers' => true,  'agent' => 'own',   'http11' => false, 'diagnosis' => false, 'plain' => false],
+    'browser headers, our agent, HTTP/1.1'  => ['headers' => true,  'agent' => 'own',   'http11' => true,  'diagnosis' => false, 'plain' => false],
+    'browser headers, plain browser agent'  => ['headers' => true,  'agent' => 'plain', 'http11' => false, 'diagnosis' => false, 'plain' => true],
+    'plain browser agent, HTTP/1.1'         => ['headers' => true,  'agent' => 'plain', 'http11' => true,  'diagnosis' => false, 'plain' => true],
+];
+
+/**
+ * One request, described by what came back: status, curl's error text, the
+ * Server header, the first words of the body, and how many characters of text
+ * the page has once tags are removed.
+ */
+function probeUrl(string $url, array $variant): array
 {
     $serverHeader = '';
     $curl = curl_init($url);
@@ -87,9 +114,7 @@ function probeUrl(string $url, string $kind, ?int $httpVersion = null): array
         CURLOPT_MAXREDIRS      => 5,
         CURLOPT_TIMEOUT        => 30,
         CURLOPT_ENCODING       => '',
-        CURLOPT_USERAGENT      => $kind === 'browser'
-            ? 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
-            : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36 (financefactlibrary.com data check)',
+        CURLOPT_USERAGENT      => $variant['agent'] === 'plain' ? PLAIN_USER_AGENT : OWN_USER_AGENT,
         CURLOPT_HEADERFUNCTION => function ($handle, $line) use (&$serverHeader) {
             if (stripos($line, 'server:') === 0) {
                 $serverHeader = trim(substr($line, 7));
@@ -97,11 +122,11 @@ function probeUrl(string $url, string $kind, ?int $httpVersion = null): array
             return strlen($line);
         },
     ];
-    if ($kind === 'browser') {
+    if ($variant['headers']) {
         $options[CURLOPT_HTTPHEADER] = browserHeaders();
     }
-    if ($httpVersion !== null) {
-        $options[CURLOPT_HTTP_VERSION] = $httpVersion;
+    if ($variant['http11']) {
+        $options[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_1_1;
     }
     curl_setopt_array($curl, $options);
     $body = curl_exec($curl);
@@ -109,19 +134,21 @@ function probeUrl(string $url, string $kind, ?int $httpVersion = null): array
     $error = curl_error($curl);
     curl_close($curl);
 
-    $text = is_string($body) ? trim(preg_replace('/\s+/u', ' ', strip_tags(preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', ' ', $body)))) : '';
+    $text = is_string($body)
+        ? trim(preg_replace('/\s+/u', ' ', strip_tags(preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', ' ', $body))))
+        : '';
     return [
-        'status'  => $status,
-        'error'   => $error,
-        'server'  => $serverHeader,
-        'snippet' => substr($text, 0, 90),
-        'chars'   => strlen($text),
+        'status'   => $status,
+        'error'    => $error,
+        'server'   => $serverHeader,
+        'snippet'  => substr($text, 0, 90),
+        'chars'    => strlen($text),
         // Counts as readable the way fetchPageText() counts it: 200, and not almost empty.
         'readable' => $status === 200 && strlen($text) >= 200,
     ];
 }
 
-/** "403" or "200, 4,512 characters" or "no answer (the curl error)". */
+/** "HTTP 403" or "HTTP 200, 4,512 characters of text" or "no answer (the curl error)". */
 function describeProbe(array $p): string
 {
     if ($p['status'] === 0) {
@@ -138,7 +165,10 @@ $options = getopt('', ['country:', 'url:']);
 $targets = []; // [publisher, url]
 
 if (isset($options['url'])) {
-    $targets[] = ['(address given)', (string) $options['url']];
+    // getopt() gives a string for one --url and an array for several.
+    foreach ((array) $options['url'] as $given) {
+        $targets[] = ['(address given)', (string) $given];
+    }
 } else {
     $pdo = getDbConnection();
     $sql = 'SELECT s.publisher, s.url FROM sources s LEFT JOIN jurisdictions j ON j.id = s.jurisdiction_id WHERE s.is_allowlisted = 1';
@@ -161,15 +191,14 @@ if (!$targets) {
     exit(1);
 }
 
-echo 'Testing ' . count($targets) . " source(s) from this machine (" . (gethostname() ?: 'unknown host') . ").\n\n";
+echo 'Testing ' . count($targets) . ' source(s) from this machine (' . (gethostname() ?: 'unknown host') . ").\n\n";
 
 // ---------------------------------------------------------------
 // Run
 // ---------------------------------------------------------------
 
 $readable = 0;
-$blocked = [];          // url => the probes that were tried
-$variantSuccess = [];   // variant name => how many blocked sources it got through
+$blocked = [];        // url => the name of the first variant that worked, or null
 foreach ($targets as $i => [$publisher, $url]) {
     if ($i > 0) {
         sleep(ACCESS_CHECK_PAUSE_SECONDS);
@@ -188,25 +217,19 @@ foreach ($targets as $i => [$publisher, $url]) {
 
     echo sprintf("  BLOCKED  %-28s %s\n           the fetcher says: %s\n", substr($publisher, 0, 28), $short, trim($why));
 
-    // 2 to 4. What the site sends back, and what would get through.
-    $tried = [];
-    $variants = [
-        'as production (diagnosis)' => ['production', null],
-        'browser headers'           => ['browser', null],
-        'browser headers, HTTP/1.1' => ['browser', CURL_HTTP_VERSION_1_1],
-    ];
-    foreach ($variants as $name => [$kind, $version]) {
-        $probe = probeUrl($url, $kind, $version);
-        $tried[$name] = $probe;
-        echo sprintf("           %-27s %s%s%s\n", $name . ':', describeProbe($probe),
+    // Then the variants, least change first. Stop at the first that works.
+    $worked = null;
+    foreach (PROBE_VARIANTS as $name => $variant) {
+        $probe = probeUrl($url, $variant);
+        echo sprintf("           %-38s %s%s%s\n", $name . ':', describeProbe($probe),
             $probe['server'] !== '' ? "  [Server: {$probe['server']}]" : '',
             (!$probe['readable'] && $probe['snippet'] !== '') ? '  "' . $probe['snippet'] . '"' : '');
-        if ($probe['readable'] && $kind === 'browser') {
-            $variantSuccess[$name] = ($variantSuccess[$name] ?? 0) + 1;
-            break; // the first variant that works is enough
+        if ($probe['readable'] && !$variant['diagnosis']) {
+            $worked = $name;
+            break;
         }
     }
-    $blocked[$url] = $tried;
+    $blocked[$url] = $worked;
 }
 
 // ---------------------------------------------------------------
@@ -222,19 +245,35 @@ if (!$blocked) {
     exit(0);
 }
 
+$fixedHonestly = array_filter($blocked, fn($name) => $name !== null && !PROBE_VARIANTS[$name]['plain']);
+$fixedByPretending = array_filter($blocked, fn($name) => $name !== null && PROBE_VARIANTS[$name]['plain']);
+$stillBlocked = array_filter($blocked, fn($name) => $name === null);
+
 echo "\n";
-$worked = array_keys(array_filter($variantSuccess, fn($n) => $n === count($blocked)));
-if ($worked) {
-    echo "Every blocked source was readable with: {$worked[0]}.\n"
-        . "The fix is to send those headers from fetchPageText() in includes/source-pages.php.\n";
-} elseif ($variantSuccess) {
-    echo "Some blocked sources were readable with browser headers (" . implode(', ', array_map(fn($n, $c) => "$n: $c", array_keys($variantSuccess), $variantSuccess)) . "),\n"
-        . "but not all. Look at the lines above to see which still fail.\n";
-} else {
-    echo "No header change got a blocked source through. The site is refusing something a header can't change:\n"
-        . "the fingerprint of the connection itself, or this machine's address. Options, in the order I would try them:\n"
+if ($fixedHonestly) {
+    $names = array_count_values($fixedHonestly);
+    echo count($fixedHonestly) . ' blocked source(s) are readable while still saying who we are (the fetcher need only send browser headers):' . "\n";
+    foreach ($names as $name => $count) {
+        echo "  $count with: $name\n";
+    }
+}
+if ($fixedByPretending) {
+    echo "\n" . count($fixedByPretending) . ' source(s) were readable ONLY when the request also looked like an ordinary browser and no longer named this site:' . "\n";
+    foreach (array_keys($fixedByPretending) as $url) {
+        echo "  $url\n";
+    }
+    echo "That is getting past the site's bot protection by not saying who is asking. Check the site's terms of use before\n"
+        . "doing it, or use another page for the figure. It is your decision, so nothing is changed for these.\n";
+}
+if ($stillBlocked) {
+    echo "\n" . count($stillBlocked) . " source(s) were not readable with any variant. The site is refusing something a header can't change:\n"
+        . "a JavaScript challenge, the fingerprint of the connection itself, or this machine's address. The Server line above\n"
+        . "shows who refuses. Options, in the order I would try them:\n"
         . "  - run this on the other machine: a server's address is often treated differently from a home connection\n"
-        . "  - look for the same figure on another official page that does not refuse (the Server line above shows who refuses)\n"
+        . "  - look for the same figure on another official page that does not refuse\n"
         . "  - keep a saved copy of the page that a person refreshes (the weekly check then cannot spot a change on its own)\n";
+    foreach (array_keys($stillBlocked) as $url) {
+        echo "  not readable: $url\n";
+    }
 }
 exit(1);
