@@ -12,6 +12,53 @@
 const SKIP_SOURCE_URLS = ['https://www.bankofengland.co.uk/boeapps/database/'];
 
 /**
+ * The headers a desktop browser sends when you open a page by typing its address.
+ * Some sites refuse a request without them: on 4 November 2026 the ATO answered 403
+ * (Akamai), and Services Australia and the Fair Work Ombudsman reset the connection,
+ * to the plain request, while all three answered normally once these were added. They
+ * are sent only after a plain request has failed (see fetchPageText()). The
+ * diagnostic scripts/check-source-access.php shows which sources need them.
+ */
+const SOURCE_BROWSER_HEADERS = [
+    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language: en-AU,en;q=0.9',
+    'Upgrade-Insecure-Requests: 1',
+    'Sec-Fetch-Dest: document',
+    'Sec-Fetch-Mode: navigate',
+    'Sec-Fetch-Site: none',
+    'Sec-Fetch-User: ?1',
+    'Cache-Control: max-age=0',
+];
+
+/**
+ * One download. Returns [body or false, HTTP status (0 if none), curl's error text].
+ * The user agent names this site; $browserHeaders adds SOURCE_BROWSER_HEADERS.
+ */
+function fetchOverHttp(string $url, bool $browserHeaders): array
+{
+    $curl = curl_init($url);
+    $options = [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_MAXREDIRS      => 5,
+        CURLOPT_TIMEOUT        => 30,
+        CURLOPT_ENCODING       => '',
+        CURLOPT_USERAGENT      => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+            . 'Chrome/124.0 Safari/537.36 (financefactlibrary.com data check)',
+    ];
+    if ($browserHeaders) {
+        $options[CURLOPT_HTTPHEADER] = SOURCE_BROWSER_HEADERS;
+    }
+    curl_setopt_array($curl, $options);
+    $body = curl_exec($curl);
+    $status = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $error = curl_error($curl);
+    curl_close($curl);
+
+    return [$body, $status, $error];
+}
+
+/**
  * Download a page and reduce it to plain text: scripts, styles and tags
  * removed, entities decoded, whitespace collapsed, and thousands
  * separators taken out of numbers so "£12,570" reads as "£12570".
@@ -28,20 +75,28 @@ function fetchPageText(string $url): string
             throw new RuntimeException('no saved test page');
         }
     } else {
-        $curl = curl_init($url);
-        curl_setopt_array($curl, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_MAXREDIRS      => 5,
-            CURLOPT_TIMEOUT        => 30,
-            CURLOPT_ENCODING       => '',
-            CURLOPT_USERAGENT      => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                . 'Chrome/124.0 Safari/537.36 (financefactlibrary.com data check)',
-        ]);
-        $html = curl_exec($curl);
-        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $error = curl_error($curl);
-        curl_close($curl);
+        // Hosts that refused the plain request and then answered once browser headers
+        // were added, remembered for the rest of this run so that a source check which
+        // reads seven pages from one site asks for the first page twice and the other
+        // six once. (A static variable lasts as long as the PHP process.)
+        static $needsBrowserHeaders = [];
+        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+
+        [$html, $status, $error] = fetchOverHttp($url, isset($needsBrowserHeaders[$host]));
+
+        // Refused outright (403), or no proper answer at all (status 0: for example the
+        // HTTP/2 "stream reset" that the Services Australia and Fair Work Ombudsman sites
+        // answer a bare request with). Try once more the way a browser asks. The user
+        // agent stays the one above, so the site is still told who is asking. If the
+        // retry fails too (the Fair Work Commission sits behind a JavaScript challenge),
+        // the first attempt's answer is the one reported.
+        if (($html === false || $status !== 200) && ($status === 403 || $status === 0) && !isset($needsBrowserHeaders[$host])) {
+            [$retryHtml, $retryStatus, $retryError] = fetchOverHttp($url, true);
+            if ($retryHtml !== false && $retryStatus === 200) {
+                $needsBrowserHeaders[$host] = true;
+                [$html, $status, $error] = [$retryHtml, $retryStatus, $retryError];
+            }
+        }
 
         if ($html === false || $status !== 200) {
             throw new RuntimeException("HTTP $status $error");
