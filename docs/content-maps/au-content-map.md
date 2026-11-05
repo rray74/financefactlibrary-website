@@ -3,7 +3,7 @@
 Status: planning only, written 4 November 2026. There are **no figure values in
 this file**. A value goes into a CSV only after it has been read off its
 official source page on the day the CSV is built, as `core.md` and the handover
-require. The source addresses below are the ones in migrations 023 and 024 (`sql/migrations/`).
+require. The source addresses below are the ones in migrations 023, 024 and 025 (`sql/migrations/`).
 
 Australia is hidden (`is_active = 0`). Pages are imported as drafts, written,
 then released by the drip publisher once Australia is launched.
@@ -49,7 +49,7 @@ Subcategories: Super contributions (9 and 10), Retirement (11 and 12).
 
 | # | Page and proposed slug | Planned figures | Source | Changes when |
 |---|---|---|---|---|
-| 13 | **First Home Guarantee** `first-home-guarantee` (the **state test**) | Minimum deposit, then price caps for each state and territory (about 16, see below) | Housing Australia FAQs (confirmed) and its price caps page (**to confirm**) | When Housing Australia revises the caps |
+| 13 | **First Home Guarantee** `first-home-guarantee` (the **state test**) | Minimum deposit, then price caps for each state and territory (about 16, see below) | Housing Australia property price caps page (confirmed, readable). Read the table live, never from a copy: caps changed on 1 October 2025 and may change again | When Housing Australia revises the caps |
 | 14 | **First Home Super Saver Scheme** `first-home-super-saver-scheme` | Annual release limit, total release limit (2) | ATO about FHSS release amounts (confirmed) | When the law changes |
 
 ### Work and benefits (5 pages, 2 subcategories)
@@ -57,8 +57,8 @@ Subcategories: Super contributions (9 and 10), Retirement (11 and 12).
 | # | Page and proposed slug | Planned figures | Source | Changes when |
 |---|---|---|---|---|
 | 15 | **Minimum wage** `minimum-wage-australia` | National Minimum Wage per hour and per week (2) | Fair Work Ombudsman minimum wages (confirmed) | 1 July |
-| 16 | **Annual leave** `annual-leave-australia` | Weeks of paid leave, extra week for some shift workers (2) | Fair Work Commission NES (confirmed) | Fixed in law |
-| 17 | **Personal and carer's leave** `personal-and-carers-leave` | Paid days, unpaid carer's days, compassionate days, family and domestic violence leave (4) | Fair Work Commission NES (confirmed) | Fixed in law |
+| 16 | **Annual leave** `annual-leave-australia` | Weeks of paid leave, extra week for some shift workers (2) | Fair Work Ombudsman NES fact sheet (confirmed, readable) | Fixed in law |
+| 17 | **Personal and carer's leave** `personal-and-carers-leave` | Paid days, unpaid carer's days, compassionate days, family and domestic violence leave (4) | Fair Work Ombudsman NES fact sheet (confirmed, readable) | Fixed in law |
 | 18 | **JobSeeker Payment** `jobseeker-payment` | Age range, maximum fortnightly rates by circumstance (about 5) | Services Australia JobSeeker (confirmed for eligibility, **confirm** the rates page) | 20 March and 20 September |
 | 19 | **Parental Leave Pay** `parental-leave-pay` | Number of days, weekly rate (3) | Services Australia Parental Leave Pay rates (confirmed) | 1 July |
 
@@ -110,10 +110,31 @@ The importer also refuses a clash, but checking first avoids a failed file.
 
 ## The source allowlist
 
-Fourteen official pages are in the allowlist. Migration 023 added sixteen, and
-024 corrected three ATO addresses that redirect (tax rates, the CGT discount and
-the contributions caps) and removed two that were only seen in a search result.
-These pages are needed by the plan but are not in it yet:
+Fourteen official pages are in the allowlist. Migration 023 added sixteen, 024
+corrected three ATO addresses that redirect (tax rates, the CGT discount and the
+contributions caps) and removed two that were only seen in a search result, and 025
+swapped two pages the site cannot read for two it can (see below).
+
+### Can the site read them?
+
+A page in the allowlist is no use if `includes/source-pages.php` cannot download it:
+the writer, the AI check and the weekly source check all read pages through it.
+`scripts/check-source-access.php` tests every source from the machine it runs on. It
+was run on a Mac and on the Hostinger server on 5 November 2026, with the same results:
+
+| Site | What it needed | Result |
+|---|---|---|
+| Reserve Bank of Australia, Housing Australia price caps | Nothing extra | Read as it always was |
+| ATO (Akamai) | Browser headers after a first refusal (HTTP 403) | Read. `source-pages.php` now retries this way |
+| Services Australia, Fair Work Ombudsman | Browser headers after a dropped connection (HTTP/2 reset) | Read. Same retry |
+| Fair Work Commission | A JavaScript challenge | Cannot be read by any fetcher, so it is out of the allowlist |
+| Housing Australia FAQs | Refused every variant on the Mac | Out of the allowlist until retested on the server |
+
+The retry keeps the site's honest user agent ("financefactlibrary.com data check") and
+only adds the headers a browser sends. Run the script again whenever a source is added
+or a figure's source starts failing, and for every new country.
+
+These pages are needed by the plan but are not in the allowlist yet:
 
 | Needed for | Page to find and confirm |
 |---|---|
@@ -122,8 +143,6 @@ These pages are needed by the plan but are not in it yet:
 | Page 9 | The part of the ATO key super rates page that holds the guarantee rate table |
 | Page 4 | The ATO's GST overview, for the rate itself |
 | Page 18 | Services Australia's JobSeeker Payment rates page |
-| Pages 16 and 17 | The Fair Work Ombudsman's own leave pages, as a second source beside the Commission's |
-| Page 13 | The page on housingaustralia.gov.au that holds the price caps table |
 | Page 11 | The ATO's address for the preservation age table |
 
 Each of these needs the page fetched and checked before its figure is entered.
@@ -131,7 +150,8 @@ Each of these needs the page fetched and checked before its figure is entered.
 
 ## Order of work
 
-1. Apply migrations 023 and 024 (022 is applied locally already).
+1. Apply migrations 023, 024 and 025 (022 is applied locally already), and deploy
+   `includes/source-pages.php` with the retry, so the ATO pages can be read.
 2. Run the slug check above.
 3. Page 1 first, since it is the reference page: build its CSV, import it with
    `subject_status` set to `draft`, write its explanation, and approve it. Add the
@@ -180,7 +200,7 @@ Not in the launch set. Each needs its sources found first.
 | Carer Payment | Services Australia |
 | Family Tax Benefit | Services Australia, changes on 1 July |
 | Child Care Subsidy | Services Australia |
-| Redundancy pay | Fair Work Commission NES |
+| Redundancy pay | Fair Work Ombudsman NES fact sheet |
 | Long service leave | State laws, so state sources |
 | Public holidays by state | State sources |
 | Variable home loan rate | RBA statistical table, which needs its own fetcher because it is not an ordinary web page |
@@ -190,3 +210,4 @@ Not in the launch set. Each needs its sources found first.
 | Page | Status |
 |---|---|
 | 1 Tax-free threshold | CSV built and tested on 4 November 2026: `data/imports/au-01-tax-free-threshold.csv`. Three figures read off the ATO page (the full threshold and the two part-year amounts). Imports as a draft with intro and meta text, and no explanation yet |
+| Source readability | Diagnosed and fixed on 5 November 2026. The ATO, Services Australia and Fair Work Ombudsman refused or dropped the fetcher's plain request, so the AI check could not read the ATO page and the writer drafted page 1 from memory. `source-pages.php` now retries with browser headers. The Fair Work Commission page cannot be read by any fetcher and was replaced |
