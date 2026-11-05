@@ -18,8 +18,10 @@ define('SITE_URL', 'http://financefactlibrary.com');
 define('ADMIN_USERNAME', 'admin');
 define('ADMIN_PASSWORD_HASH', '************');
 
-// Anthropics API key
+// Anthropics API keys
 define('ANTHROPIC_API_KEY', '************');
+define('ANTHROPIC_API_KEY_MULTICOUNTRY', '************');
+define('ANTHROPIC_API_KEY_SOURCES', '************');
 
 // AI draft model
 define('AI_DRAFT_MODEL', 'example-model');
