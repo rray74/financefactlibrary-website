@@ -27,7 +27,8 @@
  * proposal is held on /admin/review.php for Approve / Reject, so you can
  * see how reliable it is first. Proposals that fail a gate are always held.
  *
- * Needs ANTHROPIC_API_KEY in config/database.local.php. Without it, this
+ * Needs ANTHROPIC_API_KEY in config/database.local.php (the default key; a script can
+ * use its own with AI_KEY_PURPOSE, see anthropicApiKey()). Without it, this
  * whole step is skipped and check-sources.php works exactly as before.
  */
 
@@ -199,10 +200,33 @@ function keepDbConnectionOpenForAi(PDO $pdo, int $seconds = 900): void
     }
 }
 
+/**
+ * The API key this process bills to. A script that wants its own key puts
+ * define('AI_KEY_PURPOSE', 'MULTICOUNTRY'); at the top, before it loads
+ * anything, and this uses ANTHROPIC_API_KEY_MULTICOUNTRY from
+ * config/database.local.php. With no purpose, or no key set for that purpose,
+ * it falls back to ANTHROPIC_API_KEY, so nothing breaks if a key is missing.
+ *
+ * Why: one key for everything made it impossible to tell what a page cost from
+ * what the multi-country work, local testing and the daily source checks cost.
+ * With a key per purpose the Console's Cost page can filter by API key. The
+ * purposes in use: none (the live site's editor, polish jobs and nightly
+ * drafting: the default), MULTICOUNTRY, and SOURCES (check-sources.php and
+ * check-page-text.php).
+ */
+function anthropicApiKey(): string
+{
+    $purpose = defined('AI_KEY_PURPOSE') ? strtoupper((string) AI_KEY_PURPOSE) : '';
+    if ($purpose !== '' && defined('ANTHROPIC_API_KEY_' . $purpose)) {
+        return (string) constant('ANTHROPIC_API_KEY_' . $purpose);
+    }
+    return defined('ANTHROPIC_API_KEY') ? (string) ANTHROPIC_API_KEY : '';
+}
+
 /** True if an API key is set and cURL is available, so proposals can run. */
 function aiProposalsAvailable(): bool
 {
-    return defined('ANTHROPIC_API_KEY') && ANTHROPIC_API_KEY !== '' && function_exists('curl_init');
+    return anthropicApiKey() !== '' && function_exists('curl_init');
 }
 
 /**
@@ -354,7 +378,7 @@ function claudeTransport(string $body): array
         CURLOPT_TIMEOUT        => 180,
         CURLOPT_HTTPHEADER     => [
             'content-type: application/json',
-            'x-api-key: ' . ANTHROPIC_API_KEY,
+            'x-api-key: ' . anthropicApiKey(), // the key for this script's purpose (see anthropicApiKey())
             'anthropic-version: 2023-06-01',
         ],
     ]);
