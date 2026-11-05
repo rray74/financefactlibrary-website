@@ -18,7 +18,8 @@
  * Unchanged pages aren't checked again, which keeps the cost down.
  *
  * Each check is aiTextCheck() from includes/text-checks.php, the same as
- * the editor's button, run on the saved text. Results go into
+ * the editor's button, run on the saved text. Its AI cost is billed to the
+ * SOURCES API key (see AI_KEY_PURPOSE below), not the page-writing key. Results go into
  * subject_text_checks and show on the dashboard's "Needs reviewing" list
  * (includes/review-flags.php). Nothing on any page is changed.
  */
@@ -30,6 +31,15 @@ if (PHP_SAPI !== 'cli') {
 
 ini_set('display_errors', 'stderr');
 error_reporting(E_ALL);
+
+/**
+ * Bill this script's AI calls to the SOURCES API key (ANTHROPIC_API_KEY_SOURCES in
+ * config/database.local.php, the ffl-sources key), so the daily source checks show
+ * on the Console's Cost page apart from page writing and the multi-country work.
+ * It must come before the files are loaded. If no SOURCES key is set, the default
+ * key is used (see anthropicApiKey() in includes/ai-proposer.php).
+ */
+define('AI_KEY_PURPOSE', 'SOURCES');
 
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/fact-writer.php';

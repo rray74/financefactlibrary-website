@@ -21,7 +21,8 @@
  * value (after a Budget, or a new tax year). It appears under "Needs a
  * look" on /admin/review.php, and then (Phase 2):
  *
- *   4. if ANTHROPIC_API_KEY is set, the missing figures for each page are
+ *   4. if an AI key is set (ANTHROPIC_API_KEY_SOURCES, else ANTHROPIC_API_KEY; the
+ *      AI cost of this script is billed to the SOURCES key), the missing figures for each page are
  *      sent to Claude with the page text, and it proposes what the page
  *      now says, quoting the passage. includes/ai-proposer.php gates each
  *      proposal (quote really on the page, change not too large, already
@@ -51,6 +52,15 @@ if (PHP_SAPI !== 'cli') {
 
 ini_set('display_errors', 'stderr');
 error_reporting(E_ALL);
+
+/**
+ * Bill this script's AI calls to the SOURCES API key (ANTHROPIC_API_KEY_SOURCES in
+ * config/database.local.php, the ffl-sources key), so the daily source checks show
+ * on the Console's Cost page apart from page writing and the multi-country work.
+ * It must come before the files are loaded. If no SOURCES key is set, the default
+ * key is used (see anthropicApiKey() in includes/ai-proposer.php).
+ */
+define('AI_KEY_PURPOSE', 'SOURCES');
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/fact-writer.php';
