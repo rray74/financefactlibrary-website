@@ -20,7 +20,7 @@ start `au_`.
 |---|---|---|---|---|
 | 1 | **Tax-free threshold** `tax-free-threshold` (the reference page) | Tax-free threshold for a full-year resident | ATO how to claim the tax-free threshold (confirmed) | When the law changes |
 | 2 | **Income tax rates** `income-tax-rates-australia` | Four bracket thresholds, four marginal rates (8) | ATO tax rates, Australian resident (confirmed) | 1 July, and when a tax cut is legislated |
-| 3 | **Medicare levy** `medicare-levy` | Levy rate, low-income thresholds (2 to 3) | ATO what is the Medicare levy (confirmed) | Thresholds usually each year |
+| 3 | **Medicare levy** `medicare-levy` | Levy rate (1). The low-income thresholds wait: the ATO publishes them for 2025–26 only, which ended on 30 June 2026, and 2026–27 is not set yet | ATO what is the Medicare levy (confirmed) | Thresholds each year |
 | 4 | **GST** `gst` | GST rate, registration turnover threshold, non-profit threshold (3) | ATO registering for GST (confirmed for the thresholds) | Rate is fixed in law |
 | 5 | **Capital gains tax discount** `capital-gains-tax-discount` | Discount for individuals, minimum ownership period (2) | ATO CGT discount (confirmed). **Read first:** the page carries an alert that capital gains tax changes announced in the 2026–27 Federal Budget do not apply to Tax Time 2026, so the discount may change. Read the ATO's what's new page before writing | When the law changes, and possibly soon |
 | 6 | **HELP loan repayments** `help-loan-repayments` | Repayment income thresholds and rates (about 5) | ATO study and training loan thresholds (**to confirm** the exact address) | 1 July |
@@ -41,7 +41,7 @@ Subcategories: Income tax (1 to 3), GST and capital gains tax (4 and 5), Study l
 | 9 | **Super guarantee rate** `super-guarantee-rate` | Guarantee rate, maximum contribution base (2) | ATO key super rates (**to confirm** the part of the page) | 1 July |
 | 10 | **Super contribution caps** `super-contribution-caps` | Concessional cap, non-concessional cap, bring-forward amounts (3 to 4) | ATO contributions caps (confirmed) | 1 July |
 | 11 | **Preservation age** `preservation-age` | Preservation age (1) | ATO key super rates, preservation age table (**to confirm** the address) | Fixed in law |
-| 12 | **Age Pension** `age-pension` | Age Pension age, maximum fortnightly rate for a single person and for a couple (4) | Services Australia Age Pension rates (confirmed) | 20 March and 20 September |
+| 12 | **Age Pension** `age-pension` | Age Pension age, maximum fortnightly rate for a single person and for a couple (4). **Waiting for a live read** with `scripts/read-source.php`: a copy of the source page was a year out of date | Services Australia Age Pension rates (confirmed) | 20 March and 20 September |
 
 Subcategories: Super contributions (9 and 10), Retirement (11 and 12).
 
@@ -176,6 +176,15 @@ Settled while building page 1, and used for every page after it:
 - `last_updated` is the date the figure was read off its source page.
 - `review_frequency_days` is left blank (the default of 90) except for a rate, which is 42
   or less, as the UK Bank Rate row does.
+- Text is limited **as stored**, with the placeholders still in it: a meta description to
+  200 characters and a meta title to 100. A long fact key counts in full, so
+  `{fact:au_national_minimum_wage_hourly}` is 37 characters before it fills as "$26.44".
+  Use short keys (`au_min_wage_hourly`) and check the stored length as well as the filled one.
+  The importer refuses an over-long row cleanly, but only after the rest of the file has gone in.
+- A page that shows another page's card uses an `also` row, and the card's owner is imported
+  first (the Medicare levy page is in the file before the income tax rates page).
+- Read each figure live, with `scripts/read-source.php` where a copy could be stale. A cached
+  copy of a rates page can be a year old and carry no date.
 - `tax_year` is left blank for a figure that is not set year by year, such as the
   tax-free threshold. A figure that is set each year (tax rates, caps, the minimum wage)
   carries `2026/27`, with `previous_value` and `effective_from`. A year tag on a
@@ -211,3 +220,5 @@ Not in the launch set. Each needs its sources found first.
 |---|---|
 | 1 Tax-free threshold | CSV built and tested on 4 November 2026: `data/imports/au-01-tax-free-threshold.csv`. Three figures read off the ATO page (the full threshold and the two part-year amounts). Imports as a draft with intro and meta text, and no explanation yet |
 | Source readability | Diagnosed and fixed on 5 November 2026. The ATO, Services Australia and Fair Work Ombudsman refused or dropped the fetcher's plain request, so the AI check could not read the ATO page and the writer drafted page 1 from memory. `source-pages.php` now retries with browser headers. The Fair Work Commission page cannot be read by any fetcher and was replaced |
+| 3 Medicare levy, 2 Income tax rates, 15 Minimum wage | CSV built and tested on 5 November 2026: `data/imports/au-batch-02.csv` (import after page 1). Ten new figures, two shared cards, all read live: the ATO's resident tax rates (2026–27) and Medicare levy pages, and the Fair Work Ombudsman's 1 July 2026 release. Previous values: the first-band rate 16% (ATO 2025–26 table), and $24.95 an hour and $948 a week (Ombudsman's 1 July 2025 release) |
+| 12 Age Pension | Held back. The cached copy of the Services Australia page showed the rates from a year earlier. The independent sources agree on $1,237.70 for a single person from 20 September 2026, and Services Australia's own notice confirms a $36.80 rise, but the new total is not on that notice. To be read live with `scripts/read-source.php` before it is entered |
