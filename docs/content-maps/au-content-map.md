@@ -191,6 +191,25 @@ Settled while building page 1, and used for every page after it:
   carries `2026/27`, with `previous_value` and `effective_from`. A year tag on a
   figure that never changes would make the weekly check flag it every 1 July.
 
+### Moving page text to the server
+
+The figures CSV carries a page's intro and meta text but has no column for the explanation, so
+finished text has to be moved separately. Write and edit wherever is convenient, then:
+
+1. **Save** each page in the editor (the export reads what is saved, not what is in the boxes).
+2. On the machine where it was written: `php scripts/export-page-text.php --country=AU`
+   writes `data/imports/page-text-AU-<date>.csv`. Add `--slug=a,b` for particular pages.
+3. Deploy the file with the rest of the site.
+4. On the server, with the figures for those pages already imported there:
+   `php scripts/import-page-text.php --dry-run data/imports/page-text-AU-<date>.csv`, then
+   the same without `--dry-run`.
+
+The import never changes a figure, a source or a page's status, never marks anything verified, and
+never replaces a page that is already written on the target (it says "SKIPPED" and changes nothing)
+unless `--overwrite` is given. It refuses text whose placeholders don't resolve there or that is too
+long for the page's columns. The review date is carried as it was, not stamped with today. Not
+carried: AI checks, AI drafts and the lessons learned from your edits.
+
 Cost, from the UK figures in the handover: about $8 to $12 of AI use for 15 to 20
 pages, plus your time.
 
@@ -223,3 +242,4 @@ Not in the launch set. Each needs its sources found first.
 | Source readability | Diagnosed and fixed on 5 November 2026. The ATO, Services Australia and Fair Work Ombudsman refused or dropped the fetcher's plain request, so the AI check could not read the ATO page and the writer drafted page 1 from memory. `source-pages.php` now retries with browser headers. The Fair Work Commission page cannot be read by any fetcher and was replaced |
 | 3 Medicare levy, 2 Income tax rates, 15 Minimum wage | CSV built and tested on 5 November 2026: `data/imports/au-batch-02.csv` (import after page 1). Ten new figures, two shared cards, all read live: the ATO's resident tax rates (2026–27) and Medicare levy pages, and the Fair Work Ombudsman's 1 July 2026 release. Previous values: the first-band rate 16% (ATO 2025–26 table), and $24.95 an hour and $948 a week (Ombudsman's 1 July 2025 release) |
 | 12 Age Pension | CSV built and tested on 9 November 2026: `data/imports/au-batch-03.csv` (import after the batch before it, and after migration 026). The three rates were read live with `scripts/read-source.php` on the site owner's own machine: $1,237.70 for a single person, $933.00 each for a couple and $1,866.00 combined, from 20 September 2026. Services Australia's own notice of 8 September 2026 confirms the rises ($36.80 single, $55.60 couple combined), which give the previous values. The Age Pension age of 67 is on a second page that must be read live before import |
+| Page text transfer | `scripts/export-page-text.php` and `scripts/import-page-text.php` built and tested on 9 November 2026 (63 checks, across two databases standing in for the Mac and the server). The round trip is exact, byte for byte |
