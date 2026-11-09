@@ -41,7 +41,7 @@ Subcategories: Income tax (1 to 3), GST and capital gains tax (4 and 5), Study l
 | 9 | **Super guarantee rate** `super-guarantee-rate` | Guarantee rate, maximum contribution base (2) | ATO key super rates (**to confirm** the part of the page) | 1 July |
 | 10 | **Super contribution caps** `super-contribution-caps` | Concessional cap, non-concessional cap, bring-forward amounts (3 to 4) | ATO contributions caps (confirmed) | 1 July |
 | 11 | **Preservation age** `preservation-age` | Preservation age (1) | ATO key super rates, preservation age table (**to confirm** the address) | Fixed in law |
-| 12 | **Age Pension** `age-pension` | Age Pension age, maximum fortnightly rate for a single person and for a couple (4). **Waiting for a live read** with `scripts/read-source.php`: a copy of the source page was a year out of date | Services Australia Age Pension rates (confirmed) | 20 March and 20 September |
+| 12 | **Age Pension** `age-pension` | Age Pension age, maximum fortnightly rate for a single person and for a couple (4) | Services Australia Age Pension rates (read live on 9 November 2026) and Who can get it (added in 026, to be read live before import) | 20 March and 20 September |
 
 Subcategories: Super contributions (9 and 10), Retirement (11 and 12).
 
@@ -110,10 +110,11 @@ The importer also refuses a clash, but checking first avoids a failed file.
 
 ## The source allowlist
 
-Fourteen official pages are in the allowlist. Migration 023 added sixteen, 024
+Fifteen official pages are in the allowlist. Migration 023 added sixteen, 024
 corrected three ATO addresses that redirect (tax rates, the CGT discount and the
-contributions caps) and removed two that were only seen in a search result, and 025
-swapped two pages the site cannot read for two it can (see below).
+contributions caps) and removed two that were only seen in a search result, 025
+swapped two pages the site cannot read for two it can (see below), and 026 added
+Services Australia's Age Pension eligibility page, which states the Age Pension age.
 
 ### Can the site read them?
 
@@ -221,4 +222,4 @@ Not in the launch set. Each needs its sources found first.
 | 1 Tax-free threshold | CSV built and tested on 4 November 2026: `data/imports/au-01-tax-free-threshold.csv`. Three figures read off the ATO page (the full threshold and the two part-year amounts). Imports as a draft with intro and meta text, and no explanation yet |
 | Source readability | Diagnosed and fixed on 5 November 2026. The ATO, Services Australia and Fair Work Ombudsman refused or dropped the fetcher's plain request, so the AI check could not read the ATO page and the writer drafted page 1 from memory. `source-pages.php` now retries with browser headers. The Fair Work Commission page cannot be read by any fetcher and was replaced |
 | 3 Medicare levy, 2 Income tax rates, 15 Minimum wage | CSV built and tested on 5 November 2026: `data/imports/au-batch-02.csv` (import after page 1). Ten new figures, two shared cards, all read live: the ATO's resident tax rates (2026–27) and Medicare levy pages, and the Fair Work Ombudsman's 1 July 2026 release. Previous values: the first-band rate 16% (ATO 2025–26 table), and $24.95 an hour and $948 a week (Ombudsman's 1 July 2025 release) |
-| 12 Age Pension | Held back. The cached copy of the Services Australia page showed the rates from a year earlier. The independent sources agree on $1,237.70 for a single person from 20 September 2026, and Services Australia's own notice confirms a $36.80 rise, but the new total is not on that notice. To be read live with `scripts/read-source.php` before it is entered |
+| 12 Age Pension | CSV built and tested on 9 November 2026: `data/imports/au-batch-03.csv` (import after the batch before it, and after migration 026). The three rates were read live with `scripts/read-source.php` on the site owner's own machine: $1,237.70 for a single person, $933.00 each for a couple and $1,866.00 combined, from 20 September 2026. Services Australia's own notice of 8 September 2026 confirms the rises ($36.80 single, $55.60 couple combined), which give the previous values. The Age Pension age of 67 is on a second page that must be read live before import |
