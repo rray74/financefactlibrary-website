@@ -568,13 +568,19 @@ function getOrCreateSubject(PDO $pdo, int $subcategoryId, string $slug, string $
     if ($name === '') {
         throw new RuntimeException("subject '$slug' doesn't exist yet and no subject_name was given to create it");
     }
+    // published_at is decided HERE and written into the SQL as NOW() or NULL. It used to be
+    // CASE WHEN :status2 = 'published' ..., which compares a bound value with a text literal. On the live
+    // server's connection settings the two get different collations and MariaDB refuses with
+    // "Illegal mix of collations ... for operation '='" (found when the first Australian CSV was run
+    // there on 12 November 2026). Nothing here compares a bound value with text any more.
+    $publishedAt = $status === 'published' ? 'NOW()' : 'NULL';
     $stmt = $pdo->prepare(
         "INSERT INTO subjects (subcategory_id, name, slug, intro, status, published_at)
-         VALUES (:scid, :name, :slug, :intro, :status, CASE WHEN :status2 = 'published' THEN NOW() ELSE NULL END)"
+         VALUES (:scid, :name, :slug, :intro, :status, $publishedAt)"
     );
     $stmt->execute([
         'scid' => $subcategoryId, 'name' => $name, 'slug' => $slug, 'intro' => $intro ?: null,
-        'status' => $status, 'status2' => $status,
+        'status' => $status,
     ]);
     return (int) $pdo->lastInsertId();
 }
@@ -617,13 +623,13 @@ function updateSubjectStatus(PDO $pdo, int $subjectId, string $status): void
         throw new RuntimeException("subject_status must be draft, published or retired, got '$status'");
     }
 
-    $stmt = $pdo->prepare(
-        "UPDATE subjects
-         SET status = :status,
-             published_at = CASE WHEN :status2 = 'published' AND published_at IS NULL THEN NOW() ELSE published_at END
-         WHERE id = :id"
-    );
-    $stmt->execute(['status' => $status, 'status2' => $status, 'id' => $subjectId]);
+    // Setting a page to 'published' stamps published_at the FIRST time only (a page that was live once keeps
+    // its original date). Any other status leaves the date alone. That is decided here, in PHP, rather than in
+    // SQL as CASE WHEN :status2 = 'published' ..., because comparing a bound value with a text literal fails
+    // on some MariaDB connection settings (Illegal mix of collations, error 1267). Same behaviour as before.
+    $dateSql = $status === 'published' ? ', published_at = COALESCE(published_at, NOW())' : '';
+    $stmt = $pdo->prepare("UPDATE subjects SET status = :status$dateSql WHERE id = :id");
+    $stmt->execute(['status' => $status, 'id' => $subjectId]);
 }
 
 /**
