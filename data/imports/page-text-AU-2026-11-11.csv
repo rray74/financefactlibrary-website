@@ -1,0 +1,68 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,tax,income-tax,tax-free-threshold,"Tax-Free Threshold","How much income Australian residents can earn before paying income tax, how to claim the threshold from an employer, and how it works for part of a year.","## Only Australian residents for tax purposes can claim it
+
+The tax-free threshold is available to people who are Australian residents for tax purposes. A person who is a non-resident for the whole year cannot claim it and is taxed on all of their Australian income. If you are a resident for only part of the year, a smaller threshold applies in place of the full amount. Residency for tax purposes is a separate test from immigration status.
+
+## Claiming it reduces the tax withheld from your pay
+
+When you start with a payer, you complete a **tax file number (TFN) declaration**, and that form is where you say whether to claim the threshold. A payer can be an employer or a government agency such as Centrelink. If you choose not to claim it, more tax is withheld, and any excess may come back as a refund when you lodge your tax return.
+
+The threshold applies to your income across an **income year**, the period from the start of July to the end of the following June.
+
+## With more than one payer, the choice depends on your total income
+
+If you have more than one payer, how much tax is withheld depends on which payers you claim the threshold from. If you are certain your total income from all payers will be {fact:au_tax_free_threshold} or less, you can choose to claim it from each payer. Otherwise, claiming it from more than one payer can leave too little tax withheld, and you may receive a tax bill when you lodge.","Tax-Free Threshold {tax_year}: {fact:au_tax_free_threshold}","Australian residents can earn {fact:au_tax_free_threshold} a year before income tax applies. How to claim it from an employer and how part-year residents are treated.","2026-11-05 22:43:30","2026-11-11 21:59:41"
+AU,tax,income-tax,medicare-levy,"Medicare Levy","What the Medicare levy is and who pays it, how reductions and exemptions work, and how the levy differs from the separate Medicare levy surcharge.","## The levy is a percentage of your taxable income
+
+Medicare, the public health system, is partly paid for by the Medicare levy. You pay it on top of income tax, at {fact:au_medicare_levy_rate} of your **taxable income**, which is your assessable income minus any allowable deductions.
+
+The ATO calculates the amount once you lodge your return. Tax withheld from your pay by your employer generally covers part of it.
+
+## Reductions and exemptions are considered separately
+
+Depending on your income, your spouse's income and your circumstances, you may pay a reduced levy or none at all. Qualifying for a reduction and qualifying for an exemption are separate questions, so one does not settle the other.
+
+## The Medicare levy surcharge is a different charge
+
+On top of the levy, some people owe a surcharge of their own, called the **Medicare levy surcharge** (MLS). Whether you owe it depends on your personal circumstances.","Medicare Levy {tax_year}: {fact:au_medicare_levy_rate}","The Medicare levy is {fact:au_medicare_levy_rate} of taxable income, paid on top of income tax. Who pays it, who can get a reduction or exemption and how the surcharge differs.","2026-11-09 22:25:54","2026-11-11 21:59:41"
+AU,tax,income-tax,income-tax-rates-australia,"Income Tax Rates","The income tax rates for Australian residents, the income thresholds where each rate starts, and what the rates leave out, including the Medicare levy.","## Each rate applies only to the income inside its band
+
+The ATO sets out each band as an amount of tax plus a number of cents for every dollar above the band's starting point. A rate therefore applies only to the part of your **taxable income** that sits inside its band. Crossing into a higher band does not raise the tax on the income below it. The bands are measured on taxable income, so allowable deductions come off before any rate is applied.
+
+## These rates assume a full-year resident with the full tax-free threshold
+
+Someone who was a tax resident all year and gets the whole {fact:au_tax_free_threshold} tax-free threshold can use these rates. Part-year residents and non-residents are treated differently, as the [tax-free threshold](/au/tax/income-tax/tax-free-threshold/) page explains.
+
+## The Medicare levy is charged on top of these rates
+
+Both the Medicare levy ({fact:au_medicare_levy_rate} of taxable income) and the separate Medicare levy surcharge are charged in addition to the tax these rates produce. The [Medicare levy](/au/tax/income-tax/medicare-levy/) page covers the levy and how it differs from the surcharge.","Australian Income Tax Rates {tax_year}","Australian resident income tax rates for {tax_year}, from {fact:au_tax_rate_band_1} to {fact:au_tax_rate_top}, with the taxable income where each rate starts and what the rates leave out.","2026-11-11 21:57:39","2026-11-11 21:59:41"
+AU,work-and-benefits,pay-and-leave,minimum-wage-australia,"Minimum Wage","The National Minimum Wage for employees who are not covered by an award or agreement, what it is per hour and per week, and when each increase starts.","## The National Minimum Wage applies when no award or agreement does
+
+Awards decide the minimum wage for most employees, though every employee in Australia is entitled to one. The National Minimum Wage, {fact:au_min_wage_hourly} an hour or {fact:au_min_wage_weekly} a week, is the rate for employees who are covered by neither an award nor a registered agreement. Its legal basis is the Fair Work Act 2009.
+
+## An award or agreement sets the rate instead
+
+Where an award or registered agreement covers an employee, the pay it sets applies in place of the national rate, and it may be higher. Awards and registered agreements also set penalty rates and allowances. Some awards pay employees an introductory rate when they start in an industry, for a limited time, and that rate can be lower than the national rate.
+
+## The rate is reviewed each year and changes usually start in July
+
+Every year the Fair Work Commission carries out an annual wage review of the national rate and of award rates. Any change usually takes effect with the first full pay period that begins from the start of July.","Australian Minimum Wage {tax_year}: {fact:au_min_wage_hourly}","The National Minimum Wage is {fact:au_min_wage_hourly} an hour or {fact:au_min_wage_weekly} a week for a full-time employee. Who it covers and when each yearly increase takes effect.","2026-11-09 22:33:09","2026-11-11 21:59:41"
+AU,super-and-retirement,retirement,age-pension,"Age Pension","How much Age Pension a single person or a couple can get, what the rate is made up of, who is eligible and how income and assets change the amount.","## The figures are maximum rates made up of three parts
+
+The cards show the most a person can be paid each fortnight, before tax. Each total adds together a basic rate, the **Pension Supplement** and the **Energy Supplement**. A couple living apart because of ill health is paid the single rate, not the couple rate.
+
+## Reaching Age Pension age is only the first condition
+
+The age requirement is {fact:au_age_pension_age}, with no change planned. Reaching that age is not enough on its own, because residence, income and assets are also tested. An ophthalmologist's report can support a claim by a legally blind person who is not claiming Rent Assistance, and the income and assets tests may then not be applied. Whether a person qualifies can also depend on any payments they get from the Department of Veterans' Affairs. People of that age who miss out on the pension may be eligible instead for a Commonwealth Seniors Health Card, which can cut the cost of medicines.
+
+## Income and assets decide how much you are paid
+
+The income test can reduce the payment, and the assets test affects both whether you are paid and how much. For someone with a partner, the income and assets of both partners are needed, and a change in the relationship can change the rate. Any work income of yours or your partner's has to be reported, including amounts below the income cut off point. Income or assets held outside Australia can also affect the payment.
+
+## Some people are paid a transitional rate
+
+People who were already on a part pension in September 2009 may be paid a transitional rate, which was set for pensioners who would otherwise be paid less, until the normal rates catch up. The cards show the normal rates, not these.
+
+## Age Pension is taxable
+
+The payment is taxable, but no tax is deducted unless you ask for it, and asking can prevent a bill when you lodge your return.","Age Pension Rates: {fact:au_age_pension_single} a Fortnight","The maximum Age Pension is {fact:au_age_pension_single} a fortnight for a single person and {fact:au_age_pension_couple_each} each for a couple. How the rate is made up and who qualifies.","2026-11-11 21:53:05","2026-11-11 21:59:41"
