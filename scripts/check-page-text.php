@@ -7,6 +7,7 @@
  *   php scripts/check-page-text.php --dry-run    list the pages it would check, call nothing
  *   php scripts/check-page-text.php              check up to PAGE_TEXT_CHECKS_PER_RUN pages
  *   php scripts/check-page-text.php --limit=2    check up to 2 pages this run
+ *   php scripts/check-page-text.php --include-hidden   also check pages in countries not switched on yet
  *
  * A written page (one with an explanation) is checked when:
  *   - its saved text has changed since its last check (or it's never been
@@ -16,6 +17,17 @@
  *   - its last check is PAGE_TEXT_CHECK_MAX_AGE_DAYS old, which catches
  *     things like a date in the text that has now passed.
  * Unchanged pages aren't checked again, which keeps the cost down.
+ *
+ * PAGES IN A COUNTRY THAT IS NOT SWITCHED ON ARE SKIPPED. A country with
+ * jurisdictions.is_active = 0 (Australia while its pages are being built) cannot
+ * be seen by visitors, so there is nothing to protect yet, and its pages are often
+ * edited many times before launch, each edit costing a check. They are skipped,
+ * counted in the output so it is clear what was left out, and checked as normal
+ * once the country is switched on. --include-hidden checks them anyway, for a
+ * deliberate check before launch. A page whose category has no country at all is
+ * treated as switched on, as it was before this rule existed. The country of a
+ * page is the country of its category (the parent, when the category sits on a
+ * state or region).
  *
  * Each check is aiTextCheck() from includes/text-checks.php, the same as
  * the editor's button, run on the saved text. Its AI cost is billed to the
@@ -66,8 +78,9 @@ const PAGE_TEXT_CHECK_REASONS = [
     'due'            => 'last check over ' . PAGE_TEXT_CHECK_MAX_AGE_DAYS . ' days ago',
 ];
 
-$options = getopt('', ['dry-run', 'limit:']);
+$options = getopt('', ['dry-run', 'limit:', 'include-hidden']);
 $dryRun = isset($options['dry-run']);
+$includeHidden = isset($options['include-hidden']);
 $limit = isset($options['limit']) ? max(1, (int) $options['limit']) : PAGE_TEXT_CHECKS_PER_RUN;
 
 $pdo = getDbConnection();
@@ -95,11 +108,36 @@ try {
     $sourceHashes = $pdo->query('SELECT url, content_hash FROM sources WHERE content_hash IS NOT NULL')
         ->fetchAll(PDO::FETCH_KEY_PAIR);
 
+    // A page's country is the country of its category: the category's jurisdiction, or that
+    // jurisdiction's parent when the category sits on a state or region. LEFT JOINs keep a page whose
+    // category has no country: it is treated as switched on, as every page was before this rule.
+    $pageCountryJoins = "FROM subjects s
+         LEFT JOIN subcategories sc ON sc.id = s.subcategory_id
+         LEFT JOIN categories c ON c.id = sc.category_id
+         LEFT JOIN jurisdictions j ON j.id = c.jurisdiction_id
+         LEFT JOIN jurisdictions country ON country.id = COALESCE(j.parent_id, j.id)";
+    $writtenPages = "s.status IN ('published', 'draft') AND COALESCE(s.explanation, '') <> ''";
+
     $pages = $pdo->query(
-        "SELECT id, name, intro, explanation, meta_title, meta_description
-         FROM subjects
-         WHERE status IN ('published', 'draft') AND COALESCE(explanation, '') <> ''"
+        "SELECT s.id, s.name, s.intro, s.explanation, s.meta_title, s.meta_description
+         $pageCountryJoins
+         WHERE $writtenPages"
+        . ($includeHidden ? '' : ' AND (country.id IS NULL OR country.is_active = 1)')
     )->fetchAll();
+
+    // Written pages left out because their country is not switched on yet, counted per country so
+    // the output says what was skipped (and the dashboard note carries the total).
+    $hidden = [];
+    if (!$includeHidden) {
+        $hidden = $pdo->query(
+            "SELECT country.name AS country_name, COUNT(*) AS pages
+             $pageCountryJoins
+             WHERE $writtenPages AND country.is_active = 0
+             GROUP BY country.id, country.name
+             ORDER BY country.name"
+        )->fetchAll();
+    }
+    $hiddenCount = (int) array_sum(array_column($hidden, 'pages'));
 
     // --- Which pages need checking, and why. ---
     $due = [];
@@ -146,7 +184,13 @@ try {
     $batch = array_slice($due, 0, $limit);
 
     echo ($dryRun ? "DRY RUN: no AI calls, nothing written.\n" : '')
-        . count($pages) . ' written page(s); ' . count($due) . ' need checking; ' . count($batch) . " this run.\n\n";
+        . count($pages) . ' written page(s); ' . count($due) . ' need checking; ' . count($batch) . " this run.\n"
+        . ($hiddenCount > 0
+            ? "Skipped $hiddenCount written page(s) in countries not switched on yet ("
+                . implode(', ', array_map(fn($h) => $h['country_name'] . ': ' . $h['pages'], $hidden))
+                . "). They are checked once the country launches, or now with --include-hidden.\n"
+            : '')
+        . "\n";
 
     foreach ($batch as $page) {
         $label = sprintf('%-50s %s', $page['name'], PAGE_TEXT_CHECK_REASONS[$page['reason']]);
@@ -179,7 +223,8 @@ try {
     }
 
     $remaining = count($due) - $checked;
-    $summary = "$checked checked ($withFindings with problems), $failed failed, $remaining still to check";
+    $summary = "$checked checked ($withFindings with problems), $failed failed, $remaining still to check"
+        . ($hiddenCount > 0 ? ", $hiddenCount skipped in countries not switched on" : '');
     echo "\nDone. $summary.\n";
 
     if ($runId) {
