@@ -10,25 +10,31 @@ then released by the drip publisher once Australia is launched.
 
 ## To do
 
-Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 12 November 2026.
+Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 12 November 2026 (later).
 
 ### Doing now (on the server)
 
 - [x] Migrations applied on the server, through 026 (12 November).
 - [x] Figures for the five pages imported on the server (12 November). The importer fix for the
       collation error is deployed.
-- [ ] Import the five pages' text: `php scripts/import-page-text.php --dry-run data/imports/page-text-AU-2026-11-11.csv`,
-      then the same without `--dry-run`.
-- [ ] Open one page in the live admin and check the explanation is there, the cards sit above it,
-      and the status is still **draft**.
-- [ ] Confirm `DRAFTS_PAUSED` is true on the server: `grep DRAFTS_PAUSED config/database.local.php`.
+- [x] The five pages' text is on the server (found on 12 November). The dry run of
+      `php scripts/import-page-text.php --dry-run data/imports/page-text-AU-2026-11-11.csv` said all
+      five were unchanged, and the pages held their explanations with the review times from the Mac.
+      A real import had already run, so there was nothing left to import.
+- [x] Hidden means hidden (12 November): the public address for Age Pension answers "Subject not found",
+      and the sitemap holds no `/au/` addresses (`curl -s https://financefactlibrary.com/sitemap.xml | grep -c "/au/"` gave 0).
+- [ ] Optional: look at one page in the live admin (Admin, Subjects, Super & Retirement, Age Pension) to see
+      the cards and placeholders rendered. A database query already showed it is a draft with its explanation.
+- [x] `DRAFTS_PAUSED` is true on the server (checked 12 November), so nothing is drafted overnight.
 
 ### Decisions waiting
 
-- [ ] **Nightly AI check on pages in a country that is not switched on.** The daily page-text check
-      (05:30) AI-checks written pages, up to five a day, including pages nobody can see yet.
-      Decide whether to skip countries that are not active (a one-line change to the check script,
-      and the pages are still checked once the country launches). Added 12 November at Richard's request.
+- [x] **Nightly AI check on pages in a country that is not switched on: decided to skip them** (12 November).
+      `scripts/check-page-text.php` now skips written pages whose country has `is_active = 0`, says how many it
+      skipped, and records the count in the dashboard note. `--include-hidden` checks them anyway.
+- [ ] Deploy `scripts/check-page-text.php`, then run `php scripts/check-page-text.php --dry-run` on the server.
+      Expect "Skipped 5 written page(s) in countries not switched on yet (Australia: 5)". If the United Kingdom
+      appears among the skipped, stop: it would mean the UK row's `is_active` is not 1.
 - [ ] A stricter check for hand-written worked examples. The writer is never told about typed
       numbers, because the draft check removes that note on purpose, and the Medicare levy draft
       copied the ATO's $76,000 example. Optional: do it if it happens again.
@@ -49,7 +55,7 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
 
 ### Launch
 
-- [ ] About 15 to 19 pages written, then set `is_active` to 1 on the `AU` row and start the drip
+- [ ] About 15 to 19 pages written (optionally a deliberate AI check first: `check-page-text.php --include-hidden`), then set `is_active` to 1 on the `AU` row and start the drip
       (`per_week` 3), as in the order of work below.
 
 ### Loose ends
@@ -71,6 +77,8 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
 - Read every figure live with `scripts/read-source.php`. A cached copy of a rates page can be a year old and carry no date.
 - A site that refuses the fetcher is checked with `scripts/check-source-access.php` before any page is built on it.
 - Text limits count the stored text with the placeholders still in it.
+- In a CSV with multi-line text, a page's first heading shares a line with the start of its row, so
+  `grep '^## '` undercounts by one per page. Count with a script, not grep.
 - Short source pages make close-to-source sentences easy to write by accident. Score the text with the checker's own function before pasting.
 - A short page is better than a padded one: the writer may only state what the cited pages say.
 - Never compare a bound value with a text literal in SQL. It failed on the live server's connection settings
