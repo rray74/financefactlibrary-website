@@ -38,6 +38,10 @@
  * their page still shows them, because pages for a specific year never
  * change.
  *
+ * Exception: facts listed in CURRENT_VALUE_PATTERNS (Bank Rate) are
+ * compared with the page's CURRENT figure, because their page also lists
+ * old values and would otherwise "confirm" a stale number.
+ *
  * Limits worth knowing: this confirms a figure is still on the page, not
  * that it's in the right place on it. Very short numbers (like 2 or 8)
  * could in theory match something unrelated. Text facts (non-numbers)
@@ -72,6 +76,25 @@ require_once __DIR__ . '/../includes/source-pages.php';
 
 /** Pause between page downloads, to be polite to the sites we read. */
 const SECONDS_BETWEEN_REQUESTS = 1;
+
+/**
+ * Facts whose source page also lists OLD values (a history table), so
+ * "the number appears somewhere on the page" proves nothing.
+ *
+ * Bank Rate is the case that caused this: after the rate rose from 3.75%
+ * to 4% the Bank's page still listed 3.75 in its history table, so the
+ * old figure was "found" and marked verified every day, with a fresh
+ * "checked" date, while the site showed the wrong rate.
+ *
+ * Each pattern's first capture group must be the page's CURRENT figure.
+ * The fact is only verified if that figure matches the one we store.
+ * If the page's wording changes and the pattern stops matching, the fact
+ * goes under "Needs a look" (a loud failure) instead of being verified.
+ * Add other history-table facts here, keyed by fact_key.
+ */
+const CURRENT_VALUE_PATTERNS = [
+    'uk_base_rate' => '/current\s+(?:official\s+)?bank\s+rate\D{0,40}?(\d+(?:\.\d+)?)\s*%/i',
+];
 
 $options = getopt('', ['dry-run', 'no-ai']);
 $dryRun = isset($options['dry-run']);
@@ -183,6 +206,32 @@ try {
                     $missing[] = $fact;
                     if (!$dryRun) {
                         recordCheck($pdo, $fact, 'not_found', null);
+                    }
+                }
+                continue;
+            }
+
+            // A fact on a page that lists old values as well as the current
+            // one is compared with the page's CURRENT figure only (see
+            // CURRENT_VALUE_PATTERNS). A mismatch, or a page we can't read,
+            // goes to "Needs a look" and the AI step, like any missing figure.
+            if (isset(CURRENT_VALUE_PATTERNS[$fact['fact_key']])) {
+                $onPage = currentValueOnPage($text, CURRENT_VALUE_PATTERNS[$fact['fact_key']]);
+                $stored = $fact['value_numeric'] !== null ? (float) $fact['value_numeric'] : null;
+
+                if ($onPage !== null && $stored !== null && abs($onPage - $stored) < 0.005) {
+                    echo "  ✓  {$fact['fact_key']}: page's current figure is $onPage\n";
+                    $counts['found']++;
+                    if (!$dryRun) {
+                        markFactVerified($pdo, (int) $fact['id']);
+                    }
+                } else {
+                    echo "  ✗  {$fact['fact_key']}: we show " . ($stored ?? '?') . ', the page\'s current figure is '
+                        . ($onPage !== null ? $onPage : "unreadable (pattern didn't match)") . "\n";
+                    $counts['not_found']++;
+                    $missing[] = $fact;
+                    if (!$dryRun) {
+                        recordCheck($pdo, $fact, 'not_found', $onPage !== null ? (string) $onPage : null);
                     }
                 }
                 continue;
@@ -372,6 +421,15 @@ function taxYearHasEnded(?string $taxYear, ?string $countryCode = null, ?string 
     $lastDay = date('Y-m-d', mktime(0, 0, 0, $rule['month'], $rule['day'] - 1, $startYear + 1));
 
     return ($today ?? date('Y-m-d')) > $lastDay;
+}
+
+/**
+ * The page's current figure, read with a CURRENT_VALUE_PATTERNS pattern
+ * (first capture group = the number). Null if the pattern doesn't match.
+ */
+function currentValueOnPage(string $pageText, string $pattern): ?float
+{
+    return preg_match($pattern, $pageText, $m) ? (float) $m[1] : null;
 }
 
 /** Record the outcome of a check for a fact. */
