@@ -8,6 +8,74 @@ require. The source addresses below are the ones in migrations 023, 024 and 025 
 Australia is hidden (`is_active = 0`). Pages are imported as drafts, written,
 then released by the drip publisher once Australia is launched.
 
+## To do
+
+Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 12 November 2026.
+
+### Doing now (on the server)
+
+- [x] Migrations applied on the server, through 026 (12 November).
+- [x] Figures for the five pages imported on the server (12 November). The importer fix for the
+      collation error is deployed.
+- [ ] Import the five pages' text: `php scripts/import-page-text.php --dry-run data/imports/page-text-AU-2026-11-11.csv`,
+      then the same without `--dry-run`.
+- [ ] Open one page in the live admin and check the explanation is there, the cards sit above it,
+      and the status is still **draft**.
+- [ ] Confirm `DRAFTS_PAUSED` is true on the server: `grep DRAFTS_PAUSED config/database.local.php`.
+
+### Decisions waiting
+
+- [ ] **Nightly AI check on pages in a country that is not switched on.** The daily page-text check
+      (05:30) AI-checks written pages, up to five a day, including pages nobody can see yet.
+      Decide whether to skip countries that are not active (a one-line change to the check script,
+      and the pages are still checked once the country launches). Added 12 November at Richard's request.
+- [ ] A stricter check for hand-written worked examples. The writer is never told about typed
+      numbers, because the draft check removes that note on purpose, and the Medicare levy draft
+      copied the ATO's $76,000 example. Optional: do it if it happens again.
+
+### Next pages (14 of 19 still to build)
+
+- [ ] Next batch: super contribution caps (page 10) and the GST thresholds (page 4), both ATO pages the
+      fetcher can read.
+- [ ] Sources still to find, then read live: study loan thresholds (page 6), a Financial Claims Scheme
+      page (8), the super guarantee rate table (9), the GST rate (4), the JobSeeker rates page (18) and
+      the preservation age table (11).
+- [ ] Capital gains tax discount (page 5): read the ATO's Federal Budget alert first.
+- [ ] First Home Guarantee (page 13): Housing Australia's price caps page, which the fetcher can read.
+      It is the state-layer test.
+- [ ] The remaining pages in the table above: cash rate target, Financial Claims Scheme, annual leave,
+      personal and carer's leave, Parental Leave Pay and the rest.
+- [ ] Add the Medicare levy low-income thresholds to page 3 when the ATO sets the 2026–27 ones.
+
+### Launch
+
+- [ ] About 15 to 19 pages written, then set `is_active` to 1 on the `AU` row and start the drip
+      (`per_week` 3), as in the order of work below.
+
+### Loose ends
+
+- [ ] Run the UK base rate update from the 5 November decision, with `--country=GB` on its CSV.
+- [ ] Add the "Reference page" section to `docs/house-style/au.md` now that page 1 is approved.
+- [ ] Lessons approved on one machine (`writing_lessons`) do not transfer. Approve them again on the
+      server, or build an export.
+- [ ] Optional: a guard in `includes/lessons.php` that refuses a country style file with no "house style" heading.
+- [ ] Optional: add the ATO "more than one job" page as a cited source for page 1's multi-payer paragraph.
+- [ ] Unseen files still to look at: `includes/admin-queries.php`, `includes/fact-writer.php`,
+      `includes/review-flags.php`, `scripts/run-polish-jobs.php`, `includes/ai-polish.php`,
+      `includes/ai-fixes.php`, and the RBA lending-rate fetcher.
+- [ ] New Zealand, Canada and the US afterwards, reusing all of this (country files, content maps).
+- [ ] Do not deploy or import the two `trial-…personal-allowance.csv` files. Delete them when no longer needed.
+
+### Lessons for the next country
+
+- Read every figure live with `scripts/read-source.php`. A cached copy of a rates page can be a year old and carry no date.
+- A site that refuses the fetcher is checked with `scripts/check-source-access.php` before any page is built on it.
+- Text limits count the stored text with the placeholders still in it.
+- Short source pages make close-to-source sentences easy to write by accident. Score the text with the checker's own function before pasting.
+- A short page is better than a padded one: the writer may only state what the cited pages say.
+- Never compare a bound value with a text literal in SQL. It failed on the live server's connection settings
+  (error 1267) although it passed every local test. `scripts/debug-sql.php` shows the statement that failed.
+
 ## The launch set: 19 pages
 
 The plan is to launch at 15 to 20 pages and then drip 2 to 4 a week. Slugs are
@@ -153,12 +221,13 @@ Each of these needs the page fetched and checked before its figure is entered.
 
 1. Apply migrations 023, 024 and 025 (022 is applied locally already), and deploy
    `includes/source-pages.php` with the retry, so the ATO pages can be read.
+   **Done on the server (through 026, 12 November 2026).**
 2. Run the slug check above.
 3. Page 1 first, since it is the reference page: build its CSV, import it with
    `subject_status` set to `draft`, write its explanation, and approve it. Add the
-   "Reference page" section to `au.md` once it is approved.
+   "Reference page" section to `au.md` once it is approved. **Page 1 approved on 5 November 2026.**
 4. Then the other pages in the order above, in batches of about four. Page 13 goes
-   in the first batch so the state layer is tested early.
+   in the first batch so the state layer is tested early. **In progress: 5 of 19 built.**
 5. Launch at 19 written pages by setting `is_active` to 1 on the `AU` row, then
    start the drip: `php scripts/run-jobs.php --enqueue=drip_country --payload='{"country":"AU","per_week":3}' --unique=drip_country:AU`
 
@@ -243,3 +312,4 @@ Not in the launch set. Each needs its sources found first.
 | 3 Medicare levy, 2 Income tax rates, 15 Minimum wage | CSV built and tested on 5 November 2026: `data/imports/au-batch-02.csv` (import after page 1). Ten new figures, two shared cards, all read live: the ATO's resident tax rates (2026–27) and Medicare levy pages, and the Fair Work Ombudsman's 1 July 2026 release. Previous values: the first-band rate 16% (ATO 2025–26 table), and $24.95 an hour and $948 a week (Ombudsman's 1 July 2025 release) |
 | 12 Age Pension | CSV built and tested on 9 November 2026: `data/imports/au-batch-03.csv` (import after the batch before it, and after migration 026). The three rates were read live with `scripts/read-source.php` on the site owner's own machine: $1,237.70 for a single person, $933.00 each for a couple and $1,866.00 combined, from 20 September 2026. Services Australia's own notice of 8 September 2026 confirms the rises ($36.80 single, $55.60 couple combined), which give the previous values. The Age Pension age of 67 is on a second page that must be read live before import |
 | Page text transfer | `scripts/export-page-text.php` and `scripts/import-page-text.php` built and tested on 9 November 2026 (63 checks, across two databases standing in for the Mac and the server). The round trip is exact, byte for byte |
+| Server, 12 November 2026 | Figures for the five pages imported on the server (3, 10 and 4 created, no errors). The first run failed with a collation error (1267): the importer compared a bound value with the text `'published'`, in a statement I changed and in the original `updateSubjectStatus()`. Both now decide the date in PHP. `scripts/debug-sql.php` was added to show a failing statement. The text import is next |
