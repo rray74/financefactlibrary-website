@@ -27,14 +27,23 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
       the cards and placeholders rendered. A database query already showed it is a draft with its explanation.
 - [x] `DRAFTS_PAUSED` is true on the server (checked 12 November), so nothing is drafted overnight.
 
+- [x] First overnight run checked (13 November): every cron job `ok`. The 07:30 source check read **302 figures
+      and found all 302** (285 the day before plus the 17 Australian ones), with 0 sources unavailable and the AI
+      proposing nothing. So the fetcher fix works from the server against the live ATO, Services Australia and
+      Fair Work Ombudsman pages. All 17 Australian values were unchanged.
+- [x] Confirmed after the first night (13 November): the sitemap has no `/au/` addresses, and the job queue is empty
+      (no Australian drip job, nothing failed).
+- [x] `AI_AUTO_APPLY` defaults to `false` (`includes/ai-proposer.php`, line 47), so the source check is in trial mode and holds
+      every AI proposal. It cannot change a figure overnight unless it is set to `true` in `config/database.local.php`.
+
 ### Decisions waiting
 
 - [x] **Nightly AI check on pages in a country that is not switched on: decided to skip them** (12 November).
       `scripts/check-page-text.php` now skips written pages whose country has `is_active = 0`, says how many it
       skipped, and records the count in the dashboard note. `--include-hidden` checks them anyway.
-- [ ] Deploy `scripts/check-page-text.php`, then run `php scripts/check-page-text.php --dry-run` on the server.
-      Expect "Skipped 5 written page(s) in countries not switched on yet (Australia: 5)". If the United Kingdom
-      appears among the skipped, stop: it would mean the UK row's `is_active` is not 1.
+- [x] `scripts/check-page-text.php` deployed and confirmed on the server (12 November). Its dry run read
+      "20 written page(s); 2 need checking" and "Skipped 5 written page(s) ... (Australia: 5)", and the
+      UK row's `is_active` is 1 (`GB 1`, `AU 0`). Tonight's 05:30 run checks only the two UK pages that were due.
 - [ ] A stricter check for hand-written worked examples. The writer is never told about typed
       numbers, because the draft check removes that note on purpose, and the Medicare levy draft
       copied the ATO's $76,000 example. Optional: do it if it happens again.
@@ -55,6 +64,9 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
 
 ### Launch
 
+- After launch, expect **Medicare Levy** to appear under "Overlapping subjects" on the review page at 100% against
+  Income Tax Rates, because the rates page shows the levy's only card. It is advice only, and the two pages have
+  different jobs.
 - [ ] About 15 to 19 pages written (optionally a deliberate AI check first: `check-page-text.php --include-hidden`), then set `is_active` to 1 on the `AU` row and start the drip
       (`per_week` 3), as in the order of work below.
 
@@ -321,3 +333,5 @@ Not in the launch set. Each needs its sources found first.
 | 12 Age Pension | CSV built and tested on 9 November 2026: `data/imports/au-batch-03.csv` (import after the batch before it, and after migration 026). The three rates were read live with `scripts/read-source.php` on the site owner's own machine: $1,237.70 for a single person, $933.00 each for a couple and $1,866.00 combined, from 20 September 2026. Services Australia's own notice of 8 September 2026 confirms the rises ($36.80 single, $55.60 couple combined), which give the previous values. The Age Pension age of 67 is on a second page that must be read live before import |
 | Page text transfer | `scripts/export-page-text.php` and `scripts/import-page-text.php` built and tested on 9 November 2026 (63 checks, across two databases standing in for the Mac and the server). The round trip is exact, byte for byte |
 | Server, 12 November 2026 | Figures for the five pages imported on the server (3, 10 and 4 created, no errors). The first run failed with a collation error (1267): the importer compared a bound value with the text `'published'`, in a statement I changed and in the original `updateSubjectStatus()`. Both now decide the date in PHP. `scripts/debug-sql.php` was added to show a failing statement. The text import is next |
+| Nightly AI check, 12 November 2026 | `scripts/check-page-text.php` now skips written pages in a country that is not switched on (19 checks, run against your real script with stand-ins for the files I had not seen), with `--include-hidden` to check them on purpose. Confirmed on the server: the 5 Australian pages are skipped and the two UK pages that were due are listed |
+| First overnight run, 13 November 2026 | All jobs `ok`. `check-sources.php` found 302 of 302 figures (17 more than the day before: the Australian ones) with 0 sources unavailable. `check-page-text.php` checked 2 UK pages and skipped 5 Australian ones. The 17 Australian values were unchanged |
