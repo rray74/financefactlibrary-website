@@ -10,7 +10,7 @@ then released by the drip publisher once Australia is launched.
 
 ## To do
 
-Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 12 November 2026 (later).
+Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 18 November 2026.
 
 ### Doing now (on the server)
 
@@ -48,13 +48,17 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
       numbers, because the draft check removes that note on purpose, and the Medicare levy draft
       copied the ATO's $76,000 example. Optional: do it if it happens again.
 
-### Next pages (14 of 19 still to build)
+### Next pages (10 of 19 still to build)
 
-- [ ] Next batch: super contribution caps (page 10) and the GST thresholds (page 4), both ATO pages the
-      fetcher can read.
+- [x] Super contribution caps (page 10), 16 November: five figures (`au-batch-04.csv`), text written, on the server.
+- [x] GST registration threshold (page 4), 16 November: five figures (`au-batch-05.csv`), text written, on the server.
+      The page covers registration only. The GST **rate** itself is not on it and is still to add if wanted.
+- [x] Super guarantee rate (page 9), 18 November: two figures (`au-batch-06.csv`), migration 027, text on the server.
+- [x] Preservation age (page 11), 18 November: six figures (`au-batch-07.csv`), migration 028, text on the server.
+- [x] Nine Australian pages now have text on the server, all hidden drafts (18 November). Page-text file:
+      `data/imports/page-text-AU-2026-11-18.csv`.
 - [ ] Sources still to find, then read live: study loan thresholds (page 6), a Financial Claims Scheme
-      page (8), the super guarantee rate table (9), the GST rate (4), the JobSeeker rates page (18) and
-      the preservation age table (11).
+      page (8), and the JobSeeker rates page (18).
 - [ ] Capital gains tax discount (page 5): read the ATO's Federal Budget alert first.
 - [ ] First Home Guarantee (page 13): Housing Australia's price caps page, which the fetcher can read.
       It is the state-layer test.
@@ -93,6 +97,11 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
   `grep '^## '` undercounts by one per page. Count with a script, not grep.
 - Short source pages make close-to-source sentences easy to write by accident. Score the text with the checker's own function before pasting.
 - A short page is better than a padded one: the writer may only state what the cited pages say.
+- Check which terminal you are in before pasting a command. The Mac prompt is `richardray@Richards-iMac` and the server prompt is `[u888389356@uk-fast-web1304 app]$`. Output pasted into the wrong one changes nothing, but a command run on the wrong machine tells you nothing.
+- The server deploys on every push, so `git pull` there usually says "Already up to date" and the new files and migrations are already in place.
+- Before pushing a page-text export, check its word counts against the pages. A page's text can be saved into the wrong page in the admin (GST showed 320 words instead of 504). Restore with `import-page-text.php --overwrite` from an earlier export.
+- `export-page-text.php --out=` is relative to the folder it is run from. Use `--out=data/imports/<name>.csv`.
+- Page text can be written outside the admin: build a one-row page-text CSV and use `import-page-text.php`. It fills only empty fields and does not mark the page as reviewed.
 - Never compare a bound value with a text literal in SQL. It failed on the live server's connection settings
   (error 1267) although it passed every local test. `scripts/debug-sql.php` shows the statement that failed.
 
@@ -198,11 +207,11 @@ The importer also refuses a clash, but checking first avoids a failed file.
 
 ## The source allowlist
 
-Fifteen official pages are in the allowlist. Migration 023 added sixteen, 024
+Seventeen official pages are in the allowlist. Migration 023 added sixteen, 024
 corrected three ATO addresses that redirect (tax rates, the CGT discount and the
 contributions caps) and removed two that were only seen in a search result, 025
 swapped two pages the site cannot read for two it can (see below), and 026 added
-Services Australia's Age Pension eligibility page, which states the Age Pension age.
+Services Australia's Age Pension eligibility page, which states the Age Pension age, 027 added the ATO super guarantee page (rate and maximum contribution base) and 028 added the ATO payments from super page (the preservation age table).
 
 ### Can the site read them?
 
@@ -229,10 +238,8 @@ These pages are needed by the plan but are not in the allowlist yet:
 |---|---|
 | Page 6 | The ATO's address for study and training loan repayment thresholds. The ATO's short link `ato.gov.au/ThresholdsAndRates` showed the right page, but the full address was not seen |
 | Page 8 | A specific page on fcs.gov.au stating the protected amount |
-| Page 9 | The part of the ATO key super rates page that holds the guarantee rate table |
-| Page 4 | The ATO's GST overview, for the rate itself |
+| Page 4 | The ATO's GST overview, for the rate itself (the registration page is already in the allowlist) |
 | Page 18 | Services Australia's JobSeeker Payment rates page |
-| Page 11 | The ATO's address for the preservation age table |
 
 Each of these needs the page fetched and checked before its figure is entered.
 `check-sources.php` can only verify a figure against a page that is in the table.
@@ -247,7 +254,7 @@ Each of these needs the page fetched and checked before its figure is entered.
    `subject_status` set to `draft`, write its explanation, and approve it. Add the
    "Reference page" section to `au.md` once it is approved. **Page 1 approved on 5 November 2026.**
 4. Then the other pages in the order above, in batches of about four. Page 13 goes
-   in the first batch so the state layer is tested early. **In progress: 5 of 19 built.**
+   in the first batch so the state layer is tested early. **In progress: 9 of 19 built (18 November).** The GST page was built as `gst-registration-threshold` (subcategory GST, under Tax) and the super pages sit in a `superannuation` subcategory, so the slugs and subcategories above differ a little from the plan.
 5. Launch at 19 written pages by setting `is_active` to 1 on the `AU` row, then
    start the drip: `php scripts/run-jobs.php --enqueue=drip_country --payload='{"country":"AU","per_week":3}' --unique=drip_country:AU`
 
@@ -335,3 +342,5 @@ Not in the launch set. Each needs its sources found first.
 | Server, 12 November 2026 | Figures for the five pages imported on the server (3, 10 and 4 created, no errors). The first run failed with a collation error (1267): the importer compared a bound value with the text `'published'`, in a statement I changed and in the original `updateSubjectStatus()`. Both now decide the date in PHP. `scripts/debug-sql.php` was added to show a failing statement. The text import is next |
 | Nightly AI check, 12 November 2026 | `scripts/check-page-text.php` now skips written pages in a country that is not switched on (19 checks, run against your real script with stand-ins for the files I had not seen), with `--include-hidden` to check them on purpose. Confirmed on the server: the 5 Australian pages are skipped and the two UK pages that were due are listed |
 | First overnight run, 13 November 2026 | All jobs `ok`. `check-sources.php` found 302 of 302 figures (17 more than the day before: the Australian ones) with 0 sources unavailable. `check-page-text.php` checked 2 UK pages and skipped 5 Australian ones. The 17 Australian values were unchanged |
+| Super contribution caps and GST registration threshold, 16 November 2026 | `au-batch-04.csv` (five figures: concessional cap $32,500, previous $30,000, non-concessional cap $130,000, previous $120,000, carry-forward balance limit $500,000, carry-forward years 5, general transfer balance cap $2,000,000, previous $1,900,000) and `au-batch-05.csv` (GST threshold $75,000, non-profit $150,000, 21 days to register, 12 months minimum registration, 4 years backdating). All read live with `scripts/read-source.php`. Intro and meta text sit on a final row after the figures, because the importer checks placeholders row by row. Page text written and on the server |
+| Super guarantee rate and Preservation age, 18 November 2026 | Migrations 027 and 028 add the two ATO pages to the allowlist. `au-batch-06.csv`: guarantee rate 12% (previous 11.5%, from 1 July 2025) and maximum contribution base $270,830 for 2026–27 (the ATO's formula checks out against the concessional cap). `au-batch-07.csv`: six preservation ages, 55 to 60, by date of birth. The explanations were written directly and scored against the ATO text with the close-copy checker (0 close copies), then loaded through one-row page-text files and a combined export. Nine pages have text on the server |
