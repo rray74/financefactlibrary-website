@@ -1,0 +1,29 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,work-and-benefits,government-payments,jobseeker-payment,JobSeeker Payment,"JobSeeker Payment is paid every two weeks, and the most you can get depends on your circumstances. A single person with no children can get up to {fact:au_jobseeker_single}.","## Who can get JobSeeker Payment
+
+JobSeeker Payment is income support for people who are out of work or temporarily unable to work. To qualify you must be aged from {fact:au_jobseeker_min_age} up to Age Pension age, which is {fact:au_age_pension_age}, meet the residence rules and pass the income and assets tests. You must also either be without a job and looking for one, or be unwell or injured so that you cannot do your normal work or study for a short period.
+
+You do not have to be out of work completely. People in part-time or casual work, people who have been stood down and people whose hours have been cut can qualify too.
+
+## How much you can get
+
+Services Australia pays JobSeeker every two weeks, and the amount depends on your circumstances. These are the maximums:
+
+- Single, with no children: {fact:au_jobseeker_single}
+- Single with one or more dependent children: {fact:au_jobseeker_single_child}
+- Partnered: {fact:au_jobseeker_partnered}
+- Single principal carer with an exemption from mutual obligation requirements, for reasons such as foster caring or home schooling: {fact:au_jobseeker_carer_exempt}
+
+The rate for a single person with children also applies in a couple of other situations, which Services Australia lists in its rates table. These are maximums. How much you are paid depends on the income that you and your partner have received in the past fortnight, and the income and assets tests can reduce it.
+
+## Rates are updated twice a year
+
+Services Australia updates the rates on 20 March and 20 September each year, so the amounts above change at those dates. Its own table is a guide only, and the payment finder gives an estimate for your situation.
+
+## Children and child support
+
+While you have a dependent child, the higher single rate applies, and in some cases it can continue as the child gets older. You need to tell Services Australia about any change in your circumstances. JobSeeker can also have an effect on child support, whether you pay it or receive it.
+
+## Tax on the payment
+
+JobSeeker Payment is a taxable Centrelink payment. If you ask Services Australia to, tax can be taken out of each payment, which may lower what you owe when you lodge your return.",JobSeeker Payment Rates Australia,"JobSeeker Payment maximum rates in Australia: {fact:au_jobseeker_single} for a single person with no children and {fact:au_jobseeker_partnered} for a partnered person, every fortnight.",,
