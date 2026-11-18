@@ -1,0 +1,22 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,super-and-retirement,superannuation,super-guarantee-rate,Super Guarantee Rate,"Employers must pay super of at least {fact:au_super_guarantee_rate} of qualifying earnings, up to a maximum contribution base of {fact:au_super_max_contribution_base} a year in {tax_year}.","## The minimum is a percentage of each employee's earnings
+
+The super guarantee is the least an employer must pay into an eligible employee's super. The rate is {fact:au_super_guarantee_rate}. It reached this level on 1 July 2025 after rising in steps over several years, and the ATO's table shows it staying there in the years after.
+
+From 1 July 2026 the percentage is applied to an employee's qualifying earnings. For quarters up to the end of June 2026 it was applied to ordinary time earnings.
+
+## Payday Super changes when employers pay
+
+Payday Super starts on 1 July 2026 and ties each super payment to the day an employee is paid. Before then, contributions for each employee were due at least once a quarter, so payments now follow every pay run instead of a quarterly cycle.
+
+## There is a ceiling on the earnings it applies to
+
+The maximum contribution base limits the earnings on which an employer has to pay the minimum. For {tax_year} it is {fact:au_super_max_contribution_base} a year. Employers do not have to pay super guarantee on earnings above it. Once an employee's qualifying earnings reach the base in a financial year, the employer can stop paying the minimum for that employee until the next financial year starts.
+
+## The base is worked out from the concessional contributions cap
+
+The ATO calculates the base from the concessional contributions cap and the super guarantee percentage, then rounds the result down to a whole multiple of ten dollars. The base also rises over time with average weekly ordinary time earnings, a measure produced by the Australian Bureau of Statistics.
+
+## Earlier years used a quarterly base
+
+For quarters up to the end of June 2026, the base was an amount of earnings per quarter, with a matching maximum super guarantee payment for each quarter. Because the basis changed, figures for earlier years are not directly comparable with the annual base.",Super Guarantee Rate Australia,"Australia's super guarantee rate is {fact:au_super_guarantee_rate} of qualifying earnings, with a maximum contribution base of {fact:au_super_max_contribution_base} for {tax_year}. Paid every payday.",,
