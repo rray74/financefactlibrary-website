@@ -1,0 +1,27 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,super-and-retirement,superannuation,preservation-age,Preservation Age,"The age you must reach before you can access your super, set by your date of birth. For anyone born from 1 July 1964 it is {fact:au_preservation_age_from_1964}.","## What preservation age means
+
+Preservation age is the age you generally have to reach before you can get at your super. Reaching it is not enough on its own, because you must also meet a condition of release. The age is not the same for everyone: it depends on when you were born.
+
+## Which age applies to you
+
+The ATO sets the age by date of birth, using bands that run from 1 July to 30 June:
+
+- Born before 1 July 1960: {fact:au_preservation_age_pre_1960}
+- Born from 1 July 1960 to 30 June 1961: {fact:au_preservation_age_1960_61}
+- Born from 1 July 1961 to 30 June 1962: {fact:au_preservation_age_1961_62}
+- Born from 1 July 1962 to 30 June 1963: {fact:au_preservation_age_1962_63}
+- Born from 1 July 1963 to 30 June 1964: {fact:au_preservation_age_1963_64}
+- Born from 1 July 1964: {fact:au_preservation_age_from_1964}
+
+The age goes up by a year for each band until it reaches {fact:au_preservation_age_from_1964} for anyone born from 1 July 1964. Because the bands follow the financial year, a birthday in the first half of the calendar year and one in the second half can fall into different bands.
+
+## Why it also matters for tax on a lump sum
+
+The tax on a super lump sum depends on your age when you are paid, and preservation age is one of the cut-off points. The simplest case is the taxable component that has already been taxed in the fund:
+
+- Below your preservation age, the whole amount is taxed.
+- From your preservation age until you turn 60, an amount up to the low rate cap is not taxed, and anything above the cap is taxed at a lower rate than before.
+- From 60, the amount is treated as non-assessable, non-exempt income.
+
+The low rate cap covers your whole lifetime, so each amount you have already used reduces what is left. The ATO's lump sum table sets out other kinds of payment and component separately.",Preservation Age Australia,"Australia's preservation age by date of birth: {fact:au_preservation_age_pre_1960} if born before 1 July 1960, rising to {fact:au_preservation_age_from_1964} from 1 July 1964. See the full table.",,
