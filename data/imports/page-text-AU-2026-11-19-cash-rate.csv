@@ -1,0 +1,22 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,savings-and-investments,savings-and-interest-rates,cash-rate-target,Cash Rate Target,"The cash rate target is the Reserve Bank's main policy rate, set at {fact:au_cash_rate_target}. It influences mortgage and deposit rates across the economy.","## What the cash rate is
+
+Banks lend to each other overnight so that each has enough cash on hand, and the price of those loans is the cash rate. It matters well beyond banking, because other interest rates, including those on mortgages and savings, move with it.
+
+The Reserve Bank sets a target for it, and that target is {fact:au_cash_rate_target}.
+
+## How the Reserve Bank steers it
+
+The Reserve Bank pays banks slightly less than the target on money they leave with it overnight, and charges slightly more on overnight loans to them. Market rates stay inside that band. It can also step into the money markets to add or remove cash, which nudges the cash rate towards the target.
+
+## Who makes the decision
+
+A Monetary Policy Board decides each time whether the target moves or stays put. The Governor and Deputy Governor sit on it, alongside the Treasury's most senior official and six further members whom the Treasurer appoints. It meets {fact:au_cash_rate_meetings}, following the release of important figures on inflation and activity. The outcome goes up on the Reserve Bank's website once the meeting ends.
+
+## What the Board is aiming for
+
+The Board's aims are to hold consumer price inflation between {fact:au_inflation_target_low} and {fact:au_inflation_target_high} and to support full employment that lasts. It weighs conditions at home and abroad, and the outlook for growth and prices, before it decides.
+
+## Why it matters to you
+
+Lending and deposit rates follow the cash rate closely, and they feed into spending, jobs and prices. A change therefore reaches every Australian, not only people with a mortgage.",Cash Rate Target Australia,"The Reserve Bank of Australia's cash rate target is {fact:au_cash_rate_target}. See what the cash rate is, who sets it and how it affects mortgage and deposit rates.",,
