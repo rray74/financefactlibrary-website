@@ -1,0 +1,24 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,work-and-benefits,government-payments,parental-leave-pay,Parental Leave Pay,"Parental Leave Pay is paid at {fact:au_ppl_daily_rate} a day before tax, with {fact:au_ppl_days} available to a family for a child born or adopted from 1 July 2026.","## What the payment is
+
+Parental Leave Pay is a taxable payment for parents of a new or newly adopted child, and it is based on the national minimum wage. Your employer often delivers it to you, and sometimes Services Australia pays you directly. With a multiple birth, such as twins, it is paid for only one child.
+
+## How much it pays
+
+The payment is worked out for each day, and the daily amount before tax is {fact:au_ppl_daily_rate}. For a five day week that comes to {fact:au_ppl_weekly_rate}. Expect the rate to be revised at the start of each financial year.
+
+The rate depends on the financial year in which you take your leave, and not on when your child was born or adopted. If your days fall in two financial years, you can be paid at two different rates.
+
+## How many days a family can get
+
+The number of days depends on the child's date of birth or adoption, and it has gone up in steps on 1 July. For a child born or adopted from 1 July 2026, a family can get {fact:au_ppl_days}. If you claim before the birth and the child arrives before that date, your balance starts at the earlier, lower number. Once Services Australia has proof of the birth or adoption, the extra days are added without a new claim.
+
+## Sharing days between parents
+
+A single parent gets all of the days, and can approve sharing them with another parent. With a partner, part of the entitlement is set aside for them, and the two of you agree how the remainder is used. For a child born or adopted from 1 July 2026, {fact:au_ppl_reserved_days} are reserved for the partner.
+
+There is also a cap on how many days can be taken at the same time. For a child born or adopted from 1 July 2025 it is {fact:au_ppl_concurrent_days}, and some exemptions apply.
+
+## Super on top of the payment
+
+Where the child was born or adopted on or after 1 July 2025, the ATO adds a contribution to your super, known as the Paid Parental Leave Superannuation Contribution. It is based on the super guarantee rate, which is {fact:au_super_guarantee_rate}. The ATO calculates it and pays it into your super fund after the financial year ends, so there is nothing extra to claim.",Parental Leave Pay Australia,"Parental Leave Pay in Australia: {fact:au_ppl_daily_rate} a day before tax, up to {fact:au_ppl_days} for a family, with {fact:au_ppl_reserved_days} reserved for a partner. See how super is added.",,

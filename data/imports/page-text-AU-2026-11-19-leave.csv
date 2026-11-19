@@ -1,0 +1,29 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,work-and-benefits,pay-and-leave,annual-leave-australia,Annual Leave,"Employees covered by the National Employment Standards get {fact:au_annual_leave_weeks} of paid annual leave a year, and some shiftworkers get {fact:au_annual_leave_shift_extra} more.","## What the National Employment Standards give you
+
+Paid annual leave is one of the minimum entitlements in the National Employment Standards. The minimum is {fact:au_annual_leave_weeks} of paid leave each year, and some shiftworkers receive {fact:au_annual_leave_shift_extra} more.
+
+## Who it applies to
+
+The standards apply to employees in the national workplace relations system, which takes in most Australian employers and their staff, with a few exclusions. Casual employees get only some of the entitlements, and annual leave is not one the Fair Work Ombudsman lists for them.
+
+## Awards and agreements can add to it
+
+An award, enterprise agreement or employment contract cannot give you less than the standards, and a term that does has no effect. These documents can deal with practical matters, such as how annual leave is cashed out and taken, and they can offer more favourable terms than the minimum.
+
+For the detail on how leave builds up and how it is taken, the Fair Work Ombudsman has a separate annual leave fact sheet.",Annual Leave Australia,"How much paid annual leave employees get in Australia under the National Employment Standards: {fact:au_annual_leave_weeks} a year, plus {fact:au_annual_leave_shift_extra} more for some shiftworkers.",,
+AU,work-and-benefits,pay-and-leave,personal-and-carers-leave,Personal and Carer's Leave,"Employees get {fact:au_sick_leave_days} of paid sick and carer's leave under the National Employment Standards, plus unpaid carer's leave, compassionate leave and paid family and domestic violence leave.","## Paid leave for sickness and caring
+
+An employee covered by the National Employment Standards gets {fact:au_sick_leave_days} of paid sick and carer's leave, reduced in proportion for part-time staff. Paid sick and carer's leave is not on the Fair Work Ombudsman's list of entitlements that reach casual employees.
+
+## Unpaid carer's leave and compassionate leave
+
+Employees can take up to {fact:au_unpaid_carers_days} of unpaid carer's leave when it is needed, and up to {fact:au_compassionate_days} of compassionate leave when it is needed. Casual employees can take both, unpaid, for each occasion.
+
+## Family and domestic violence leave
+
+Paid family and domestic violence leave is a yearly entitlement of {fact:au_fdv_leave_days}. Casual employees have it too, measured across a year.
+
+## Awards and agreements can add to it
+
+An award, agreement or contract has to meet the standards, and any term that falls short has no effect. These documents may deal with cashing out paid sick and carer's leave, and may offer extra sick and carer's leave or annual leave if the employee gives up the same value in pay.",Personal and Carer's Leave Australia,"Paid sick and carer's leave in Australia: {fact:au_sick_leave_days}, plus unpaid carer's leave, compassionate leave and {fact:au_fdv_leave_days} of paid family and domestic violence leave.",,
