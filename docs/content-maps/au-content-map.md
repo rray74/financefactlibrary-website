@@ -10,7 +10,7 @@ then released by the drip publisher once Australia is launched.
 
 ## To do
 
-Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 18 November 2026.
+Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 19 November 2026.
 
 ### Doing now (on the server)
 
@@ -48,17 +48,24 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
       numbers, because the draft check removes that note on purpose, and the Medicare levy draft
       copied the ATO's $76,000 example. Optional: do it if it happens again.
 
-### Next pages (10 of 19 still to build)
+### Next pages (7 of 19 still to build)
 
 - [x] Super contribution caps (page 10), 16 November: five figures (`au-batch-04.csv`), text written, on the server.
 - [x] GST registration threshold (page 4), 16 November: five figures (`au-batch-05.csv`), text written, on the server.
       The page covers registration only. The GST **rate** itself is not on it and is still to add if wanted.
 - [x] Super guarantee rate (page 9), 18 November: two figures (`au-batch-06.csv`), migration 027, text on the server.
 - [x] Preservation age (page 11), 18 November: six figures (`au-batch-07.csv`), migration 028, text on the server.
-- [x] Nine Australian pages now have text on the server, all hidden drafts (18 November). Page-text file:
-      `data/imports/page-text-AU-2026-11-18.csv`.
-- [ ] Sources still to find, then read live: study loan thresholds (page 6), a Financial Claims Scheme
-      page (8), and the JobSeeker rates page (18).
+- [x] JobSeeker Payment (page 18), 18 November: five figures and a shared Age Pension age card (`au-batch-08.csv`),
+      migration 029, text on the server.
+- [x] Annual leave (page 16) and Personal and carer's leave (page 17), 19 November: six figures (`au-batch-09.csv`)
+      from the Fair Work Ombudsman NES fact sheet, short pages, text on the server.
+- [x] Twelve Australian pages now have text on the server, all hidden drafts (19 November). Page-text file:
+      `data/imports/page-text-AU-2026-11-19.csv`.
+- [ ] Sources still to find, then read live: study loan thresholds (page 6) and a Financial Claims Scheme
+      page (8).
+- [ ] Pages whose sources are already allowlisted and readable: Cash rate target (7, RBA), First Home Guarantee
+      (13, Housing Australia price caps), Parental Leave Pay (19, Services Australia), and the First Home Super
+      Saver Scheme (14, ATO).
 - [ ] Capital gains tax discount (page 5): read the ATO's Federal Budget alert first.
 - [ ] First Home Guarantee (page 13): Housing Australia's price caps page, which the fetcher can read.
       It is the state-layer test.
@@ -101,6 +108,7 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
 - The server deploys on every push, so `git pull` there usually says "Already up to date" and the new files and migrations are already in place.
 - Before pushing a page-text export, check its word counts against the pages. A page's text can be saved into the wrong page in the admin (GST showed 320 words instead of 504). Restore with `import-page-text.php --overwrite` from an earlier export.
 - `export-page-text.php --out=` is relative to the folder it is run from. Use `--out=data/imports/<name>.csv`.
+- Rows for another page's card use `link_type` `also` and need the owner's figure imported first (the Age Pension age is on the JobSeeker page this way).
 - Page text can be written outside the admin: build a one-row page-text CSV and use `import-page-text.php`. It fills only empty fields and does not mark the page as reviewed.
 - Never compare a bound value with a text literal in SQL. It failed on the live server's connection settings
   (error 1267) although it passed every local test. `scripts/debug-sql.php` shows the statement that failed.
@@ -207,11 +215,11 @@ The importer also refuses a clash, but checking first avoids a failed file.
 
 ## The source allowlist
 
-Seventeen official pages are in the allowlist. Migration 023 added sixteen, 024
+Nineteen official pages are in the allowlist. Migration 023 added sixteen, 024
 corrected three ATO addresses that redirect (tax rates, the CGT discount and the
 contributions caps) and removed two that were only seen in a search result, 025
 swapped two pages the site cannot read for two it can (see below), and 026 added
-Services Australia's Age Pension eligibility page, which states the Age Pension age, 027 added the ATO super guarantee page (rate and maximum contribution base) and 028 added the ATO payments from super page (the preservation age table).
+Services Australia's Age Pension eligibility page, which states the Age Pension age, 027 added the ATO super guarantee page (rate and maximum contribution base) 028 added the ATO payments from super page (the preservation age table) and 029 added the two Services Australia JobSeeker pages (rates and who can get it).
 
 ### Can the site read them?
 
@@ -254,7 +262,7 @@ Each of these needs the page fetched and checked before its figure is entered.
    `subject_status` set to `draft`, write its explanation, and approve it. Add the
    "Reference page" section to `au.md` once it is approved. **Page 1 approved on 5 November 2026.**
 4. Then the other pages in the order above, in batches of about four. Page 13 goes
-   in the first batch so the state layer is tested early. **In progress: 9 of 19 built (18 November).** The GST page was built as `gst-registration-threshold` (subcategory GST, under Tax) and the super pages sit in a `superannuation` subcategory, so the slugs and subcategories above differ a little from the plan.
+   in the first batch so the state layer is tested early. **In progress: 12 of 19 built (19 November).** The GST page was built as `gst-registration-threshold` (subcategory GST, under Tax) and the super pages sit in a `superannuation` subcategory, so the slugs and subcategories above differ a little from the plan.
 5. Launch at 19 written pages by setting `is_active` to 1 on the `AU` row, then
    start the drip: `php scripts/run-jobs.php --enqueue=drip_country --payload='{"country":"AU","per_week":3}' --unique=drip_country:AU`
 
@@ -344,3 +352,5 @@ Not in the launch set. Each needs its sources found first.
 | First overnight run, 13 November 2026 | All jobs `ok`. `check-sources.php` found 302 of 302 figures (17 more than the day before: the Australian ones) with 0 sources unavailable. `check-page-text.php` checked 2 UK pages and skipped 5 Australian ones. The 17 Australian values were unchanged |
 | Super contribution caps and GST registration threshold, 16 November 2026 | `au-batch-04.csv` (five figures: concessional cap $32,500, previous $30,000, non-concessional cap $130,000, previous $120,000, carry-forward balance limit $500,000, carry-forward years 5, general transfer balance cap $2,000,000, previous $1,900,000) and `au-batch-05.csv` (GST threshold $75,000, non-profit $150,000, 21 days to register, 12 months minimum registration, 4 years backdating). All read live with `scripts/read-source.php`. Intro and meta text sit on a final row after the figures, because the importer checks placeholders row by row. Page text written and on the server |
 | Super guarantee rate and Preservation age, 18 November 2026 | Migrations 027 and 028 add the two ATO pages to the allowlist. `au-batch-06.csv`: guarantee rate 12% (previous 11.5%, from 1 July 2025) and maximum contribution base $270,830 for 2026–27 (the ATO's formula checks out against the concessional cap). `au-batch-07.csv`: six preservation ages, 55 to 60, by date of birth. The explanations were written directly and scored against the ATO text with the close-copy checker (0 close copies), then loaded through one-row page-text files and a combined export. Nine pages have text on the server |
+| JobSeeker Payment, 18 November 2026 | Migration 029 adds the two Services Australia pages. `au-batch-08.csv`: maximum fortnightly rates from 20 September 2026 (single $824.90, single with dependent children $883.30, partnered $755.10, single principal carer with an exemption $1,068.20), minimum age 22, and the Age Pension age card shared from page 12. No previous values: the rates page does not state them. Text written and on the server |
+| Annual leave and Personal and carer's leave, 19 November 2026 | `au-batch-09.csv`, all from the Fair Work Ombudsman NES fact sheet: 4 weeks annual leave plus 1 extra week for some shiftworkers, 10 days paid sick and carer's leave, 2 days unpaid carer's leave, 2 days compassionate leave, 10 days paid family and domestic violence leave. Short pages (168 and 176 words) because the source is short. Text and figures on the server |
