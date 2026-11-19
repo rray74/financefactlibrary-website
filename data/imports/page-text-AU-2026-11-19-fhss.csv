@@ -1,0 +1,24 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,mortgages-and-property,first-home-buyers,first-home-super-saver-scheme,First Home Super Saver Scheme,"The First Home Super Saver Scheme lets you release voluntary super contributions, counting up to {fact:au_fhss_annual_limit} a year and {fact:au_fhss_total_limit} in total.","## What you can release
+
+The First Home Super Saver Scheme lets you take out voluntary contributions you have made to your super, together with the earnings the ATO deems to be linked to them. The total you can take out is called your FHSS maximum release amount. Both concessional contributions, such as salary sacrifice, and non-concessional contributions can be counted.
+
+## Two limits on the contributions that count
+
+Only some of what you pay in is eligible. The scheme caps the contributions counted in any single financial year at {fact:au_fhss_annual_limit}, and the total counted across all years at {fact:au_fhss_total_limit}. The limits cover contributions made from 1 July 2017 onwards.
+
+To work out how much of each limit you have used, count every voluntary contribution at its full amount, whatever its type. Anything above the annual limit is simply not counted towards your release amount.
+
+## How much of each contribution is released
+
+Your non-concessional contributions count at {fact:au_fhss_nonconcessional_share}. Your concessional contributions count at {fact:au_fhss_concessional_share}, because they were taxed on the way into the fund. The earnings added on top are a notional amount worked out at the shortfall interest charge rate, not what your fund actually earned.
+
+## The order contributions are counted in
+
+Contributions are counted oldest first. An earlier financial year comes ahead of a later one, and inside a year the sequence follows the dates you paid. This is called the first-in first-out rule, and it can matter when a year's limit is reached part way through.
+
+If a concessional and a non-concessional contribution arrive together, for example in the same payroll run, the non-concessional one is counted first. That raises your release amount, because the full non-concessional amount counts while only part of the concessional amount does.
+
+## When to ask for a determination
+
+Ask for the determination before you take ownership of any real property, vacant land included. In most purchases ownership passes once the contract settles, so the request needs to be in beforehand.",First Home Super Saver Scheme,The First Home Super Saver Scheme in Australia: up to {fact:au_fhss_annual_limit} a year and {fact:au_fhss_total_limit} in total of voluntary contributions can count towards the release.,,
