@@ -11,7 +11,7 @@ The threshold applies to your income across an **income year**, the period from 
 
 ## With more than one payer, the choice depends on your total income
 
-If you have more than one payer, how much tax is withheld depends on which payers you claim the threshold from. If you are certain your total income from all payers will be {fact:au_tax_free_threshold} or less, you can choose to claim it from each payer. Otherwise, claiming it from more than one payer can leave too little tax withheld, and you may receive a tax bill when you lodge.","Tax-Free Threshold {tax_year}: {fact:au_tax_free_threshold}","Australian residents can earn {fact:au_tax_free_threshold} a year before income tax applies. How to claim it from an employer and how part-year residents are treated.","2026-11-05 22:43:30","2026-11-19 22:17:10"
+If you have more than one payer, how much tax is withheld depends on which payers you claim the threshold from. If you are certain your total income from all payers will be {fact:au_tax_free_threshold} or less, you can choose to claim it from each payer. Otherwise, claiming it from more than one payer can leave too little tax withheld, and you may receive a tax bill when you lodge.","Tax-Free Threshold {tax_year}: {fact:au_tax_free_threshold}","Australian residents can earn {fact:au_tax_free_threshold} a year before income tax applies. How to claim it from an employer and how part-year residents are treated.","2026-11-05 22:43:30","2026-11-19 22:21:57"
 AU,tax,income-tax,medicare-levy,"Medicare Levy","What the Medicare levy is and who pays it, how reductions and exemptions work, and how the levy differs from the separate Medicare levy surcharge.","## The levy is a percentage of your taxable income
 
 Medicare, the public health system, is partly paid for by the Medicare levy. You pay it on top of income tax, at {fact:au_medicare_levy_rate} of your **taxable income**, which is your assessable income minus any allowable deductions.
@@ -24,7 +24,7 @@ Depending on your income, your spouse's income and your circumstances, you may p
 
 ## The Medicare levy surcharge is a different charge
 
-On top of the levy, some people owe a surcharge of their own, called the **Medicare levy surcharge** (MLS). Whether you owe it depends on your personal circumstances.","Medicare Levy {tax_year}: {fact:au_medicare_levy_rate}","The Medicare levy is {fact:au_medicare_levy_rate} of taxable income, paid on top of income tax. Who pays it, who can get a reduction or exemption and how the surcharge differs.","2026-11-09 22:25:54","2026-11-19 22:17:10"
+On top of the levy, some people owe a surcharge of their own, called the **Medicare levy surcharge** (MLS). Whether you owe it depends on your personal circumstances.","Medicare Levy {tax_year}: {fact:au_medicare_levy_rate}","The Medicare levy is {fact:au_medicare_levy_rate} of taxable income, paid on top of income tax. Who pays it, who can get a reduction or exemption and how the surcharge differs.","2026-11-09 22:25:54","2026-11-19 22:21:57"
 AU,tax,income-tax,income-tax-rates-australia,"Income Tax Rates","The income tax rates for Australian residents, the income thresholds where each rate starts, and what the rates leave out, including the Medicare levy.","## Each rate applies only to the income inside its band
 
 The ATO sets out each band as an amount of tax plus a number of cents for every dollar above the band's starting point. A rate therefore applies only to the part of your **taxable income** that sits inside its band. Crossing into a higher band does not raise the tax on the income below it. The bands are measured on taxable income, so allowable deductions come off before any rate is applied.
@@ -35,7 +35,7 @@ Someone who was a tax resident all year and gets the whole {fact:au_tax_free_thr
 
 ## The Medicare levy is charged on top of these rates
 
-Both the Medicare levy ({fact:au_medicare_levy_rate} of taxable income) and the separate Medicare levy surcharge are charged in addition to the tax these rates produce. The [Medicare levy](/au/tax/income-tax/medicare-levy/) page covers the levy and how it differs from the surcharge.","Australian Income Tax Rates {tax_year}","Australian resident income tax rates for {tax_year}, from {fact:au_tax_rate_band_1} to {fact:au_tax_rate_top}, with the taxable income where each rate starts and what the rates leave out.","2026-11-11 21:57:39","2026-11-19 22:17:10"
+Both the Medicare levy ({fact:au_medicare_levy_rate} of taxable income) and the separate Medicare levy surcharge are charged in addition to the tax these rates produce. The [Medicare levy](/au/tax/income-tax/medicare-levy/) page covers the levy and how it differs from the surcharge.","Australian Income Tax Rates {tax_year}","Australian resident income tax rates for {tax_year}, from {fact:au_tax_rate_band_1} to {fact:au_tax_rate_top}, with the taxable income where each rate starts and what the rates leave out.","2026-11-11 21:57:39","2026-11-19 22:21:57"
 AU,work-and-benefits,pay-and-leave,minimum-wage-australia,"Minimum Wage","The National Minimum Wage for employees who are not covered by an award or agreement, what it is per hour and per week, and when each increase starts.","## The National Minimum Wage applies when no award or agreement does
 
 Awards decide the minimum wage for most employees, though every employee in Australia is entitled to one. The National Minimum Wage, {fact:au_min_wage_hourly} an hour or {fact:au_min_wage_weekly} a week, is the rate for employees who are covered by neither an award nor a registered agreement. Its legal basis is the Fair Work Act 2009.
@@ -46,7 +46,7 @@ Where an award or registered agreement covers an employee, the pay it sets appli
 
 ## The rate is reviewed each year and changes usually start in July
 
-Every year the Fair Work Commission carries out an annual wage review of the national rate and of award rates. Any change usually takes effect with the first full pay period that begins from the start of July.","Australian Minimum Wage {tax_year}: {fact:au_min_wage_hourly}","The National Minimum Wage is {fact:au_min_wage_hourly} an hour or {fact:au_min_wage_weekly} a week for a full-time employee. Who it covers and when each yearly increase takes effect.","2026-11-09 22:33:09","2026-11-19 22:17:10"
+Every year the Fair Work Commission carries out an annual wage review of the national rate and of award rates. Any change usually takes effect with the first full pay period that begins from the start of July.","Australian Minimum Wage {tax_year}: {fact:au_min_wage_hourly}","The National Minimum Wage is {fact:au_min_wage_hourly} an hour or {fact:au_min_wage_weekly} a week for a full-time employee. Who it covers and when each yearly increase takes effect.","2026-11-09 22:33:09","2026-11-19 22:21:57"
 AU,super-and-retirement,retirement,age-pension,"Age Pension","How much Age Pension a single person or a couple can get, what the rate is made up of, who is eligible and how income and assets change the amount.","## The figures are maximum rates made up of three parts
 
 The cards show the most a person can be paid each fortnight, before tax. Each total adds together a basic rate, the **Pension Supplement** and the **Energy Supplement**. A couple living apart because of ill health is paid the single rate, not the couple rate.
@@ -65,7 +65,7 @@ People who were already on a part pension in September 2009 may be paid a transi
 
 ## Age Pension is taxable
 
-The payment is taxable, but no tax is deducted unless you ask for it, and asking can prevent a bill when you lodge your return.","Age Pension Rates: {fact:au_age_pension_single} a Fortnight","The maximum Age Pension is {fact:au_age_pension_single} a fortnight for a single person and {fact:au_age_pension_couple_each} each for a couple. How the rate is made up and who qualifies.","2026-11-11 21:53:05","2026-11-19 22:17:10"
+The payment is taxable, but no tax is deducted unless you ask for it, and asking can prevent a bill when you lodge your return.","Age Pension Rates: {fact:au_age_pension_single} a Fortnight","The maximum Age Pension is {fact:au_age_pension_single} a fortnight for a single person and {fact:au_age_pension_couple_each} each for a couple. How the rate is made up and who qualifies.","2026-11-11 21:53:05","2026-11-19 22:21:57"
 AU,super-and-retirement,superannuation,super-contribution-caps,"Super Contribution Caps","How much you can put into super each year at the concessional and non-concessional rates, which contributions count towards each cap, and what happens if you go over.","## Each cap counts what you put in across all your funds
 
 Which cap a contribution uses depends on its type. Employer payments, including salary sacrifice, and personal payments that you claim as a tax deduction are concessional. Personal payments that you don't claim, or can't claim, are non-concessional.
@@ -92,7 +92,7 @@ For excess non-concessional contributions, you can choose to have the excess rel
 
 ## The CGT cap is a separate lifetime limit
 
-Money from selling certain small business assets can be left out of the non-concessional cap, up to the capital gains tax (CGT) cap. It is a limit over your lifetime, not one that resets each year.","Super Contribution Caps {tax_year}","Super contribution caps: {fact:au_concessional_cap} concessional and {fact:au_non_concessional_cap} non-concessional. See carry-forward rules, balance limits and excess contributions.","2026-11-16 22:15:21","2026-11-19 22:17:10"
+Money from selling certain small business assets can be left out of the non-concessional cap, up to the capital gains tax (CGT) cap. It is a limit over your lifetime, not one that resets each year.","Super Contribution Caps {tax_year}","Super contribution caps: {fact:au_concessional_cap} concessional and {fact:au_non_concessional_cap} non-concessional. See carry-forward rules, balance limits and excess contributions.","2026-11-16 22:15:21","2026-11-19 22:21:57"
 AU,tax,gst,gst-registration-threshold,"GST Registration Threshold","A business must register for GST when its turnover reaches {fact:au_gst_threshold}, or {fact:au_gst_threshold_nonprofit} for a non-profit. Taxi and ride-sourcing drivers must always register.","## GST turnover is business income, not profit
 
 The threshold is tested against your GST turnover. That is your total business income rather than your profit, less a few amounts:
@@ -127,7 +127,7 @@ You can ask for your registration to be backdated, but no further than {fact:au_
 
 ## GST groups and branches
 
-Related entities can form a single GST group, and an entity may register a branch separately where that suits how it is managed and accounted for. If you belong to a group, the other members' turnover counts towards yours, while dealings between members are ignored.","GST Registration Threshold Australia","When a business must register for GST in Australia: the {fact:au_gst_threshold} turnover threshold, {fact:au_gst_threshold_nonprofit} for non-profits, and how long you have to register.","2026-11-16 22:30:57","2026-11-19 22:17:10"
+Related entities can form a single GST group, and an entity may register a branch separately where that suits how it is managed and accounted for. If you belong to a group, the other members' turnover counts towards yours, while dealings between members are ignored.","GST Registration Threshold Australia","When a business must register for GST in Australia: the {fact:au_gst_threshold} turnover threshold, {fact:au_gst_threshold_nonprofit} for non-profits, and how long you have to register.","2026-11-16 22:30:57","2026-11-19 22:21:57"
 AU,super-and-retirement,superannuation,super-guarantee-rate,"Super Guarantee Rate","Employers must pay super of at least {fact:au_super_guarantee_rate} of qualifying earnings, up to a maximum contribution base of {fact:au_super_max_contribution_base} a year in {tax_year}.","## The minimum is a percentage of each employee's earnings
 
 The super guarantee is the least an employer must pay into an eligible employee's super. The rate is {fact:au_super_guarantee_rate}. It reached this level on 1 July 2025 after rising in steps over several years, and the ATO's table shows it staying there in the years after.
@@ -148,7 +148,7 @@ The ATO calculates the base from the concessional contributions cap and the supe
 
 ## Earlier years used a quarterly base
 
-For quarters up to the end of June 2026, the base was an amount of earnings per quarter, with a matching maximum super guarantee payment for each quarter. Because the basis changed, figures for earlier years are not directly comparable with the annual base.","Super Guarantee Rate Australia","Australia's super guarantee rate is {fact:au_super_guarantee_rate} of qualifying earnings, with a maximum contribution base of {fact:au_super_max_contribution_base} for {tax_year}. Paid every payday.",,"2026-11-19 22:17:10"
+For quarters up to the end of June 2026, the base was an amount of earnings per quarter, with a matching maximum super guarantee payment for each quarter. Because the basis changed, figures for earlier years are not directly comparable with the annual base.","Super Guarantee Rate Australia","Australia's super guarantee rate is {fact:au_super_guarantee_rate} of qualifying earnings, with a maximum contribution base of {fact:au_super_max_contribution_base} for {tax_year}. Paid every payday.",,"2026-11-19 22:21:57"
 AU,super-and-retirement,superannuation,preservation-age,"Preservation Age","The age you must reach before you can access your super, set by your date of birth. For anyone born from 1 July 1964 it is {fact:au_preservation_age_from_1964}.","## What preservation age means
 
 Preservation age is the age you generally have to reach before you can get at your super. Reaching it is not enough on its own, because you must also meet a condition of release. The age is not the same for everyone: it depends on when you were born.
@@ -174,7 +174,7 @@ The tax on a super lump sum depends on your age when you are paid, and preservat
 - From your preservation age until you turn 60, an amount up to the low rate cap is not taxed, and anything above the cap is taxed at a lower rate than before.
 - From 60, the amount is treated as non-assessable, non-exempt income.
 
-The low rate cap covers your whole lifetime, so each amount you have already used reduces what is left. The ATO's lump sum table sets out other kinds of payment and component separately.","Preservation Age Australia","Australia's preservation age by date of birth: {fact:au_preservation_age_pre_1960} if born before 1 July 1960, rising to {fact:au_preservation_age_from_1964} from 1 July 1964. See the full table.",,"2026-11-19 22:17:10"
+The low rate cap covers your whole lifetime, so each amount you have already used reduces what is left. The ATO's lump sum table sets out other kinds of payment and component separately.","Preservation Age Australia","Australia's preservation age by date of birth: {fact:au_preservation_age_pre_1960} if born before 1 July 1960, rising to {fact:au_preservation_age_from_1964} from 1 July 1964. See the full table.",,"2026-11-19 22:21:57"
 AU,work-and-benefits,government-payments,jobseeker-payment,"JobSeeker Payment","JobSeeker Payment is paid every two weeks, and the most you can get depends on your circumstances. A single person with no children can get up to {fact:au_jobseeker_single}.","## Who can get JobSeeker Payment
 
 JobSeeker Payment is income support for people who are out of work or temporarily unable to work. To qualify you must be aged from {fact:au_jobseeker_min_age} up to Age Pension age, which is {fact:au_age_pension_age}, meet the residence rules and pass the income and assets tests. You must also either be without a job and looking for one, or be unwell or injured so that you cannot do your normal work or study for a short period.
@@ -202,7 +202,7 @@ While you have a dependent child, the higher single rate applies, and in some ca
 
 ## Tax on the payment
 
-JobSeeker Payment is a taxable Centrelink payment. If you ask Services Australia to, tax can be taken out of each payment, which may lower what you owe when you lodge your return.","JobSeeker Payment Rates Australia","JobSeeker Payment maximum rates in Australia: {fact:au_jobseeker_single} for a single person with no children and {fact:au_jobseeker_partnered} for a partnered person, every fortnight.",,"2026-11-19 22:17:10"
+JobSeeker Payment is a taxable Centrelink payment. If you ask Services Australia to, tax can be taken out of each payment, which may lower what you owe when you lodge your return.","JobSeeker Payment Rates Australia","JobSeeker Payment maximum rates in Australia: {fact:au_jobseeker_single} for a single person with no children and {fact:au_jobseeker_partnered} for a partnered person, every fortnight.",,"2026-11-19 22:21:57"
 AU,work-and-benefits,pay-and-leave,annual-leave-australia,"Annual Leave","Employees covered by the National Employment Standards get {fact:au_annual_leave_weeks} of paid annual leave a year, and some shiftworkers get {fact:au_annual_leave_shift_extra} more.","## What the National Employment Standards give you
 
 Paid annual leave is one of the minimum entitlements in the National Employment Standards. The minimum is {fact:au_annual_leave_weeks} of paid leave each year, and some shiftworkers receive {fact:au_annual_leave_shift_extra} more.
@@ -215,7 +215,7 @@ The standards apply to employees in the national workplace relations system, whi
 
 An award, enterprise agreement or employment contract cannot give you less than the standards, and a term that does has no effect. These documents can deal with practical matters, such as how annual leave is cashed out and taken, and they can offer more favourable terms than the minimum.
 
-For the detail on how leave builds up and how it is taken, the Fair Work Ombudsman has a separate annual leave fact sheet.","Annual Leave Australia","How much paid annual leave employees get in Australia under the National Employment Standards: {fact:au_annual_leave_weeks} a year, plus {fact:au_annual_leave_shift_extra} more for some shiftworkers.",,"2026-11-19 22:17:10"
+For the detail on how leave builds up and how it is taken, the Fair Work Ombudsman has a separate annual leave fact sheet.","Annual Leave Australia","How much paid annual leave employees get in Australia under the National Employment Standards: {fact:au_annual_leave_weeks} a year, plus {fact:au_annual_leave_shift_extra} more for some shiftworkers.",,"2026-11-19 22:21:57"
 AU,work-and-benefits,pay-and-leave,personal-and-carers-leave,"Personal and Carer's Leave","Employees get {fact:au_sick_leave_days} of paid sick and carer's leave under the National Employment Standards, plus unpaid carer's leave, compassionate leave and paid family and domestic violence leave.","## Paid leave for sickness and caring
 
 An employee covered by the National Employment Standards gets {fact:au_sick_leave_days} of paid sick and carer's leave, reduced in proportion for part-time staff. Paid sick and carer's leave is not on the Fair Work Ombudsman's list of entitlements that reach casual employees.
@@ -230,7 +230,7 @@ Paid family and domestic violence leave is a yearly entitlement of {fact:au_fdv_
 
 ## Awards and agreements can add to it
 
-An award, agreement or contract has to meet the standards, and any term that falls short has no effect. These documents may deal with cashing out paid sick and carer's leave, and may offer extra sick and carer's leave or annual leave if the employee gives up the same value in pay.","Personal and Carer's Leave Australia","Paid sick and carer's leave in Australia: {fact:au_sick_leave_days}, plus unpaid carer's leave, compassionate leave and {fact:au_fdv_leave_days} of paid family and domestic violence leave.",,"2026-11-19 22:17:10"
+An award, agreement or contract has to meet the standards, and any term that falls short has no effect. These documents may deal with cashing out paid sick and carer's leave, and may offer extra sick and carer's leave or annual leave if the employee gives up the same value in pay.","Personal and Carer's Leave Australia","Paid sick and carer's leave in Australia: {fact:au_sick_leave_days}, plus unpaid carer's leave, compassionate leave and {fact:au_fdv_leave_days} of paid family and domestic violence leave.",,"2026-11-19 22:21:57"
 AU,work-and-benefits,government-payments,parental-leave-pay,"Parental Leave Pay","Parental Leave Pay is paid at {fact:au_ppl_daily_rate} a day before tax, with {fact:au_ppl_days} available to a family for a child born or adopted from 1 July 2026.","## What the payment is
 
 Parental Leave Pay is a taxable payment for parents of a new or newly adopted child, and it is based on the national minimum wage. Your employer often delivers it to you, and sometimes Services Australia pays you directly. With a multiple birth, such as twins, it is paid for only one child.
@@ -253,7 +253,7 @@ There is also a cap on how many days can be taken at the same time. For a child 
 
 ## Super on top of the payment
 
-Where the child was born or adopted on or after 1 July 2025, the ATO adds a contribution to your super, known as the Paid Parental Leave Superannuation Contribution. It is based on the super guarantee rate, which is {fact:au_super_guarantee_rate}. The ATO calculates it and pays it into your super fund after the financial year ends, so there is nothing extra to claim.","Parental Leave Pay Australia","Parental Leave Pay in Australia: {fact:au_ppl_daily_rate} a day before tax, up to {fact:au_ppl_days} for a family, with {fact:au_ppl_reserved_days} reserved for a partner. See how super is added.",,"2026-11-19 22:17:10"
+Where the child was born or adopted on or after 1 July 2025, the ATO adds a contribution to your super, known as the Paid Parental Leave Superannuation Contribution. It is based on the super guarantee rate, which is {fact:au_super_guarantee_rate}. The ATO calculates it and pays it into your super fund after the financial year ends, so there is nothing extra to claim.","Parental Leave Pay Australia","Parental Leave Pay in Australia: {fact:au_ppl_daily_rate} a day before tax, up to {fact:au_ppl_days} for a family, with {fact:au_ppl_reserved_days} reserved for a partner. See how super is added.",,"2026-11-19 22:21:57"
 AU,savings-and-investments,savings-and-interest-rates,cash-rate-target,"Cash Rate Target","The cash rate target is the Reserve Bank's main policy rate, set at {fact:au_cash_rate_target}. It influences mortgage and deposit rates across the economy.","## What the cash rate is
 
 Banks lend to each other overnight so that each has enough cash on hand, and the price of those loans is the cash rate. It matters well beyond banking, because other interest rates, including those on mortgages and savings, move with it.
@@ -274,4 +274,27 @@ The Board's aims are to hold consumer price inflation between {fact:au_inflation
 
 ## Why it matters to you
 
-Lending and deposit rates follow the cash rate closely, and they feed into spending, jobs and prices. A change therefore reaches every Australian, not only people with a mortgage.","Cash Rate Target Australia","The Reserve Bank of Australia's cash rate target is {fact:au_cash_rate_target}. See what the cash rate is, who sets it and how it affects mortgage and deposit rates.",,"2026-11-19 22:17:10"
+Lending and deposit rates follow the cash rate closely, and they feed into spending, jobs and prices. A change therefore reaches every Australian, not only people with a mortgage.","Cash Rate Target Australia","The Reserve Bank of Australia's cash rate target is {fact:au_cash_rate_target}. See what the cash rate is, who sets it and how it affects mortgage and deposit rates.",,"2026-11-19 22:21:57"
+AU,mortgages-and-property,first-home-buyers,first-home-super-saver-scheme,"First Home Super Saver Scheme","The First Home Super Saver Scheme lets you release voluntary super contributions, counting up to {fact:au_fhss_annual_limit} a year and {fact:au_fhss_total_limit} in total.","## What you can release
+
+The First Home Super Saver Scheme lets you take out voluntary contributions you have made to your super, together with the earnings the ATO deems to be linked to them. The total you can take out is called your FHSS maximum release amount. Both concessional contributions, such as salary sacrifice, and non-concessional contributions can be counted.
+
+## Two limits on the contributions that count
+
+Only some of what you pay in is eligible. The scheme caps the contributions counted in any single financial year at {fact:au_fhss_annual_limit}, and the total counted across all years at {fact:au_fhss_total_limit}. The limits cover contributions made from 1 July 2017 onwards.
+
+To work out how much of each limit you have used, count every voluntary contribution at its full amount, whatever its type. Anything above the annual limit is simply not counted towards your release amount.
+
+## How much of each contribution is released
+
+Your non-concessional contributions count at {fact:au_fhss_nonconcessional_share}. Your concessional contributions count at {fact:au_fhss_concessional_share}, because they were taxed on the way into the fund. The earnings added on top are a notional amount worked out at the shortfall interest charge rate, not what your fund actually earned.
+
+## The order contributions are counted in
+
+Contributions are counted oldest first. An earlier financial year comes ahead of a later one, and inside a year the sequence follows the dates you paid. This is called the first-in first-out rule, and it can matter when a year's limit is reached part way through.
+
+If a concessional and a non-concessional contribution arrive together, for example in the same payroll run, the non-concessional one is counted first. That raises your release amount, because the full non-concessional amount counts while only part of the concessional amount does.
+
+## When to ask for a determination
+
+Ask for the determination before you take ownership of any real property, vacant land included. In most purchases ownership passes once the contract settles, so the request needs to be in beforehand.","First Home Super Saver Scheme","The First Home Super Saver Scheme in Australia: up to {fact:au_fhss_annual_limit} a year and {fact:au_fhss_total_limit} in total of voluntary contributions can count towards the release.",,"2026-11-19 22:21:57"
