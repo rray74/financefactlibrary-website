@@ -1,16 +1,18 @@
 # Australia content map (pilot)
 
-Status: planning only, written 4 November 2026. There are **no figure values in
-this file**. A value goes into a CSV only after it has been read off its
-official source page on the day the CSV is built, as `core.md` and the handover
-require. The source addresses below are the ones in migrations 023, 024 and 025 (`sql/migrations/`).
+Status: **Australia launched on 19 November 2026** with 15 of the 19 planned pages written. The plan was
+first written on 4 November 2026. The planning tables below hold **no figure values**: a value goes into a
+CSV only after it has been read off its official source page on the day the CSV is built, as `core.md` and
+the handover require (the build log at the end records the figures that were imported). The source addresses
+below are the ones in migrations 023 to 029 (`sql/migrations/`).
 
-Australia is hidden (`is_active = 0`). Pages are imported as drafts, written,
-then released by the drip publisher once Australia is launched.
+Australia is live (`is_active = 1` since 19 November). Pages are imported as hidden drafts, written, then
+released one at a time by the drip publisher (3 a week). The remaining four pages are built the same way
+and join the drip as they are imported.
 
 ## To do
 
-Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 19 November 2026.
+Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 20 November 2026.
 
 ### Doing now (on the server)
 
@@ -48,7 +50,7 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
       numbers, because the draft check removes that note on purpose, and the Medicare levy draft
       copied the ATO's $76,000 example. Optional: do it if it happens again.
 
-### Next pages (7 of 19 still to build)
+### Next pages (4 of 19 still to build)
 
 - [x] Super contribution caps (page 10), 16 November: five figures (`au-batch-04.csv`), text written, on the server.
 - [x] GST registration threshold (page 4), 16 November: five figures (`au-batch-05.csv`), text written, on the server.
@@ -59,27 +61,47 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
       migration 029, text on the server.
 - [x] Annual leave (page 16) and Personal and carer's leave (page 17), 19 November: six figures (`au-batch-09.csv`)
       from the Fair Work Ombudsman NES fact sheet, short pages, text on the server.
-- [x] Twelve Australian pages now have text on the server, all hidden drafts (19 November). Page-text file:
-      `data/imports/page-text-AU-2026-11-19.csv`.
-- [ ] Sources still to find, then read live: study loan thresholds (page 6) and a Financial Claims Scheme
-      page (8).
-- [ ] Pages whose sources are already allowlisted and readable: Cash rate target (7, RBA), First Home Guarantee
-      (13, Housing Australia price caps), Parental Leave Pay (19, Services Australia), and the First Home Super
-      Saver Scheme (14, ATO).
-- [ ] Capital gains tax discount (page 5): read the ATO's Federal Budget alert first.
-- [ ] First Home Guarantee (page 13): Housing Australia's price caps page, which the fetcher can read.
-      It is the state-layer test.
-- [ ] The remaining pages in the table above: cash rate target, Financial Claims Scheme, annual leave,
-      personal and carer's leave, Parental Leave Pay and the rest.
+- [x] Parental Leave Pay (page 19), 19 November: five figures and a shared super guarantee card (`au-batch-10.csv`),
+      text on the server.
+- [x] Cash rate target (page 7, the rate page), 19 November: four figures (`au-batch-11.csv`), checked every 42 days,
+      text on the server.
+- [x] First Home Super Saver Scheme (page 14), 19 November: four figures (`au-batch-12.csv`), new category
+      Mortgages & Property with the first home buyers subcategory, text on the server.
+- [x] Fifteen Australian pages have text on the server, all imported as hidden drafts (19 November). Combined page-text
+      file: `data/imports/page-text-AU-2026-11-19.csv`.
+- [ ] **First Home Guarantee (page 13)**: Housing Australia's price caps page, which the fetcher can read. It is the
+      state-layer test (about 16 figures), in the same category and subcategory as page 14.
+- [ ] **HELP loan repayments (page 6)**: find the ATO's study and training loan thresholds address, then read it live.
+- [ ] **Financial Claims Scheme (page 8)**: find the page on fcs.gov.au that states the protected amount, then read it live.
+- [ ] **Capital gains tax discount (page 5)**: the address is already in the allowlist (migration 024). Read the ATO's
+      Federal Budget alert first, because the discount may change.
 - [ ] Add the Medicare levy low-income thresholds to page 3 when the ATO sets the 2026–27 ones.
+- [ ] Optional: the GST **rate** itself, which the registration page does not cover.
 
 ### Launch
 
+- [x] **Launched 19 November 2026.** Preflight on the server showed `AU 0` and 15 draft subjects. `is_active` was then set
+      to 1 on the `AU` row, `/au/` answered 200 and the landing page linked correctly. The drip was queued:
+      `php scripts/run-jobs.php --enqueue=drip_country --payload='{"country":"AU","per_week":3}' --unique=drip_country:AU`
+- [x] **First page published** by running the worker once by hand (22:35, 19 November): Tax-Free Threshold, then
+      "Next slot in 2d 8h". It answers 200 at `/au/tax/income-tax/tax-free-threshold/` and is in the sitemap (the
+      public address is `/au/<category>/<subcategory>/<slug>/`, not `/au/<slug>`).
+- [x] **Cron worker running.** One hPanel Cron Jobs row runs every 5 minutes: `*/5 * * * *` with
+      `/usr/bin/php /home/u888389356/domains/financefactlibrary.com/app/scripts/run-jobs.php`. A touch test confirmed
+      hPanel fires new rows on the 5-minute mark. See the lessons for what did not work.
+- [ ] **Check the drip on or after Sunday 22 November, about 06:35**: `php scripts/run-jobs.php --status` should show the
+      second page published without a manual run, and `curl -s https://financefactlibrary.com/sitemap.xml | grep -c "/au/"`
+      should have grown. Then check weekly until all 15 pages are out.
+- [ ] Clean up the cron tests: delete the `/usr/bin/date` row in hPanel, then on the server
+      `rm ~/cron-touch.txt ~/cron-test.txt`. Exactly one `run-jobs.php` row should remain.
+- [ ] Optional: a heartbeat line in `scripts/run-jobs.php` so the log shows the worker is alive every 5 minutes
+      (needs the file to be read first).
+- [ ] Nine pages (super guarantee rate onwards) show "not yet reviewed" because their text was loaded by script. Open each in
+      the admin and save to mark it reviewed (optional, they publish regardless).
+- [ ] Optional: look at one live page in the new category (First Home Super Saver Scheme) to see the rendering.
 - After launch, expect **Medicare Levy** to appear under "Overlapping subjects" on the review page at 100% against
   Income Tax Rates, because the rates page shows the levy's only card. It is advice only, and the two pages have
   different jobs.
-- [ ] About 15 to 19 pages written (optionally a deliberate AI check first: `check-page-text.php --include-hidden`), then set `is_active` to 1 on the `AU` row and start the drip
-      (`per_week` 3), as in the order of work below.
 
 ### Loose ends
 
@@ -110,6 +132,14 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
 - `export-page-text.php --out=` is relative to the folder it is run from. Use `--out=data/imports/<name>.csv`.
 - Rows for another page's card use `link_type` `also` and need the owner's figure imported first (the Age Pension age is on the JobSeeker page this way).
 - Page text can be written outside the admin: build a one-row page-text CSV and use `import-page-text.php`. It fills only empty fields and does not mark the page as reviewed.
+- Public addresses carry the category and subcategory: `/au/<category>/<subcategory>/<slug>/`. Take the real address from
+  the sitemap instead of guessing it from the slug.
+- hPanel cron: a custom job that redirects output into a file (`>> logs/run-jobs.log`) wrote nothing, and "View Output"
+  does not work for custom jobs. Use the plain form `/usr/bin/php /home/u888389356/.../scripts/script.php` that the other
+  jobs use, and prove a new row with a harmless test such as `/usr/bin/touch ~/file` and `ls -l --time-style=full-iso`.
+  Never leave two rows running the same worker, and `crontab -l` on the server is always empty because hPanel keeps its own list.
+- A quiet worker is not a broken one: `run-jobs.php` prints only when a job is due, so a drip with days to wait shows
+  nothing in between. The dry run (`--dry-run`) and `--status` are the checks.
 - Never compare a bound value with a text literal in SQL. It failed on the live server's connection settings
   (error 1267) although it passed every local test. `scripts/debug-sql.php` shows the statement that failed.
 
@@ -247,7 +277,6 @@ These pages are needed by the plan but are not in the allowlist yet:
 | Page 6 | The ATO's address for study and training loan repayment thresholds. The ATO's short link `ato.gov.au/ThresholdsAndRates` showed the right page, but the full address was not seen |
 | Page 8 | A specific page on fcs.gov.au stating the protected amount |
 | Page 4 | The ATO's GST overview, for the rate itself (the registration page is already in the allowlist) |
-| Page 18 | Services Australia's JobSeeker Payment rates page |
 
 Each of these needs the page fetched and checked before its figure is entered.
 `check-sources.php` can only verify a figure against a page that is in the table.
@@ -262,9 +291,9 @@ Each of these needs the page fetched and checked before its figure is entered.
    `subject_status` set to `draft`, write its explanation, and approve it. Add the
    "Reference page" section to `au.md` once it is approved. **Page 1 approved on 5 November 2026.**
 4. Then the other pages in the order above, in batches of about four. Page 13 goes
-   in the first batch so the state layer is tested early. **In progress: 12 of 19 built (19 November).** The GST page was built as `gst-registration-threshold` (subcategory GST, under Tax) and the super pages sit in a `superannuation` subcategory, so the slugs and subcategories above differ a little from the plan.
-5. Launch at 19 written pages by setting `is_active` to 1 on the `AU` row, then
-   start the drip: `php scripts/run-jobs.php --enqueue=drip_country --payload='{"country":"AU","per_week":3}' --unique=drip_country:AU`
+   in the first batch so the state layer is tested early. **In progress: 15 of 19 built (19 November).** The GST page was built as `gst-registration-threshold` (subcategory GST, under Tax) and the super pages sit in a `superannuation` subcategory, so the slugs and subcategories above differ a little from the plan.
+5. Launch by setting `is_active` to 1 on the `AU` row, then
+   start the drip (**done on 19 November at 15 pages, not 19, with the last four to join the drip as they are built**): `php scripts/run-jobs.php --enqueue=drip_country --payload='{"country":"AU","per_week":3}' --unique=drip_country:AU`
 
 ### How the CSVs are laid out
 
@@ -354,3 +383,5 @@ Not in the launch set. Each needs its sources found first.
 | Super guarantee rate and Preservation age, 18 November 2026 | Migrations 027 and 028 add the two ATO pages to the allowlist. `au-batch-06.csv`: guarantee rate 12% (previous 11.5%, from 1 July 2025) and maximum contribution base $270,830 for 2026–27 (the ATO's formula checks out against the concessional cap). `au-batch-07.csv`: six preservation ages, 55 to 60, by date of birth. The explanations were written directly and scored against the ATO text with the close-copy checker (0 close copies), then loaded through one-row page-text files and a combined export. Nine pages have text on the server |
 | JobSeeker Payment, 18 November 2026 | Migration 029 adds the two Services Australia pages. `au-batch-08.csv`: maximum fortnightly rates from 20 September 2026 (single $824.90, single with dependent children $883.30, partnered $755.10, single principal carer with an exemption $1,068.20), minimum age 22, and the Age Pension age card shared from page 12. No previous values: the rates page does not state them. Text written and on the server |
 | Annual leave and Personal and carer's leave, 19 November 2026 | `au-batch-09.csv`, all from the Fair Work Ombudsman NES fact sheet: 4 weeks annual leave plus 1 extra week for some shiftworkers, 10 days paid sick and carer's leave, 2 days unpaid carer's leave, 2 days compassionate leave, 10 days paid family and domestic violence leave. Short pages (168 and 176 words) because the source is short. Text and figures on the server |
+| Parental Leave Pay, Cash rate target and First Home Super Saver Scheme, 19 November 2026 | `au-batch-10.csv`: Parental Leave Pay from 1 July 2026, $200.94 a day (previous $189.62) and $1,004.70 a week (previous $948.10), 130 days (previous 120), 20 reserved days (previous 15) and 20 concurrent days (previous 10), plus the shared super guarantee card. `au-batch-11.csv`: the RBA cash rate target 4.85% from 4 November 2026, reviewed every 42 days, with 8 Board meetings a year and the 2 to 3% inflation target band (source: the RBA's cash rate target overview). `au-batch-12.csv`: First Home Super Saver Scheme, $15,000 a year and $50,000 in total of voluntary contributions that can be released, with 100% of non-concessional and 85% of concessional contributions counted (source: the ATO's about FHSS release amounts page). It creates the Mortgages & Property category and the first home buyers subcategory. Texts written, scored against the sources with the close-copy checker (0 close copies) and on the server |
+| Launch, 19 November 2026 | Preflight: `AU 0`, 15 draft subjects. `is_active` set to 1, `/au/` answered 200, drip queued (job #1, 3 a week). First page published by hand at 22:35: Tax-Free Threshold, next slot in 2 days 8 hours. Live at `/au/tax/income-tax/tax-free-threshold/` and in the sitemap. hPanel cron row set up and proven with a touch test on 20 November |
