@@ -1,16 +1,16 @@
 # AI costs and the API key setup
 
-Last updated 12 Nov 2026. Figures are from the Claude Console (Cost & spend), in UTC, which lags by up to an hour. Costs are in US dollars.
+Last updated 21 Nov 2026. Figures are from the Claude Console (Cost & spend), in UTC, which lags by up to an hour (latest reading: 21 Nov, 13:36 UTC). Costs are in US dollars.
 
 This file explains which API key pays for what, how to check each part is wired correctly, and what the AI work has cost so far. It contains no key values: keep those only in `config/database.local.php`.
 
 ---
 
-## 1. Why there are four keys
+## 1. Why there are three live keys (plus one retired)
 
-Until 5 Nov 2026 everything used one key, `ff-website`, so a page's cost could not be told apart from testing, the daily source checks or the multi-country work. Each purpose now has its own key. The Console's Cost page can then be filtered by **API key** to read each part's spend on its own.
+Until 5 Nov 2026 everything used one key, `ff-website`, so a page's cost could not be told apart from testing, the daily source checks or the multi-country work. Each purpose now has its own key (ffl-pages, ffl-multicountry, ffl-sources); ff-website is retired. The Console's Cost page can then be filtered by **API key** to read each part's spend on its own.
 
-Credits are shared. A separate key separates the *reporting*, not the balance: one balance pays for all four.
+Credits are shared. A separate key separates the *reporting*, not the balance: one balance pays for all of them.
 
 ## 2. The keys
 
@@ -72,15 +72,17 @@ Expected:
 
 All six were confirmed on 12 Nov 2026.
 
-## 6. What has been spent (to 12 Nov 2026, 20:58 UTC, last 30 days)
+## 6. What has been spent (last 30 days, read 21 Nov 2026, 13:36 UTC)
 
 | Key | Total | Notes |
 |---|---|---|
-| ff-website | $13.93 | Everything before 5 Nov: building, testing and the first pages (Pension Tax Relief and VAT cost over $2 each before the loop was cut back) |
-| ffl-pages | $1.84 | Child Benefit $0.52, Approved Mileage Rates $0.64, Minimum Pension Age $0.68. Of that, **about $0.41 was local testing** (Sonnet 4.6) billed here until the Mac's config was fixed on 12 Nov, so the page-only figure is about $1.43 |
-| ffl-sources | $0.83 | Daily source and page checks, since 5 Nov |
-| ffl-multicountry | $0.00 | Not yet used on the server |
-| **All keys** | **about $16.60** | |
+| ff-website | $13.93 | Read on 12 Nov, not re-read since. Everything before 5 Nov: building, testing and the first pages (Pension Tax Relief and VAT cost over $2 each before the loop was cut back) |
+| ffl-pages | $3.90 | Live-site page work since 5 Nov. Of that, **about $0.41 was local testing** (Sonnet 4.6) billed here until the Mac's config was fixed on 12 Nov, so the page-only figure is about $3.49. No Sonnet 4.6 spend since 11 Nov |
+| ffl-sources | $1.91 | Daily source and page checks, since 5 Nov. About $0.25 on each of 20 and 21 Nov, double the usual (see section 8) |
+| ffl-multicountry | $0.30 | Two days of use, 16 and 18 Nov. Nothing since |
+| **All keys** | **about $20.04** | Uses ff-website as read on 12 Nov |
+
+Balance: **$4.94** on 21 Nov (it was $6.19 on 19 Nov, $3.38 on 12 Nov). The drop from 19 Nov to 21 Nov, $1.25, equals the rise on ffl-pages ($0.75) plus ffl-sources ($0.50), so the keys account for all of the spend.
 
 ## 7. Cost of one page
 
@@ -102,9 +104,12 @@ Per-page results (whole page; the job's own estimate is shown for comparison):
 | Child Benefit | 5 Nov | 5.5 | **$0.52** (measured on ffl-pages) | $0.24 | 7 min |
 | Approved Mileage Rates | 9 Nov | 5.5 | about $0.50 (upper bound) | $0.28 | 6 min |
 | Minimum Pension Age | 11 Nov | 5.5 | about $0.41 | $0.23 | 5 min |
-| State Pension Amount | 12 Nov | 5.5 | pending (baseline $1.84 on ffl-pages) | $0.32 | 6 min |
+| State Pension Amount | 12 Nov | 5.5 | about $0.67 (the day's bar on ffl-pages) | $0.32 | 6 min |
+| Cash ISA Allowance | 16 Nov | 5.5 | about $0.32 (the day's bar) | not recorded | not recorded |
+| Average Savings Rates | 18 Nov | 5.5 | about $0.32 (the day's bar) | not recorded | not recorded |
+| Buy-to-Let Mortgage Rates | 19 Nov | 5.5 | **$0.29 to $0.75**: the job estimate was $0.29, and 19 Nov's whole bar is $0.75, which also holds any other runs that day | $0.29 | 5 min |
 
-**Since the loop was cut back (Premium Bonds onward): average about $0.45 a page, range $0.29 to $0.61.** Pages with long drafts and many findings cost most, because each Propose fix attempt re-reads the source pages.
+**Since the loop was cut back (Premium Bonds onward): average about $0.43 a page, range $0.29 to $0.67** (Buy-to-Let counted at its $0.29 estimate). Pages with long drafts and many findings cost most, because each Propose fix attempt re-reads the source pages.
 
 Prices (per million tokens, from Anthropic's pricing page, 27 Oct 2026), as set in `AI_PRICES`:
 
@@ -117,7 +122,7 @@ Prices (per million tokens, from Anthropic's pricing page, 27 Oct 2026), as set 
 
 | Item | Cost |
 |---|---|
-| Daily source and page checks (ffl-sources) | about $0.10 a day, roughly $3 a month |
+| Daily source and page checks (ffl-sources) | about $0.12 a day averaged since 5 Nov ($1.91 over 16 days), so roughly $3.60 a month. 20 and 21 Nov ran at about $0.25 a day, which is not yet explained |
 | Nightly drafting (paused; `DRAFTS_PAUSED`) | about $0.17 to $0.32 a page for the jobs alone, so about $0.75 to $0.95 a night at three pages |
 | A new country at 15 to 20 pages | roughly $7 to $9 of AI cost, plus your time |
 
@@ -143,6 +148,8 @@ If nightly drafting is resumed, set `DRAFTS_PER_NIGHT` to the number of pages ac
 
 - Disable the **ff-website** key (no spend since 5 Nov).
 - Add `define('AI_KEY_PURPOSE', 'MULTICOUNTRY');` to the multi-country worker and any AI script written for it, so they bill correctly on the server.
-- Read the State Pension Amount cost: ffl-pages total minus $1.84.
+- Find out why ffl-sources doubled to about $0.25 a day on 20 and 21 Nov. Was it extra manual source checks, or is something running that should not be? Check the cron and `check-sources.php` output.
+- For Cash ISA, Average Savings Rates and Buy-to-Let, the job estimates were not all recorded. Note each page's "Estimated cost" line when it finishes.
+- Update the stale "about ten minutes" comment in `run-polish-jobs.php`.
 - Optional: a separate Console workspace with a monthly spend limit for the multi-country key.
-- Keep the balance topped up. It was $3.38 on 12 Nov, and one page costs about $0.45.
+- Keep the balance topped up. It was $4.94 on 21 Nov, and one page costs about $0.43, so about 11 pages (less the sources checks at about $0.12 a day).

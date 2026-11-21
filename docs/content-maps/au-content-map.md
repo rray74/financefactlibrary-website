@@ -105,7 +105,7 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
 
 ### Loose ends
 
-- [ ] Run the UK base rate update from the 5 November decision, with `--country=GB` on its CSV.
+- [x] UK base rate update from the 5 November decision: done (`mortgages-boe-2026-11.csv`, committed 12 November).
 - [ ] Add the "Reference page" section to `docs/house-style/au.md` now that page 1 is approved.
 - [ ] Lessons approved on one machine (`writing_lessons`) do not transfer. Approve them again on the
       server, or build an export.
