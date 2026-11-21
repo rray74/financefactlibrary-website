@@ -100,7 +100,7 @@ const BOE_SERIES = [
         // The Bank now calls the SVR the "revert-to rate", so accept either name.
         'match'      => ['/revert[\s-]*to[\s-]*rate|standard variable/i'],
         'max_change' => 0.5,
-        'context'    => 'Bank of England average of the standard variable rates (which the Bank calls revert-to rates) UK lenders charged in %s. Borrowers usually move onto their lender\'s SVR when a fixed or tracker deal ends.',
+        'context'    => 'Bank of England average of the standard variable rates (which the Bank calls revert-to rates) UK lenders charged in %s. When a fixed or discounted deal ends, the mortgage goes onto the lender\'s reversion rate, which is often its SVR.',
         'create'     => [
             'subject_slug' => 'standard-variable-rate',
             'label'        => 'Average standard variable rate (SVR)',
