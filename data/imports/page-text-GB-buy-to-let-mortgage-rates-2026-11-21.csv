@@ -1,0 +1,20 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,mortgages,fixed-rate-mortgages,buy-to-let-mortgage-rates,Buy-to-Let Mortgage Rates,"What lenders advertise on two-year fixed buy-to-let mortgages, how that compares with homeowner rates, what moves them, and the extra tax landlords pay on another property.","## Bank Rate affects the rates lenders charge and pay
+
+Bank Rate is the rate the Bank of England sets for the UK, and it influences interest rates throughout the economy. When it goes up or down, banks will usually raise or lower what they charge borrowers and pay savers to match.
+
+## Buying another property in England or Northern Ireland can add a surcharge
+
+Stamp Duty Land Tax (SDLT) on residential property is calculated on slices of the price, with each slice taxed at its own rate. Buying a property that leaves you owning more than one residential property can add the Additional Property Surcharge, {fact:sdlt_additional_property_surcharge}, to the normal rates.
+
+Replacing your main residence is an exception. Still owning the old home when the purchase completes means the higher rates apply, because you hold two properties at that stage. If the property you buy takes the place of your main residence and the old one is sold within 36 months, the higher rates can be claimed back.
+
+Buyers who are not UK resident pay a further surcharge in England and Northern Ireland, on top of any other SDLT that applies. It may not be due on certain properties, transactions or types of buyer. For SDLT, you count as not UK resident if you spent fewer than 183 days in the UK during the 12 months leading up to the purchase.
+
+Different rules and rate calculations apply when the buyer is a corporate body, a company or a trust, and when someone buys 6 or more residential properties in one transaction.
+
+## Scotland and Wales have their own taxes instead of SDLT
+
+In Scotland, Land and Buildings Transaction Tax (LBTT) applies instead of SDLT. Some purchases also attract the Additional Dwelling Supplement, a flat {fact:lbtt_ads_rate} charge alongside LBTT. It is not the same charge as the SDLT surcharge.
+
+Wales has its own Land Transaction Tax, with higher rates for additional homes set separately from SDLT.",Buy-to-Let Mortgage Rates: What Moves Them,"How 2-year fixed buy-to-let mortgage rates at 75% loan-to-value compare with homeowner rates, what moves them, and the extra tax on a second property.",2026-11-19 22:01:33,2026-11-21 18:21:19
