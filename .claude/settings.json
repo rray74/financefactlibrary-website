@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./config/database.local.php)",
+      "Read(./config/*.local.php)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(~/.ssh/**)",
+      "Bash(cat config/database.local.php)",
+      "Bash(cat ./config/database.local.php)",
+      "Bash(cat .env*)"
+    ]
+  }
+}
