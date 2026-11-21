@@ -1,0 +1,26 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,family,child-benefit,Child Benefit Rates and the High Income Charge,"How much Child Benefit pays each week, how it changes when families split or join, and how the High Income Child Benefit Charge works for higher earners.","## Family changes affect which rate you get, and Child Benefit counts towards the benefit cap
+
+If a family splits up and two children live in different homes, each parent gets the eldest-child rate for the child who lives with them. When two parents both claim for one child, only one of them is paid Child Benefit for that child. Any further children you are entitled to are paid at the additional-child rate.
+
+If you move in with a partner who also claims, the household's eldest child attracts the higher rate, and the additional rate covers younger children. Claims can be made by each of you for different children. Once you live together, the higher rate is not available to both of you, and claiming it twice may mean you have to repay some of the money. Changes to your family circumstances must be reported, and the Child Benefit Office also needs to hear from you when the amount you have been paid turns out to be wrong.
+
+Any Child Benefit you receive is included when the benefit cap is applied. The cap does not reduce the Child Benefit itself. Where it applies to you, it may lower your other benefits instead.
+
+## The charge depends on adjusted net income, and the higher earner pays if both are over the threshold
+
+Either you or your partner receiving Child Benefit, with at least one of you having income above {fact:hicbc_start}, can bring the High Income Child Benefit Charge into play. It may also apply when someone else receives Child Benefit for a child living with you, provided their contribution to the child's upkeep is equal to yours or greater. The child does not have to be your own.
+
+The measure used is **adjusted net income**. Start with everything taxable that you receive, including interest on savings and dividends. Then take off tax reliefs, for example Gift Aid or pension contributions. Personal Allowances are not subtracted when you do this.
+
+You repay 1% of your Child Benefit for every £200 of income above {fact:hicbc_start}, and all of it once income reaches {fact:hicbc_full}. The charge never exceeds the Child Benefit received. If both partners are over the threshold, the one with the higher adjusted net income pays. A partner here means a person you are married to, in a civil partnership with, or living with as if you were, as long as you are not permanently separated from them.
+
+## Opting out ends the charge but keeps the other advantages
+
+With income over the threshold, there are two choices: keep receiving payments and pay the charge, or stop the payments and owe no charge. Opting out leaves you registered for Child Benefit. Opting out does not stop the National Insurance credits that build up your State Pension, which are given while your child is under 12. Your child also gets a National Insurance number shortly before turning 16 without needing to apply.
+
+## Self Assessment is sometimes the only way to pay the charge
+
+The charge can be paid through Pay As You Earn (PAYE) or through Self Assessment. You must use Self Assessment if a tax return is due from you for another reason, such as self-employment or interest from savings or investments. It is also required once 31 January after the end of the tax year the charge relates to has passed.
+
+If you filed a return only to pay the charge, you can move to PAYE instead. This means calling HM Revenue and Customs (HMRC), who take you out of Self Assessment and set up payment through PAYE.",Child Benefit Rates {tax_year}: Income Charge,Child Benefit rates are {fact:child_benefit_eldest} for the eldest child and {fact:child_benefit_additional} for each other. See how the income charge starts above {fact:hicbc_start} and who pays it.,2026-11-05 22:23:50,2026-11-21 19:45:04
