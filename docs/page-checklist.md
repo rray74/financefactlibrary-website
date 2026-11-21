@@ -3,6 +3,10 @@
 The same list is in the editor (Page details, "Checklist for finishing a page").
 It is for a page that has been through "Draft and polish in the background".
 
+Choosing which page: run `php scripts/triage-page-text.php` (free, read-only, no AI)
+for a ranked list of every written page by program findings, with `--details` for
+the findings and `--page=<slug>` for one page.
+
 Aim: about 25 minutes from the finished job to a saved page, with no help from
 Claude in the browser. If a page still needs that help, note which step it was
 needed for.

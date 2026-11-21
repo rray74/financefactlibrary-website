@@ -19,7 +19,7 @@ New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
 |---|---|
 | `public/` | Web root: pages, `admin/` editor, `assets/` |
 | `includes/` | Shared PHP: AI drafting/polish/fixes (`ai-*.php`), text checks, jobs (`jobs.php`, `job-handlers/`), placeholders, source fetching |
-| `scripts/` | CLI scripts: `check-bank-rate.php`, `import-facts.php`, `import-page-text.php`, `export-page-text.php`, `read-source.php`, `check-sources.php`, `check-page-text.php`, `run-jobs.php`, `run-polish-jobs.php`, `draft-pages.php`, `send-alerts.php`, `fetch-boe-rates.php`, `migrate.php` |
+| `scripts/` | CLI scripts: `check-bank-rate.php`, `triage-page-text.php`, `import-facts.php`, `import-page-text.php`, `export-page-text.php`, `read-source.php`, `check-sources.php`, `check-page-text.php`, `run-jobs.php`, `run-polish-jobs.php`, `draft-pages.php`, `send-alerts.php`, `fetch-boe-rates.php`, `migrate.php` |
 | `sql/migrations/` | Schema changes only. Next free number: **030** (check the folder before using) |
 | `data/imports/` | Content CSVs (figures, page text) |
 | `config/` | `database.php` plus `database.local.php` (secrets: never read or committed) |
@@ -32,7 +32,8 @@ New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
   If the tooling can't do something, build the workaround.
 - Read every figure live with `scripts/read-source.php` before it goes in a CSV.
 - Page workflow: draft → AI check → rewrite / Propose fixes → human review.
-  Per-page routine in `docs/page-checklist.md`.
+  Per-page routine in `docs/page-checklist.md`. Start with the free triage
+  (`php scripts/triage-page-text.php`) to rank pages by program findings.
 
 ## Cron and manual routines
 - hPanel cron: `fetch-search-console` 06:00, `draft-pages` 05:00 (paused:
