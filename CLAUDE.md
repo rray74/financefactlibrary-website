@@ -19,7 +19,7 @@ New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
 |---|---|
 | `public/` | Web root: pages, `admin/` editor, `assets/` |
 | `includes/` | Shared PHP: AI drafting/polish/fixes (`ai-*.php`), text checks, jobs (`jobs.php`, `job-handlers/`), placeholders, source fetching |
-| `scripts/` | CLI scripts: `import-facts.php`, `import-page-text.php`, `export-page-text.php`, `read-source.php`, `check-sources.php`, `check-page-text.php`, `run-jobs.php`, `run-polish-jobs.php`, `draft-pages.php`, `send-alerts.php`, `fetch-boe-rates.php`, `migrate.php` |
+| `scripts/` | CLI scripts: `check-bank-rate.php`, `import-facts.php`, `import-page-text.php`, `export-page-text.php`, `read-source.php`, `check-sources.php`, `check-page-text.php`, `run-jobs.php`, `run-polish-jobs.php`, `draft-pages.php`, `send-alerts.php`, `fetch-boe-rates.php`, `migrate.php` |
 | `sql/migrations/` | Schema changes only. Next free number: **030** (check the folder before using) |
 | `data/imports/` | Content CSVs (figures, page text) |
 | `config/` | `database.php` plus `database.local.php` (secrets: never read or committed) |
@@ -37,7 +37,8 @@ New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
 ## Cron and manual routines
 - hPanel cron: `fetch-search-console` 06:00, `draft-pages` 05:00 (paused:
   `DRAFTS_PAUSED`), `check-page-text` 05:30, `check-sources` 07:30,
-  `send-alerts` 08:00, `fetch-boe-rates` 07:00, `run-jobs.php` every 5 minutes
+  `send-alerts` 08:00, `fetch-boe-rates` 07:00,
+  `check-bank-rate` 13:00, 15:00 and 17:00 (acts only on MPC decision days; emails a draft CSV), `run-jobs.php` every 5 minutes
   (the Australia drip). Keep exactly one worker row.
 - Bank of England base rate: after each MPC decision, update the Bank Rate CSV
   (use `data/imports/mortgages-boe-2026-11.csv` as the template) and run

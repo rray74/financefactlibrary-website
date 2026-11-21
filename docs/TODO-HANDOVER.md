@@ -64,17 +64,19 @@ From now on, the list lives in this file. Update it in the repo as items are don
 ## 4. Open to-do list (as of 21 Nov 2026)
 
 ### Bank Rate alert on MPC decision days
-- [ ] On each MPC decision day, if `uk_base_rate` doesn't match the Bank's current figure, raise it in the review queue and/or send an email alert (`scripts/send-alerts.php` already sends one for held changes)
-- [ ] Have it working before the next decision on **17 December 2026**
-- *Background:* `check-sources.php` already compares Bank Rate with the page's current figure (`CURRENT_VALUE_PATTERNS`), so a mismatch shows as ✗ in the daily check. What's missing is a push alert; at the moment someone has to look at the output or the review queue.
+- [x] Built and live (21 Nov 2026): `scripts/check-bank-rate.php` (logic and decision dates in `includes/bank-rate-watch.php`). Three hPanel cron rows run it at 13:00, 15:00 and 17:00 daily; it only acts on MPC decision days.
+- On a decision day (from 12:30 London) it compares the Bank's page with `uk_base_rate`. A difference gives an immediate "ACTION" email with a draft CSV (`data/imports/bank-rate-YYYY-MM-DD.csv`); a held rate gives a short confirmation; a page not yet updated, or unreadable, is emailed on the 17:00 run.
+- It never changes the database. You still run `import-facts.php` (MAMP first, then the server).
+- Add the 2028 MPC dates to `BANK_RATE_MPC_DATES` when the Bank publishes them.
+- [ ] After the first real decision (17 Dec 2026), check the email arrived and the draft CSV imports cleanly.
 
 ### Commit and sync
 - [x] Patched `scripts/check-sources.php` committed (12 Nov, `44a6050`)
 - [x] `mortgages-boe-2026-11.csv` and `nsandi-green-2026-11.csv` committed (12 Nov)
 - [ ] Run the NS&I import on MAMP so local data matches the server (not verified; needs a database check)
 
-### Bank of England base rate (manual until the alert exists)
-- [ ] **17 Dec 2026:** after the decision, make a new Bank Rate CSV (`data/imports/base-rate-update.csv` never existed in git; use `mortgages-boe-2026-11.csv` as the template). Set `value`, the date in the `context` text, `last_updated` and `effective_from`, then run:
+### Bank of England base rate (the alert drafts the CSV; the import is still manual)
+- [ ] **17 Dec 2026:** after the decision, use the draft CSV the watch emails you (or make one from the template `mortgages-boe-2026-11.csv`). Set `value`, the date in the `context` text, `last_updated` and `effective_from`, then run:
   ```
   php scripts/import-facts.php data/imports/base-rate-update.csv
   ```
@@ -110,7 +112,7 @@ From now on, the list lives in this file. Update it in the repo as items are don
 
 | Date | What |
 |---|---|
-| **17 Dec 2026** | MPC decision: update Bank Rate (and ideally have the alert working by then) |
+| **17 Dec 2026** | MPC decision: the Bank Rate watch should email you; update Bank Rate |
 | **6 Apr 2027** | ISA reform rules come into force: update the ISA page wording. Also: Making Tax Digital threshold drops to £30,000, cash ISA limit for under-65s becomes £12,000, new savings tax rates apply. |
 | **Every April** | Most UK rates, allowances and benefit amounts change |
 | **Oct 2027 (approx.)** | Earliest point to let financial-facts.com lapse |
