@@ -1,0 +1,10 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,savings,savings-accounts,average-savings-rates,Average Savings Rates,"The average rates UK banks and building societies advertise on easy access accounts, fixed-rate bonds and cash ISAs, and how Bank Rate relates to what savers are paid.","## An average advertised rate is not what every account pays
+
+The averages on this page come from the Bank of England. They are built from the headline rates that UK banks and building societies advertise, weighted by how much business each does, so they describe the market as a whole rather than any one account. Every average here includes unconditional bonuses. The easy access savings average is for a £1,000 balance.
+
+Any individual account can pay more or less than the average.
+
+## Bank Rate influences savings rates
+
+Bank Rate is the interest rate the Bank of England sets for the UK, and it affects the level of other rates across the economy. When it changes, banks will usually raise or lower what they pay savers to match. Each bank sets its own savings rates.",Average Savings Rates UK,"Average UK savings rates from the Bank of England for easy access accounts, fixed bonds and cash ISAs, and how Bank Rate affects what savers are paid.",2026-11-18 21:48:21,2026-11-21 21:50:13

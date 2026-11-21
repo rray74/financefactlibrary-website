@@ -118,7 +118,7 @@ const BOE_SERIES = [
         'code'       => 'IUMB6VL',
         'match'      => ['/variable[\s-]*rate cash ISA/i', '/including unconditional/i'],
         'max_change' => 0.5,
-        'context'    => 'Bank of England average of the rates UK banks and building societies advertised on variable-rate (easy access) cash ISAs in %s, including bonuses. Individual accounts vary widely around this.',
+        'context'    => 'Bank of England average of the rates UK banks and building societies advertised on variable-rate (easy access) cash ISAs in %s, including unconditional bonuses. Individual accounts can pay more or less.',
     ],
     'boe_cash_isa_1yr_fixed' => [
         'code'       => 'IUMB6VN',
@@ -150,7 +150,7 @@ const BOE_SERIES = [
         'code'       => 'IUMB6VJ',
         'match'      => ['/instant[\s-]*access/i', '/including unconditional/i'],
         'max_change' => 0.5,
-        'context'    => 'Bank of England average of the rates UK banks and building societies advertised on instant access savings accounts in %s, including bonuses, for a £1,000 balance.',
+        'context'    => 'Bank of England average of the rates UK banks and building societies advertised on instant access savings accounts in %s, including unconditional bonuses, for a £1,000 balance.',
         'create'     => [
             'subject_slug' => 'average-savings-rates',
             'label'        => 'Average easy access savings rate',
