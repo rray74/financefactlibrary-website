@@ -73,7 +73,7 @@ From now on, the list lives in this file. Update it in the repo as items are don
 ### Commit and sync
 - [x] Patched `scripts/check-sources.php` committed (12 Nov, `44a6050`)
 - [x] `mortgages-boe-2026-11.csv` and `nsandi-green-2026-11.csv` committed (12 Nov)
-- [ ] Run the NS&I import on MAMP so local data matches the server (not verified; needs a database check)
+- [x] NS&I Green Savings Bond (checked 21 Nov 2026): MAMP and server both show 4.73%, matching the live NS&I page (Issue 10). Only the dates differ: the server's 4.45 to 4.73 change was approved on the review page on 30 Oct with no `effective_from` (MAMP has 20 Oct). `import-facts.php` only marks an unchanged value verified, so it can't fill that date in. Cosmetic; left as is.
 
 ### Bank of England base rate (the alert drafts the CSV; the import is still manual)
 - [ ] **17 Dec 2026:** after the decision, use the draft CSV the watch emails you (or make one from the template `mortgages-boe-2026-11.csv`). Set `value`, the date in the `context` text, `last_updated` and `effective_from`, then run:
@@ -82,9 +82,9 @@ From now on, the list lives in this file. Update it in the repo as items are don
   ```
   The importer refuses a future `effective_from`, so run it on or after the announcement day. The weekly job does not update Bank Rate.
 
-### ISA reform page
-*(Exact page name still to confirm.)*
-- [ ] Update the card sources. They cite the November 2025 newsletter, which predates the consultation and the laid regulations, so the checker couldn't see the update. Replace it with GOV.UK's September 2026 "Tax-free savings newsletter 23" or the "ISA reform 2027: anti-circumvention rules factsheet".
+### ISA reform page (Cash ISA Allowance, `cash-isa-allowance`)
+- [x] Card sources updated (21 Nov 2026) in `data/imports/isa-sources-2026-11.csv`: the £20,000 and £12,000 figures now cite GOV.UK's Tax-free savings newsletter 23 (September 2026); the Junior ISA £9,000 cites GOV.UK's Junior ISA page. Run on MAMP; run on the server after the push (`php scripts/import-facts.php data/imports/isa-sources-2026-11.csv`) and tick here once done.
+- [ ] Optional: find an official GOV.UK page that states people aged 65 and over can still put £20,000 into cash ISAs, then restore that line in the context text (newsletter 23 doesn't say it).
 - [ ] **After 6 April 2027:** revisit the page and change "due to come into force" to "in force".
 
 ### Page text (every page, all four fields)
