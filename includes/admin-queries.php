@@ -156,6 +156,8 @@ const ADMIN_EXPECTED_CRON_SCRIPTS = [
     'draft-pages.php'          => 'Daily 05:00',
     'check-page-text.php'      => 'Daily 05:30',
     'send-alerts.php'          => 'Daily 08:00',
+    // Bank Rate watch: runs 13:00, 15:00 and 17:00 daily; acts only on MPC decision days.
+    'check-bank-rate.php'      => 'Daily 13:00, 15:00, 17:00',
 ];
 
 /**
@@ -172,6 +174,7 @@ const ADMIN_CRON_STALE_DAYS_BY_SCRIPT = [
     'draft-pages.php'          => 2,
     'check-page-text.php'      => 2,
     'send-alerts.php'          => 2,
+    'check-bank-rate.php'      => 2,
 ];
 
 /** Days after which a script's last run counts as stale (see above). */

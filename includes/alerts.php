@@ -248,7 +248,13 @@ function processAdminAlerts(PDO $pdo, bool $dryRun = false, ?callable $send = nu
     $send ??= 'sendAdminAlertEmail';
 
     $current = collectAdminAlertItems();
-    $sentKeys = $pdo->query('SELECT alert_key FROM admin_alerts_sent')->fetchAll(PDO::FETCH_COLUMN);
+    // Keys starting "bankrate:" belong to scripts/check-bank-rate.php, which sends
+    // and remembers its own emails once per MPC decision day. Leave them out here,
+    // or they'd look like "cleared" items and be deleted, and then re-sent.
+    $sentKeys = array_values(array_filter(
+        $pdo->query('SELECT alert_key FROM admin_alerts_sent')->fetchAll(PDO::FETCH_COLUMN),
+        fn($key) => strncmp((string) $key, 'bankrate:', 9) !== 0
+    ));
 
     $new = array_diff_key($current, array_flip($sentKeys));
     $cleared = array_values(array_diff($sentKeys, array_keys($current)));
