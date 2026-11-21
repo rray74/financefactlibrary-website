@@ -20,7 +20,11 @@ needed for.
    thresholds, the Premium Bonds holding limit) goes stale when the card
    updates and the text doesn't. Replace it with its placeholder. The checks
    list them. Leave it only if it is a different figure that happens to be the
-   same, or is fixed in law until a date the text gives.
+   same, or is fixed in law until a date the text gives. A typed percentage or
+   amount counts however small ("2%", "£5").
+   The checks also flag "usually", "mostly" and "generally" (keep one only if a
+   source page says it) and a unit typed after a placeholder that already shows
+   it ("{fact:x} years" where it shows "35 years").
 
 4. **Check with AI once**, then **Propose fixes for all findings**. Read each
    proposal. Apply it only if the new words are true to the source, in your own

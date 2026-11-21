@@ -78,9 +78,9 @@ const DRAFT_CHECKLIST = [
     'Nothing repeats what the figure cards already show, and no section walks through the figures one by one.',
     'Each rule or point is made once, in one section only. A point made in the intro or meta fields is not made again as a section.',
     'Every heading states a point that is true of everything under it and of the sources. A heading must not promise more than its text says.',
-    'Hedging matches the sources: "could", "may", "usually" and "in some cases" stay as the source has them. Nothing is stated more strongly or more broadly than the source states it.',
-    'No dating words (currently, now, new, latest, today, this year, recently, at the moment), no typed tax year, and no typed figure that changes. No history of a figure either: never say a figure rose, fell, changed or was introduced, or give an earlier amount or the year it changed, unless a figure card or its note says so. The page\'s tax year is the year its figures are for, not the year they changed (the cards keep each figure\'s history).',
-    'Nothing tells the reader what to do, and there is no generic closing section.',
+    'Hedging matches the sources: "could", "may", "usually" and "in some cases" stay as the source has them. Nothing is stated more strongly or more broadly than the source states it. Never add "usually", "mostly" or "generally" that no source says.',
+    'No dating words (currently, now, new, latest, today, this year, recently, at the moment), no typed tax year, and no typed figure that changes (a typed "2%" or "£5" counts, however small). No history of a figure either: never say a figure rose, fell, changed or was introduced, or give an earlier amount or the year it changed, unless a figure card or its note says so. The page\'s tax year is the year its figures are for, not the year they changed (the cards keep each figure\'s history).',
+    'Nothing tells the reader what to do, and there is no generic closing section. A placeholder already shows its unit, so none is typed after it ("{fact:x}" shows "35 years", so not "{fact:x} years").',
     'Meta title 42 characters or fewer and meta description 140 to 155 characters, counted with the figures filled in. The intro is one sentence of 120 to 200 characters with no figures.',
 ];
 
@@ -335,7 +335,7 @@ function draftChecks(PDO $pdo, array $draft, array $published, array $read, arra
             'explanation'      => $draft['explanation'],
             'meta_title'       => $draft['meta_title'],
             'meta_description' => $draft['meta_description'],
-        ], $published, (string) $subject['country_code']),
+        ], $published, (string) $subject['country_code'], $read['texts'] ?? null),
         fn($note) => !preg_match("/isn't one of|aren't among|over the house style's limit/", $note)
     ));
 
@@ -406,7 +406,7 @@ function draftChecks(PDO $pdo, array $draft, array $published, array $read, arra
  */
 function noteWithSentence(string $note, array $fieldText): string
 {
-    if (!preg_match('/^(Intro|Explanation|Meta title|Meta description): "(.+?)" (?:dates the text|reads as advice)/', $note, $m)
+    if (!preg_match('/^(Intro|Explanation|Meta title|Meta description): "(.+?)" (?:dates the text|reads as advice|is a hedge)/', $note, $m)
         || !isset($fieldText[$m[1]])) {
         return $note;
     }

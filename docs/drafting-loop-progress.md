@@ -105,7 +105,11 @@ Pension Tax Relief, VAT Rates and Thresholds, Premium Bonds, Lifetime ISA, Corpo
 
 ## 10. Next steps, in order
 
-1. **Build three program checks** (run the code in Claude Code this time): typed figures below 10, including percentages and an equal-to-card match; banned hedge words (L28); a unit repeated after a placeholder (L38). Add them to the findings and to `fixRejects()` so Propose fix cannot reintroduce them.
+1. **Three program checks: done (21 Nov 2026), in `includes/text-checks.php`.** All run inside `quickTextChecks()`, so the editor, the drafting loop and `fixRejects()` (through `draftScore()`) all see them, and Propose fix cannot reintroduce them.
+   - *Small typed figures (L34):* `typedNumbers()` now counts a whole number under 10 when it is a percentage ("2%", "2 per cent") or money ("£5"). Plain small numbers ("Plan 2", "3 steps") are still ignored. The existing equal-to-card and rate-page rules then apply to it.
+   - *Hedge words (L28):* "usually", "mostly", "generally" (`HEDGE_WORDS`). In the drafting loop and Propose fix, a hedge is flagged only if no source text contains it, because L9 says to keep a source's own hedge. In the editor's quick check (no sources read) it is flagged with "keep it only if a source says it".
+   - *Unit repeated after a placeholder (L38):* `placeholderUnitRepeats()` works out what each placeholder shows. It flags "{fact:x} years" where it shows "35 years", "{fact:x} a mile", "{fact:x}%", and "£{fact:x}" where it shows "£...".
+   - The draft checklist (`DRAFT_CHECKLIST`) tells the writer about all three up front.
 2. **Investigate the ffl-sources spike**: cron, `check-sources.php` output, any extra manual runs on 20 and 21 Nov.
 3. **Top up the balance** before continuing the queue.
 4. **Keep nightly drafting paused.** Review time is the bottleneck, and drafts that wait go stale. If it resumes, set `DRAFTS_PER_NIGHT` to the real daily rate.

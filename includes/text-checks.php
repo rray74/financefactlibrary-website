@@ -21,6 +21,8 @@
  * Neither ever stops a save. (Invalid placeholders do; see placeholders.php.)
  */
 
+require_once __DIR__ . '/placeholders.php';  // PLACEHOLDER_PATTERN, parsePlaceholder() (the unit and typed-figure checks)
+require_once __DIR__ . '/functions.php';     // formatFactValue()
 require_once __DIR__ . '/ai-proposer.php';  // callClaude()
 require_once __DIR__ . '/source-pages.php'; // fetchPageText(), SKIP_SOURCE_URLS, readSourcePagesForFacts()
 require_once __DIR__ . '/lessons.php';       // writingGuidanceText(): house style and lessons
@@ -109,6 +111,10 @@ function factLabelNumbers(array $fact): array
  * anything in a {placeholder} (fact keys like sl_plan2_threshold), typed
  * tax years (checked separately), whole numbers under 10 ("Plan 2",
  * "3 steps") and years from 1900 to 2100.
+ *
+ * Exception (lesson L34): a whole number under 10 IS counted when it is a percentage
+ * ("2%", "2 per cent") or an amount of money ("£5"). A typed "2%" is a figure that can
+ * change, and it used to get through because the check ignored every number under 10.
  */
 function typedNumbers(string $text): array
 {
@@ -116,15 +122,30 @@ function typedNumbers(string $text): array
     $text = preg_replace('#\b\d{4}\s*[/\x{2013}-]\s*\d{2}\b#u', ' ', $text);
 
     $numbers = [];
-    if (preg_match_all('/(?<![\w.])\d[\d,]*(?:\.\d+)?/', $text, $m)) {
-        foreach ($m[0] as $written) {
+    if (preg_match_all('/(?<![\w.])\d[\d,]*(?:\.\d+)?/', $text, $m, PREG_OFFSET_CAPTURE)) {
+        foreach ($m[0] as [$written, $offset]) {
             // A number at the end of a clause picks up its comma or full stop.
             $written = rtrim($written, ',.');
             $plain = str_replace(',', '', $written);
             $value = (float) $plain;
             $isSmallWhole = $value < 10 && strpos($plain, '.') === false;
             $isYear = strpos($plain, '.') === false && $value >= 1900 && $value <= 2100;
-            if (!$isSmallWhole && !$isYear) {
+
+            // A small whole number is only a "figure" when it is a percentage or money.
+            if ($isSmallWhole) {
+                $after = substr($text, $offset + strlen($written), 12);
+                $before = substr($text, max(0, $offset - 4), min(4, $offset));
+                $isPercent = (bool) preg_match('/^\s?(?:%|per\s?cent\b)/i', $after);
+                $isMoney = preg_match('/([\x{00A3}$\x{20AC}])\s?$/u', $before, $sign);
+                // Written with its symbol ("2%", "£5") so a note shows what the reader sees.
+                if ($isPercent) {
+                    $numbers[$written . '%'] = $plain;
+                } elseif ($isMoney) {
+                    $numbers[$sign[1] . $written] = $plain;
+                }
+                continue;
+            }
+            if (!$isYear) {
                 $numbers[$written] = $plain;
             }
         }
@@ -495,6 +516,103 @@ function countryCodeOfFacts(array $facts): string
     return '';
 }
 /**
+ * Hedge words the house style does not allow on the AI's own initiative (lesson L28). The
+ * sources' own hedges stay (lesson L9: keep the source's hedge strength), so a word here is
+ * only flagged when no source text contains it: see hedgeWordsToFlag().
+ */
+const HEDGE_WORDS = ['usually', 'mostly', 'generally'];
+
+/**
+ * The hedge words (HEDGE_WORDS) in a text that should be flagged.
+ *
+ * $sourceTexts  the page's source texts, when they have been read (the drafting loop and Propose
+ *               fix have them). A hedge a source also uses is kept, as lesson L9 asks, so it is
+ *               not returned. When null (the editor's quick check on saved text reads no sources),
+ *               every hedge is returned, and the note tells the reader to keep it only if a source says it.
+ */
+function hedgeWordsToFlag(string $text, ?array $sourceTexts = null): array
+{
+    $found = [];
+    foreach (HEDGE_WORDS as $word) {
+        if (!preg_match('/\b' . $word . '\b/i', $text)) {
+            continue;
+        }
+        $inSource = false;
+        foreach ($sourceTexts ?? [] as $source) {
+            if (preg_match('/\b' . $word . '\b/i', (string) $source)) {
+                $inSource = true;
+                break;
+            }
+        }
+        if (!$inSource) {
+            $found[] = $word;
+        }
+    }
+    return $found;
+}
+
+/**
+ * Units written twice (lesson L38). A placeholder shows its unit already: {fact:x} for a figure
+ * with the unit "years" shows "35 years", so "{fact:x} years" reads "35 years years". The same
+ * goes for a pound sign before a placeholder that shows "\u00a3..." and a "%" or "per cent" after
+ * one that shows "...%". Returns one sentence per repeat.
+ *
+ * $facts  the page's published facts, to know what each placeholder shows.
+ */
+function placeholderUnitRepeats(string $text, array $facts): array
+{
+    $byKey = [];
+    foreach ($facts as $fact) {
+        $byKey[$fact['fact_key']] = $fact;
+    }
+
+    $notes = [];
+    if (!preg_match_all(PLACEHOLDER_PATTERN, $text, $m, PREG_SET_ORDER | PREG_OFFSET_CAPTURE)) {
+        return $notes;
+    }
+    foreach ($m as $match) {
+        $parsed = parsePlaceholder(trim($match[1][0]));
+        if ($parsed === null || $parsed['type'] !== 'fact' || !isset($byKey[$parsed['key']])) {
+            continue;
+        }
+        $shown = formatFactValue($byKey[$parsed['key']]);
+        $token = $match[0][0];
+        $start = $match[0][1];
+        $after = substr($text, $start + strlen($token), 40);
+        $before = substr($text, max(0, $start - 4), min(4, $start));
+
+        // A currency sign typed before a placeholder that already starts with it.
+        if (preg_match('/^([\x{00A3}$\x{20AC}])/u', $shown, $sign) && preg_match('/' . preg_quote($sign[1], '/') . '\s?$/u', $before)) {
+            $notes[] = $sign[1] . $token . ' repeats the ' . $sign[1] . ' sign: ' . $token . ' already shows "' . $shown . '"';
+            continue;
+        }
+        // A percent sign (or "per cent") after a placeholder that already ends with %.
+        if (substr($shown, -1) === '%' && preg_match('/^\s?(?:%|per\s?cent\b)/i', $after)) {
+            $notes[] = $token . ' already shows "' . $shown . '", so the "%" or "per cent" after it repeats the unit';
+            continue;
+        }
+        // A word unit after a placeholder that already ends with it: "35 years", "45p a mile".
+        // The unit is whatever follows the number in what the placeholder shows, and the text
+        // after the placeholder may repeat all of it or just its end ("a mile", "mile", "miles").
+        if (preg_match('/\d[\d,.]*\s*([A-Za-z][A-Za-z ]{1,24})$/', $shown, $tail)) {
+            $words = preg_split('/\s+/', trim($tail[1]));
+            $lastWord = preg_replace('/s$/i', '', $words[count($words) - 1]);
+            if (strlen($lastWord) >= 3) {
+                for ($i = 0; $i < count($words); $i++) {
+                    $suffix = implode(' ', array_slice($words, $i));
+                    $suffix = preg_replace('/s$/i', '', $suffix); // allow a plural: mile / miles
+                    if (preg_match('/^\s*' . preg_quote($suffix, '/') . 's?\b/i', $after)) {
+                        $notes[] = $token . ' already shows "' . $shown . '", so the "' . trim($suffix) . '" after it repeats the unit';
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return $notes;
+}
+
+/**
  * House style rules checked exactly, on the text as typed (placeholders
  * not filled in). Returns a list of sentences, one per problem.
  *
@@ -503,8 +621,10 @@ function countryCodeOfFacts(array $facts): string
  * $countryCode  the country's code (GB, AU...), for that country's own rules in
  *          COUNTRY_TEXT_RULES. When it isn't given (the editor's checks on a saved
  *          page don't pass it) it is read from the page's figures.
+ * $sourceTexts  the page's source texts, if they have been read (see hedgeWordsToFlag()). The
+ *          editor's quick check passes none.
  */
-function quickTextChecks(array $fields, array $facts, ?string $countryCode = null): array
+function quickTextChecks(array $fields, array $facts, ?string $countryCode = null, ?array $sourceTexts = null): array
 {
     $published = array_values(array_filter($facts, fn($f) => ($f['status'] ?? 'published') === 'published'));
 
@@ -615,6 +735,20 @@ function quickTextChecks(array $fields, array $facts, ?string $countryCode = nul
         if ($dating) {
             $notes[] = "$label: \"" . implode('", "', array_unique($dating)) . '" dates the text. '
                 . 'The house style avoids these words, since pages are read for years.';
+        }
+
+        // --- Hedge words the AI adds on its own (lesson L28). ---
+        $hedges = hedgeWordsToFlag($text, $sourceTexts);
+        if ($hedges) {
+            $notes[] = "$label: \"" . implode('", "', $hedges) . '" is a hedge. '
+                . ($sourceTexts === null
+                    ? 'Keep it only if a source page says it too (lessons L9, L28); otherwise say what the rule is.'
+                    : 'No source page says it, so it is the writer\'s own hedge (lesson L28). Say what the rule is, or what the source says.');
+        }
+
+        // --- A unit written twice around a placeholder (lesson L38). ---
+        foreach (placeholderUnitRepeats($text, $published) as $repeat) {
+            $notes[] = "$label: $repeat. A placeholder includes its unit (lesson L38).";
         }
 
         // --- Advice. ---
