@@ -46,6 +46,11 @@ $editsNotLookedAt = countPendingEditRecords(getDbConnection());
 // Only the top of the list is shown; the count covers all of it.
 $writingQueue = getWritingQueue();
 
+// True while nightly drafting is switched off (DRAFTS_PAUSED in config/database.local.php,
+// see scripts/draft-pages.php). The queue wording below must not promise an overnight
+// draft that isn't coming. Pages can still be drafted by hand while it's paused.
+$draftsPaused = defined('DRAFTS_PAUSED') && DRAFTS_PAUSED;
+
 // Two groups, so everything with an AI draft ready is together at the top:
 // the pages to work on now. The waiting pages follow. Each keeps the order
 // getWritingQueue() gives (most-searched first, which is also the order the
@@ -301,7 +306,14 @@ include __DIR__ . '/../../includes/admin-nav.php';
     <p class="opacity-70 text-xs mb-2">Open one, use the draft under each field, and rewrite it in your own words.</p>
     <?php printWritingQueueTable($writingQueueReady); ?>
     <?php else: ?>
-    <p class="opacity-70 text-sm">No drafts are ready. The nightly job makes the next batch at 05:00.</p>
+    <p class="opacity-70 text-sm">
+        <?php if ($draftsPaused): ?>
+        No drafts are ready. Nightly drafting is paused, so none will appear overnight. Open a page and click
+        Draft and polish in the background to make one.
+        <?php else: ?>
+        No drafts are ready. The nightly job makes the next batch at 05:00.
+        <?php endif; ?>
+    </p>
     <?php endif; ?>
 
     <?php // Pages still waiting for a draft, in the order the nightly job takes them. ?>
@@ -310,7 +322,12 @@ include __DIR__ . '/../../includes/admin-nav.php';
         Waiting for a draft (<?= count($writingQueueWaiting) ?>)
     </h3>
     <p class="opacity-70 text-xs mb-2">
+        <?php if ($draftsPaused): ?>
+        Nightly drafting is paused. This is the order it will take them in when it is switched on again.
+        You can open any page now and click Draft and polish in the background.
+        <?php else: ?>
         Drafted overnight, in this order. You can also open any page and click Draft this page.
+        <?php endif; ?>
     </p>
     <?php printWritingQueueTable(array_slice($writingQueueWaiting, 0, WRITING_QUEUE_WAITING_SHOWN)); ?>
     <?php if (count($writingQueueWaiting) > WRITING_QUEUE_WAITING_SHOWN): ?>
