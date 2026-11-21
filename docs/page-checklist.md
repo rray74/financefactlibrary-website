@@ -36,7 +36,10 @@ needed for.
    `php scripts/import-reference-sources.php --dry-run <file>` (see
    `data/imports/reference-sources-2026-11.csv`). The AI check, Propose fix and the
    drafting loop then read it, so correct text isn't flagged as unsupported.
-   `--list=<slug>` shows a page's reference sources. Read the page first with
+   A page much longer than 50,000 characters (a Bank of England Monetary Policy
+   Report is about 177,000) is cut there, so give the row an `excerpt_from` phrase
+   from the page: it is read from just before that phrase, and the importer refuses
+   a phrase that isn't on the page. `--list=<slug>` shows a page's reference sources. Read the page first with
    `scripts/read-source.php` and use only what it says.
 
 4. **Check with AI once**, then **Propose fixes for all findings**. Read each

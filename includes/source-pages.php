@@ -133,19 +133,49 @@ function getReferenceSourcesForSubject(int $subjectId): array
     if ($subjectId <= 0) {
         return [];
     }
+    $pdo = null;
     try {
-        $stmt = getDbConnection()->prepare(
-            'SELECT src.url, src.publisher, r.note
-             FROM subject_reference_sources r
-             JOIN sources src ON src.id = r.source_id
-             WHERE r.subject_id = :id
-             ORDER BY r.created_at, src.id'
-        );
-        $stmt->execute(['id' => $subjectId]);
-        return $stmt->fetchAll();
+        $pdo = getDbConnection();
     } catch (Throwable $e) {
         return [];
     }
+    // excerpt_from (migration 031) says where to start reading a long page. A database that has not
+    // run 031 yet has no such column, so fall back to the query without it.
+    foreach (['r.excerpt_from', 'NULL'] as $excerptColumn) {
+        try {
+            $stmt = $pdo->prepare(
+                "SELECT src.url, src.publisher, r.note, $excerptColumn AS excerpt_from
+                 FROM subject_reference_sources r
+                 JOIN sources src ON src.id = r.source_id
+                 WHERE r.subject_id = :id
+                 ORDER BY r.created_at, src.id"
+            );
+            $stmt->execute(['id' => $subjectId]);
+            return $stmt->fetchAll();
+        } catch (Throwable $e) {
+            // Try the next form of the query.
+        }
+    }
+    return [];
+}
+
+/**
+ * The part of a page's text to use when a reference source says where to start reading
+ * (excerpt_from, migration 031): from a little before the first place the phrase appears,
+ * ignoring capitals and spacing. Returns the text unchanged if no phrase is given or it is not
+ * found, so a changed page can never make a source silently read nothing.
+ */
+function textFromExcerpt(string $text, ?string $excerptFrom): string
+{
+    $phrase = trim(preg_replace('/\s+/u', ' ', (string) $excerptFrom));
+    if ($phrase === '') {
+        return $text;
+    }
+    $position = mb_stripos($text, $phrase);
+    if ($position === false) {
+        return $text;
+    }
+    return mb_substr($text, max(0, $position - 300));
 }
 
 /**
@@ -178,21 +208,22 @@ function readSourcePagesForFacts(array $facts, int $maxCharsEach = 50000, int $s
     // The pages to read: each card's source, then the page's reference sources.
     $toRead = [];
     foreach ($facts as $fact) {
-        $toRead[] = [$fact['source_url'] ?? null, $fact['source_name'] ?? null, false];
+        $toRead[] = [$fact['source_url'] ?? null, $fact['source_name'] ?? null, false, null];
     }
     foreach (getReferenceSourcesForSubject($subjectId) as $reference) {
-        $toRead[] = [$reference['url'], $reference['publisher'], true];
+        $toRead[] = [$reference['url'], $reference['publisher'], true, $reference['excerpt_from'] ?? null];
     }
 
-    foreach ($toRead as [$url, $name, $isReference]) {
+    foreach ($toRead as [$url, $name, $isReference, $excerptFrom]) {
         if (!$url || isset($sources[$url]) || in_array($url, SKIP_SOURCE_URLS, true)) {
             continue;
         }
         $sources[$url] = ['name' => $name ?: $url, 'url' => $url, 'read' => false, 'error' => null, 'hash' => null, 'reference' => $isReference];
         try {
             $text = fetchPageText($url);
-            $sources[$url]['hash'] = hash('sha256', $text);
-            $texts[$url] = preg_match('/^.{0,' . $maxCharsEach . '}/su', $text, $m) ? $m[0] : $text;
+            $sources[$url]['hash'] = hash('sha256', $text); // of the whole page, whatever part is used
+            $used = textFromExcerpt($text, $excerptFrom);
+            $texts[$url] = preg_match('/^.{0,' . $maxCharsEach . '}/su', $used, $m) ? $m[0] : $used;
             $sources[$url]['read'] = true;
         } catch (Throwable $e) {
             $sources[$url]['error'] = $e->getMessage();

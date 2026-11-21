@@ -23,6 +23,10 @@
  *   source_name    the publisher, for a page the site has not seen before (optional)
  *   action         add (the default) or remove
  *   note           what the page is used for, for people reading the list (optional, 255 characters)
+ *   excerpt_from   a phrase from the page, for a LONG page: it is read from a little before the first
+ *                  place the phrase appears, so a passage past the 50000-character limit is seen
+ *                  (migration 031). Capitals and spacing are ignored. Optional. The page must contain
+ *                  the phrase, or the row is refused. Giving it for a source already linked updates it
  *
  * Safe to run again: a source already linked to the page is reported and left alone.
  *
@@ -126,6 +130,10 @@ while (($cells = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
         $url = $row['source_url'];
         $action = strtolower($row['action'] ?? '') ?: 'add';
         $note = $row['note'] ?? '';
+        $excerptFrom = trim(preg_replace('/\s+/u', ' ', (string) ($row['excerpt_from'] ?? '')));
+        if (strlen($excerptFrom) > 255) {
+            throw new RuntimeException('excerpt_from is longer than 255 characters');
+        }
         if ($slug === '' || $url === '') {
             throw new RuntimeException('subject_slug and source_url are both required');
         }
@@ -192,6 +200,29 @@ while (($cells = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
         );
         $stmt->execute(['sid' => $subjectId, 'url' => $url]);
         if ($stmt->fetchColumn()) {
+            // Already linked. A new excerpt_from for it is applied, anything else is left alone.
+            $current = $pdo->prepare(
+                'SELECT r.excerpt_from FROM subject_reference_sources r JOIN sources src ON src.id = r.source_id
+                 WHERE r.subject_id = :sid AND src.url = :url'
+            );
+            $current->execute(['sid' => $subjectId, 'url' => $url]);
+            $currentExcerpt = (string) $current->fetchColumn();
+            if ($excerptFrom !== '' && $excerptFrom !== $currentExcerpt) {
+                if (!$noCheck) {
+                    $text = fetchPageText($url);
+                    if (mb_stripos($text, $excerptFrom) === false) {
+                        throw new RuntimeException("excerpt_from '$excerptFrom' is not on that page");
+                    }
+                }
+                if (!$dryRun) {
+                    $pdo->prepare('UPDATE subject_reference_sources r JOIN sources src ON src.id = r.source_id
+                                   SET r.excerpt_from = :ex WHERE r.subject_id = :sid AND src.url = :url')
+                        ->execute(['ex' => $excerptFrom, 'sid' => $subjectId, 'url' => $url]);
+                }
+                $stats['added']++;
+                echo "Row $rowNumber: " . ($dryRun ? 'WOULD set' : 'set') . " excerpt_from for $url on $slug\n";
+                continue;
+            }
             $stats['unchanged']++;
             echo "Row $rowNumber: $slug already has $url\n";
             continue;
@@ -203,6 +234,9 @@ while (($cells = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
             try {
                 $text = fetchPageText($url);
                 $readNote = ' (read ' . number_format(strlen($text)) . ' characters)';
+                if ($excerptFrom !== '' && mb_stripos($text, $excerptFrom) === false) {
+                    throw new RuntimeException("excerpt_from '$excerptFrom' is not on that page");
+                }
             } catch (Throwable $e) {
                 throw new RuntimeException("the site could not read that page: " . $e->getMessage()
                     . ' (--no-check skips this test)');
@@ -211,8 +245,9 @@ while (($cells = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
 
         if (!$dryRun) {
             $sourceId = getOrCreateSource($pdo, $url, (($row['source_name'] ?? '') ?: null), $subjects[0]['country_id'] !== null ? (int) $subjects[0]['country_id'] : null);
-            $pdo->prepare('INSERT IGNORE INTO subject_reference_sources (subject_id, source_id, note) VALUES (:sid, :src, :note)')
-                ->execute(['sid' => $subjectId, 'src' => $sourceId, 'note' => $note !== '' ? $note : null]);
+            $pdo->prepare('INSERT IGNORE INTO subject_reference_sources (subject_id, source_id, note, excerpt_from) VALUES (:sid, :src, :note, :ex)')
+                ->execute(['sid' => $subjectId, 'src' => $sourceId, 'note' => $note !== '' ? $note : null,
+                           'ex' => $excerptFrom !== '' ? $excerptFrom : null]);
         }
         $stats['added']++;
         echo "Row $rowNumber: " . ($dryRun ? 'WOULD add' : 'added') . " $url to $slug$readNote\n";

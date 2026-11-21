@@ -20,7 +20,7 @@ New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
 | `public/` | Web root: pages, `admin/` editor, `assets/` |
 | `includes/` | Shared PHP: AI drafting/polish/fixes (`ai-*.php`), text checks, jobs (`jobs.php`, `job-handlers/`), placeholders, source fetching |
 | `scripts/` | CLI scripts: `check-bank-rate.php`, `triage-page-text.php`, `import-reference-sources.php`, `import-facts.php`, `import-page-text.php`, `export-page-text.php`, `read-source.php`, `check-sources.php`, `check-page-text.php`, `run-jobs.php`, `run-polish-jobs.php`, `draft-pages.php`, `send-alerts.php`, `fetch-boe-rates.php`, `migrate.php` |
-| `sql/migrations/` | Schema changes only. Next free number: **031** (check the folder before using) |
+| `sql/migrations/` | Schema changes only. Next free number: **032** (check the folder before using) |
 | `data/imports/` | Content CSVs (figures, page text) |
 | `config/` | `database.php` plus `database.local.php` (secrets: never read or committed) |
 | `docs/` | Handover, costs, house style, content maps |
