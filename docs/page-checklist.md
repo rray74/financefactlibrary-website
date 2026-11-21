@@ -45,7 +45,8 @@ needed for.
 
 8. **Save**, hard-refresh the live page (Cmd+Shift+R), then "Look for lessons".
    Approve a lesson only if it is general and doesn't contradict the house
-   style. Lessons can't be edited: retire the old one and add the new one.
+   style. Lessons are edited in place ("Edit the wording" on the lessons
+   page); deleting lessons is on hold.
 
 9. **Note the time and the cost.** The job's "AI use" line, and the "AI use"
    line in the message after each Propose fix button, give tokens and an
