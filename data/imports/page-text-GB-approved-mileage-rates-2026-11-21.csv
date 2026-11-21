@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,work-expenses,approved-mileage-rates,Approved Mileage Rates,"The tax-free mileage rates employers can pay when you use your own car, motorcycle or bicycle for business journeys, and how the car rate works for tax and National Insurance.","## Employers can pay up to the approved amount without reporting it
+
+When you use your own vehicle for business journeys and your employer pays you for it, that payment is a mileage allowance payment. There is an approved amount for these payments, based on your business miles and the type of vehicle, and an employer can pay up to it without reporting the payments to HM Revenue and Customs (HMRC).
+
+## For cars, the rate can differ between tax and National Insurance
+
+For tax, the first 10,000 business miles in a tax year are covered at {fact:amap_car_first_10000}, and each mile after that at {fact:amap_car_after_10000}.
+
+National Insurance works differently. The higher rate of {fact:amap_car_first_10000} applies to all business miles for National Insurance purposes, with no drop after 10,000 miles. The two calculations can therefore give different figures for the same mileage.
+
+## If your employer pays less, you can claim the difference
+
+If your employer pays you less than the approved amount for your business miles, you can claim tax relief on the difference from HMRC through Mileage Allowance Relief. Only business journeys count. Commuting to and from your normal workplace does not qualify, though a trip to a temporary workplace can.
+
+## Company car fuel rates are a separate set of figures
+
+Advisory fuel rates apply when an employer provides the company car, not when you use your own vehicle. They vary with engine size and fuel type, and electric cars have their own rates.",Approved Mileage Rates: {fact:amap_car_first_10000},"HMRC approved mileage rates for {tax_year}: {fact:amap_car_first_10000} for the first 10,000 car miles, plus motorcycle and bicycle rates and the National Insurance rule.",2026-11-09 21:42:54,2026-11-21 19:52:12
