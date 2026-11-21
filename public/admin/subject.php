@@ -891,11 +891,14 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <p class="text-xs opacity-70 mb-2">
                 The search result headline. " — Finance Fact Library" is added after it, so aim for
                 42 characters or fewer to keep the whole title within about 60. Blank uses the
-                subject name.
+                subject name. The page can hold <?= SUBJECT_META_TITLE_COLUMN_MAX ?> characters as typed,
+                with placeholders counted as written.
             </p>
-            <input type="text" id="meta_title" name="meta_title" maxlength="255"
+            <?php // No maxlength: a browser trims pasted text to it without saying. The counter below warns, and the server refuses text over SUBJECT_META_TITLE_COLUMN_MAX. ?>
+            <input type="text" id="meta_title" name="meta_title"
                 class="input input-bordered w-full" value="<?= e($form['meta_title']) ?>"
                 placeholder="<?= e($fallbackTitle) ?>" data-counter="meta-title-count" data-limit="42"
+                data-column-limit="<?= SUBJECT_META_TITLE_COLUMN_MAX ?>"
                 data-preview="meta-title-preview">
             <p id="meta-title-count" class="text-xs opacity-60 mt-1"></p>
             <?php // Filled in by the script below when the title uses placeholders. ?>
@@ -907,11 +910,16 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <label for="meta_description" class="block font-semibold mb-1">Meta description</label>
             <p class="text-xs opacity-70 mb-2">
                 The search result snippet. Anything over 160 characters is cut short on the
-                page, so aim for 140 to 155. Blank uses the intro.
+                page, so aim for 140 to 155. Blank uses the intro. The page can hold
+                <?= SUBJECT_META_DESCRIPTION_COLUMN_MAX ?> characters as typed, with placeholders counted as
+                written ({fact:cgt_annual_exempt_amount} is 31 characters although it shows "£3,000"), and
+                text over that is refused on save.
             </p>
-            <textarea id="meta_description" name="meta_description" rows="3" maxlength="255"
+            <?php // No maxlength, as for the title. The database holds SUBJECT_META_DESCRIPTION_COLUMN_MAX characters as typed. ?>
+            <textarea id="meta_description" name="meta_description" rows="3"
                 class="textarea textarea-bordered w-full" placeholder="<?= e($fallbackDescription) ?>"
                 data-counter="meta-description-count" data-limit="155" data-min="140"
+                data-column-limit="<?= SUBJECT_META_DESCRIPTION_COLUMN_MAX ?>"
                 data-preview="meta-description-preview"><?= e($form['meta_description']) ?></textarea>
             <p id="meta-description-count" class="text-xs opacity-60 mt-1"></p>
             <p id="meta-description-preview" class="text-xs mt-1"></p>
@@ -1569,6 +1577,9 @@ include __DIR__ . '/../../includes/admin-nav.php';
         var output = document.getElementById(field.dataset.counter);
         var limit = field.dataset.limit ? parseInt(field.dataset.limit, 10) : null;
         var min = field.dataset.min ? parseInt(field.dataset.min, 10) : null;
+        // data-column-limit: how much the database column holds, counted AS TYPED (placeholders as their
+        // typed characters). Text over it is refused on save, because the database would cut it off.
+        var columnLimit = field.dataset.columnLimit ? parseInt(field.dataset.columnLimit, 10) : null;
         var preview = field.dataset.preview ? document.getElementById(field.dataset.preview) : null;
 
         function update() {
@@ -1584,8 +1595,17 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 var range = min && limit ? min + ' to ' + limit : (limit ? limit + ' or fewer' : null);
                 output.textContent = length + ' characters' + (hasPlaceholders ? ' with figures filled in' : '')
                     + (range ? ' (aim for ' + range + ')' : '');
-                output.classList.toggle('text-error',
-                    raw !== '' && ((limit !== null && length > limit) || (min !== null && length < min)));
+                var typedLength = Array.from(raw).length;
+                var overColumn = columnLimit !== null && typedLength > columnLimit;
+                if (overColumn) {
+                    output.textContent += '. AS TYPED it is ' + typedLength + ' characters, over the ' + columnLimit
+                        + ' the page can hold, so it cannot be saved: the end would be cut off. Shorten it, or use fewer or shorter placeholders.';
+                } else if (columnLimit !== null && hasPlaceholders && typedLength > columnLimit - 20) {
+                    output.textContent += '. As typed, with the placeholders as written, it is ' + typedLength
+                        + ' of the ' + columnLimit + ' the page can hold.';
+                }
+                output.classList.toggle('text-error', overColumn ||
+                    (raw !== '' && ((limit !== null && length > limit) || (min !== null && length < min))));
             }
 
             if (preview) {

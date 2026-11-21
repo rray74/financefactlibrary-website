@@ -542,14 +542,10 @@ function updateSubjectDetails(PDO $pdo, int $subjectId, array $fields): void
     if (!in_array($status, SUBJECT_STATUSES, true)) {
         throw new RuntimeException('Choose a status: draft, published or retired.');
     }
-    // 255 is a hard stop to fit the database column. The editor's
-    // counters show the much shorter lengths search results actually use.
-    if (textLength($metaTitle) > 255) {
-        throw new RuntimeException('Meta title is too long (255 characters at most).');
-    }
-    if (textLength($metaDescription) > 255) {
-        throw new RuntimeException('Meta description is too long (255 characters at most).');
-    }
+    // The columns hold 100 and 200 characters (SUBJECT_META_*_COLUMN_MAX, migration 005), counted as
+    // typed. This used to allow 255, so a description of 201 to 255 characters "saved" and the database
+    // silently cut it off mid-word. The editor's counters show the shorter lengths search results use.
+    assertMetaFitsColumns($metaTitle, $metaDescription);
     // Far more than a page needs (about 3,000 words), but stops a stray
     // paste of a whole document.
     if (textLength($explanation) > 20000) {

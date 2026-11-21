@@ -50,6 +50,38 @@ const COUNTRY_TAX_YEARS = [
  * placeholder, so a typo like {fact:Personal Allowance} is caught on save
  * rather than shown to readers.
  */
+/**
+ * How much meta text a page can hold, in characters, counted AS TYPED: a placeholder such as
+ * {fact:cgt_annual_exempt_amount} counts as its 31 typed characters, not as the "£3,000" it shows.
+ * These are the sizes of the subjects.meta_title and subjects.meta_description columns
+ * (migration 005). The database here is not in strict mode, so text over the limit is not refused:
+ * it is silently CUT OFF, mid-word. That happened on 21 Nov 2026 to the Capital Gains Tax and Child
+ * Benefit descriptions, because the editor allowed 255. These are different from the search-result
+ * lengths in text-checks.php (title 42 or fewer, description 140 to 155, counted with figures filled in).
+ */
+const SUBJECT_META_TITLE_COLUMN_MAX = 100;
+const SUBJECT_META_DESCRIPTION_COLUMN_MAX = 200;
+
+/**
+ * Refuse meta text that would be cut off by the database column (see the constants above).
+ * Throws a RuntimeException that says which field, how long it is as typed, and what to do. Lengths
+ * are in characters, so £ counts as one. Null and empty are fine.
+ */
+function assertMetaFitsColumns(?string $metaTitle, ?string $metaDescription): void
+{
+    foreach ([['Meta title', $metaTitle, SUBJECT_META_TITLE_COLUMN_MAX],
+              ['Meta description', $metaDescription, SUBJECT_META_DESCRIPTION_COLUMN_MAX]] as [$label, $text, $max]) {
+        $length = $text === null ? 0 : (int) preg_match_all('/./su', $text);
+        if ($length > $max) {
+            throw new RuntimeException(
+                "$label is $length characters as typed, over the $max the page can hold, so the end would be cut off. "
+                . 'Placeholders count as typed, so a long one such as {fact:cgt_annual_exempt_amount} uses a lot of the room. '
+                . 'Shorten it, or use fewer or shorter placeholders'
+            );
+        }
+    }
+}
+
 const PLACEHOLDER_PATTERN = '/\{([^{}\n]{1,100})\}/';
 
 /**

@@ -58,8 +58,8 @@ require_once __DIR__ . '/../includes/placeholders.php';
 const PAGE_TEXT_FIELDS = [
     'intro'            => ['label' => 'Intro',            'limit' => null],
     'explanation'      => ['label' => 'Explanation',      'limit' => null],
-    'meta_title'       => ['label' => 'Meta title',       'limit' => 100],
-    'meta_description' => ['label' => 'Meta description', 'limit' => 200],
+    'meta_title'       => ['label' => 'Meta title',       'limit' => SUBJECT_META_TITLE_COLUMN_MAX],
+    'meta_description' => ['label' => 'Meta description', 'limit' => SUBJECT_META_DESCRIPTION_COLUMN_MAX],
 ];
 
 // ---------------------------------------------------------------

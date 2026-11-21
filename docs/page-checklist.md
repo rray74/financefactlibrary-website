@@ -61,7 +61,12 @@ needed for.
 7. **Read the intro and meta description against the headings.** Nothing may be
    promised that the page doesn't cover; a topic the cards show counts as
    covered. Meta description 140 to 155 characters, meta title 42 or fewer, no
-   Oxford comma (UK style).
+   Oxford comma (UK style). Those lengths are counted with the figures filled in.
+   The database column also limits the text AS TYPED, placeholders counted as
+   written: 200 characters for the description, 100 for the title. Over that is
+   refused on save and by the importers (the database would cut it off mid-word,
+   as it did on the Capital Gains Tax and Child Benefit descriptions), and a
+   description of exactly 200 may already have been cut off.
 
 8. **Save**, hard-refresh the live page (Cmd+Shift+R), then "Look for lessons".
    Approve a lesson only if it is general and doesn't contradict the house

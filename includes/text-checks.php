@@ -663,6 +663,21 @@ function quickTextChecks(array $fields, array $facts, ?string $countryCode = nul
         }
         $isMeta = in_array($field, ['meta_title', 'meta_description'], true);
 
+        // --- Meta text and the size of its database column (SUBJECT_META_*_COLUMN_MAX). ---
+        // Over the limit: a draft that would be cut off if used. Exactly at it: text saved before the
+        // editor checked this may already have been cut off, as two descriptions were on 21 Nov 2026.
+        $columnMax = ['meta_title' => SUBJECT_META_TITLE_COLUMN_MAX, 'meta_description' => SUBJECT_META_DESCRIPTION_COLUMN_MAX][$field] ?? null;
+        if ($columnMax !== null) {
+            $typedLength = (int) preg_match_all('/./su', trim($text));
+            if ($typedLength > $columnMax) {
+                $notes[] = "$label: $typedLength characters as typed (placeholders count as typed), over the $columnMax "
+                    . 'the page can hold, so the end would be cut off. Shorten it or use fewer or shorter placeholders.';
+            } elseif ($typedLength === $columnMax) {
+                $notes[] = "$label: exactly $columnMax characters as typed, the most the page can hold, so it may have been cut off. "
+                    . 'Check that it ends where you meant.';
+            }
+        }
+
         // --- Typed numbers. ---
         $unmatched = [];
         foreach (typedNumbers($text) as $written => $plain) {

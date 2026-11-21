@@ -259,6 +259,8 @@ while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
                 'subject_meta_title'       => $get('subject_meta_title'),
                 'subject_meta_description' => $get('subject_meta_description'),
             ]);
+            // And the meta text must fit its columns: the database would cut it off, not refuse it.
+            assertMetaFitsColumns($get('subject_meta_title'), $get('subject_meta_description'));
             if (!isset($subjectCache[$subjectSlug])) {
                 // A page this row creates starts with the row's subject_status,
                 // so staged pages are born as drafts (see getOrCreateSubject()).
