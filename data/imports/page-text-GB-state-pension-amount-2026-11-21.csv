@@ -1,0 +1,36 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,pensions,state-pension,state-pension-amount,State Pension Amount,"How much State Pension you can get under the basic scheme and the one that replaced it, what counts as a qualifying year, and how deferring your claim can raise your weekly payment.","## Your birth date and sex decide which State Pension you get
+
+Which scheme pays you depends on when you were born. Men born from 6 April 1951 and women born from 6 April 1953 onwards fall under the State Pension introduced in 2016. People born before those dates get the basic State Pension instead, and may also be entitled to Additional State Pension. The full weekly rate of the basic scheme is {fact:basic_state_pension_full_weekly}.
+
+Under the basic scheme, the qualifying years needed for the full amount depend on your sex and when you were born. The years needed are usually 44 for a man born before 1945 and 30 for a man born between 1945 and 1951. For a woman they are usually 39 if she was born before 1950 and 30 if she was born between 1950 and 1953. With fewer years, you get less than the full rate.
+
+## Your own amount can be lower or higher than the full rate
+
+The full amount under the 2016 scheme is {fact:new_state_pension_full_weekly} a week, but your amount depends on your National Insurance record. Contracting out before 2016 can also change it. Being **contracted out** meant that, for that period, extra money went into a workplace or private pension, paid by you or your employer, while a smaller share went towards your State Pension. For anyone in that position, the years needed for the full rate will usually be above {fact:nsp_qualifying_years_full}. If you have no National Insurance history before April 2016, {fact:nsp_qualifying_years_full} of qualifying record is enough for the full rate.
+
+Some people get more. A ""protected payment"" is added to the full rate for anyone who built up Additional State Pension before 2016 and would have done better under the earlier system.
+
+## Which years count towards your record
+
+You need at least {fact:nsp_qualifying_years_minimum} of qualifying record to get any State Pension under the 2016 scheme. A year qualifies if you were:
+
+- working and paying National Insurance
+- paying voluntary National Insurance contributions
+- receiving National Insurance credits, such as during unemployment, illness, or time as a parent or carer
+
+Living or working abroad, or paying reduced rate National Insurance as a married woman, may also let you qualify.
+
+## Deferring raises your pension, and the rules differ by scheme
+
+Under the 2016 State Pension, increased payments only start once you have put off claiming for at least {fact:sp_deferral_minimum_weeks}. After that, each block of 9 weeks you defer adds 1% to your weekly payment permanently. {fact:sp_deferral_increase_per_year} is the increase over a full year of deferral. Under the basic State Pension, each 5 weeks of deferral adds 1% instead.
+
+Under the 2016 State Pension, deferred pension can be paid as extra weekly payments, as a single arrears payment covering up to 52 weeks, or as a mix of the two. Anything beyond 52 weeks becomes extra weekly pension. No interest is added to arrears. Each year the extra amount usually goes up in line with the Consumer Prices Index (CPI), but some people living abroad do not get that increase. People living in Northern Ireland or abroad, including the Channel Islands and the Isle of Man, claim a deferred State Pension under the 2016 scheme in a different way.
+
+## How the pension rises each year
+
+Each year, both schemes go up by the highest of three measures: average earnings growth in Great Britain, CPI price growth, or a fixed minimum percentage. A protected payment rises in line with CPI.
+
+## The State Pension is taxable
+
+The State Pension counts towards your total income for Income Tax, so you pay tax on it if your total income is above your Personal Allowance.",State Pension Amount: {fact:new_state_pension_full_weekly},"The full State Pension is {fact:new_state_pension_full_weekly} a week for people on the post-2016 scheme. See who gets the old rate, qualifying years and how deferring works.",2026-11-12 22:01:30,2026-11-21 19:36:32
