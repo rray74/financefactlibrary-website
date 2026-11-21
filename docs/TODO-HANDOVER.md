@@ -83,7 +83,7 @@ From now on, the list lives in this file. Update it in the repo as items are don
   The importer refuses a future `effective_from`, so run it on or after the announcement day. The weekly job does not update Bank Rate.
 
 ### ISA reform page (Cash ISA Allowance, `cash-isa-allowance`)
-- [x] Card sources updated (21 Nov 2026) in `data/imports/isa-sources-2026-11.csv`: the £20,000 and £12,000 figures now cite GOV.UK's Tax-free savings newsletter 23 (September 2026); the Junior ISA £9,000 cites GOV.UK's Junior ISA page. Run on MAMP; run on the server after the push (`php scripts/import-facts.php data/imports/isa-sources-2026-11.csv`) and tick here once done.
+- [x] Card sources updated (21 Nov 2026) in `data/imports/isa-sources-2026-11.csv`: the £20,000 and £12,000 figures now cite GOV.UK's Tax-free savings newsletter 23 (September 2026); the Junior ISA £9,000 cites GOV.UK's Junior ISA page. Imported on MAMP and on the server (21 Nov 2026); sources confirmed on both.
 - [ ] Optional: find an official GOV.UK page that states people aged 65 and over can still put £20,000 into cash ISAs, then restore that line in the context text (newsletter 23 doesn't say it).
 - [ ] **After 6 April 2027:** revisit the page and change "due to come into force" to "in force".
 
