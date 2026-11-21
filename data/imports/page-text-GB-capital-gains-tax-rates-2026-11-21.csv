@@ -1,0 +1,32 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,investment-taxes,capital-gains-tax-rates,Capital Gains Tax Rates and Allowance,"How Capital Gains Tax rates are worked out from your income and gains, who pays the higher rate on everything, and how Business Asset Disposal Relief and its lifetime limit work.","## For basic rate taxpayers, your gain and your taxable income together set the rate
+
+If you pay Income Tax at the basic rate, the size of your gain and your taxable income together set the rate. Your taxable income here means what is left of your total income once the Personal Allowance and any other Income Tax reliefs that apply to you have been taken off.
+
+In practice the tax-free allowance comes off first: your total taxable gains less the allowance is the amount that gets taxed. That amount is stacked on top of your taxable income, and where it lands decides the rate. The part that fits under the top of the basic Income Tax band is charged at {fact:cgt_basic_rate}, and the part above it at {fact:cgt_higher_rate}.
+
+A gain can therefore be split between two rates. When it is, the tax-free allowance can be set against the portion taxed at the higher rate.
+
+## Some people pay the higher rate on all gains, unless Business Asset Disposal Relief applies
+
+Higher and additional rate taxpayers pay {fact:cgt_higher_rate} on their gains, with no basic rate slice. The gains of trustees, and of personal representatives of someone who has died, are also charged at {fact:cgt_higher_rate}.
+
+Gains that qualify for Business Asset Disposal Relief are taxed at {fact:cgt_badr_rate} instead, whether the person is a sole trader, a partner or a trustee.
+
+## Business Asset Disposal Relief stops at a lifetime limit
+
+The relief covers only gains up to a lifetime limit of {fact:cgt_badr_lifetime_limit}. That limit applies across all of your qualifying disposals. You can claim the relief on more than one occasion, but every claim draws on the same limit.
+
+For an earlier disposal, what counts is the net gain that was taxed at the relief rate. Where losses or the annual exempt amount had reduced that gain, only the reduced figure is counted.
+
+Where only part of a gain fits within the remaining limit, the rest is taxed at the normal Capital Gains Tax rates. If your earlier claims already reach the limit, no further relief is available.
+
+## The allowance is lost if unused, and UK property sales have a deadline
+
+The tax-free allowance applies to each tax year separately: any part you do not use is lost and cannot be carried forward.
+
+Selling UK residential property brings a deadline. If there is tax to pay, the sale has to be reported and the tax paid within 60 days of completion, using the online service for UK property run by HM Revenue & Customs (HMRC).
+
+## Your home and carried interest are treated differently
+
+Gains from selling your own home are not normally taxed. Carried interest, which is a share of an investment fund's profits paid to those who manage it, is charged to Income Tax and National Insurance contributions instead of Capital Gains Tax.",Capital Gains Tax Rates {tax_year}: UK,"UK Capital Gains Tax rates for {tax_year}: {fact:cgt_basic_rate} or {fact:cgt_higher_rate}, the annual tax-free allowance, and Business Asset Disposal Relief with its lifetime limit.",2026-11-04 21:45:47,2026-11-21 18:18:13
