@@ -1,0 +1,28 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,income-tax,income-tax-personal-allowance,Income Tax Personal Allowance,"How much income you can have before paying Income Tax, how the allowance shrinks above {fact:pa_taper_threshold}, and the extra allowance for blind people.","## How the Personal Allowance works
+
+The **Personal Allowance** is the amount of income you can have in a tax year before you pay any Income Tax. It is {fact:personal_allowance} and is frozen at that level until April 2031. It is the same across the whole UK: Scotland sets its own tax rates and bands, but not the allowance.
+
+It covers all your taxable income, not just your wages. A pension, rental profits, savings interest and some benefits, such as the State Pension, all count against the same allowance. If you have more than one source of income, the allowance is usually set against one of them through your tax code, and the others are taxed from the first pound. Most people with one job or pension have the tax code 1257L.
+
+If you don't use all of your allowance, you may be able to pass part of it to a husband, wife or civil partner through Marriage Allowance.
+
+## Above {fact:pa_taper_threshold}, the allowance shrinks
+
+Once your **adjusted net income** goes over {fact:pa_taper_threshold}, you lose £1 of allowance for every £2 of income above that level. At {fact:pa_zero_income} it has gone completely.
+
+Adjusted net income is not the same as your salary. It is your total taxable income minus certain payments, including some pension contributions and Gift Aid donations. Two people on the same salary can have different adjusted net incomes, and those payments can bring it down enough to restore some or all of the allowance.
+
+## The hidden 60% rate
+
+Between {fact:pa_taper_threshold} and {fact:pa_zero_income}, each extra £1 of income is taxed at the 40% higher rate. It also removes 50p of your allowance, which adds another 20p of tax. So the effective rate on that slice of income is 60% in England, Wales and Northern Ireland. In Scotland, where the tax rate on that slice is higher, the effective rate is higher too.
+
+## Blind Person's Allowance
+
+If you are blind or severely sight impaired, you can add **Blind Person's Allowance** on top of your Personal Allowance. It is {fact:blind_persons_allowance} for the {tax_year} tax year.
+
+Unlike the Personal Allowance, it is not reduced at higher incomes. You keep all of it even above {fact:pa_zero_income}.
+
+In England and Wales, you qualify if you are registered as blind or severely sight impaired with your local council. In Scotland and Northern Ireland, you qualify if you cannot do work for which eyesight is essential.
+
+It is not given automatically: you have to claim it from HMRC. If your income is too low to use all of it, you can transfer the unused part to your husband, wife or civil partner, even if they are not blind.",Personal Allowance {tax_year}: Tax-Free Limit,"The UK Personal Allowance for {tax_year}, when it starts to shrink above {fact:pa_taper_threshold}, the income at which it disappears, and Blind Person's Allowance.",2026-10-19 21:19:19,2026-11-21 17:13:45
