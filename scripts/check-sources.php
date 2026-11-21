@@ -272,10 +272,22 @@ try {
         // One request per page, covering all its missing figures. Figures
         // past their tax year aren't sent: their page is often for that
         // year only, so the new figure is usually on a different page.
-        if ($useAi && $missing) {
+        // A figure that already has a proposal held for review isn't sent again: the AI was
+        // asked the same question about it every day, at a cost, only to say "already waiting
+        // for review". (From 19 Nov 2026 the four NS&I variable rates did exactly this.) If every
+        // missing figure on the page is already waiting, no request is made at all.
+        $toAsk = [];
+        foreach ($missing as $fact) {
+            if (hasHeldChange($pdo, (int) $fact['id'])) {
+                echo "     AI  {$fact['fact_key']}: not asked again, a proposal is already held for review\n";
+            } else {
+                $toAsk[] = $fact;
+            }
+        }
+        if ($useAi && $toAsk) {
             try {
-                $aiResults = proposeUpdatesFromPage($pdo, $source, $text, $missing, $dryRun);
-                foreach ($missing as $fact) {
+                $aiResults = proposeUpdatesFromPage($pdo, $source, $text, $toAsk, $dryRun);
+                foreach ($toAsk as $fact) {
                     $result = $aiResults[$fact['id']] ?? ['outcome' => 'skipped', 'message' => 'no result'];
                     echo "     AI  {$fact['fact_key']}: {$result['message']}\n";
                     if ($result['outcome'] === 'applied') {
@@ -335,6 +347,14 @@ try {
 }
 
 // ============================================================
+
+/** True if a proposed change to this fact is waiting on the review page (fact_changes, status 'held'). */
+function hasHeldChange(PDO $pdo, int $factId): bool
+{
+    $stmt = $pdo->prepare("SELECT 1 FROM fact_changes WHERE fact_id = :id AND status = 'held' LIMIT 1");
+    $stmt->execute(['id' => $factId]);
+    return (bool) $stmt->fetchColumn();
+}
 
 /**
  * True if the page text contains the given words, ignoring capitals,

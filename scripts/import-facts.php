@@ -56,6 +56,12 @@
  *   previous_value           the value before the current one (e.g. last
  *                            tax year's rate), recorded in the fact's
  *                            history and dated by effective_from
+ *   source_match_text        words the daily source check looks for on the
+ *                            fact's source page INSTEAD of its number, for a
+ *                            figure the page writes in words ("an additional
+ *                            week for some shiftworkers" for a figure of 1).
+ *                            Capitals, spacing and curly quotes are ignored.
+ *                            Blank leaves the fact as it is (migration 015)
  *
  * Placeholders: subject_intro, subject_meta_title and
  * subject_meta_description can contain {fact:fact_key} and {tax_year}
@@ -334,6 +340,12 @@ while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
             $label = $get('label');
             $value = $get('value');
 
+            // Words the source check looks for instead of the number (optional column).
+            $matchText = trim($get('source_match_text'));
+            if (strlen($matchText) > 255) {
+                throw new RuntimeException('source_match_text is longer than 255 characters');
+            }
+
             $lastUpdated = validDateOrNull($get('last_updated'), 'last_updated');
             $effectiveFrom = validDateOrNull($get('effective_from'), 'effective_from');
 
@@ -391,6 +403,9 @@ while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
                 if ($get('previous_value') !== '') {
                     recordPreviousValue($pdo, $factId, $get('previous_value'), $effectiveFrom);
                 }
+                if ($matchText !== '') {
+                    $pdo->prepare('UPDATE facts SET source_match_text = :t WHERE id = :id')->execute(['t' => $matchText, 'id' => $factId]);
+                }
                 return "created fact '$factKey'";
             }
 
@@ -416,6 +431,10 @@ while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
             }
             if ($sourceId !== null) {
                 $fields['source_id'] = $sourceId;
+            }
+            // Text the source check looks for instead of the number (blank: unchanged).
+            if ($matchText !== '') {
+                $fields['source_match_text'] = $matchText;
             }
             if ($get('review_frequency_days') !== '') {
                 $fields['review_frequency_days'] = (int) $get('review_frequency_days');

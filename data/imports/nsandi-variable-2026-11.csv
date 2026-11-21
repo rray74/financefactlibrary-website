@@ -1,0 +1,5 @@
+category_slug,category_name,category_description,subcategory_slug,subcategory_name,subcategory_description,subject_slug,subject_name,subject_intro,subject_meta_title,subject_meta_description,subject_status,fact_key,label,value,unit,context,source_name,source_url,last_updated,review_frequency_days,jurisdiction_code,link_type,value_display,effective_from,previous_value,tax_year,status,source_match_text
+savings,,,nsandi,,,nsandi-savings-rates,,,,,,nsandi_direct_isa_rate,,4.05,%,,NS&I,https://www.nsandi.com/interest-rates,2026-11-21,,GB,,,,,,published,
+savings,,,nsandi,,,nsandi-savings-rates,,,,,,nsandi_direct_saver_rate,,4.00,%,,NS&I,https://www.nsandi.com/interest-rates,2026-11-21,,GB,,,,,,published,
+savings,,,nsandi,,,nsandi-savings-rates,,,,,,nsandi_income_bonds_rate,,4.00,%,Variable. Interest is paid monthly at 3.93% gross. You can open it with £500 or more.,NS&I,https://www.nsandi.com/interest-rates,2026-11-21,,GB,,,,,,published,
+savings,,,nsandi,,,nsandi-savings-rates,,,,,,nsandi_junior_isa_rate,,3.90,%,,NS&I,https://www.nsandi.com/interest-rates,2026-11-21,,GB,,,,,,published,
