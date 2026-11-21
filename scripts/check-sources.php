@@ -130,6 +130,28 @@ try {
          ORDER BY src.id"
     )->fetchAll();
 
+    // Plus the pages' reference sources (migration 030): official pages that support a page's
+    // TEXT but that no card cites. They have no figures to check, but fetching them records
+    // their fingerprint (sources.content_hash), so check-page-text.php notices when one changes
+    // and re-checks the pages that rely on it. Skipped quietly if the migration hasn't run.
+    try {
+        $citedIds = array_column($sources, 'id');
+        $reference = $pdo->query(
+            "SELECT DISTINCT src.*
+             FROM sources src
+             JOIN subject_reference_sources r ON r.source_id = src.id
+             WHERE src.is_allowlisted = 1
+             ORDER BY src.id"
+        )->fetchAll();
+        foreach ($reference as $row) {
+            if (!in_array($row['id'], $citedIds, true)) {
+                $sources[] = $row;
+            }
+        }
+    } catch (Throwable $e) {
+        // No subject_reference_sources table yet.
+    }
+
     echo $dryRun ? "DRY RUN: nothing will be written.\n" : '';
     echo $useAi
         ? 'AI step on (' . ANTHROPIC_MODEL . ', ' . (AI_AUTO_APPLY ? 'publishes proposals that pass every check' : 'trial mode: holds every proposal') . ").\n\n"

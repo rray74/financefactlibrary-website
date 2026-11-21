@@ -232,7 +232,7 @@ function fixRejects(PDO $pdo, array $subject, array $published, array $read, arr
 function fixContext(array $subject, array $facts): array
 {
     $published = array_values(array_filter($facts, fn($f) => $f['status'] === 'published'));
-    $read = readSourcePagesForFacts($published, DRAFT_SOURCE_CHARACTERS_EACH);
+    $read = readSourcePagesForFacts($published, DRAFT_SOURCE_CHARACTERS_EACH, (int) ($subject['id'] ?? 0));
     return [
         'published'    => $published,
         'read'         => $read,

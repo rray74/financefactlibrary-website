@@ -395,7 +395,7 @@ function polishRejectIsRepairable(string $why): bool
 function polishSubjectPage(PDO $pdo, array $subject, array $facts, array $draft, int $maxChecks = POLISH_MAX_CHECKS, int $retryTokens = 0, array $coverage = []): array
 {
     $published = array_values(array_filter($facts, fn($f) => $f['status'] === 'published'));
-    $read = readSourcePagesForFacts($published, DRAFT_SOURCE_CHARACTERS_EACH);
+    $read = readSourcePagesForFacts($published, DRAFT_SOURCE_CHARACTERS_EACH, (int) ($subject['id'] ?? 0));
     $sourceBlock = requestSourceBlock($read['sources'], $read['texts']);
     $coverageBlock = coverageText($coverage);
     $model = polishModel();

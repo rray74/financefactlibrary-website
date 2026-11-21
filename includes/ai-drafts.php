@@ -176,7 +176,7 @@ function draftSubjectPage(
 
     // The official pages the figures come from, so the draft is written from
     // them. A page that can't be read is reported to the AI, not fatal.
-    $read = readSourcePagesForFacts($published, DRAFT_SOURCE_CHARACTERS_EACH);
+    $read = readSourcePagesForFacts($published, DRAFT_SOURCE_CHARACTERS_EACH, (int) ($subject['id'] ?? 0));
 
     // The coverage pass: what the sources say the page must handle, listed
     // before the writer starts. Never fatal; without a list the page is

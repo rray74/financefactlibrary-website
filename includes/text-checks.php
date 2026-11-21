@@ -863,7 +863,7 @@ function aiTextCheck(array $subject, array $facts, array $fields): array
     // --- The source pages the page's figures cite, read fresh. Each page's
     // fingerprint is kept too, so scripts/check-page-text.php can tell when
     // a page has changed since this check. ---
-    $read = readSourcePagesForFacts($published, TEXT_CHECK_SOURCE_CHARACTERS);
+    $read = readSourcePagesForFacts($published, TEXT_CHECK_SOURCE_CHARACTERS, (int) ($subject['id'] ?? 0));
     $sources = $read['sources'];
     $sourceTexts = $read['texts'];
 

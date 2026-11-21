@@ -722,6 +722,17 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 source pages, the house style and the <a href="/admin/lessons.php" class="underline hover:text-accent">lessons
                 learned so far</a>. Saved or not, nothing is changed. Up to two minutes.
             </p>
+            <?php // Reference sources (migration 030): official pages the text rests on that no figure cites. They are read too. ?>
+            <?php $referenceSources = getReferenceSourcesForSubject((int) $subject['id']); ?>
+            <?php if ($referenceSources): ?>
+            <p class="text-xs opacity-70 mt-1">
+                It also reads this page's reference sources (official pages the text rests on that no figure cites):
+                <?php foreach ($referenceSources as $referenceIndex => $reference): ?>
+                <a href="<?= e($reference['url']) ?>" target="_blank" rel="noopener" class="underline hover:text-accent"
+                    title="<?= e((string) ($reference['note'] ?? '')) ?>"><?= e($reference['publisher']) ?></a><?= $referenceIndex < count($referenceSources) - 1 ? ',' : '.' ?>
+                <?php endforeach; ?>
+            </p>
+            <?php endif; ?>
 
             <?php if ($textCheck): ?>
             <?php if (!$textCheck['findings']): ?>

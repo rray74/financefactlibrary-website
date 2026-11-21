@@ -123,7 +123,34 @@ function fetchPageText(string $url): string
 }
 
 /**
- * Read the source pages that a page's figures cite, once each.
+ * The reference sources of a page: official pages that support its TEXT but that no figure card
+ * cites (migration 030, scripts/import-reference-sources.php). Returns rows with url, publisher
+ * and note, in the order they were added. Returns an empty list, and never fails, if the table
+ * does not exist yet, so code that uses this can be deployed before the migration is run.
+ */
+function getReferenceSourcesForSubject(int $subjectId): array
+{
+    if ($subjectId <= 0) {
+        return [];
+    }
+    try {
+        $stmt = getDbConnection()->prepare(
+            'SELECT src.url, src.publisher, r.note
+             FROM subject_reference_sources r
+             JOIN sources src ON src.id = r.source_id
+             WHERE r.subject_id = :id
+             ORDER BY r.created_at, src.id'
+        );
+        $stmt->execute(['id' => $subjectId]);
+        return $stmt->fetchAll();
+    } catch (Throwable $e) {
+        return [];
+    }
+}
+
+/**
+ * Read the source pages that a page's figures cite, once each, plus the page's reference
+ * sources (see getReferenceSourcesForSubject()) when $subjectId is given.
  *
  * Used by the AI drafts (so the writer works from the sources, not from
  * memory) and by the AI check (so it can compare the text with them).
@@ -133,23 +160,35 @@ function fetchPageText(string $url): string
  * $facts  facts with source_url and source_name (as getAdminFactsForSubject()
  *         returns them); only published ones should be passed in
  * $maxCharsEach  each page is cut to this many characters
+ * $subjectId  the page the facts belong to. When given, its reference sources are read too, so
+ *         text that rests on an official page no card cites is checked against that page. A
+ *         page that is both a card source and a reference source is read once.
  *
  * Returns:
- *   sources  url => ['name', 'url', 'read' => bool, 'error', 'hash'], where
+ *   sources  url => ['name', 'url', 'read' => bool, 'error', 'hash', 'reference' => bool], where
  *            hash is the fingerprint check-sources.php also stores in
  *            sources.content_hash, so a later change to the page shows
  *   texts    url => the page's text, for the pages that were read
  */
-function readSourcePagesForFacts(array $facts, int $maxCharsEach = 50000): array
+function readSourcePagesForFacts(array $facts, int $maxCharsEach = 50000, int $subjectId = 0): array
 {
     $sources = [];
     $texts = [];
+
+    // The pages to read: each card's source, then the page's reference sources.
+    $toRead = [];
     foreach ($facts as $fact) {
-        $url = $fact['source_url'] ?? null;
+        $toRead[] = [$fact['source_url'] ?? null, $fact['source_name'] ?? null, false];
+    }
+    foreach (getReferenceSourcesForSubject($subjectId) as $reference) {
+        $toRead[] = [$reference['url'], $reference['publisher'], true];
+    }
+
+    foreach ($toRead as [$url, $name, $isReference]) {
         if (!$url || isset($sources[$url]) || in_array($url, SKIP_SOURCE_URLS, true)) {
             continue;
         }
-        $sources[$url] = ['name' => $fact['source_name'] ?? $url, 'url' => $url, 'read' => false, 'error' => null, 'hash' => null];
+        $sources[$url] = ['name' => $name ?: $url, 'url' => $url, 'read' => false, 'error' => null, 'hash' => null, 'reference' => $isReference];
         try {
             $text = fetchPageText($url);
             $sources[$url]['hash'] = hash('sha256', $text);
