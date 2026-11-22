@@ -63,3 +63,30 @@ State Pension Amount, Child Benefit, Approved Mileage Rates, Average Savings Rat
 The 07:00 `fetch-boe-rates.php` run rewrote the card notes from the new wording: "including unconditional
 bonuses. Individual accounts can pay more or less." on the easy access ISA and instant access cards, and
 the reversion-rate wording on the SVR card.
+
+## Second pass (22 Nov 2026): acting on the first batch's findings
+
+Each real finding was fixed or answered, one commit per page, and imported on the server.
+
+| Page | Commit | What was done |
+|---|---|---|
+| Capital Gains Tax Rates | a6da952 | Heading says "residential". Added late interest and penalty, and the UK resident and non-resident reporting rules. Sourced the unused allowance rule to HMRC's Capital Gains Manual CG18000 (new reference source) |
+| 2-Year Fixed Mortgage Rates | 982dcd1 | Described how the Bank builds the averages (most competitive product, first-time-buyer products excluded). Cut the writer's own inference, the section that restated the 5-year card, and the Scotland sentence. Page now 408 words |
+| Carer's Allowance | 885506e | Named the countries under the EU Settlement Scheme (spelling out EU). Added that you cannot build up extra State Pension by delaying your claim. Page now 775 words, near the 800 limit |
+| Pension Tax Relief | aa8ca53 | Rewrote the annual allowance section from the GOV.UK annual allowance page: all pensions together, what counts per scheme type, who pays the charge, carry-over, taper floor. Heading widened |
+
+Judged not worth acting on: Carer's Allowance "Pension Credit increases" (already covered); Pension Tax Relief
+ill-health and death exceptions to the charge (too rare).
+
+The second-pass text has not been re-checked by the AI yet. The 05:30 run will pick these pages up again
+("text changed since its last check"), so a second set of results will show whether the findings fall
+further or the checker simply raises different points (it is not stable run to run).
+
+### Lessons for the routine
+
+- Check the 60-day / "which pages does this rule cover" scope in headings: two headings overstated
+  ("UK property" for UK residential property; "Scotland" over text that also covered Wales).
+- The 200-character meta description limit caught two live pages (Capital Gains Tax and Child Benefit); guard added in 83811c9.
+- A source the SERVER cannot read (Registers of Scotland returns HTTP 403) cannot be used as a reference
+  source, so a claim that rests on it is better cut than left unsupported.
+- Long pages need `excerpt_from` (migration 031) or the passage is never read.
