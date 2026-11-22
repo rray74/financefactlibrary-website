@@ -1,0 +1,22 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,pensions,private-pensions,minimum-pension-age,Minimum Pension Age,"The earliest age you can take money from a registered pension without an unauthorised payments tax charge, the exceptions that allow earlier access, and the later age that applies from April 2028.","## The minimum pension age is a tax rule, and schemes can set a higher age
+
+The **normal minimum pension age (NMPA)** is the age before which a registered pension scheme must not normally pay you benefits. A scheme that pays out sooner can trigger unauthorised payment charges.
+
+The law only sets the lowest age. Your scheme's own rules state which benefits you can take and from what age, and that age can be higher than the NMPA. A scheme cannot set a normal pension age below {fact:nmpa_current}. The only ways to take benefits earlier without a charge are ill health and a protected pension age, both explained below.
+
+## Ill health and a protected pension age allow earlier access
+
+No charge arises when a payment is made because of ill health. Nor does it arise if, on 5 April 2006, you already held a right to draw benefits ahead of the NMPA.
+
+That right counts only if it does not depend on anything else, such as employer or trustee consent. If those conditions are satisfied, the earlier age at which you could draw benefits becomes your **protected pension age**. It replaces the NMPA for the purposes of the pensions tax rules, so you are treated by reference to your protected age. One exception: if your protected age is below 50 and you take benefits before the NMPA, your lump sum allowance and your lump sum and death benefit allowance may be reduced.
+
+## The rise to {fact:nmpa_from_2028} does not reach everyone
+
+From 6 April 2028 the NMPA becomes {fact:nmpa_from_2028}. The change applies to members of registered pension schemes who take benefits before that age and have no protected pension age.
+
+Some people are outside it:
+- people in the public service schemes for firefighters, police or the armed forces
+- members whose scheme rules gave them an unqualified right (one that does not depend on anyone's consent) to take benefits at the existing NMPA or earlier on 11 February 2021, if they were also members of that scheme before 4 November 2021
+
+A protected pension age belongs to the scheme that gave the right, so moving the benefits out of that scheme can lose it, unless the transfer is a block transfer or goes to another scheme that is protected.",Minimum Pension Age: {fact:nmpa_current} to {fact:nmpa_from_2028},"The normal minimum pension age is {fact:nmpa_current}, rising to {fact:nmpa_from_2028} from 6 April 2028. See who is protected, the ill-health exception and State Pension age.",2026-11-11 21:39:48,2026-11-22 13:47:14
