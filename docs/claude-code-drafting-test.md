@@ -51,4 +51,29 @@ A mix on purpose: three hard pages would make the test look worse than the basel
 
 ## Results
 
-*(To be filled in as each page finishes.)*
+*Filled in 22 November 2026 after all three pages were live. Blank cells need Richard.*
+
+| Measure | Marriage Allowance | Statutory Sick Pay | Auto-Enrolment |
+|---|---|---|---|
+| Claude Code session usage | | | |
+| Richard's review time (minutes) | | | |
+| Edits Richard asked for | 0 | 0 | 0 |
+| Program findings, first import | 3 (close copies) | 7 (6 close copies, 1 typed figure) | 1 (typed figure, a fixed legal one) |
+| Findings after adding reference sources | 3 more close copies | none new | none |
+| Reword rounds before clean | 2 | 4 | 0 |
+| Findings left at the end | 0 | 1 (12 and 23: fixed legal figures) | 1 (12: fixed legal figure) |
+| Real errors found at the claim-by-claim read | 3 in my own draft (an unsupported "most people", an overstated tax-code claim, a heading that wasn't always true) | 0 | 0 (dropped one jargon-heavy exclusion) |
+| Errors found only after going live | 0 | 0 | 1: "with a 8% minimum" in the meta description (my wording); fixed in a second commit |
+| API cost for drafting | $0 | $0 | $0 |
+| Reference sources added | 2 | 4 | 2 |
+| Card or card-note problems found | 0 | 1 (card note on abolished waiting days not confirmed by the GOV.UK pages read) | 3 (trigger "more than" against GOV.UK "at least"; age-22 card cites a page that doesn't say 22; UK against Great Britain) |
+| Needed Claude in the browser | No | No | No |
+| Nightly AI check, first run | Not run yet | Not run yet | Not run yet |
+
+### What this shows so far
+
+- Drafting cost nothing in API spend, and no page needed Claude in the browser.
+- The near-copy check does most of the iteration. GOV.UK lists and short formulaic pages (sick pay exclusions, fit notes) are where close copies cluster, so those need restructuring, not word swaps.
+- Reading the sources as part of drafting turned up card problems that the API route would not have noticed (see the table). That is a benefit independent of cost.
+- Claude Code made its own errors: three at the claim-by-claim read on page 1, and one grammar slip that reached the live site on page 3. Placeholders make meta text easy to get wrong ("a 8%"), and the checks do not catch it.
+- Not yet known: Richard's review minutes, plan usage, and what the nightly AI check says about these three pages. The decision rule above cannot be applied until those are in.
