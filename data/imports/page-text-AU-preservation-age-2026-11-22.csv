@@ -1,0 +1,14 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,super-and-retirement,superannuation,preservation-age,Preservation Age,"The age you must reach before you can access your super, how your date of birth decides it, and why it also affects tax on a lump sum.","## You generally need to reach preservation age and meet a condition of release
+
+Preservation age is the age you generally have to reach before you can get at your super. Reaching it is not enough on its own, because you must also meet a condition of release. The age is not the same for everyone: it depends on when you were born.
+
+## Your date of birth decides your preservation age
+
+The age is set in bands by date of birth. Each band runs from 1 July to 30 June, and the age rises by a year from one band to the next until it reaches {fact:au_preservation_age_from_1964} for anyone born from 1 July 1964. The figure cards show the age for each band. Because the bands start on 1 July, two people born in the same calendar year can have different preservation ages if one was born before 1 July and the other after.
+
+## Preservation age is also a cut-off for tax on a super lump sum
+
+The tax on a super lump sum depends on your age when you are paid, and preservation age is one of the cut-off points. The simplest case is the taxable component that has already been taxed in the fund. If you are under your preservation age, the whole amount is taxed. From your preservation age until you turn 60, an amount up to the low rate cap is not taxed, and anything above the cap is taxed at a lower maximum rate than applies below preservation age. From 60, the amount is treated as non-assessable, non-exempt income, so no tax is paid on it.
+
+The low rate cap is a lifetime cap, so each amount you have already used reduces what is left. Other kinds of payment and component are set out separately in the ATO's lump sum tax table.",Preservation Age Australia,"Australia's preservation age by date of birth: {fact:au_preservation_age_pre_1960} if born before 1 July 1960, rising to {fact:au_preservation_age_from_1964} from 1 July 1964. See the full table.",,2026-11-22 17:07:58
