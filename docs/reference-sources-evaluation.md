@@ -90,3 +90,62 @@ further or the checker simply raises different points (it is not stable run to r
 - A source the SERVER cannot read (Registers of Scotland returns HTTP 403) cannot be used as a reference
   source, so a claim that rests on it is better cut than left unsupported.
 - Long pages need `excerpt_from` (migration 031) or the passage is never read.
+
+## Third pass (22 Nov 2026, evening): every page rewritten, none re-checked yet
+
+**Status.** No new AI results exist beyond the first batch above. The 05:30 run on 22 Nov re-checked five pages (those in the first-batch table) before any of the later rewrites. Since then all 23 written UK pages and all 15 Australian pages have been rewritten, so `check-page-text.php --dry-run` on the server reports **38 written pages, 38 needing a check ("text changed since its last check")**, 5 a night. The first five to run, at 05:30 on 23 Nov, are 2-Year Fixed Mortgage Rates, Pension Tax Relief, National Minimum Wage and National Living Wage, Carer's Allowance and Premium Bonds. The queue clears in about 8 nights (to roughly 30 Nov). Add each night's results below as they arrive; one night is a sample, not a verdict.
+
+**What changed between the stored checks and now**
+- Every UK page had the claim-by-claim routine, and the near-copy check now runs in the triage, so no page should return a `copied from source` finding (the program, not the AI, finds those, and each page was reworded until it found none).
+- Reference sources went from 13 pages to 23 pages (46 sources), including the first nine Australian ones (`fairwork.gov.au`, `ato.gov.au`, `servicesaustralia.gov.au`), so claims the card sources did not support can now be seen by the check.
+- Australian pages are checked for the first time with their sources: six have **never** had an AI check (parental-leave-pay, personal-and-carers-leave, preservation-age, super-contribution-caps, super-guarantee-rate, tax-free-threshold), so those have no "before".
+
+**What to look for in the new results**
+- A `contradicts source`, `likely wrong` or `missing exception` finding is worth reading. These are the kinds that were real errors on the pages rewritten (compassionate leave shown unpaid, the Parental Leave Pay pre-birth rule reversed, the Medicare levy described as always charged).
+- `house style` and `unneeded section` findings from the old checks are mostly fixed by the rewrites. A finding that comes back is a sign the rewrite did not address it.
+- `copied from source` should be 0. If it is not, the AI's close-copy check and the program's disagree and that is worth a look.
+- Judge by kind, not count: the checker is not stable run to run, and sources it can now see let it raise real omissions.
+
+**Other data points from 22 Nov**
+- `check-sources.php` (07:30): 344 figures found, 0 not found, AI 0 published, 0 held, 0 pages failed. That is up from 302 on 13 Nov (the Australian figures and the later UK ones), with no AI spend on it.
+- `check-bank-rate.php` ran 13:00, 15:00 and 17:00 and correctly did nothing (not an MPC decision day).
+- Cost: my estimate is roughly $0.05 a page, so about $2 for all 38 over the 8 nights. The real figure is in the Console (`ffl-sources`); the daily total should show the backlog clearing.
+
+**Baseline: the stored AI check for each page before the 21 to 22 Nov rewrites** (the five pages re-checked on 22 Nov are in the first-batch table above).
+
+**UK**
+
+| Page | Last check | Findings | Kinds |
+|---|---|---|---|
+| approved-mileage-rates | 2026-11-10 | 1 | house style 1 |
+| average-savings-rates | 2026-11-19 | 2 | house style 1, unneeded section 1 |
+| buy-to-let-mortgage-rates | 2026-11-20 | 4 | contradicts source 1, duplicated 1, heading mismatch 1, house style 1 |
+| buying-your-first-home | 2026-10-30 | 3 | copied from source 1, missing exception 2 |
+| cash-isa-allowance | 2026-11-17 | 3 | contradicts source 1, copied from source 1, missing exception 1 |
+| child-benefit | 2026-11-06 | 5 | duplicated 1, house style 4 |
+| corporation-tax-rates | 2026-10-30 | 2 | contradicts source 1, house style 1 |
+| council-tax-bands | 2026-11-06 | 3 | house style 2, missing exception 1 |
+| deposit-protection-fscs | 2026-11-17 | 3 | house style 1, likely wrong 1, missing exception 1 |
+| income-tax-personal-allowance | 2026-10-19 | 0 | none |
+| lifetime-isa | 2026-10-31 | 5 | copied from source 2, heading mismatch 1, house style 1, missing exception 1 |
+| minimum-pension-age | 2026-11-12 | 3 | contradicts source 2, house style 1 |
+| minimum-wage-rates | 2026-10-30 | 11 | contradicts source 1, copied from source 5, duplicated 1, heading mismatch 1, likely wrong 1, missing exception 1, unneeded section 1 |
+| premium-bonds | 2026-11-18 | 3 | heading mismatch 1, house style 1, missing exception 1 |
+| state-pension-amount | 2026-11-13 | 1 | copied from source 1 |
+| tenancy-deposits | 2026-11-06 | 3 | contradicts source 1, house style 1, missing exception 1 |
+| universal-credit-rates | 2026-11-11 | 1 | copied from source 1 |
+| vat-rates-and-thresholds | 2026-10-28 | 5 | copied from source 1, house style 3, likely wrong 1 |
+
+**Australia**
+
+| Page | Last check | Findings | Kinds |
+|---|---|---|---|
+| age-pension | 2026-11-20 | 3 | house style 2, missing exception 1 |
+| annual-leave-australia | 2026-11-20 | 6 | contradicts source 1, house style 4, unneeded section 1 |
+| cash-rate-target | 2026-11-20 | 8 | contradicts source 2, copied from source 1, duplicated 1, house style 3, likely wrong 1 |
+| first-home-super-saver-scheme | 2026-11-20 | 6 | advice 1, duplicated 1, house style 3, missing exception 1 |
+| gst-registration-threshold | 2026-11-21 | 7 | copied from source 1, heading mismatch 1, house style 3, missing exception 2 |
+| income-tax-rates-australia | 2026-11-21 | 4 | contradicts source 1, house style 1, missing exception 1, unneeded section 1 |
+| jobseeker-payment | 2026-11-21 | 8 | contradicts source 1, copied from source 1, duplicated 1, house style 2, missing exception 2, unneeded section 1 |
+| medicare-levy | 2026-11-21 | 1 | house style 1 |
+| minimum-wage-australia | 2026-11-21 | 4 | contradicts source 1, copied from source 1, duplicated 1, missing exception 1 |
