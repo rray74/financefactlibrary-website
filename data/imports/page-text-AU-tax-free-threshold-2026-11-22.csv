@@ -1,0 +1,14 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,tax,income-tax,tax-free-threshold,Tax-Free Threshold,"How much income Australian residents can earn before paying income tax, how to claim the threshold from an employer, and how it works for part of a year.","## Only Australian residents for tax purposes can claim it
+
+The tax-free threshold is available to people who are Australian residents for tax purposes. A person who is a non-resident for the whole year cannot claim it and is taxed on all of their Australian income. A resident for only part of the year gets a smaller, part-year threshold in place of the full amount. Tax residency is a separate test from immigration status, so a person can be a resident for tax purposes without being a citizen or permanent resident, and can hold a visa without being a resident.
+
+## Claiming it reduces the tax withheld from your pay
+
+When you start with a payer, you complete a **tax file number (TFN) declaration**, and that form is where you choose whether to claim the threshold. A payer can be an employer or a government agency such as Centrelink. If you choose not to claim it, more tax is withheld. The threshold applies to your income across an **income year**, which runs from 1 July to 30 June.
+
+## With more than one payer, you generally claim it from only one
+
+Where several payers pay you in the same period, the threshold generally goes with just one of them, usually the best-paying. Claiming it from every payer can leave too little tax withheld when your total income is above {fact:au_tax_free_threshold}, and you may get a tax bill for the difference. You can claim it from each payer only if you are certain your total income from all of them will be {fact:au_tax_free_threshold} or less. If it later rises above that, you need to tell a payer to stop applying it. Moving to a different employer lets you claim it there too, even if you claimed it with the last one.
+
+Your tax return is where the Australian Taxation Office (ATO) sets all your income against the tax already withheld. If more was withheld than you owed, a refund can follow, and if less, a bill.",Tax-Free Threshold {tax_year}: {fact:au_tax_free_threshold},Australian residents can earn {fact:au_tax_free_threshold} a year before income tax applies. How to claim it from an employer and how part-year residents are treated.,2026-11-05 22:43:30,2026-11-22 17:07:58
