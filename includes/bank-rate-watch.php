@@ -7,7 +7,7 @@
  * only spots a change the next morning, and its email is generic. This
  * watch runs in the afternoon of a decision day only, tells you plainly
  * what changed, and drafts the CSV for the update (the manual step in
- * docs/TODO-HANDOVER.md). It never changes the database.
+ * docs/TODO.md). It never changes the database.
  *
  * Kept in its own file, free of database and network calls where possible,
  * so each decision can be tested with plain values.

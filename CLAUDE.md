@@ -78,7 +78,7 @@ The old `ff-website` key is retired.
 - Give terminal commands one at a time and say which terminal (Mac or server).
 
 ## Docs (read on demand)
-- `docs/TODO-HANDOVER.md`: running to-do list and key dates.
+- `docs/TODO.md`: running to-do list and key dates.
 - `docs/handover-2026-11-21-australia-launch.md`: Australia state, pipeline, gotchas.
 - `docs/content-maps/au-content-map.md`: Australia plan, to-do, build log.
 - `docs/drafting-loop-progress.md`: how the drafting loop works and what's next.
