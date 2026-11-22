@@ -1,0 +1,34 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,tax,gst,gst-registration-threshold,GST Registration Threshold,"A business must register for GST when its turnover reaches {fact:au_gst_threshold}, or {fact:au_gst_threshold_nonprofit} for a non-profit. Taxi and ride-sourcing drivers must always register.","## GST turnover is business income, not profit
+
+The test uses your GST turnover: the business's total income, before any costs are taken off, rather than its profit. Five kinds of income are taken out. They are the GST already built into your sales, sales to associates that are neither paid for nor taxable, income with no connection to an enterprise you run, input-taxed sales, and sales that have no link to Australia.
+
+## Two tests decide whether you have reached the threshold
+
+You reach the threshold if either test is met. The first looks back: your turnover for the current month and the months before it that make up a full year is at or above {fact:au_gst_threshold}. The second looks ahead: your turnover for the current month and the months still to come that make up a full year is likely to be at or above that amount. A non-profit organisation uses {fact:au_gst_threshold_nonprofit} for both tests.
+
+When you estimate the forward-looking figure, leave out money from selling a business asset such as a capital asset, any sale you make only because you are closing the enterprise, and sales you will lose by shrinking it substantially and permanently. Even if the backward-looking figure is at or above the threshold, you can stay unregistered if the Australian Taxation Office (ATO) accepts that your projected turnover will fall short.
+
+## You have {fact:au_gst_register_days} to register once you are required
+
+A business that is just starting and expects to reach the threshold during its first year must register. Any other business that is not yet registered needs to check each month whether it has reached the threshold or is likely to. Once registration is required, you have {fact:au_gst_register_days} to complete it.
+
+You need an Australian business number (ABN) first, and you register once however many businesses you run. A business activity statement (BAS) must be lodged from then on. To register, you can use the ATO's Online services for business, phone its Business enquiries line, or ask a registered tax agent or BAS agent to do it for you.
+
+## Some businesses must register whatever their turnover
+
+Anyone providing taxi or limousine travel, ride-sourcing included, has to register regardless of turnover, whether they own the vehicle or lease or rent it. Wanting to claim fuel tax credits for a business also means registering.
+
+A business that meets none of the compulsory cases, including the turnover thresholds, can choose whether to register. A business that opts in generally cannot cancel its registration until at least {fact:au_gst_min_registration_months} have passed.
+
+## Registering late can be costly
+
+If you were required to register and did not, you may be liable for GST on the sales you made from the date registration became compulsory, even where you never added GST to your prices. Penalties and interest can apply as well.
+
+## A registration can be backdated, up to a limit
+
+You can ask for your registration to be backdated, but no further than {fact:au_gst_backdate_years} back. Outside cases of fraud or evasion, nothing obliges you to have been registered any earlier than that. Requests are made by phoning Business enquiries.
+
+## Related entities can register as a group or a branch
+
+Related entities can form a single GST group, and an entity may register a branch separately where that suits how it is managed and accounted for. If you belong to a group, the other members' turnover counts towards yours, while dealings between members are ignored.",GST Registration Threshold Australia,"When a business must register for GST in Australia: the {fact:au_gst_threshold} turnover threshold, {fact:au_gst_threshold_nonprofit} for non-profits, and how long you have to register.",2026-11-16 22:30:57,2026-11-22 17:07:58
