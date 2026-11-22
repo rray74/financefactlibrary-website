@@ -78,6 +78,10 @@ The old `ff-website` key is retired.
   it is new or a replacement, in a table.
 - Cost awareness: use the right `AI_KEY_PURPOSE`; run free checks (close-copy
   scoring, length checks) before paying for an AI pass.
+- Commit messages are plain: no `Co-Authored-By` line (Richard's instruction, 21 Nov 2026).
+- After Richard approves a page's text and it is deployed and imported on the server, stamp it reviewed with
+  `php scripts/mark-page-reviewed.php` on the server, without asking again. Dry run first, and only for a page
+  whose dry run says "was: never" (a time means he saved it in the editor; never overwrite it).
 - Ask before anything hard to reverse: deploys, git pushes, server-side scripts,
   or live database changes.
 - Give terminal commands one at a time and say which terminal (Mac or server).
