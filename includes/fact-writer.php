@@ -40,6 +40,18 @@ const FACT_SOURCE_ALLOWLIST = [
     // National Savings and Investments, backed by HM Treasury, the
     // official source for Premium Bonds rates and odds.
     'nsandi.com'          => null,
+    // Australian national bodies, added 22 Nov 2026 for the Australia launch. The Australian
+    // figures' sources were allowlisted by their migrations (023 to 029), but this list is what
+    // scripts/import-reference-sources.php and the editor check, so without these entries no
+    // Australian page could have a reference source or a newly entered figure. Each is the
+    // national body that publishes the rules the pages describe: the Australian Taxation Office,
+    // the Fair Work Ombudsman, the Reserve Bank of Australia and Services Australia (Centrelink,
+    // Medicare). Licence is NULL (not verified). State departments are deliberately not covered:
+    // 'gov.au' as a whole would admit every one, so add a state's own domain when a page needs it.
+    'ato.gov.au'              => null,
+    'fairwork.gov.au'         => null,
+    'rba.gov.au'              => null,
+    'servicesaustralia.gov.au' => null,
 ];
 
 /**
