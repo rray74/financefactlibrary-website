@@ -1,0 +1,14 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,tax,income-tax,medicare-levy,Medicare Levy,"What the Medicare levy is and who pays it, how reductions and exemptions work, and how the levy differs from the separate Medicare levy surcharge.","## The levy is a percentage of your taxable income
+
+Medicare, the public health system, is partly paid for by the Medicare levy. You pay it on top of income tax, at {fact:au_medicare_levy_rate} of your **taxable income**, which is your assessable income minus any allowable deductions.
+
+The Australian Taxation Office (ATO) works out the levy when you lodge your tax return. Tax withheld from your pay by your employer generally covers part of it.
+
+## Reductions and exemptions are considered separately
+
+Depending on your income, your spouse's income and your circumstances, you may pay a reduced levy or none at all. Qualifying for a reduction and qualifying for an exemption are separate questions, so one does not settle the other.
+
+## The Medicare levy surcharge is a different charge
+
+On top of the levy, some people owe a surcharge of their own, called the **Medicare levy surcharge** (MLS). Whether you owe it depends on your personal circumstances.",Medicare Levy {tax_year}: {fact:au_medicare_levy_rate},"The Medicare levy is {fact:au_medicare_levy_rate} of taxable income, paid on top of income tax. Who pays it, who can get a reduction or exemption and how the surcharge differs.",2026-11-09 22:25:54,2026-11-22 17:07:58
