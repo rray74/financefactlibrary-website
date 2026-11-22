@@ -1,0 +1,12 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,tax,income-tax,income-tax-rates-australia,Income Tax Rates,"The income tax rates for Australian residents, the income thresholds where each rate starts, and what the rates leave out, including the Medicare levy.","## Each rate applies only to the income inside its band
+
+The Australian Taxation Office (ATO) tables give each band's tax as a fixed amount plus a number of cents for every dollar above the band's starting point. That structure shows how the bands work. A rate applies only to the part of your **taxable income** that sits inside its band, and crossing into a higher band does not raise the tax on the income below it. Taxable income is your assessable income less allowable deductions, so deductions come off before any rate is applied.
+
+## These rates are for full-year residents with the full tax-free threshold
+
+These rates suit someone who was a tax resident of Australia for the entire year and who qualifies for the whole {fact:au_tax_free_threshold} tax-free threshold. Part-year residents receive only a part-year threshold, and non-residents cannot claim the threshold at all. The [tax-free threshold](/au/tax/income-tax/tax-free-threshold/) page covers those cases.
+
+## The Medicare levy and its surcharge are separate from these rates
+
+Your taxable income also attracts the Medicare levy, which is {fact:au_medicare_levy_rate} and is not part of these rates. A surcharge that applies to some people is outside them too. A reduction or exemption from the levy is possible and turns on your income, your spouse's income and your situation. The surcharge is not automatic either: it depends on your personal circumstances. The [Medicare levy](/au/tax/income-tax/medicare-levy/) page covers the levy and how it differs from the surcharge.",Australian Income Tax Rates {tax_year},"Australian resident income tax rates for {tax_year}, from {fact:au_tax_rate_band_1} to {fact:au_tax_rate_top}, with the taxable income where each rate starts and what the rates leave out.",2026-11-11 21:57:39,2026-11-22 17:07:58
