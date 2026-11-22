@@ -1,0 +1,20 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,mortgages,housing-costs,council-tax-bands,Council Tax Bands,"How your Council Tax band is set from a fixed 1991 or 2003 value, and how annexes, shared houses and extensions can change it.","## A band reflects a fixed value from the past, not a market price
+
+Your band is fixed by an estimate of what your property would have sold for on a set date: 1 April 1991 in England and 1 April 2003 in Wales. Wales also has a Band I, for its highest values. Besides that base-date value, the Valuation Office weighs a property's size, layout, character and location, along with any change in how it is used. Buying at a reduced price under a scheme such as Right to Buy changes nothing, because the home is banded on its full base-date value. Scotland has its own banding, which you can look up through the Scottish Assessors Association, and Northern Ireland charges domestic rates instead of Council Tax.
+
+## An annexe gets its own band only if it is self-contained
+
+Part of a building that was built or converted to be lived in separately counts as a **self-contained unit** and is banded in its own right, on top of the main home. A unit qualifies if it is fully apart from the rest of the property, or joined to it and reached through a shared entrance. The Valuation Office decides each case on the physical layout alone. It looks for a way in that is independent of the rest of the home (a shared hall or landing can count), a place to sleep and prepare food, and washing facilities with a toilet. How you use the space does not matter, and an empty unit that could be lived in separately still has a band. Taking out a sink but leaving its drainage and pipework, or removing a cooker and nothing else, is not expected to change the outcome. A band for a separate area goes only once physical changes mean the space could no longer be lived in separately. Letting a unit to tenants means it is no longer treated as an annexe, although it keeps its own band. Any discount or exemption for an annexe comes from your local council, and if you think an extra band was added wrongly you have the right to appeal.
+
+## Most houses in multiple occupation have a single band
+
+A **house in multiple occupation (HMO)**, such as a house let out room by room, is valued as one property in most cases, so its rooms do not usually have separate bands. In England this has applied from 1 December 2023, and in Wales from 3 June 2026. If an HMO is still banded room by room, a proposal form lets the Valuation Office know so it can be put right.
+
+## A band can change, or be removed, when the property itself changes
+
+A property that has been enlarged since its first assessment may be given a higher band at its next sale, though a band can also change without a sale, for instance when an extension adds a self-contained annexe. A resulting rise in your bill starts on the day the Valuation Office alters the valuation list. The Valuation Office also assesses some properties automatically, such as those that are newly built or have been made smaller. An occupied property keeps its band even during major building work, whereas an empty one that is beyond repair, or uninhabitable because of major works, can be taken out of banding on application. While a property has no band, no Council Tax is due on it until it is banded again.
+
+## If you think your band is wrong
+
+Challenging a band with the Valuation Office is free, and you do not need an agent to do it. Which route you take depends on whether you have a legal right to challenge: if you do, you make a proposal, and if you do not but think the band is wrong, you ask for a band review. A notice of alteration, which tells you the valuation list has changed, can be appealed.",Council Tax Bands {tax_year}: England & Wales,Council Tax bands in England use 1 April 1991 values; Wales uses 1 April 2003. See every band's value range and what can change a property's band.,2026-10-25 20:46:06,2026-11-22 13:42:42
