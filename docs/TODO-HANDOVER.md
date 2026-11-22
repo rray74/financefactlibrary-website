@@ -1,6 +1,6 @@
 # Finance Fact Library: to-do list handover
 
-*Summary of the claude.ai "Finance fact library to-do list" chat, for moving day-to-day work into Claude Code. Written 21 November 2026. Read alongside the cost document.*
+*Running to-do list and handover. Started 21 November 2026 from the claude.ai "Finance fact library to-do list" chat; rewritten 22 November 2026 after the first long Claude Code session. Read alongside `docs/api-costs.md` (key setup and spend) and `docs/page-checklist.md` (the per-page routine).*
 
 ---
 
@@ -24,13 +24,44 @@ From now on, the list lives in this file. Update it in the repo as items are don
 | **Deploy** | Push from VS Code to GitHub, which deploys to Hostinger over SSH |
 | **Server app folder** | `~/domains/financefactlibrary.com/app` |
 | **Content changes** | Only via CSV files and `scripts/import-facts.php`: test on MAMP first, then run on the server over SSH. No manual phpMyAdmin edits. |
+| **Claude Code on the server** | Claude Code can SSH to the server with exactly `ssh -p 65002 -o BatchMode=yes -o ConnectTimeout=10 u888389356@31.170.164.28 '<command>'` (allowed in `.claude/settings.json`). Read-only steps and exports are fine; anything that writes content or the database on the server is asked about first. Hostinger's deploy applies migrations automatically on every push. |
+| **Shell path on the Mac** | In some Claude Code sessions the shell path is stripped to `/usr/bin:/bin:/usr/sbin:/sbin`, so `php` is not found. Fix: `export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH` (Homebrew PHP 8.4; MAMP's database still connects). |
 | **Anthropic API keys** | Split by purpose (5 Nov 2026): `ffl-pages` (live editor, polish jobs, nightly drafting), `ffl-multicountry` (multi-country work and local testing), `ffl-sources` (`check-sources.php`, `check-page-text.php`). Scripts choose a key with `AI_KEY_PURPOSE`. Retire the old `ff-website` key once it shows no spend. |
 
 ---
 
-## 3. What was completed during this chat
+## 3. What has been completed
 
-### Domain switchover (Oct 2026)
+### Done in Claude Code, 21 to 22 Nov 2026
+
+**Alerts and checks**
+- **Bank Rate watch** (`scripts/check-bank-rate.php`, `includes/bank-rate-watch.php`): emails on MPC decision days, with a draft CSV. Cron 13:00, 15:00, 17:00. Tested with simulated days; first real run is 17 Dec 2026.
+- **Free triage script** (`scripts/triage-page-text.php`): runs the program checks over every written page, ranks them, `--details` / `--page=<slug>` / `--csv`. No AI, read-only.
+- **Three new program checks** in `quickTextChecks()`: small typed figures such as "2%" and "£5" (L34), hedge words "usually / mostly / generally" unless a source page says them (L28, L9), and a unit repeated after a placeholder (L38).
+- **Meta text guard** (83811c9): the editor allowed 255 characters but the database holds 100 (title) and 200 (description) and is not in strict mode, so text was silently cut off mid-word (Capital Gains Tax and Child Benefit were live with cut-off descriptions). One shared limit counted as typed, refused in the editor and in `import-facts.php`, a live counter in the editor, and the quick checks flag text over or exactly at the limit.
+
+**Reference sources** (migrations 030 and 031, `scripts/import-reference-sources.php`)
+- Official pages a page's text rests on that no figure card cites, read by the AI check, Propose fix, drafting and polish, and fetched daily by `check-sources.php` so a change is noticed. 24 are registered across 11 pages (`data/imports/reference-sources-2026-11.csv`). Allowlisted domains only, and the importer refuses a page the server cannot read.
+- `excerpt_from` (migration 031) starts reading a long page at a phrase, because the AI check cuts each source at 50,000 characters.
+- Evaluation and results so far: `docs/reference-sources-evaluation.md`.
+
+**Content**
+- **12 UK pages finished and live**, each checked claim by claim against its sources, rewritten where needed, and verified on the live site: Income Tax Personal Allowance, Bank of England Base Rate, Carer's Allowance, Capital Gains Tax Rates, Buy-to-Let Mortgage Rates, 2-Year Fixed Mortgage Rates, Pension Tax Relief, State Pension Amount, Child Benefit, Approved Mileage Rates, Average Savings Rates, Corporation Tax Rates. A second pass (22 Nov) acted on the first AI re-check for Capital Gains Tax, 2-Year Fixed, Carer's Allowance and Pension Tax Relief.
+- **Card notes fixed:** the Base Rate page's SVR and 2-year fixed notes, the savings Bank Rate note, and the two daily-job notes in `scripts/fetch-boe-rates.php` (it rewrites them at 07:00, so the fix had to be in the code).
+- **NS&I variable rates** updated (4.05, 4.00, 4.00, 3.90) and the four held proposals rejected. **ISA sources** moved to newsletter 23 and the Junior ISA page.
+- `import-facts.php` gained an optional `source_match_text` column (used for the Australian shiftworker leave card).
+
+**Cost and spend**
+- The `ffl-sources` spend rise on 20 and 21 Nov most likely came from the Australia launch backlog in `check-page-text.php` (5 pages a night, up from 1 or 2) plus `check-sources.php` asking the AI about the same unresolved figures every day. That is my reading of the cron history, not confirmed against the Console. Fixed: `check-sources.php` no longer asks about a figure that already has a held proposal. Check the Console's daily total once the backlog clears (about 23 Nov).
+
+**Housekeeping**
+- Admin queue wording now says when nightly drafting is paused. `CLAUDE.md` and the page checklist are current. Plain commit messages, no Co-Authored-By.
+
+---
+
+### Earlier, in the claude.ai chat
+
+#### Domain switchover (Oct 2026)
 - `robots.txt` updated to point `Sitemap:` at the new domain
 - Sitemap resubmitted in the new Search Console property
 - Live site clicked through: home, a category page, a subject page, About, Disclaimer, Privacy and `/admin/`
@@ -39,13 +70,13 @@ From now on, the list lives in this file. Update it in the repo as items are don
 - Test email to `info@financefactlibrary.com` sent
 - **Change of Address dropped.** Search Console's tool kept failing on the old non-www homepage fetch (most likely Hostinger's edge handling of Google's fetcher). For a site this young it adds little, and the 301 redirects do the real work.
 
-### Cron and housekeeping
+#### Cron and housekeeping
 - Cron job outputs checked (`fetch-search-console.php` and the two weekly jobs)
 - Old database deleted in hPanel
 - `config/database.local.php.bak` removed from the server
 - Old **financial-facts** Google Cloud project shut down
 
-### Content and site
+#### Content and site
 - Homepage intro and legal pages (Disclaimer, Privacy, About) revised for the US, Canada, Australia and New Zealand
 - All five UK categories completed: Tax, Savings & Investments, Pensions, Mortgages & Property, Work & Benefits. The site went from 27 to 53 pages (26 new).
 - **Base Rate page fix confirmed live** (commit `2356b02`, 16 Oct 2026):
@@ -55,56 +86,53 @@ From now on, the list lives in this file. Update it in the repo as items are don
   - `reorder-figure-cards.csv` run once on the server
 - 5 November 2026 Bank Rate update done
 
-### Multi-country
+#### Multi-country
 - Pilot country chosen: **Australia** (2 Nov 2026), built with its eight states and territories as sub-regions
 - Australia launched at 15 written pages and switched on (`is_active = 1`) on the server on 19 Nov 2026
 
 ---
 
-## 4. Open to-do list (as of 21 Nov 2026)
+## 4. Open to-do list (as of 22 Nov 2026)
 
-### Bank Rate alert on MPC decision days
-- [x] Built and live (21 Nov 2026): `scripts/check-bank-rate.php` (logic and decision dates in `includes/bank-rate-watch.php`). Three hPanel cron rows run it at 13:00, 15:00 and 17:00 daily; it only acts on MPC decision days.
-- On a decision day (from 12:30 London) it compares the Bank's page with `uk_base_rate`. A difference gives an immediate "ACTION" email with a draft CSV (`data/imports/bank-rate-YYYY-MM-DD.csv`); a held rate gives a short confirmation; a page not yet updated, or unreadable, is emailed on the 17:00 run.
-- It never changes the database. You still run `import-facts.php` (MAMP first, then the server).
-- Add the 2028 MPC dates to `BANK_RATE_MPC_DATES` when the Bank publishes them.
-- [ ] After the first real decision (17 Dec 2026), check the email arrived and the draft CSV imports cleanly.
+### Needs Richard
+- [ ] **Open any page in the admin editor, type a long meta description, and check the red "AS TYPED" warning appears.** It is the one part of the meta guard that could not be tested without the login.
+- [ ] **Top up and check the API balance** (Console). It was $4.94 on 21 Nov, about 11 pages of drafting. Nothing paid is running without asking.
+- [ ] **Decide on `.claude/settings.json`**: it holds the SSH permission rules and shows as modified. It has been left out of every commit.
 
-### Commit and sync
-- [x] Patched `scripts/check-sources.php` committed (12 Nov, `44a6050`)
-- [x] `mortgages-boe-2026-11.csv` and `nsandi-green-2026-11.csv` committed (12 Nov)
-- [x] NS&I Green Savings Bond (checked 21 Nov 2026): MAMP and server both show 4.73%, matching the live NS&I page (Issue 10). Only the dates differ: the server's 4.45 to 4.73 change was approved on the review page on 30 Oct with no `effective_from` (MAMP has 20 Oct). `import-facts.php` only marks an unchanged value verified, so it can't fill that date in. Cosmetic; left as is.
+### Bank Rate (17 Dec 2026)
+- [x] Alert built and live (see section 3). On a decision day it compares the Bank's page with `uk_base_rate` from 12:30 London time and emails an "ACTION" message with a draft CSV (`data/imports/bank-rate-YYYY-MM-DD.csv`), a short "held" confirmation, or a "page not updated / unreadable" warning at the 17:00 run.
+- [ ] **17 Dec 2026:** check the email arrived, review the draft CSV, then run `php scripts/import-facts.php <file>` on the Mac (MAMP) and then the server. The importer refuses a future `effective_from`, so run it on or after the announcement day. The weekly job does not update Bank Rate.
+- [ ] Add the 2028 MPC dates to `BANK_RATE_MPC_DATES` when the Bank publishes them.
 
-### Bank of England base rate (the alert drafts the CSV; the import is still manual)
-- [ ] **17 Dec 2026:** after the decision, use the draft CSV the watch emails you (or make one from the template `mortgages-boe-2026-11.csv`). Set `value`, the date in the `context` text, `last_updated` and `effective_from`, then run:
-  ```
-  php scripts/import-facts.php data/imports/base-rate-update.csv
-  ```
-  The importer refuses a future `effective_from`, so run it on or after the announcement day. The weekly job does not update Bank Rate.
+### Page text: the routine is built, now apply it
+The routine is in `docs/page-checklist.md`: free triage, then read the sources, fix, close-copy check, reference sources, import on MAMP then the server, check the live page. Each page is a round of reading its sources, fixing the text, importing it and checking the live page, and then the nightly AI check re-reads it (roughly $0.05 a page by my estimate; the real figure is in the Console).
+- [x] 12 pages done (section 3).
+- [ ] **Apply the same routine to the other written UK pages**, in this order (most AI findings first): National Minimum Wage and National Living Wage (11), Lifetime ISA (5), VAT Rates (5), Council Tax Bands (3), Universal Credit Rates (1, but it is the largest card page), Minimum Pension Age (3), Premium Bonds (3), Cash ISA Allowance (3), Deposit Protection (3), Buying Your First Home (3), Tenancy Deposits (3). Check the Buy-to-Let style traps in the list below.
+- [ ] **Australian written pages** (14, in the drip) need the same treatment before or as they go live. Cash Rate Target is a rate page and needs a real rewrite.
+- [ ] **Draft the 30 UK pages that have no explanation yet.** By category: Mortgages 1 (standard-variable-rate); Pensions 5 (auto-enrolment-pension, pension-annual-allowance, pension-credit, state-pension-age, tax-free-pension-lump-sum); Savings 4 (help-to-save, junior-isa-allowance, nsandi-savings-rates, personal-savings-allowance); Tax 13 (dividend-tax-rates, employee-national-insurance, income-tax-rates-and-bands, inheritance-tax-gifts, inheritance-tax-thresholds, making-tax-digital-income-tax, marriage-allowance, scottish-income-tax-rates, scottish-stamp-duty-lbtt, self-employed-national-insurance, stamp-duty-land-tax-rates, trading-and-property-allowances, welsh-stamp-duty-ltt); Work & Benefits 7 (employer-payroll-costs, pip-and-attendance-allowance, statutory-holiday-entitlement, statutory-maternity-paternity-pay, statutory-redundancy-pay, statutory-sick-pay, student-loan-repayment-thresholds). This is paid AI work: about $0.43 a page, about $13 in all. Nightly drafting stays paused (`DRAFTS_PAUSED`).
+- [ ] **Record the AI results as they arrive.** `check-page-text.php` re-checks 5 pages a night (19 were waiting on 21 Nov). Add each batch to `docs/reference-sources-evaluation.md`; the second-pass pages are due a second look. One run is a sample, not a verdict (the checker is not stable).
+- *Page-specific traps:* Buy-to-Let (don't say it's dearer than residential; the Bank's figure is lower), Council Tax Bands (England uses 1991 values, Wales 2003), Tenancy Deposits (England only), Carer's Allowance (earnings limit is a cliff edge; Scotland has Carer Support Payment), Universal Credit (health element rules differ for conditions reported before 6 April 2026), rate pages (Base Rate, NS&I, Average Savings Rates, Buy-to-Let: no rate in any field and no "currently").
+- *Rules learned:* a heading must be true of everything under it; check which pages a rule covers (UK property against UK residential property); a meta description over 200 characters as typed is cut off; a source the server cannot read (Registers of Scotland returns HTTP 403) cannot be a reference source.
 
-### ISA reform page (Cash ISA Allowance, `cash-isa-allowance`)
-- [x] Card sources updated (21 Nov 2026) in `data/imports/isa-sources-2026-11.csv`: the £20,000 and £12,000 figures now cite GOV.UK's Tax-free savings newsletter 23 (September 2026); the Junior ISA £9,000 cites GOV.UK's Junior ISA page. Imported on MAMP and on the server (21 Nov 2026); sources confirmed on both.
-- [ ] Optional: find an official GOV.UK page that states people aged 65 and over can still put £20,000 into cash ISAs, then restore that line in the context text (newsletter 23 doesn't say it).
-- [ ] **After 6 April 2027:** revisit the page and change "due to come into force" to "in force".
+### ISA page (Cash ISA Allowance)
+- [x] Card sources updated and imported on MAMP and the server (21 Nov).
+- [ ] Optional: find an official GOV.UK page that states people aged 65 and over can still put £20,000 into cash ISAs, then restore that line.
+- [ ] **After 6 April 2027:** change "due to come into force" to "in force".
 
-### Page text (every page, all four fields)
-- [ ] Set up the procedure first: a repeatable page-by-page routine of draft → rewrite in Richard's own words → figures check, covering intro, explanation, meta title and meta description
-- [ ] Add a regular content check, so pages are reviewed again after they're written
-- [ ] Work through every page, starting with Universal Credit, Council Tax Bands, Base Rate, Carer's Allowance, Redundancy Pay, VAT, Marriage Allowance and Tenancy Deposits
-- [ ] Keep the rate pages (Base Rate, NS&I, Average Savings Rates, Buy-to-Let) free of "currently X%" wording
-- [ ] Plan for scale: the same procedure must handle hundreds of pages once other countries are added
-- *Page-specific traps noted earlier:* Buy-to-Let (don't say it's dearer than residential; the Bank's figure is currently lower), Council Tax Bands (England uses 1991 values, Wales 2003), Tenancy Deposits (England only), Carer's Allowance (earnings limit is a cliff edge; Scotland has Carer Support Payment), Universal Credit (health element rules differ for conditions reported before 6 April 2026).
+### Small items
+- [ ] NS&I Green Savings Bond: the server has no `effective_from` (the change was approved on the review page on 30 Oct). Cosmetic; `import-facts.php` cannot fill it in for an unchanged value. Left as is.
+- [ ] Universal Credit Rates' meta description is exactly 200 characters and complete. The quick check shows "may have been cut off" on it; harmless.
 
-### Phase 3 step 1 (uncommitted)
-- [ ] The job queue and AI-proposed new figures work from an earlier chat was never committed. Its migration was numbered 012, but `012_subject_drafts.sql` now uses that number, so if the work is picked up again, give its migration the next free number in `sql/migrations`.
+### Phase 3 step 1 (job queue and AI-proposed new figures)
+- [ ] The work from an earlier chat was never committed and is not in the repo, so there is nothing to give a migration number to: it would be a rebuild. Park it, or scope it again when wanted. Next free migration number is **032**.
 
 ### Multi-country expansion
-- [ ] Start the Australia drip: about 3 pages a week
-- [ ] Build the country-neutral pieces (job worker, staging, review step, drip scheduler that only publishes a page once its explanation is written)
-- [ ] Then New Zealand, Canada and the US, each launching at about 15–20 pages
+- [ ] Australia drip: about 3 pages a week, running (`run-jobs.php` every 5 minutes; keep exactly one worker row).
+- [ ] Country-neutral pieces (staging, review step, drip scheduler that only publishes a page once its explanation is written) are partly built; see `docs/handover-2026-11-21-australia-launch.md`.
+- [ ] Then New Zealand, Canada and the US, each launching at about 15 to 20 pages.
 
 ### Ongoing
-- [ ] Keep financial-facts.com registered and redirecting for at least a year (renew if the renewal date comes sooner)
+- [ ] Keep financial-facts.com registered and redirecting for at least a year (renew if the renewal date comes sooner).
 
 ---
 
@@ -125,3 +153,7 @@ From now on, the list lives in this file. Update it in the repo as items are don
 - Content and database changes must go through the provided tooling (e.g. the CSV importer), never manual phpMyAdmin edits; build a workaround if needed
 - Verify figures fully against sources before handing them over; don't ask Richard to re-check them
 - Test imports on MAMP first, then run on the server over SSH
+- **No `Co-Authored-By` lines in commit messages.** Plain messages only (Richard's instruction, 21 Nov 2026; earlier commits were rewritten to match).
+- Ask before anything that writes to the live content or database, pushes, or changes cron. Read-only checks over SSH are fine.
+- One commit per page of text work; after each push, wait for the deploy, run the page-text dry run, then the real import, then the triage, then check the live page.
+- Run the free checks (triage, close-copy scoring, length checks) before paying for any AI pass.
