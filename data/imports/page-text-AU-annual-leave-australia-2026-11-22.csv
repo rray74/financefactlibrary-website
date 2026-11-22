@@ -1,0 +1,16 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,work-and-benefits,pay-and-leave,annual-leave-australia,Annual Leave,"Who gets paid annual leave under the National Employment Standards, how leave builds up, and how awards and agreements can add to it.","## Annual leave is for everyone except casual employees
+
+Full-time and part-time employees get paid annual leave under the National Employment Standards (NES), and casual employees do not. The entitlement is {fact:au_annual_leave_weeks} a year, measured against the hours the employee normally works, so a part-time employee builds up the same number of weeks on fewer hours. The NES reach most employers and employees in Australia through the national workplace relations system, with exceptions.
+
+## Some shiftworkers get an extra week
+
+Whether a shiftworker gets the extra {fact:au_annual_leave_shift_extra} is decided by their award or enterprise agreement. It must contain shiftwork provisions and must treat shiftworkers as people who receive that extra week under the NES.
+
+## Leave builds up from the first day, probation included
+
+Annual leave accumulates gradually through the year, starting on the first day of employment even during a probation period, and any that is not used rolls over to the next year. Paid time off for long service leave, community service (jury duty included), family and domestic violence, illness or caring, or annual leave itself all keep the balance growing. It stops building during unpaid annual leave, unpaid sick or carer's leave and unpaid parental leave, and for any period of leave that has been cashed out. Government-funded Paid Parental Leave does not count as paid leave from the employer, so nothing builds up while someone takes it in place of employer leave.
+
+## Awards and agreements can add to it, but cannot go below it
+
+An award, enterprise agreement or employment contract cannot give less than the NES, and a term that does has no effect. Such documents can give more annual leave. They can also deal with how annual leave is cashed out and taken, or let an employee swap some pay for extra annual leave of equivalent value.",Annual Leave Australia,"How much paid annual leave employees get in Australia under the National Employment Standards: {fact:au_annual_leave_weeks} a year, plus {fact:au_annual_leave_shift_extra} more for some shiftworkers.",,2026-11-22 17:07:58
