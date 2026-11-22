@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,business-taxes,vat-rates-and-thresholds,VAT Rates and Registration Thresholds,"The taxable turnover thresholds at which a business must register for VAT or may apply to cancel its registration, and the difference between exempt supplies and zero-rated ones.","## VAT applies to taxable supplies, not exempt ones
+
+**Value Added Tax (VAT)** applies to taxable supplies, which include standard-rated, reduced-rated and zero-rated goods and services. Some things fall outside those categories altogether — postage stamps, financial services and property transactions are among the categories that are exempt from VAT, and exempt is not the same as zero-rated.
+
+## Registration thresholds differ by business type and location
+
+A business established in the UK must register once its taxable turnover goes over {fact:vat_registration_threshold}. Businesses not established in the UK — known as non-established taxable persons (NETPs) — face a different rule: they must register from the very first taxable sale they make in the UK, with no threshold applying.
+
+Northern Ireland has two registration thresholds that apply nowhere else in the UK. One is a distance selling threshold, counted over a calendar year's sales. The other covers relevant acquisitions, and since 2021 these have only been possible into Northern Ireland.
+
+## Cancelling a VAT registration and putting things right
+
+Once registered, a business can apply to cancel its VAT registration if its taxable turnover falls below {fact:vat_deregistration_threshold}. Cancellation cannot be backdated: a fall in turnover does not let a business cancel for a period that has already passed.
+
+A NETP cannot use the turnover limit to cancel. It can cancel only once it has made its last taxable supply in the UK.
+
+A business unhappy with how HM Revenue & Customs (HMRC) dealt with a registration or deregistration can raise it first with the person or office it has been dealing with, and make a formal complaint if that does not settle it.",UK VAT Rates & Registration {tax_year},The UK VAT standard rate is {fact:vat_standard_rate} and businesses must register once taxable turnover exceeds {fact:vat_registration_threshold}. Covers registration and deregistration thresholds.,2026-10-27 22:41:30,2026-11-22 13:40:49
