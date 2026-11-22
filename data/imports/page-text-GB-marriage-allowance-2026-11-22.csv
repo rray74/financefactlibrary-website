@@ -1,0 +1,34 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,income-tax,marriage-allowance,Marriage Allowance,"How Marriage Allowance lets a lower-earning spouse or civil partner transfer part of their Personal Allowance, who qualifies, and how to claim or cancel.","## Marriage Allowance moves part of one partner's tax-free income to the other
+
+The **Personal Allowance** is the slice of income that each person can receive without paying Income Tax on it. Marriage Allowance lets the lower earner in a couple give up {fact:marriage_allowance_transfer} of theirs, so that their spouse or civil partner has that much less of their income taxed. The partner receiving it can pay up to {fact:marriage_allowance_max_saving} less tax in the tax year.
+
+The partner giving up the allowance may end up paying some tax themselves, but the couple can still pay less overall.
+
+## Only married couples and civil partners qualify, and both incomes matter
+
+A couple who live together without marrying or registering a civil partnership cannot claim. For those who are married or in a civil partnership, three conditions apply:
+
+- The partner transferring the allowance pays no Income Tax, or has income below their Personal Allowance, normally {fact:personal_allowance}.
+- The partner who gains the allowance must be a basic rate taxpayer. That normally means income between {fact:personal_allowance} and {fact:higher_rate_threshold} before the transfer.
+- In Scotland the receiving partner must pay the starter, basic or intermediate rate, and the income limit is lower than elsewhere in the UK.
+
+It makes no difference to eligibility if either of you receives a pension or lives abroad, provided that person still gets a Personal Allowance.
+
+## Once claimed, the transfer repeats every year
+
+Where you both have only wages, the person who earns less makes the claim. Extra income of either partner, from dividends or savings for instance, can change who ought to claim, and the Income Tax helpline can advise. You can apply online, but a Self Assessment return or a backdated claim uses a different route. A successful claim is applied from the start of the tax year, and earlier years can be added for those in which you were eligible, within a limit HMRC sets.
+
+Both partners' tax codes change to reflect the transfer. The code of the partner receiving the allowance ends in M, and the code of the partner giving it up ends in N. Once set up, the transfer carries on each year until it is cancelled.
+
+## Cancelling is required in some situations, and a death changes the position
+
+You must cancel if your relationship ends through divorce, dissolution or legal separation, if a change in income means you no longer qualify, or if you no longer wish to claim. After a relationship ends, either partner can cancel. For any other reason, only the person who made the claim can. Cancelling is done online or by phone, and leaving the Marriage Allowance section of a Self Assessment return blank does not cancel it.
+
+The date the cancellation takes effect depends on the reason. If income is the reason, the allowance carries on until the tax year ends on 5 April. When a relationship has ended, it can be backdated to 6 April, which may leave one or both of you owing tax for that year.
+
+Suppose you gave part of your allowance to a partner who then dies: the estate is treated as holding the increased amount, while yours reverts to the standard figure. If they had transferred part of theirs to you, your higher allowance stays until the end of that tax year and their estate is treated as having the lower one.
+
+## Married Couple's Allowance can suit couples where one was born before 6 April 1935
+
+Where either partner was born before 6 April 1935, claiming Married Couple's Allowance instead may leave the couple better off. You cannot receive both at the same time.",Marriage Allowance {tax_year}: Up to {fact:marriage_allowance_max_saving},Marriage Allowance lets the lower earner transfer {fact:marriage_allowance_transfer} of their Personal Allowance to a spouse or civil partner. Who qualifies and how to claim.,,
