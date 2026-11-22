@@ -83,5 +83,6 @@ The old `ff-website` key is retired.
 - `docs/content-maps/au-content-map.md`: Australia plan, to-do, build log.
 - `docs/drafting-loop-progress.md`: how the drafting loop works and what's next.
 - `docs/api-costs.md`: key setup, wiring checks, spend.
+- `docs/content-creation-process.md`: end-to-end process for creating content (start here).
 - `docs/page-checklist.md`: per-page finishing routine.
 - `docs/house-style/core.md`, `uk.md`, `au.md`: writing rules (the drafting tool reads these).
