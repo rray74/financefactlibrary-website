@@ -1,0 +1,24 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,business-taxes,corporation-tax-rates,Corporation Tax Rates,"The Corporation Tax rates UK companies pay on profits, where marginal relief applies between the small profits rate and the main rate, and how ring fence companies differ.","## Profits between the two limits get marginal relief
+
+The Corporation Tax rate a company pays depends on its level of profit. Companies with profits at or below {fact:ct_marginal_relief_lower_limit} pay the small profits rate. Companies with profits above {fact:ct_marginal_relief_upper_limit} pay the main rate.
+
+A company with profits between those two limits pays the main rate, reduced by **marginal relief**. This is a reduction in the tax bill that makes the effective rate rise gradually instead of jumping from one rate to the other.
+
+Both profit limits are lower for a company that has associated companies or an accounting period shorter than twelve months: they are reduced in proportion.
+
+HM Revenue and Customs (HMRC) offers a Marginal Relief calculator that shows how much relief is available on profits from 1 April 2023.
+
+## Some companies have their own rates
+
+Unit trusts and open-ended investment companies are different: a separate special rate applies to them, rather than the small profits or main rate.
+
+A company whose profits come from oil extraction or oil rights in the UK or the UK continental shelf is a ""ring fence"" company. It pays the same small profits rate as other companies, but its main rate is higher, so the main rate above does not describe it.
+
+The profit limits for ring fence marginal relief are the same as for other companies from 1 April 2023, and were different for periods before that.
+
+## Selling a business asset can create a chargeable gain
+
+Profits from selling or disposing of a business asset are taxed with Corporation Tax. These profits are called **chargeable gains**.
+
+Indexation Allowance can be used when the gain is worked out, to allow for inflation (as measured by the Retail Prices Index) from the time the asset was acquired until 31 December 2017. It has been frozen since 1 January 2018: where you bought an asset before 2018 and sell it later, the December 2017 factor is used in the calculation, whatever the sale date.",Corporation Tax Rates {tax_year},"UK Corporation Tax rates: {fact:ct_small_profits_rate} small profits rate and {fact:ct_main_rate} main rate, plus marginal relief, ring fence companies and how chargeable gains are taxed.",2026-10-29 09:05:50,2026-11-22 12:20:12
