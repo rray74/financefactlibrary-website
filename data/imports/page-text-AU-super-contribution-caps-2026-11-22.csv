@@ -1,0 +1,28 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,super-and-retirement,superannuation,super-contribution-caps,Super Contribution Caps,"How much you can put into super each year at the concessional and non-concessional rates, which contributions count towards each cap, and what happens if you go over.","## Each cap counts what you put in across all your funds
+
+Which cap a contribution uses depends on its type. Employer payments, including salary sacrifice, and personal payments that you claim as a tax deduction are concessional. Personal payments that you don't claim, or can't claim, are non-concessional.
+
+Concessional contributions to every fund you hold are added together and measured against the concessional cap, and non-concessional contributions are added together and measured against the non-concessional cap. Spreading money over several funds does not create extra room under either cap.
+
+## A large balance can reduce the non-concessional cap to nil
+
+If your total super balance at the end of the previous financial year reached the general transfer balance cap ({fact:au_transfer_balance_cap}), the non-concessional cap for the next year is nil. Any non-concessional contribution you make in that year counts as excess.
+
+Some people under 75 can also use the bring-forward option and put in up to three times the annual cap in one year. Going over the annual cap triggers it automatically and unlocks the caps of the following years. How much you can bring forward, and for how many years, depends on your balance just before the year starts.
+
+## Unused concessional cap can be carried forward, but it expires
+
+If your total super balance was under {fact:au_carry_forward_balance_limit} on 30 June of the previous financial year, you can use cap you left unused in earlier years to contribute more than the general concessional cap in a year.
+
+Each year's unused amount stays available for {fact:au_carry_forward_years}. Whatever is still unused when that time is up is lost.
+
+## Excess contributions are taxed differently for each cap
+
+Concessional contributions above your cap are added to your taxable income and taxed at your marginal rate. No extra excess concessional contributions charge is payable on contributions made from 1 July 2021.
+
+For excess non-concessional contributions, you can choose to have the excess released from super. The ATO then works out an associated earnings amount, an estimate of what the excess earned while it was in the fund, and adds it to your assessable income.
+
+## The CGT cap is a separate lifetime limit
+
+Money from selling certain small business assets can be left out of the non-concessional cap, up to the capital gains tax (CGT) cap. It is a limit over your lifetime, not one that resets each year.",Super Contribution Caps {tax_year},"Super contribution caps: {fact:au_concessional_cap} concessional and {fact:au_non_concessional_cap} non-concessional. See carry-forward rules, balance limits and excess contributions.",2026-11-16 22:15:21,2026-11-22 17:07:58
