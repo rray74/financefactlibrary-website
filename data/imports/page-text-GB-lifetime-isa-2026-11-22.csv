@@ -1,0 +1,26 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,savings,isas,lifetime-isa,Lifetime ISA Rules and Limits,"How the Lifetime ISA bonus works, what counts towards your ISA allowance, when you can withdraw without a charge and how the penalty on other withdrawals is worked out.","## The bonus is added to your savings
+
+The government adds {fact:lisa_bonus_rate} to the money you pay in, up to {fact:lisa_max_bonus} a year.
+
+## Lifetime ISA payments count towards your overall ISA allowance
+
+Your payments into a Lifetime ISA use up part of your overall Individual Savings Account (ISA) allowance of {fact:isa_allowance}, which the government has said will stay unchanged until April 2031, so they are not extra to it. The account can be held as cash, as stocks and shares or as a mix of the two.
+
+## Taking money out: when the charge applies
+
+Taking money out for any reason other than a first home, turning {fact:lisa_penalty_free_age} old or terminal illness (less than 12 months to live) is an unauthorised withdrawal. The charge is {fact:lisa_withdrawal_charge} of the amount withdrawn, and its purpose is to claw back the bonus that was added to what you first saved. Emptying the account means the charge applies to the total pot, bonus included, so it can leave you with less than you paid in. To receive a set amount, you must request more.
+
+Moving a Lifetime ISA into another type of ISA before you are {fact:lisa_penalty_free_age} old also triggers the charge. That includes a transfer to a Help to Buy ISA.
+
+When the account holder dies, the account closes on the date of death and the money can be taken out without a charge.
+
+## A first home has extra conditions
+
+You must be buying with a mortgage. A home at or below {fact:lisa_property_price_limit} carries no charge. Above that price you can still use your savings, but a withdrawal charge applies, at a lower rate than for other unauthorised withdrawals.
+
+At least a year must pass between your first payment into the account and the purchase. You need a conveyancer or solicitor acting for you, and your ISA provider sends the funds straight to that person.
+
+Your savings cannot go towards a home bought with a private mortgage from your spouse or civil partner, from a parent, grandparent, child, grandchild or sibling of yours or of your spouse or civil partner, or from anyone married to or in a civil partnership with one of those relatives.
+
+Joint purchases are possible when your co-buyer has a Lifetime ISA too: both of you can put savings and bonus towards the home. This only works if each of you is a first-time buyer and meets every one of the conditions above. If you also hold a Help to Buy ISA, only one of the two bonuses can go towards the purchase.",Lifetime ISA Rules: {fact:lisa_bonus_rate} Bonus,"Lifetime ISA bonus of {fact:lisa_bonus_rate} up to {fact:lisa_max_bonus} a year, how it counts towards your ISA allowance, first-home rules, age limits and the withdrawal charge.",2026-10-28 22:02:47,2026-11-22 13:30:47
