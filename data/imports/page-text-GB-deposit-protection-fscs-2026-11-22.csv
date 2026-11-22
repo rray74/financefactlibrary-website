@@ -1,0 +1,20 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,savings,savings-accounts,deposit-protection-fscs,Deposit Protection (FSCS),"How much of your savings the Financial Services Compensation Scheme protects if a UK bank, building society or credit union fails, including temporary high balances.","## The limit depends on when the firm fails
+
+When a firm fails, the Financial Services Compensation Scheme (FSCS), the UK's deposit guarantee scheme, pays compensation for eligible deposits, and the Prudential Regulation Authority (PRA) decides how much it can pay. The limit that counts is the one in force on the date the firm fails, and for the standard limit that is {fact:fscs_deposit_limit}.
+
+Deposits are covered at any UK-authorised bank, building society or credit union. The scheme also reaches deposits at the UK branch or subsidiary of an overseas firm, as long as that firm is permitted to take deposits.
+
+## The limit applies per person and per firm
+
+The standard limit applies to each person at each authorised firm, not to each account. Money in a current account and a savings account at the same firm is added together before the limit is applied. If a firm owns several brands, deposits across all of them count towards a single limit.
+
+The limit is per person, so in a joint account each holder is protected up to {fact:fscs_deposit_limit}, and a couple with one joint account are protected up to twice that.
+
+## Temporary high balances have a separate limit
+
+A large sum held only for a short time, such as money from a private property sale, can qualify as a temporary high balance (THB). For most THB claims the limit is {fact:fscs_temporary_high_balance_limit}, and the extra protection lasts for up to six months. A THB that comes from a personal injury or incapacity payment has no cap.
+
+## Not every deposit is eligible
+
+Compensation covers only eligible deposits held with a firm the PRA authorises, such as current accounts, savings accounts, cash ISAs and savings bonds. Whether a particular deposit counts is set by the PRA's rules.",FSCS Deposit Protection: {fact:fscs_deposit_limit},"The savings protection limit is {fact:fscs_deposit_limit} per eligible depositor if a bank fails, or {fact:fscs_temporary_high_balance_limit} for temporary high balances. See what else applies.",2026-10-29 22:19:43,2026-11-22 13:51:46
