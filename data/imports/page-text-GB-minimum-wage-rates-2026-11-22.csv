@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,pay,minimum-wage-rates,National Minimum Wage and National Living Wage,"The legal minimum hourly pay for each age group and for apprentices, how the National Living Wage fits in, and how employer-provided accommodation counts towards pay.","What you must be paid for each hour turns on two things: how old you are, and whether you are an apprentice. The **National Living Wage** is the rate for workers aged 21 and over: {fact:nlw_21_and_over} an hour. The **National Minimum Wage** covers younger workers: {fact:nmw_18_to_20} an hour for ages 18 to 20, and {fact:nmw_under_18} an hour for those under 18, as long as they are past school leaving age. These are the rates for {tax_year}, and they change on 1 April each year.
+
+If you think you are paid less than the minimum, the minimum wage calculator on GOV.UK can check it, and Acas can help if you are not getting it.
+
+## The rate depends on your age and whether you're an apprentice
+
+The apprentice rate, {fact:nmw_apprentice} an hour, covers two groups: apprentices under 19, and those aged 19 or over who are still in the first year of the apprenticeship. From the second year, an apprentice aged 19 or over moves to the rate for their age.
+
+## How accommodation counts towards pay
+
+Accommodation your employer provides can count towards your minimum wage pay, by up to the **accommodation offset**: {fact:nmw_accommodation_offset_daily} a day, or {fact:nmw_accommodation_offset_weekly} a week. How it counts depends on what you are charged:
+
+- Free accommodation adds the offset to the pay that counts.
+- A charge no higher than the offset leaves your pay as it is.
+- A charge above the offset reduces the pay that counts by the difference.
+
+Accommodation is the only benefit from an employer that counts. Food, a car and childcare vouchers do not.",UK Minimum Wage {tax_year}: {fact:nlw_21_and_over} for 21+,"UK minimum wage rates for {tax_year}: the National Living Wage of {fact:nlw_21_and_over} for ages 21 and over, {fact:nmw_18_to_20} for 18 to 20, and the under-18 and apprentice rates.",2026-10-21 08:05:37,2026-11-22 13:24:58
