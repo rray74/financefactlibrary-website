@@ -6,6 +6,12 @@ It is for a page that has been through "Draft and polish in the background".
 Choosing which page: run `php scripts/triage-page-text.php` (free, read-only, no AI)
 for a ranked list of every written page by program findings, with `--details` for
 the findings and `--page=<slug>` for one page.
+`--page=<slug>` also runs the near-copy check (it downloads the page's source pages:
+the figure cards' and the reference sources'), so a clean `--page` result means no
+sentence follows a source's wording at 60% or more. For the whole list add
+`--close-copies` (about 35 seconds for 39 pages); `--no-close-copies` turns it off
+for one page. A source page the site cannot read is shown as a finding, because
+the check is then incomplete.
 
 Aim: about 25 minutes from the finished job to a saved page, with no help from
 Claude in the browser. If a page still needs that help, note which step it was

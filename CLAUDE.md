@@ -35,7 +35,8 @@ New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
 - Read every figure live with `scripts/read-source.php` before it goes in a CSV.
 - Page workflow: draft → AI check → rewrite / Propose fixes → human review.
   Per-page routine in `docs/page-checklist.md`. Start with the free triage
-  (`php scripts/triage-page-text.php`) to rank pages by program findings.
+  (`php scripts/triage-page-text.php`) to rank pages by program findings;
+  `--page=<slug>` also runs the near-copy check, `--close-copies` does it for every page.
 
 ## Cron and manual routines
 - hPanel cron: `fetch-search-console` 06:00, `draft-pages` 05:00 (paused:

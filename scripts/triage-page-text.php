@@ -17,6 +17,8 @@
  *   php scripts/triage-page-text.php --page=base-rate   one page, with its findings (a subject slug)
  *   php scripts/triage-page-text.php --include-hidden   also pages in countries not switched on yet
  *   php scripts/triage-page-text.php --csv           the ranked list as CSV, for a spreadsheet
+ *   php scripts/triage-page-text.php --close-copies  also run the near-copy check on every page (see below)
+ *   php scripts/triage-page-text.php --page=base-rate --no-close-copies   one page, without the near-copy check
  *
  * What it runs on each page's SAVED text, as the editor's "Checks on the saved text" box does
  * (quickTextChecks() in includes/text-checks.php): typed figures that change (including small
@@ -25,13 +27,23 @@
  * that it checks lengths with the figures filled in (meta title 42 or fewer, meta description 140 to 155)
  * and fields that are empty.
  *
- * What it does NOT run: the near-copy check (it needs the source pages downloaded) and the AI check.
- * The last AI check's finding count is shown, read from the database, where there is one. A page that
- * is clean here can still have substance problems the AI check or a human read would find.
+ * THE NEAR-COPY CHECK (added 22 Nov 2026). Sentences that follow a source page's wording closely (60% of
+ * the words in the same order, findCloseCopies() in includes/text-checks.php, the same check the AI check
+ * and the drafting loop use) are found by comparing the filled-in explanation and intro with the pages the
+ * page's figure cards cite plus its reference sources. That needs those pages downloaded, which takes a few
+ * seconds a page, so it runs by default only with --page (the per-page routine in docs/page-checklist.md)
+ * and with --close-copies for the whole list. A source page the site cannot read is reported as a finding,
+ * because the check is then incomplete. With the source pages read, a hedge word is flagged only when no
+ * source page says it too, as in the drafting loop; without them it is flagged in the editor's way,
+ * "keep it only if a source says it". Before this was added, a page could be clean here and still copy
+ * its sources (Tenancy Deposits, 22 Nov).
+ *
+ * What it does NOT run: the AI check. The last AI check's finding count is shown, read from the database,
+ * where there is one. A page that is clean here can still have substance problems the AI check or a human
+ * read would find.
  *
  * It never writes anything, calls no API and uses no key, so it costs nothing and is safe to run anywhere.
- * (Hedge words are shown in the editor's way, "keep it only if a source says it", because no source pages
- * are read here.)
+ * The near-copy check only reads the official source pages over HTTP, as check-sources.php does.
  */
 
 if (PHP_SAPI !== 'cli') {
@@ -49,13 +61,16 @@ define('AI_KEY_PURPOSE', 'SOURCES');
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/text-checks.php';
 
-$options = getopt('', ['details', 'limit:', 'country:', 'page:', 'include-hidden', 'csv']);
+$options = getopt('', ['details', 'limit:', 'country:', 'page:', 'include-hidden', 'csv', 'close-copies', 'no-close-copies']);
 $details = isset($options['details']) || isset($options['page']);
 $limit = isset($options['limit']) ? max(1, (int) $options['limit']) : 0;
 $onlyCountry = isset($options['country']) ? strtoupper((string) $options['country']) : null;
 $onlyPage = isset($options['page']) ? (string) $options['page'] : null;
 $includeHidden = isset($options['include-hidden']);
 $asCsv = isset($options['csv']);
+// The near-copy check downloads each page's source pages, so it is on for a single page (the routine)
+// and opt-in for the whole list. --no-close-copies turns it off for a single page.
+$closeCopies = (isset($options['close-copies']) || $onlyPage !== null) && !isset($options['no-close-copies']);
 
 $pdo = getDbConnection();
 
@@ -105,6 +120,8 @@ function triageKind(string $note): string
         'typed tax year'         => '/typed\. Use \{tax_year\}/',
         'dating word'            => '/dates the text/',
         'hedge word'             => '/is a hedge/',
+        'close copy of a source' => '/^(Explanation|Intro): follows the wording/',
+        'source page not read'   => '/could not be read, so the near-copy check/',
         'unit repeated'          => '/lesson L38/',
         'advice'                 => '/reads as advice/',
         'too long'               => '/words, over the house style/',
@@ -146,8 +163,33 @@ foreach ($subjects as $subject) {
     ];
     $country = (string) ($subject['country_code'] ?: 'GB');
 
+    // The source pages (card sources and reference sources), when the near-copy check is on. They are
+    // also given to quickTextChecks() so a hedge word a source says itself is not flagged.
+    $read = $closeCopies ? readSourcePagesForFacts($facts, 50000, (int) $subject['id']) : null;
+
     // The checks the editor shows on saved text, country rules included.
-    $notes = quickTextChecks($fields, $facts, $country);
+    $notes = quickTextChecks($fields, $facts, $country, $read['texts'] ?? null);
+
+    // Sentences that follow a source closely, worked out on the filled-in text as the AI check does.
+    if ($read !== null) {
+        $names = array_map(fn($s) => $s['name'], $read['sources']);
+        foreach (['explanation' => 'Explanation', 'intro' => 'Intro'] as $field => $label) {
+            $filledText = trim((string) fillPlaceholders($fields[$field], $country, $facts));
+            if ($filledText === '') {
+                continue;
+            }
+            foreach (array_slice(findCloseCopies($filledText, $read['texts'], $names), 0, 6) as $copy) {
+                $notes[] = "$label: follows the wording of {$copy['source']} closely (" . round($copy['score'] * 100)
+                    . '% of the words match, in order): "' . quoteWords($copy['quote'], 25) . '". Restate it in your own words and order.';
+            }
+        }
+        foreach ($read['sources'] as $source) {
+            if (empty($source['read'])) {
+                $notes[] = "Source page {$source['url']} could not be read, so the near-copy check is incomplete for this page"
+                    . (!empty($source['error']) ? " ({$source['error']})." : '.');
+            }
+        }
+    }
 
     // Fields left empty.
     foreach (TEXT_FIELD_LABELS as $field => $label) {
@@ -205,7 +247,7 @@ if ($asCsv) {
 $shown = $limit > 0 ? array_slice($results, 0, $limit) : $results;
 $clean = count(array_filter($results, fn($r) => $r['score'] === 0));
 
-echo "Free triage of page text (program checks only: no AI, nothing written).\n";
+echo 'Free triage of page text (program checks' . ($closeCopies ? ' and near-copy check' : '') . ": no AI, nothing written).\n";
 echo count($results) . ' written page(s) checked'
     . ($onlyCountry ? " in $onlyCountry" : '') . "; $clean with no findings.\n";
 if ($unwritten) {
@@ -266,5 +308,7 @@ if ($details) {
     }
 }
 
-echo "\nThe near-copy check and the AI check are not part of this. Run them from the page's editor.\n";
+echo $closeCopies
+    ? "\nThe AI check is not part of this. Run it from the page's editor.\n"
+    : "\nThe near-copy check was not run (add --close-copies, or use --page) and the AI check is not part of this. Run the AI check from the page's editor.\n";
 exit(0);
