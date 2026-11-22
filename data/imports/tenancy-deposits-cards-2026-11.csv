@@ -1,0 +1,6 @@
+category_slug,subcategory_slug,subject_slug,fact_key,label,context,source_name,source_url,jurisdiction_code,last_updated,review_frequency_days
+mortgages,housing-costs,tenancy-deposits,td_cap_weeks_standard,,,GOV.UK — MHCLG,https://www.gov.uk/guidance/fees-you-can-charge-as-part-of-a-tenancy,GB-ENG,2026-11-22,365
+mortgages,housing-costs,tenancy-deposits,td_cap_weeks_high_rent,"Most a deposit can be (annual rent £50,000 to £100,000)","The higher cap applies to tenancies in England with an annual rent from £50,000 up to £100,000. The Tenant Fees Act does not cover tenancies with a higher rent.",GOV.UK — MHCLG,https://www.gov.uk/guidance/fees-you-can-charge-as-part-of-a-tenancy,GB-ENG,2026-11-22,365
+mortgages,housing-costs,tenancy-deposits,td_high_rent_threshold,,"A tenancy with an annual rent of this or more, up to £100,000, can have a deposit of up to 6 weeks' rent.",GOV.UK — MHCLG,https://www.gov.uk/guidance/fees-you-can-charge-as-part-of-a-tenancy,GB-ENG,2026-11-22,365
+mortgages,housing-costs,tenancy-deposits,td_holding_deposit_cap,,,GOV.UK — MHCLG,https://www.gov.uk/guidance/fees-you-can-charge-as-part-of-a-tenancy,GB-ENG,2026-11-22,365
+mortgages,housing-costs,tenancy-deposits,td_penalty_multiple,"Most a court can order a landlord to repay the tenants, as a multiple of the deposit",,,,GB-ENG,,
