@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,work-and-benefits,pay-and-leave,personal-and-carers-leave,Personal and Carer's Leave,"Under the National Employment Standards, full-time and part-time employees have {fact:au_sick_leave_days} of paid sick and carer's leave each year, with part-timers getting a proportion. Carer's leave beyond that allowance, compassionate leave and paid family and domestic violence leave are separate entitlements.","## Paid leave for sickness and caring
+
+Full-time employees covered by the National Employment Standards (NES) get {fact:au_sick_leave_days} of paid sick and carer's leave each year, and part-time employees get a proportion of that. It can be used for the employee's own illness or injury, or to look after an immediate family or household member who is sick, injured or affected by an unexpected emergency. Unused leave carries over to the next year. Casual employees do not get paid sick and carer's leave.
+
+## Unpaid carer's leave and compassionate leave come on top of paid leave
+
+Full-time and part-time employees can take {fact:au_unpaid_carers_days} of unpaid carer's leave once their paid sick and carer's leave has run out. A casual employee's carer's leave is also unpaid, and the {fact:au_unpaid_carers_days} apply afresh every time a need for care arises.
+
+Compassionate leave is {fact:au_compassionate_days} each time a member of the employee's immediate family or household dies or develops a life-threatening illness or injury. It also covers a stillbirth and some miscarriages. Full-time and part-time employees are paid their base pay rate for it, while casual employees take it unpaid. It does not build up over time and is separate from sick and carer's leave.
+
+## Family and domestic violence leave
+
+All employees can take {fact:au_fdv_leave_days} of paid leave for family and domestic violence each year, casuals among them. It is not pro-rated for part-time or casual employees, it is available from the first day of employment, and it resets each year on the employee's work anniversary. Unused leave does not carry over. An employee can take it if they are experiencing family and domestic violence themselves and need to deal with its impact in a way that cannot practically be done outside work hours.
+
+## Awards and agreements can add to it
+
+An award, agreement or contract cannot give less than these standards, and any term that does has no effect. Such documents can add to the standards and can set some rules for how they work. For example, they can allow paid sick and carer's leave to be cashed out, or let an employee give up some pay in return for extra sick and carer's or annual leave.",Personal and Carer's Leave Australia,"Sick and carer's leave in Australia: {fact:au_sick_leave_days} paid, plus carer's and compassionate leave and {fact:au_fdv_leave_days} of paid family and domestic violence leave.",,2026-11-22 17:07:58
