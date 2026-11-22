@@ -1,0 +1,20 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,super-and-retirement,retirement,age-pension,Age Pension,"How much Age Pension a single person or a couple can get, what the rate is made up of, who is eligible and how income and assets change the amount.","## The maximum rate is made up of three parts
+
+The most a person can be paid each fortnight, before tax, adds together a basic rate, the **Pension Supplement** and the **Energy Supplement**. A couple living apart because of ill health is paid the single rate, not the couple rate.
+
+## Reaching Age Pension age is only the first condition
+
+People qualify by age from {fact:au_age_pension_age}, a threshold that Services Australia says it has no plans to alter. Reaching that age is not enough on its own, because residence rules, an income test and an assets test also apply. Someone who is legally blind and not receiving Rent Assistance can sometimes claim without being measured against the income and assets tests, provided an ophthalmologist's report backs the claim. Some payments from the Department of Veterans' Affairs (DVA) can affect eligibility, and that applies to payments to your partner as well as to you. People of that age who miss out on the pension may qualify for a Commonwealth Seniors Health Card, which gives access to cheaper medicines.
+
+## Income and assets decide how much you are paid
+
+The income test can reduce the payment, and the assets test affects both whether you are paid and how much. If you have a partner, Services Australia needs income and asset details for both of you, and a change in your relationship can change your rate. Employment income, yours or your partner's, has to be reported even when it is below the income cut off point. Income or assets held outside Australia can also lower the payment.
+
+## Some people are paid a transitional rate
+
+People who were already getting a part pension in September 2009 may be on a transitional rate. It protects pensioners who would be paid less under the current income test, and it applies until the normal rates catch up. These people have their own rates, which differ from the normal ones.
+
+## Age Pension is taxable
+
+The pension is taxable, but no tax comes out of it automatically. You can ask Services Australia to withhold some, which helps prevent a tax debt later.",Age Pension Rates: {fact:au_age_pension_single} a Fortnight,The maximum Age Pension is {fact:au_age_pension_single} a fortnight for a single person and {fact:au_age_pension_couple_each} each for a couple. How the rate is made up and who qualifies.,2026-11-11 21:53:05,2026-11-22 17:07:58
