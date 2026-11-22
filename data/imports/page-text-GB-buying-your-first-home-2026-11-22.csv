@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,mortgages,buying-a-home,buying-your-first-home,Buying Your First Home,"How property tax relief works for first-time buyers in England, Northern Ireland and Scotland, and the Lifetime ISA rules for buying a first home.","## Over the price cap, first-time buyer relief is lost entirely
+
+In England and Northern Ireland, first-time buyers can claim a relief on Stamp Duty Land Tax (SDLT) when the property is their first home. Everyone you are buying with must also be a first-time buyer.
+
+The relief does not simply shrink above the cap. Once the price passes {fact:sdlt_ftb_relief_cap}, no relief is available and the purchase is taxed under the rules for buyers who have owned a home before. Within the cap, the part of the price above {fact:sdlt_ftb_nil_rate_threshold} is taxed at a reduced first-time buyer rate.
+
+A buyer who is not a UK resident for SDLT purposes, meaning not present in the UK for at least 183 days in the 12 months before the purchase, will usually pay a surcharge on top of any first-time buyer rates. Some properties, transactions and types of buyer may be exempt.
+
+## Scotland and Wales charge different taxes
+
+Scotland does not use SDLT. Buyers there pay Land and Buildings Transaction Tax (LBTT), and first-time buyers get a higher nil-rate band than other buyers, up to {fact:lbtt_ftb_nil_rate_threshold}. Some purchases also attract the Additional Dwelling Supplement, a flat {fact:lbtt_ads_rate} charge on top of LBTT.
+
+Wales also does not use SDLT. It has its own Land Transaction Tax, and first-time buyers there get no equivalent relief.
+
+## A Lifetime ISA can fund a first home if the conditions are met
+
+A Lifetime ISA (Individual Savings Account) can be used towards a first home without a withdrawal charge only if the price is no more than {fact:lisa_property_price_limit} and the other conditions are met. These include buying with a mortgage, having a conveyancer or solicitor act for you, and waiting at least a year after your first payment into the account. A private mortgage from a relative, from your spouse or civil partner, or from a relative of theirs rules the account out. Withdrawals for other reasons carry a charge. [Lifetime ISA Rules and Limits](/uk/savings/isas/lifetime-isa/) sets out the full conditions and how the charge works.",First-Time Buyer Stamp Duty and Mortgages,"First time buyer stamp duty: no tax up to {fact:sdlt_ftb_nil_rate_threshold} in England and Northern Ireland. Also covers Scotland, Lifetime ISA rules and mortgage rates by deposit.",2026-10-29 22:32:44,2026-11-22 13:50:21
