@@ -1,0 +1,16 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,work-and-benefits,pay-and-leave,minimum-wage-australia,Minimum Wage,"The National Minimum Wage for employees who are not covered by an award or agreement, what it is per hour and per week, and when each increase starts.","## The National Minimum Wage covers employees with no award or agreement
+
+Awards, which cover industries and occupations, set the minimum wage for most employees, and a registered agreement can do the same. The National Minimum Wage applies to those who have neither. It is {fact:au_min_wage_hourly} an hour or {fact:au_min_wage_weekly} a week, before tax, and it comes from the Fair Work Act 2009.
+
+## Award and agreement rates can differ from the national rate
+
+Pay under an award or registered agreement applies in place of the national rate, together with that award's penalty rates and allowances, and it can be higher. Some awards pay people entering an industry an introductory rate, usually for a limited time, that is lower than the national rate.
+
+## Some employees have their own minimum rates
+
+Apprentices and trainees, juniors and employees with disability have separate pay rates, depending on their employment type, age or capacity to work. Some awards contain unusual pay rates or permit alternative pay arrangements.
+
+## Most changes start on the first full pay period on or after 1 July
+
+The Fair Work Commission runs an annual wage review that covers both the national rate and award rates. For most changes, a pay period that began before 1 July stays on the old rate, and the changed rate starts with the first pay period that begins on or after it.",Australian Minimum Wage {tax_year}: {fact:au_min_wage_hourly},The National Minimum Wage is {fact:au_min_wage_hourly} an hour or {fact:au_min_wage_weekly} a week for a full-time employee. Who it covers and when each yearly increase takes effect.,2026-11-09 22:33:09,2026-11-22 17:07:58
