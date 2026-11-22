@@ -12,3 +12,5 @@ config/search-console-key.json
 
 # Log files
 logs/
+# Personal Claude Code permissions (SSH to the server). Never committed.
+.claude/settings.local.json
