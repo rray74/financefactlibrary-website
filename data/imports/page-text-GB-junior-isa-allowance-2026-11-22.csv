@@ -1,0 +1,22 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,savings,isas,junior-isa-allowance,Junior ISA Allowance,"How much can be paid into a child's Junior ISAs each tax year, who qualifies, who looks after the account, and when the money can be taken out.","## One limit covers all of a child's Junior ISAs, and anyone can pay in
+
+A child can hold one cash Junior ISA and one stocks and shares Junior ISA, and the yearly limit of {fact:jisa_annual_allowance} is shared between them. Whatever goes into one reduces what can go into the other during that tax year. With the cash type, interest is tax-free. With the stocks and shares type, there is no tax on capital growth or dividends.
+
+Anyone can pay money in, not just parents. Funds can be shifted from one of a child's Junior ISAs to another, and a Child Trust Fund can be switched to a Junior ISA or back. A Junior ISA and an adult ISA are kept apart, so nothing passes between them.
+
+## The child has to be under {fact:jisa_age_limit} old and living in the UK
+
+A child who lives abroad qualifies only if a parent or guardian is a Crown servant, for example in the armed forces or diplomatic service, and the child depends on them for care. A child cannot have both a Child Trust Fund and a Junior ISA, so a Child Trust Fund holder has to ask the provider to transfer the fund into a Junior ISA.
+
+## A parent or guardian runs the account, and the money belongs to the child
+
+For a child under 16, only a parent or guardian with parental responsibility can open the account. Teenagers aged 16 or 17 may set one up without a parent. The person who opens it becomes the registered contact, and is the only one who can switch the account between cash and stocks and shares, move it to another provider or report a change of circumstances. A child can take over as registered contact at 16.
+
+The money is the child's, and it cannot be withdrawn until they are {fact:jisa_access_age} old. At that point the account automatically becomes an adult ISA. If a young person lacks the mental capacity to manage it at that age, a financial deputyship order from the Court of Protection is needed in England and Wales, from the Office of the Public Guardian in Scotland, or from the Office of Care and Protection in Northern Ireland.
+
+## Money can come out early only if the child is terminally ill
+
+The registered contact can ask HMRC for early access when a child's illness is expected to worsen and the child is not expected to live more than 6 months. The time allowed to take the money out depends on where the family lives: 6 months from diagnosis in England and Wales, 12 months in Northern Ireland and no limit in Scotland.
+
+After a child's death, the balance in their Junior ISAs is paid to the person who inherits the child's estate, typically a parent. The account provider has to be told so it can close the accounts.",Junior ISA Allowance {tax_year}: {fact:jisa_annual_allowance},"A child can have up to {fact:jisa_annual_allowance} paid into their Junior ISAs each tax year, across cash and stocks and shares. Who qualifies and when the money can come out.",,
