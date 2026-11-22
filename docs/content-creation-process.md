@@ -1,6 +1,6 @@
 # How content is created for the site
 
-*Written 22 November 2026. This is the end-to-end view of how a page goes from nothing to live. It summarises, and points to, the detailed docs rather than replacing them: `docs/page-checklist.md` (per-page finishing routine), `docs/house-style/` (writing rules), `docs/api-costs.md` (keys and spend), `docs/drafting-loop-progress.md` (how the AI loop was built) and `docs/content-maps/au-content-map.md` (the Australia plan and build log).*
+*Written 22 November 2026, updated the same day after the Claude Code drafting test (`docs/claude-code-drafting-test.md`). This is the end-to-end view of how a page goes from nothing to live. It summarises, and points to, the detailed docs rather than replacing them: `docs/page-checklist.md` (per-page finishing routine), `docs/house-style/` (writing rules), `docs/api-costs.md` (keys and spend), `docs/drafting-loop-progress.md` (how the AI loop was built) and `docs/content-maps/au-content-map.md` (the Australia plan and build log).*
 
 ---
 
@@ -49,10 +49,22 @@ If a claim in the text comes from an official page that no card cites (a freeze 
 - Very long pages are cut at 50,000 characters, so give the row an `excerpt_from` phrase.
 - `--list=<slug>` shows a page's reference sources. They are fetched daily by `check-sources.php` so a change is noticed.
 
-### Step 4: Draft the text
-In the editor (`admin/subject.php`) click **Draft and polish in the background**, then run `php scripts/run-polish-jobs.php` (or wait for cron). The writer reads the house style, the cards, the sources and the approved lessons, and the polish loop does up to two AI checks with a stop rule. Open the page and click **Use draft** on all four fields.
+### Step 4: Draft the text (in Claude Code, by default)
+**New pages are drafted in a Claude Code session, not by the API drafter.** This became the default on 22 November 2026 after a test on three pages (Marriage Allowance, Statutory Sick Pay, Auto-Enrolment): $0 of API spend for drafting, review time under 5 minutes a page against 5 to 25 on the API route, no page needing Claude in the browser, and card problems found along the way. Results: `docs/claude-code-drafting-test.md`. It used a tiny fraction of the monthly plan allowance (reported, not measured).
 
-Nightly auto-drafting (`draft-pages.php`) is **paused** (`DRAFTS_PAUSED`): review time is the bottleneck and drafts that wait go stale.
+For each page, Claude Code:
+1. Lists the page's figure cards and their sources (read-only) and stops if a card looks wrong or stale.
+2. Reads every source live with `scripts/read-source.php`, including the other pages of a GOV.UK guide, and adds a reference source (Step 3) for any claim no card cites. Where two sources disagree, it checks the legislation and does not state the disputed detail in the text.
+3. Drafts the four fields to `docs/house-style/core.md` plus the country file, in its own words and structure (the near-copy check punishes following a source's order).
+4. Writes `data/imports/page-text-<CC>-<slug>-<date>.csv` and imports it on MAMP with `import-page-text.php --dry-run --overwrite`, then for real.
+5. Runs `php scripts/triage-page-text.php --page=<slug> --details` and rewrites until nothing is left except fixed legal figures, then re-reads every sentence against its source.
+6. Shows Richard the MAMP page address and the findings. Richard reviews.
+
+After approval: one commit per page, push, wait for the deploy, then `import-reference-sources.php` and `import-page-text.php` on the server (dry run first), run the triage there, and check the live page's title, description, headings and that no `{fact:` is left unfilled.
+
+**Watch the meta text when placeholders sit next to articles.** "with a {fact:x} minimum" filled to "with a 8% minimum" and went live. Reword around the placeholder, and read the filled-in meta text, not the typed one.
+
+**The API route is still there** as a fallback: in the editor click **Draft and polish in the background**, then run `php scripts/run-polish-jobs.php` (or wait for cron) and click **Use draft** on all four fields. Nightly auto-drafting (`draft-pages.php`) stays **paused** (`DRAFTS_PAUSED`): review time is the bottleneck and drafts that wait go stale.
 
 ### Step 5: Free triage first
 Before paying for any AI check:
@@ -61,7 +73,9 @@ Before paying for any AI check:
 - `--page=<slug>` also runs the near-copy check against the page's source pages; `--close-copies` does it for every page. No sentence may follow a source's wording at 60% or more.
 - The program checks cover: dating words, hedge words ("usually", "mostly", "generally"), typed figures that equal a card (including small ones like "2%" and "£5"), a unit repeated after a placeholder, rates on rate pages, and meta-length limits.
 
-### Step 6: AI check and fixes
+### Step 6: AI check and fixes (API route only)
+For a page drafted in Claude Code, the claim-by-claim read in Step 4 replaces this step, and the nightly `check-page-text.php` is the independent second opinion (record its first result for each new page in `docs/reference-sources-evaluation.md`). The steps below are for pages drafted by the API route, or when a reviewer wants a second pass.
+
 1. **Check with AI** once.
 2. **Propose fixes for all findings.** Each fix is the smallest change for one finding and is program-checked before it is offered.
 3. Read every proposal. Apply it only if it is true to the source, in your own words, and says nothing the sources don't. Only then use "Apply all proposals".
@@ -83,9 +97,10 @@ Read the text against the official sources, not just the checker output. This is
 - **Other countries**: pages stay hidden drafts until the **drip publisher** releases them (`drip_country` job, handled by `scripts/run-jobs.php` every 5 minutes; Australia is 3 a week). The drip only publishes a page once its explanation is written. Keep exactly one worker row in hPanel.
 - Verify live: the public address comes from the sitemap, not from guessing the slug (`/au/<category>/<subcategory>/<slug>/`).
 - Click **Look for lessons** and approve a lesson only if it is general and doesn't contradict house style.
+- **Record the review.** Saving the page in the editor stamps `text_reviewed_at`. For text that arrived by import and that a person has approved, `php scripts/mark-page-reviewed.php --dry-run --page=<slug>[,<slug>]` does the same, using the editor's own function. Run it only for pages a person has actually reviewed, and check the dry run first: a page already saved in the editor shows its real time, and re-stamping would replace it.
 
 ### Step 9: Record the cost
-Note the job's "AI use" line and the line after each Propose fix. A page has averaged about $0.43 in AI cost, with 5 to 25 minutes of review time.
+For a Claude Code draft there is no per-page API cost for drafting, so there is nothing to record beyond the nightly check's spend (`ffl-sources`). For the API route, note the job's "AI use" line and the line after each Propose fix: a page has averaged about $0.43, with 5 to 25 minutes of review time.
 
 ## 4. Moving text between machines
 
@@ -127,7 +142,9 @@ When a check flags a change, the fix goes through the same route as new content:
 | Add a supporting official page | CSV + `scripts/import-reference-sources.php` |
 | Rank pages by problems, free | `scripts/triage-page-text.php` |
 | Check every source is readable from this machine | `scripts/check-source-access.php` |
-| Draft and polish page text | Editor button + `scripts/run-polish-jobs.php` |
+| Draft page text (default) | A Claude Code session: sources read live, CSV, `import-page-text.php`, triage |
+| Draft and polish page text (fallback) | Editor button + `scripts/run-polish-jobs.php` |
+| Record a person's review of imported text | `scripts/mark-page-reviewed.php` |
 | Move page text between machines | `scripts/export-page-text.php`, `scripts/import-page-text.php` |
 | Check job queue | `php scripts/run-jobs.php --status` |
 | Schema change | Migration in `sql/migrations/` |
@@ -138,3 +155,5 @@ When a check flags a change, the fix goes through the same route as new content:
 - A self-contradiction in the text cannot be caught by program checks. Only the claim-by-claim read finds it.
 - Lessons are per machine, and lesson deletion is on hold.
 - Some regulators' pages (e.g. the Fair Work Commission) cannot be read by any fetcher, so those cards need a manual look.
+- The Claude Code route was tested on three pages and the nightly AI check had not yet read them when it was adopted. If that check shows substantive findings the claim-by-claim read missed, revisit this.
+- Claude Code makes its own mistakes (three at the read on Marriage Allowance, and a grammar slip in a live meta description). The review step and the live check are not optional.

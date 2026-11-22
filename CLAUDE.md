@@ -19,7 +19,7 @@ New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
 |---|---|
 | `public/` | Web root: pages, `admin/` editor, `assets/` |
 | `includes/` | Shared PHP: AI drafting/polish/fixes (`ai-*.php`), text checks, jobs (`jobs.php`, `job-handlers/`), placeholders, source fetching |
-| `scripts/` | CLI scripts: `check-bank-rate.php`, `triage-page-text.php`, `import-reference-sources.php`, `import-facts.php`, `import-page-text.php`, `export-page-text.php`, `read-source.php`, `check-sources.php`, `check-page-text.php`, `run-jobs.php`, `run-polish-jobs.php`, `draft-pages.php`, `send-alerts.php`, `fetch-boe-rates.php`, `migrate.php` |
+| `scripts/` | CLI scripts: `check-bank-rate.php`, `triage-page-text.php`, `import-reference-sources.php`, `import-facts.php`, `import-page-text.php`, `export-page-text.php`, `read-source.php`, `mark-page-reviewed.php`, `check-sources.php`, `check-page-text.php`, `run-jobs.php`, `run-polish-jobs.php`, `draft-pages.php`, `send-alerts.php`, `fetch-boe-rates.php`, `migrate.php` |
 | `sql/migrations/` | Schema changes only. Next free number: **032** (check the folder before using) |
 | `data/imports/` | Content CSVs (figures, page text) |
 | `config/` | `database.php` plus `database.local.php` (secrets: never read or committed) |
@@ -33,7 +33,12 @@ New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
 - Always test on MAMP first, then run on the server over SSH. No phpMyAdmin edits.
   If the tooling can't do something, build the workaround.
 - Read every figure live with `scripts/read-source.php` before it goes in a CSV.
-- Page workflow: draft → AI check → rewrite / Propose fixes → human review.
+- Page workflow (default, from 22 Nov 2026): Claude Code drafts the page (reads the sources live,
+  writes the page-text CSV, imports on MAMP, runs triage and the near-copy check, reads every claim
+  against its source) → human review → one commit per page → deploy and import on the server.
+  The API route (draft and polish in the editor → AI check → Propose fixes) is the fallback.
+  End to end: `docs/content-creation-process.md`; evidence: `docs/claude-code-drafting-test.md`.
+  `scripts/mark-page-reviewed.php` records a person's review of imported text (dry run first).
   Per-page routine in `docs/page-checklist.md`. Start with the free triage
   (`php scripts/triage-page-text.php`) to rank pages by program findings;
   `--page=<slug>` also runs the near-copy check, `--close-copies` does it for every page.
@@ -84,5 +89,6 @@ The old `ff-website` key is retired.
 - `docs/drafting-loop-progress.md`: how the drafting loop works and what's next.
 - `docs/api-costs.md`: key setup, wiring checks, spend.
 - `docs/content-creation-process.md`: end-to-end process for creating content (start here).
+- `docs/claude-code-drafting-test.md`: the test that made Claude Code drafting the default.
 - `docs/page-checklist.md`: per-page finishing routine.
 - `docs/house-style/core.md`, `uk.md`, `au.md`: writing rules (the drafting tool reads these).
