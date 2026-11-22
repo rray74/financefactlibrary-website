@@ -1,0 +1,16 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,super-and-retirement,superannuation,super-guarantee-rate,Super Guarantee Rate,"The minimum super employers must pay on each payday, the earnings it is worked out on and the ceiling above which no minimum is due.","## The minimum is a percentage of each employee's qualifying earnings
+
+The super guarantee is the least an employer must pay into an eligible employee's super. The rate is {fact:au_super_guarantee_rate} of the employee's qualifying earnings.
+
+## Payday Super ties each payment to the day an employee is paid
+
+Under Payday Super, employers pay the super guarantee for each payday, so a contribution follows every pay run instead of waiting for a quarterly deadline.
+
+## There is a ceiling on the earnings it applies to
+
+The maximum contribution base limits the earnings on which an employer has to pay the minimum. For {tax_year} it is {fact:au_super_max_contribution_base} a year. Employers do not have to pay super guarantee on earnings above it. Once an employee's qualifying earnings reach the base in a financial year, the employer can stop paying the minimum for that employee until the next financial year starts.
+
+## The base is worked out from the concessional contributions cap
+
+The ATO calculates the base from the concessional contributions cap and the super guarantee percentage, then rounds the result down to a whole multiple of ten dollars. The base also rises over time with average weekly ordinary time earnings, a measure produced by the Australian Bureau of Statistics.",Super Guarantee Rate Australia,"Australia's super guarantee rate is {fact:au_super_guarantee_rate} of qualifying earnings, with a maximum contribution base of {fact:au_super_max_contribution_base} for {tax_year}. Paid every payday.",,2026-11-22 17:07:58
