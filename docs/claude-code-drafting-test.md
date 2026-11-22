@@ -56,7 +56,7 @@ A mix on purpose: three hard pages would make the test look worse than the basel
 | Measure | Marriage Allowance | Statutory Sick Pay | Auto-Enrolment |
 |---|---|---|---|
 | Claude Code session usage | | | |
-| Richard's review time (minutes) | | | |
+| Richard's review time (minutes) | under 5 | under 5 | under 5 |
 | Edits Richard asked for | 0 | 0 | 0 |
 | Program findings, first import | 3 (close copies) | 7 (6 close copies, 1 typed figure) | 1 (typed figure, a fixed legal one) |
 | Findings after adding reference sources | 3 more close copies | none new | none |
@@ -76,4 +76,7 @@ A mix on purpose: three hard pages would make the test look worse than the basel
 - The near-copy check does most of the iteration. GOV.UK lists and short formulaic pages (sick pay exclusions, fit notes) are where close copies cluster, so those need restructuring, not word swaps.
 - Reading the sources as part of drafting turned up card problems that the API route would not have noticed (see the table). That is a benefit independent of cost.
 - Claude Code made its own errors: three at the claim-by-claim read on page 1, and one grammar slip that reached the live site on page 3. Placeholders make meta text easy to get wrong ("a 8%"), and the checks do not catch it.
-- Not yet known: Richard's review minutes, plan usage, and what the nightly AI check says about these three pages. The decision rule above cannot be applied until those are in.
+- Richard's review time was under 5 minutes a page, against 5 to 25 minutes on the API route, and no page needed edits.
+- A check of the three card concerns raised while drafting found that two card notes were right (Statutory Sick Pay's waiting days, and the earnings trigger's "more than") and one card source was wrong (the age-22 card), which is now fixed. Reading the legislation settled each one. The GOV.UK pages were looser than the Act in one place ("at least" against "more than").
+- Auto-enrolment: "UK" against "Great Britain" is not a real error. Northern Ireland has its own Act (Pensions (No. 2) Act (Northern Ireland) 2008), and its section 3 has the same age (at least 22) and trigger (more than £10,000) as the Great Britain Act. The 2026/27 Northern Ireland order was not found, so the Northern Ireland qualifying earnings band is not confirmed from an official page. The page text was left as it is.
+- Still not known: how much of the Claude plan allowance the three sessions used, and what the nightly AI check says about these pages. The decision rule above cannot be fully applied until the plan usage is known.
