@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,self-employment-and-property,trading-and-property-allowances,"Trading, Property and Rent a Room Allowances","The tax-free allowances for small amounts of income from self-employment, renting out property, and letting a furnished room in your own home.","## Two allowances each cover the first {fact:trading_allowance} of gross income
+
+The trading allowance covers income from self-employment, casual services such as babysitting or gardening, and hiring out personal equipment. The property allowance covers income from land or property. A person with both kinds of income gets an allowance for each, and joint owners of a property each get one against their own share of the rent. Gross income means the total before any expenses or allowances are taken off, whichever way the accounts are kept.
+
+If gross income from the activity is no more than {fact:trading_allowance}, HMRC does not need to be told about it, and the whole amount is covered. Records of it still have to be kept: invoices, a spreadsheet, bank statements or a diary of customers all do. There are exceptions, for instance where someone has to register for Self Assessment to claim a loss, to pay voluntary Class 2 National Insurance, or to claim Tax Free Childcare or Maternity Allowance based on self-employment.
+
+## Above the limit, the allowance and actual expenses are alternatives
+
+When gross income is over {fact:trading_allowance}, a person can deduct the allowance in place of actual expenses, up to the amount of the income and no further, so it cannot be used to create a loss. Where expenses come to more than the income it can pay to claim them instead. Claiming the allowance means no other expenses or allowances can be deducted. Gross trading income above that amount means registering for Self Assessment by 5 October after the tax year ends, and property income over £2,500 does as well.
+
+Neither allowance can be used when the income comes from a company the person controls, a partnership in which they or someone connected to them is a partner, or their employer or their spouse's or civil partner's employer. Trading income that comes through a partnership is outside the trading allowance. The property allowance cannot be used by someone claiming the tax reducer for finance costs such as mortgage interest, and not for income covered by Rent a Room.
+
+## Rent a Room covers up to {fact:rent_a_room_limit} from a furnished room in your home
+
+The Rent a Room Scheme allows up to {fact:rent_a_room_limit} a year tax-free from letting furnished accommodation in the owner's or renter's own home, falling to {fact:rent_a_room_shared_limit} when the income is shared with someone else. As much of the home can be let as the person wants, though not a home converted into separate flats. It suits resident landlords and people running a bed and breakfast or guest house.
+
+The exemption is automatic below the limit, with nothing to do. Above it, a tax return is needed, and the person can either opt in to the scheme and claim the allowance, or leave it and record income and expenses on the property pages of the return.",Trading and Property Allowances {tax_year},"The trading and property allowances are {fact:trading_allowance} each and Rent a Room is {fact:rent_a_room_limit}. How much side income from selling, freelancing or letting is tax-free.",,
