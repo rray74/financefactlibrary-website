@@ -52,6 +52,15 @@ const FACT_SOURCE_ALLOWLIST = [
     'fairwork.gov.au'         => null,
     'rba.gov.au'              => null,
     'servicesaustralia.gov.au' => null,
+    // Added 24 Nov 2026 for the last Australian pages. The First Home Guarantee was renamed the Australian
+    // Government 5% Deposit Scheme, and its property price caps now sit on the First Home Buyers site
+    // (firsthomebuyers.gov.au), which Housing Australia runs for the Government, not on housingaustralia.gov.au
+    // (that address now shows a general page with no caps). The Financial Claims Scheme's old address
+    // (fcs.gov.au) redirects to the Australian Prudential Regulation Authority (apra.gov.au), which runs the
+    // scheme and states the protected amount. Both are the national bodies that publish the rules the
+    // pages describe. Licence is NULL (not verified).
+    'firsthomebuyers.gov.au'  => null,
+    'apra.gov.au'             => null,
 ];
 
 /**

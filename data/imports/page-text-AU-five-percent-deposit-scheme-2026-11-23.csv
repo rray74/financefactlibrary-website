@@ -1,0 +1,22 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,mortgages-and-property,first-home-buyers,five-percent-deposit-scheme,Australian Government 5% Deposit Scheme,"How the Government's low-deposit scheme for first home buyers and single parents, formerly the Home Guarantee Scheme, works, and the price caps that apply in each state and territory.","## The scheme guarantees part of the loan, so buyers can borrow with a small deposit
+
+The scheme used to be called the Home Guarantee Scheme. It lets eligible buyers get a home loan with a deposit as low as {fact:au_5pc_deposit_first_home_buyer} for first home buyers, or {fact:au_5pc_deposit_single_parent} for single parents and legal guardians. The Government guarantees part of the loan to the lender, so there is no Lenders Mortgage Insurance. There are no income caps and no waiting list.
+
+Guarantee or not, the borrower pays every cost and repayment, and must keep to ongoing obligations, one being to live in the home as an owner-occupier. Failing to meet them can end the guarantee.
+
+An application cannot be made directly to Housing Australia. Buyers apply through a Participating Lender when they apply for the home loan. Pre-approval starts a 90-day clock for finding a property and signing a contract of sale.
+
+## The home must be under a price cap that depends on where it is
+
+The cap is tested twice: the price paid, and the value the Participating Lender puts on the home, must each be no higher than it. Where someone builds on vacant land under separate contracts, the land and the build costs added together also have to fit under the cap. Eligible purchases range from established houses and apartments to house and land packages, off-the-plan purchases, and vacant land where a building contract is in place.
+
+In each of the six states the cap is higher in the capital city, and in some regional centres, than in the rest of the state. The regional centres that share the capital-city cap are Geelong in Victoria, the Gold Coast and the Sunshine Coast in Queensland, and in New South Wales Newcastle and Lake Macquarie, Richmond-Tweed, the Mid North Coast, the Illawarra, Coffs Harbour–Grafton and the Central Coast.
+
+Western Australia, South Australia and Tasmania have a capital-city cap and a lower one for everywhere else. The Australian Capital Territory has a single cap for the whole territory. The Northern Territory has one cap for its capital city and another for the rest, and Jervis Bay Territory with Norfolk Island, and Christmas Island with the Cocos (Keeling) Islands, each have their own.
+
+A suburb that spans several postcodes can have a different cap in each. Checking the cap that applies to a particular suburb, state and postcode falls to the buyer. Housing Australia's postcode tool is only a guide, and the Participating Lender confirms the cap for a particular home.
+
+## Other schemes work alongside or separately
+
+The scheme can be used with the [First Home Super Saver Scheme](/au/mortgages-and-property/first-home-buyers/first-home-super-saver-scheme/). The Help to Buy Scheme is a separate scheme that offers shared equity, has its own price caps, and is open to people who have owned a home before.",Australian Government 5% Deposit Scheme,"The Australian Government 5% Deposit Scheme, formerly the Home Guarantee Scheme, lets eligible buyers borrow with a small deposit. See the price caps.",,
