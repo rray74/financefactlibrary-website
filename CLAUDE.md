@@ -3,7 +3,8 @@
 A PHP + MySQL (MariaDB) site of country-by-country finance reference pages:
 Category → Subcategory → Subject (page) → figure cards (facts with sources),
 plus an AI-drafted, human-reviewed explanation per page. Tailwind CSS + DaisyUI.
-UK is live; Australia launched 19 Nov 2026 and is dripping out 3 pages a week.
+UK is live, with all 53 UK pages written (24 Nov 2026); Australia launched 19 Nov 2026 and is
+dripping out 3 pages a week (4 more pages still to build).
 New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
 
 ## Stack, hosting, deploy
@@ -39,6 +40,9 @@ New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
   The API route (draft and polish in the editor → AI check → Propose fixes) is the fallback.
   End to end: `docs/content-creation-process.md`; evidence: `docs/claude-code-drafting-test.md`.
   `scripts/mark-page-reviewed.php` records a person's review of imported text (dry run first).
+- Keeping UK pages right: when a figure changes, update the CSV and re-import it, then re-check any page text that
+  depends on it with `scripts/triage-page-text.php --page=<slug>`. Dated wording is listed in `docs/TODO.md`
+  (key dates). Rate pages: no rate in any field, no rate placeholder, nothing about rising or falling.
   Per-page routine in `docs/page-checklist.md`. Start with the free triage
   (`php scripts/triage-page-text.php`) to rank pages by program findings;
   `--page=<slug>` also runs the near-copy check, `--close-copies` does it for every page.
