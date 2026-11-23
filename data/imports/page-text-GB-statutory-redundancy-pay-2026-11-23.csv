@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,pay,statutory-redundancy-pay,Statutory Redundancy Pay,"How statutory redundancy pay is worked out from age and years of service, the cap on a week's pay, the most anyone can get, who qualifies and how it is taxed.","## Redundancy pay needs {fact:redundancy_min_service} of service and grows with age and years worked
+
+An employee who has worked for their current employer for {fact:redundancy_min_service} or more is normally entitled to statutory redundancy pay. Each full year of service is paid according to the age the employee was during that year: {fact:redundancy_weeks_under_22} for each year under 22, {fact:redundancy_weeks_22_to_40} for each year at 22 or over but under 41, and {fact:redundancy_weeks_41_plus} for each year at 41 or over.
+
+Only the most recent {fact:redundancy_max_years} of service are counted. A week's pay is the employee's average weekly earnings over the 12 weeks before the day they received their redundancy notice, and anything above the cap of {fact:redundancy_weekly_pay_cap} is ignored. With the cap and the service limit together, the most anyone can receive is {fact:redundancy_max_payment}.
+
+A claim has to be made within 6 months of the date the job ends.
+
+## Some people and situations are not covered
+
+No statutory redundancy pay is due when the employer offers to keep the employee on, or offers suitable alternative work that the employee refuses without good reason. Dismissal for misconduct is not redundancy. The scheme does not cover the armed forces, police and Crown servants, apprentices whose status as employees ends with their training, family members working as domestic servants, and two older groups, registered dock workers and share fishermen.
+
+A temporary lay-off can also found a claim. The employee must have gone without pay, or been paid under half a week's, for more than 4 weeks running or for more than 6 weeks within any 13, and must then write to the employer saying they mean to claim. An employer can turn the claim down where normal work is expected to resume within 4 weeks and then last at least 13 weeks.
+
+## The statutory payment is tax-free up to a limit
+
+Statutory redundancy pay under £30,000 is not taxable. A redundancy may bring a wider termination payment, which can include holiday pay, unpaid wages and company benefits such as bonuses, and the tax and National Insurance due depend on what is in it.",Statutory Redundancy Pay {tax_year},"Statutory redundancy pay depends on age and years of service, with a {fact:redundancy_weekly_pay_cap} weekly pay cap and a {fact:redundancy_max_payment} maximum. Who qualifies and how it works.",,
