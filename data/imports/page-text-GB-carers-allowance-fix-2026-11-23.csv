@@ -1,0 +1,28 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,disability-and-caring,carers-allowance,Carer's Allowance,"How much Carer's Allowance pays, how much you can earn and still get it, and how it affects the State Pension and Universal Credit.","Carer's Allowance is a weekly payment for looking after a disabled person. You do not need to be related to them or live with them, and it is taxable if your total income is above your Personal Allowance.
+
+## You and the person you care for must both meet conditions
+
+They must already receive a qualifying benefit, such as the daily living part of Personal Independence Payment, the middle or highest care rate of Disability Living Allowance, or Attendance Allowance. You must also be at least 16, spend at least {fact:ca_min_care_hours} a week caring, and not be in full-time education or studying for 21 hours a week or more. Residence matters too: you must normally live in England or Wales (or abroad with the armed forces), although someone moving to or already living in a country in the European Economic Area (EEA), or in Switzerland, might still be eligible, and have been in England, Scotland or Wales for two of the last three years, though refugees and people with humanitarian protection are exempt from that. You must not be subject to immigration control. Under the EU Settlement Scheme, settled or pre-settled status is usually needed as well by people from the European Union (EU), Switzerland, Norway, Iceland or Liechtenstein.
+
+## Earnings are counted after tax, National Insurance and expenses
+
+Your earnings from a job or self-employment must come to {fact:ca_earnings_limit} a week or less once tax, National Insurance and allowable expenses have been taken off. Half of any pension contributions can be deducted, along with equipment you need for the job, travel between workplaces that your employer does not pay for, and business costs if you are self-employed. Paying for care while you work can be deducted as well, whether the care is for the disabled person or for your children. This does not apply if the carer is your spouse, partner, parent, child or sibling, and in every case the deduction cannot be more than half your earnings.
+
+Some money is ignored altogether: money from an occupational or private pension, a loan or advance from your employer, and a contribution to your living costs from someone who lives with you and is not a tenant or boarder. If you take in a boarder, the first £20 a week of what they pay and half of the remainder are ignored.
+
+## Only one carer is paid for each person
+
+You cannot get Carer's Allowance for someone if another carer who shares their care is already receiving Carer's Allowance, Carer Support Payment or the Universal Credit carer element for them. The first thing to try is asking that carer to change their own claim. If they would rather not, you may still send in your application, and the Department for Work and Pensions (DWP) works out which of you gets paid. Looking after more than one person does not raise the amount.
+
+## Claiming changes other benefits, for you and for the person you care for
+
+Claiming can also cost the person you care for part of their own support. Their severe disability premium, and the severe disability extra in Pension Credit, will usually stop once you are paid. A Council Tax reduction may go as well.
+
+Universal Credit is cut by exactly the amount of your Carer's Allowance. Its carer element of {fact:uc_carer_element} a month is a separate extra: it is not added when you start getting Carer's Allowance, you have to tell DWP you have become a carer, a couple who care for the same person share one, and you cannot have it if you already get the extra amount for limited capability for work and work-related activity.
+
+Carer's Allowance and State Pension cannot both be paid in full, and while you get Carer's Allowance you cannot build up extra State Pension by delaying your claim. A pension of {fact:ca_weekly_rate} a week or more means no Carer's Allowance payment, and a smaller pension is topped up by the difference. Pension Credit has an extra amount for carers of {fact:pc_carer_addition} a week. It goes to people who get Carer's Allowance or Carer Support Payment, and to people who have claimed Carer's Allowance but are not paid it because they already get a benefit that pays more, such as a higher State Pension.
+
+## Moving between Scotland and England or Wales changes which benefit you claim
+
+Carer Support Payment is the Scottish equivalent, and it is what people living in Scotland claim. A move from England or Wales to Scotland ends Carer's Allowance 13 weeks later, so DWP has to be told and Carer Support Payment claimed separately. The same applies to anyone still waiting for a Carer's Allowance decision or challenging one. A move the other way means reporting it to Social Security Scotland and claiming Carer's Allowance.",Carer's Allowance {tax_year}: {fact:ca_weekly_rate} a Week,"Carer's Allowance is {fact:ca_weekly_rate} a week for {tax_year}. See who qualifies, how the {fact:ca_earnings_limit} earnings limit works, and what claiming changes for other benefits.",2026-10-24 13:27:53,2026-11-23 22:26:07
