@@ -1,0 +1,20 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,employer-costs,employer-payroll-costs,Employer Payroll Costs,"The payroll costs employers pay on top of wages: employer National Insurance, Class 1A, the Apprenticeship Levy, and how much statutory pay they can recover from HMRC.","## Employer National Insurance is charged above a low threshold, and Employment Allowance can offset it
+
+An employer pays {fact:ni_employer_rate} on each employee's earnings above the Secondary Threshold of {fact:ni_secondary_threshold} a year, with no upper limit. How the thresholds work for employees as well is covered on the [Employee and Employer National Insurance](/uk/tax/national-insurance/employee-national-insurance/) page.
+
+Eligible employers can take up to {fact:ni_employment_allowance} off their yearly employer Class 1 National Insurance bill. It is used up a little at each payroll run until the amount has gone or the tax year ends, and it can be claimed even when the bill is smaller than the allowance. Eligibility needs a business or public body doing under half of its work in the public sector, and charities, community amateur sports clubs included, qualify too, as do employers of a care or support worker. No claim is possible where a company's sole director is also its only employee paying into secondary Class 1 National Insurance. People working under the IR35 off-payroll rules and domestic workers such as nannies or gardeners cannot be included, and only one company in a group can claim, against one payroll.
+
+## Class 1A applies to benefits and some payments, not to wages
+
+Class 1A National Insurance is due from employers on benefits they provide, a company mobile phone for example, at {fact:class_1a_rate}. It is reported and paid at the end of the tax year. The same rate is charged on termination awards over £30,000 and on sporting testimonial payments over £100,000, which are reported through payroll during the year. Where a PAYE Settlement Agreement is in place, the employer also pays Class 1B, a single annual payment that settles the tax and National Insurance on small or irregular expenses and benefits.
+
+## The Apprenticeship Levy only applies to large pay bills
+
+Employers whose annual pay bill is more than {fact:apprenticeship_levy_pay_bill_threshold}, counting connected companies and charities together, pay the Apprenticeship Levy at {fact:apprenticeship_levy_rate} of the pay bill, reported and paid monthly. An allowance of {fact:apprenticeship_levy_allowance} reduces the amount due each year, and any unused part cannot be carried over.
+
+The pay bill is every payment to employees that is subject to employer Class 1 National Insurance, including wages, bonuses and commission, and it includes employees below the Secondary Threshold, under 21, and apprentices under 25. Employees under 16, those who are not subject to UK National Insurance, and benefits in kind are left out. Paying into an industry training levy does not remove the duty.
+
+## Part of statutory pay can be recovered
+
+Employers can reclaim a share of Statutory Maternity, Paternity, Shared Parental, Adoption, Parental Bereavement and Neonatal Care Pay from HMRC. The share is {fact:statutory_pay_recovery_standard} when total Class 1 National Insurance for the previous tax year was above £45,000, and {fact:statutory_pay_recovery_small_employer} when it was £45,000 or less. Statutory Sick Pay cannot be recovered. The rates of these payments are on the [Statutory Maternity and Paternity Pay](/uk/work-benefits/pay/statutory-maternity-paternity-pay/) page.",Employer Payroll Costs {tax_year},"Employer National Insurance is {fact:ni_employer_rate} above {fact:ni_secondary_threshold} a year. See Class 1A, the Apprenticeship Levy, Employment Allowance and statutory pay recovery.",,
