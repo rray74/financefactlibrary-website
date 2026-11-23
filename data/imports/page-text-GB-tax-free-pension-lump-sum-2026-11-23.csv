@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,pensions,private-pensions,tax-free-pension-lump-sum,Tax-Free Pension Lump Sum,"How much of a pension can be taken tax-free, the lifetime limits that replaced the lifetime allowance, small pot and ill-health lump sums, and how larger amounts are taxed.","## A quarter of a pension can usually be taken tax-free, up to a lifetime cap
+
+The usual rule lets a person take {fact:pension_tax_free_lump_sum_share} of what a pension has built up as a tax-free lump sum, with the lump sum allowance of {fact:pension_lump_sum_allowance} as the ceiling across all pensions. Anyone who holds a protected allowance may be able to take more. The lump sum does not use up any of the Personal Allowance, and tax is taken from the remainder before it is paid. The earliest age at which a pension can be taken depends on the scheme and is covered on the [Minimum Pension Age](/uk/pensions/private-pensions/minimum-pension-age/) page.
+
+With a defined contribution pension, the money can be taken all at once as cash or in smaller cash sums. Withdrawing cash and then paying into a pension afterwards can trigger a tax charge.
+
+## Small pots, trivial commutation and serious ill health are separate routes
+
+A pension worth up to £10,000 can usually be taken in one go as a small pot lump sum, and where the pension has not been accessed before, a quarter of it is tax-free. A person can usually take up to 3 of these from different personal pensions, and any number from different workplace pensions.
+
+When all private pensions together are worth £30,000 or less, certain pensions, usually defined benefit ones, can be taken whole as a trivial commutation lump sum. The tax-free quarter applies only to a pension not yet accessed; for one that has been accessed, the entire lump sum is taxable. Where several pensions are involved, they have to be valued on a single day within the 3 months before the first payment, and all of the money must be paid out inside 12 months of that first payment.
+
+Someone expected to live for less than a year because of serious illness can take all their pensions as tax-free lump sums if they are under 75 and the total stays below the lump sum and death benefit allowance of {fact:pension_lsdba}. Over 75, or above that allowance, the amount is taxable. A fund may be set up to reserve at least half of the pension for a spouse or civil partner.
+
+## Anything above the allowances is taxed as income
+
+Whatever exceeds the lump sum allowance, or the lump sum and death benefit allowance where that is the relevant limit, is charged to Income Tax. A large withdrawal from a private pension can push the taxpayer into a higher rate, and extra tax may be owed after the tax year ends. How the allowances interact with the yearly limit on pension saving is covered on the [Pension Annual Allowance](/uk/pensions/pension-allowances/pension-annual-allowance/) page.",Tax-Free Pension Lump Sum: {fact:pension_tax_free_lump_sum_share} Rule,"Up to {fact:pension_tax_free_lump_sum_share} of a pension can usually be taken tax-free. See the lifetime limits, small pots, ill-health lump sums and how larger withdrawals are taxed.",,
