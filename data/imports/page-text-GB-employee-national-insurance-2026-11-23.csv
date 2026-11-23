@@ -1,0 +1,30 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,national-insurance,employee-national-insurance,Employee and Employer National Insurance,"What employees pay in Class 1 National Insurance on their wages, where it starts and changes, how category letters alter the rates, and what employers pay on top.","## Class 1 has two halves: one taken from pay and one paid by the employer
+
+An employee pays part of Class 1 through deductions from pay, while the employer pays its own share in addition. What each side pays turns on the employee's category letter and on where their earnings fall among the bands. Contributions are compulsory for employees aged 16 or over.
+
+## Employees pay nothing at first, then a main rate, then a lower one
+
+No National Insurance is paid on earnings up to the Primary Threshold of {fact:ni_primary_threshold} a year. Between that and the Upper Earnings Limit of {fact:ni_upper_earnings_limit}, most employees pay {fact:ni_employee_main_rate}, and above it they pay {fact:ni_employee_upper_rate}. Each rate is charged only on the part of earnings inside its band.
+
+Earnings between the Lower Earnings Limit of {fact:ni_lower_earnings_limit} a week and the Primary Threshold cost nothing, yet the contributions are treated as paid. A year of earnings in that range therefore still counts towards the State Pension and some benefits.
+
+Class 1 deductions from pay end at State Pension age.
+
+## The category letter changes the rates
+
+Most employees are category A, and their category appears on the payslip. Other letters give a different rate or none:
+
+- married women and widows who hold a certificate for the reduced rate (B)
+- employees over State Pension age, who pay none (C)
+- apprentices under 25 (H) and employees under 21 (M), who pay the standard employee rate but whose employers pay nothing up to the Upper Earnings Limit
+- first-job veterans (V), for whom the employer rate is likewise nil up to that limit
+- people who defer because they pay in another job (J and Z)
+
+Separate letters apply to staff based at designated special tax sites in Freeports and Investment Zones.
+
+## Employers pay above a much lower threshold, with no ceiling
+
+An employer pays {fact:ni_employer_rate} on each employee's earnings above the Secondary Threshold of {fact:ni_secondary_threshold} a year, and there is no upper limit. Eligible employers can reduce the annual bill by up to the Employment Allowance of {fact:ni_employment_allowance}.
+
+Class 1A National Insurance is also due from employers on work expenses and benefits, as well as on some other lump sum payments, redundancy pay among them.",Employee National Insurance Rates {tax_year},"Employees pay {fact:ni_employee_main_rate} Class 1 National Insurance on earnings above {fact:ni_primary_threshold} a year, and employers also pay on top. How thresholds and categories work.",,
