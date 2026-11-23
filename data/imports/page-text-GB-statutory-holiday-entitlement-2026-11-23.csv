@@ -1,0 +1,22 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,pay,statutory-holiday-entitlement,Statutory Holiday Entitlement,"How much paid holiday workers are legally entitled to, the limit on the statutory minimum, how part-time and irregular hours change it, and how holiday pay and leaving a job work.","## Almost every worker gets {fact:holiday_statutory_weeks} of paid holiday, whatever their hours
+
+The entitlement covers almost everyone classed as a worker, agency workers and people on irregular hours or who work only part of the year included. For someone working a five-day week it comes to {fact:holiday_max_statutory_days}. Part-timers on regular hours get {fact:holiday_statutory_weeks} of their own working week, which is fewer than {fact:holiday_max_statutory_days}. For irregular hours or part-year work, entitlement accrues in line with the hours already worked, not as a set number of days.
+
+## Statutory holiday stops at {fact:holiday_max_statutory_days}, and bank holidays can be part of it
+
+However many days a week someone works, the statutory minimum does not rise above {fact:holiday_max_statutory_days}, so a six-day week gets the same as a five-day one. No law makes bank holidays additional paid days off, and an employer is free to treat them as part of the statutory leave. An employer can offer more than the legal minimum, and the extra leave does not have to follow every rule that applies to statutory leave, such as a qualifying period of service.
+
+Holiday keeps building up during maternity, paternity and adoption leave and while a worker is off sick.
+
+## Holiday pay is a week's pay for each week taken
+
+Holiday pay turns on what a worker's week looks like. With fixed hours and fixed pay, a week's pay is simply what is earned in one. For shift work with regular hours, and for irregular hours and part-year work, it is an average taken over the previous 52 weeks. In the regular-hours case at least 4 weeks of leave must be paid at the worker's normal rate, which includes commission and regular overtime, and the remaining 1.6 weeks at the basic rate. Irregular-hours and part-year workers are paid all their leave at the normal rate.
+
+## Booking, starting and leaving
+
+Taking leave normally needs notice of twice the length of the leave plus 1 day. An employer can refuse a request for particular dates but cannot refuse leave altogether, and can require staff to take leave, such as over Christmas, with notice of twice the length of the leave.
+
+A worker who starts partway through the leave year gets only part of the year's leave. Where an accrual system is used, regular-hours workers earn a twelfth of their annual leave in every month.
+
+When a job ends, any untaken statutory leave has to be paid for, even after dismissal for gross misconduct. Payment instead of leave is allowed at no other time. An employer cannot take money from final pay for leave taken beyond the entitlement unless that was agreed in writing beforehand.",Statutory Holiday: {fact:holiday_statutory_weeks} a Year,"Workers are entitled to {fact:holiday_statutory_weeks} of paid holiday a year, capped at {fact:holiday_max_statutory_days}. How part-time work, bank holidays, holiday pay and leaving a job affect it.",,
