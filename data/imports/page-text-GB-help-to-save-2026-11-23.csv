@@ -1,0 +1,20 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,savings,savings-accounts,help-to-save,Help to Save,"How the Help to Save account works for some people on Universal Credit: who can open one, how much can be paid in, how the bonuses are worked out and what happens at the end.","## Help to Save is open to some Universal Credit claimants, and couples each apply separately
+
+To open an account, a person must receive Universal Credit, with take-home pay of at least £1 in the last monthly assessment period, counting the couple's combined pay on a joint claim. That figure is what is left of pay once tax and National Insurance have been taken off. Partners on a joint claim can each have an account, but each has to apply on their own. The applicant must live in the UK, with exceptions for Crown servants, members of the armed forces and their spouses or civil partners living overseas. Someone who stops claiming benefits can keep using the account.
+
+## Payments are capped each calendar month, and bonuses depend on the highest balance
+
+Anything from £1 up to {fact:hts_monthly_limit} can be paid in during a calendar month, in as many payments as wanted, and no month has to be used. A month's limit cannot be carried over: once it has been reached, the next payment has to wait for the first of the following month. Money can only be withdrawn to the saver's bank account.
+
+There are two bonuses, both tax-free and paid into the bank account rather than the Help to Save account. After two years the first is {fact:hts_bonus_rate} of the highest balance reached. After four years the final bonus is {fact:hts_bonus_rate} of the amount by which the highest balance in years three and four exceeds the highest balance in years one and two. If the highest balance does not grow, there is no final bonus. Full use of the scheme means paying in up to {fact:hts_max_savings} for a maximum bonus of {fact:hts_max_bonus}.
+
+A bonus that has already been earned is kept after a withdrawal, but taking money out makes it harder to build the highest balance, and can cost the final bonus.
+
+## The account closes after four years, and benefits are protected
+
+The account shuts {fact:hts_account_length} after it opens. It cannot be reopened, and another cannot be opened, but the savings can be kept. It can be closed at any time, though closing early forfeits the next bonus and the chance of another account.
+
+Money in a Help to Save account and the bonuses do not reduce Universal Credit or Housing Benefit, provided other personal savings stay within each benefit's limit.
+
+The government has said it will make the scheme permanent, and widen eligibility from April 2028 to every Universal Credit claimant receiving the child or caring element.","Help to Save: {fact:hts_monthly_limit} a Month, {fact:hts_bonus_rate} Bonus",Help to Save lets some people on Universal Credit save up to {fact:hts_monthly_limit} a month and earn a government bonus over {fact:hts_account_length}. Who qualifies and how bonuses work.,,
