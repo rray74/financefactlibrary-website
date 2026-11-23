@@ -1,0 +1,24 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,pay,statutory-maternity-paternity-pay,Statutory Maternity and Paternity Pay,"What Statutory Maternity Pay and Statutory Paternity Pay are worth, who qualifies, how long they last, and how they compare with adoption and shared parental pay.","## Statutory Maternity Pay starts high and then drops to a flat rate
+
+Statutory Maternity Pay (SMP) can run for as long as {fact:smp_max_weeks}. In the opening 6 weeks the rate is {fact:smp_first_six_weeks} of the employee's weekly average before tax, and no ceiling applies. The remaining weeks are paid at the flat weekly rate of {fact:smp_weekly_rate}, or {fact:smp_first_six_weeks} of average weekly earnings where that is less. As with wages, tax and National Insurance are taken off.
+
+SMP usually begins on the first day of maternity leave. A pregnancy-related illness during the 4 weeks leading up to the baby's due week brings the start forward automatically.
+
+## Qualifying depends on earnings and 26 weeks of service
+
+An employee qualifies for SMP by giving the correct notice and proof of pregnancy, averaging at least {fact:ni_lower_earnings_limit} a week, and having worked for the employer without a break for at least 26 weeks into the qualifying week, which is the 15th week before the baby is due. Maternity leave itself does not depend on length of service, hours or pay, but it is for employees, not workers.
+
+Pay and leave are still available when a baby arrives early, is stillborn from the 24th week of pregnancy onwards, or dies after being born. An employer who decides someone does not qualify has to explain why on form SMP1 within 7 days, and the person may be able to claim Maternity Allowance instead. A child born through surrogacy brings no right to maternity leave, though adoption leave and pay may apply.
+
+## Paternity Pay has one rate and a shorter run
+
+Statutory Paternity Pay is the lower of {fact:spp_weekly_rate} a week and {fact:smp_first_six_weeks} of average weekly earnings, paid while on leave, which lasts up to two weeks. It goes to the father, the mother's or adopter's husband or partner (same-sex partners included), an adopter or an intended parent through surrogacy, who must be taking time off to look after the child.
+
+The conditions are: still being employed on the date of the birth, average earnings of at least {fact:ni_lower_earnings_limit} a week, proper notice, and an unbroken 26 weeks with the employer up to the end of any day in the qualifying week. An employer who refuses has to say why on form SPP1 within 28 days. Northern Ireland has some different rules for paternity leave.
+
+An employer may offer more through a company scheme, but never less than the statutory amount.
+
+## Adoption and shared parental pay follow similar rates
+
+Adoption pay has the same structure and can last up to {fact:sap_max_weeks}, with the flat rate of {fact:sap_weekly_rate} applying after the first 6 weeks. Anyone taking Shared Parental Leave is paid the lower of {fact:shpp_weekly_rate} a week and {fact:smp_first_six_weeks} of average earnings, as Statutory Shared Parental Pay.",Maternity and Paternity Pay {tax_year},"Statutory Maternity Pay is {fact:smp_first_six_weeks} of earnings for 6 weeks, then {fact:smp_weekly_rate} a week or less. Paternity, adoption and shared parental pay are covered too.",,
