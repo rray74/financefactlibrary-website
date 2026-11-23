@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,income-tax,scottish-income-tax-rates,Scottish Income Tax Rates and Bands,"Scotland's six Income Tax bands on earnings, pensions and other non-savings income, who pays the Scottish rates, and how they differ from the rest of the UK.","## Scotland has six bands on earnings, pensions and most other income
+
+The rest of the UK uses three bands, set out on the [Income Tax rates and bands](/uk/tax/income-tax/income-tax-rates-and-bands/) page. Scotland sets its own, and its six run from the starter rate of {fact:sct_starter_rate} up to the top rate of {fact:sct_top_rate}. The six rates cover earnings, pension income and most other taxable income. Savings interest and dividends are taxed in the same way as in the rest of the UK, not at Scottish rates.
+
+The Personal Allowance is a UK-wide figure, and Scottish taxpayers receive the same {fact:personal_allowance} before the starter rate begins. Each rate is charged only on the slice of income that lies inside its band.
+
+## The band thresholds assume the standard allowance
+
+The income levels at which each band starts are total income for someone with the standard Personal Allowance. A person whose income is over £100,000 loses £1 of allowance for every £2 above that level, so their bands start at lower totals. Once income reaches {fact:sct_top_rate_threshold}, no allowance is left.
+
+## You pay Scottish rates if Scotland is your main home
+
+Someone who lives in Scotland pays Scottish Income Tax, which goes to the Scottish Government. People who move into or out of Scotland, keep homes on both sides of the border, have no home but spend more days in Scotland than elsewhere in the UK during a tax year, or sit in the Scottish Parliament can also be caught.
+
+With homes in more than one place, the main home decides it. That is usually where the person lives and spends most of their time, but it can be the other one if most possessions or the family are there, or if bank accounts, a GP and similar things are registered there. People without a clear main home count the days spent in each place, using where they were at midnight, and are Scottish taxpayers for the whole year if Scotland has more.
+
+An employee or pensioner on Scottish rates has a tax code starting with S, which tells the employer or pension provider to use them. On a Self Assessment return there is a box for saying Scottish Income Tax applies.",Scottish Income Tax Rates {tax_year},"Scotland has six Income Tax bands, from {fact:sct_starter_rate} to {fact:sct_top_rate}, on wages and pensions. See who pays Scottish rates and how they differ from the rest of the UK.",,
