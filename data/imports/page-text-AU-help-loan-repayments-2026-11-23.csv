@@ -1,0 +1,26 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,tax,study-loans,help-loan-repayments,HELP Loan Repayments,"When compulsory repayments on HELP and other study and training loans start, how the repayment rates apply to repayment income, and what counts as repayment income.","## Repayments start only when repayment income passes the minimum
+
+Compulsory repayments apply to the Higher Education Loan Program (HELP) and to the other study and training loans: VET Student Loans, the Student Financial Supplement Scheme, Student Start-up Loans, ABSTUDY Student Start-up Loans and the Australian Apprenticeship Support Loan, which was previously the Trade Support Loan. All of them share one set of thresholds and rates for each financial year. A person with more than one type of loan has their compulsory repayments applied to HELP first, then to the others in the order listed above.
+
+Nothing has to be repaid compulsorily while repayment income is {fact:au_help_min_repayment_income} or less. Each year the thresholds and rates are adjusted to follow movements in average weekly earnings.
+
+## Each rate applies to the income inside its band, except at the top
+
+Above the minimum, the repayment is {fact:au_help_rate_first_band} of each dollar of repayment income over the minimum, up to {fact:au_help_first_band_upper}. From there, the repayment is {fact:au_help_first_band_amount} plus {fact:au_help_rate_second_band} of each dollar over {fact:au_help_first_band_upper}, up to {fact:au_help_second_band_upper}. Above that, the repayment is {fact:au_help_rate_top} of the whole repayment income, not only the part over a threshold.
+
+## Repayment income is wider than taxable income
+
+Repayment income is the total of five amounts:
+
+- taxable income, less any First Home Super Saver released amount that is assessable
+- reportable fringe benefits, whether or not the employer is exempt
+- any net investment losses, rental losses included
+- reportable super contributions
+- exempt foreign employment income
+
+This means repayment income can be higher than taxable income.
+
+## Repayments are collected through the tax system
+
+Compulsory repayments are made through the income tax system, and the tax withheld from pay can include an amount towards the repayment. That is why it matters that an employer knows about a study or training loan. Voluntary repayments can be made at any time to reduce the balance, and a person who lives overseas has obligations to give the ATO an overseas travel notification and to report their worldwide income. It is possible to apply to defer a compulsory repayment in cases of serious hardship or for other reasons.",HELP Loan Repayment Thresholds {tax_year},HELP and other study loan repayments start once repayment income passes {fact:au_help_min_repayment_income}. See how the rates work and what counts as repayment income.,,
