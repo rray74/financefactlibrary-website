@@ -46,6 +46,11 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
 - [ ] Build the pages in Claude Code, one batch at a time, using `docs/content-creation-process.md` (card audit, sources read live, claims table, one commit per page).
 - [ ] Preflight, switch on, start the drip (steps under "Order of work").
 
+### Decision on the unreadable pages (23 November, Richard)
+
+- [x] **Pages 8 (Depositor Compensation Scheme) and 12 (First Home Loan) move to the second wave.** The launch set is now **18 pages** (still counting page 7). Both rest on sites that refuse every machine tried (Mac, UK VPN, NZ VPN, server). Promote them if the sites ever read.
+- [x] **Page 7 (Official Cash Rate) stays in the plan, built last (Batch E).** No readable official source was found: a web search (standard mode) returned only news and market sites, and the Treasury, Stats NZ and Beehive pages did not read. **Retest RBNZ before Batch E.** If it is still refused, move page 7 to the second wave too (launch set 17, with no rate page, so the rate-page rules go untested until a rate page joins). No figure was taken from the search results.
+
 ### Decisions waiting
 
 Settled by Richard on 23 November 2026:
@@ -63,7 +68,7 @@ Still open: 2 (NZ$ or $), 4 (whether titles say "capital gains tax"), 7 (macrons
 
 - [ ] (fill in as they come up)
 
-## The launch set: 20 pages
+## The launch set: 20 pages proposed, 18 after the 23 November decision (pages 8 and 12 moved to the second wave; see the To do section)
 
 Fact keys would start `nz_`. Slugs are proposed; the collision check settles the final ones. **Rate page** means a page with a
 card checked every 42 days or less: no rate in any field, no rate placeholder, nothing about rising or falling, no minimum or
