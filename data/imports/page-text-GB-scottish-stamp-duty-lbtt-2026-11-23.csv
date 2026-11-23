@@ -1,0 +1,28 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,stamp-duty,scottish-stamp-duty-lbtt,Scottish Stamp Duty (LBTT) Rates,"How Land and Buildings Transaction Tax works for residential purchases in Scotland: the bands, first-time buyer relief and the Additional Dwelling Supplement on extra homes.","## Each LBTT rate applies only to the slice of the price inside its band
+
+Scottish buyers pay Land and Buildings Transaction Tax (LBTT) rather than Stamp Duty Land Tax. A purchase at or below {fact:lbtt_nil_rate_threshold} owes nothing. Above that, the rate climbs through four bands, from {fact:lbtt_band_2pct} up to {fact:lbtt_band_12pct}, and each rate is charged only on the part of the price that falls inside its band. A purchase that reaches the top band is not taxed at that rate on the whole price.
+
+A return has to be sent to Revenue Scotland for most residential purchases of £40,000 or more, even when no tax turns out to be due.
+
+## First-time buyers have a higher nil-rate band
+
+First-time buyer relief lifts the nil-rate band to {fact:lbtt_ftb_nil_rate_threshold}. For a buyer who qualifies, that cuts the bill by up to £600.
+
+## The Additional Dwelling Supplement is charged on the whole price
+
+Buying an additional home, such as a second home, a rental property or a holiday home, can bring a supplement of {fact:lbtt_ads_rate}. Unlike the bands, it is worked out on the entire purchase price and added on top of any LBTT. The trigger is already owning at least one home, wherever in the world it is, while buying another that does not replace the buyer's only or main residence. A home used by family or friends counts, even when no rent is charged. Where there are several buyers, one of them owning a home is enough.
+
+Companies and other buyers that are not individuals normally pay it on residential purchases even when they own nothing else.
+
+The supplement does not apply when:
+
+- the buyer owns only one home at the end of the purchase day, or the price is under £40,000
+- the buyer has sold their only or main home in the 36 months before buying a replacement main home
+- the only other property owned, or the owner's share of a jointly owned one, is worth less than £40,000
+
+A repayment of the supplement can be claimed in some cases.
+
+## England and Northern Ireland use Stamp Duty Land Tax instead
+
+Stamp Duty Land Tax applies in England and Northern Ireland, with different bands. For comparison, its standard nil-rate threshold is {fact:sdlt_nil_rate_threshold}. Because the two systems differ, the same price can produce a different bill on either side of the border.",Scottish Stamp Duty (LBTT) Rates {tax_year},"Scottish residential LBTT is nil up to {fact:lbtt_nil_rate_threshold}, with higher bands above it, first-time buyer relief and an additional dwelling supplement of {fact:lbtt_ads_rate}.",,
