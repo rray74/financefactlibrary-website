@@ -1,0 +1,22 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,pensions,retirement-benefits,pension-credit,Pension Credit,"How Pension Credit tops up the weekly income of people over State Pension age, who qualifies, the extra amounts and Savings Credit, and what else it unlocks.","## Guarantee Credit tops income up to a set weekly level
+
+Pension Credit gives extra money to people over State Pension age whose income is low. It is separate from the State Pension, and owning a home, having savings or having other income does not rule anyone out. It tops a single person's weekly income up to {fact:pc_guarantee_single}, and a couple's joint weekly income up to {fact:pc_guarantee_couple}. This top-up, together with the extra amounts below, is called Guarantee Credit. The details here are for England, Scotland and Wales, and Northern Ireland has its own arrangements.
+
+The income test adds up the State Pension and any other pensions, wages or self-employed profits, and most benefits, for instance Carer's Allowance. Attendance Allowance, Personal Independence Payment, Disability Living Allowance, Child Benefit, Housing Benefit and Council Tax Reduction are not counted. A pension that has been deferred still counts as income at the amount it would pay, so deferring brings no benefit while Pension Credit is being received.
+
+Savings of £10,000 or less have no effect. Above that, every £500 counts as £1 of weekly income.
+
+## Extra amounts can raise the credit for higher incomes
+
+A person on a higher income may still qualify because of the extras. A severe disability adds {fact:pc_severe_disability_addition} a week for someone receiving Attendance Allowance or the daily living part of Personal Independence Payment, among other qualifying disability benefits. Caring for another adult adds {fact:pc_carer_addition} a week for someone who gets, or has claimed, Carer's Allowance or Carer Support Payment, and both partners can receive it. There are also amounts for each child or young person the claimant is responsible for, higher ones where the child is disabled, and an amount towards housing costs such as ground rent, some service charges and site rents.
+
+## Savings Credit is for people who reached State Pension age before 6 April 2016
+
+Savings Credit is aimed at people who put money aside for retirement, whether in a personal pension or a workplace one. It is worth up to {fact:pc_savings_credit_max_single} a week for a single person and {fact:pc_savings_credit_max_couple} for a couple, and it can be paid even to someone who gets no Guarantee Credit.
+
+## Claiming opens other help
+
+A claim can begin up to 4 months before State Pension age, and one made later can be backdated by only 3 months. A partner has to be included on the application.
+
+Receiving Pension Credit can also bring Housing Benefit, a Council Tax Reduction, Support for Mortgage Interest, Cold Weather Payments (Winter Heating Payments in Scotland), a free TV licence from the age of 75, help with NHS costs for those on Guarantee Credit, and the Warm Home Discount.",Pension Credit {tax_year}: Rates and Extras,"Pension Credit tops weekly income up to {fact:pc_guarantee_single} for a single person and {fact:pc_guarantee_couple} for a couple. Who qualifies, the extra amounts and Savings Credit.",,
