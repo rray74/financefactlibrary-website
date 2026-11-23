@@ -1,0 +1,24 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,student-loans,student-loan-repayment-thresholds,Student Loan Repayment Thresholds,"Which student loan plan applies in England, Wales, Scotland and Northern Ireland, how repayments are worked out on income above a threshold, and when loans are written off.","## Your plan depends on where you applied and when your course began
+
+The plan is assigned, not chosen, and a person holding several loans may find each one is on a different plan. Student Finance England sets Plan 1 for courses that started before 1 September 2012, Plan 2 for those from that date to 31 July 2023, and Plan 5 for undergraduate courses from 1 August 2023. A postgraduate master's or doctoral loan from England or Wales is on a Postgraduate Loan plan. In Wales, courses from 1 September 2012 are on Plan 2 and earlier ones on Plan 1. Scottish loans are on Plan 4, and Northern Ireland loans are on Plan 1, whether undergraduate or postgraduate.
+
+## Repayments depend on income above the threshold, never on the balance
+
+What counts is income before tax and other deductions, including bonuses and overtime. A borrower repays {fact:sl_undergraduate_rate} of the amount over the threshold on Plans 1, 2, 4 and 5, and {fact:sl_postgraduate_rate} on a Postgraduate Loan. How much is owed, interest included, has no effect on the yearly repayment.
+
+The thresholds are set yearly, monthly and weekly, and they change on 6 April each year. A repayment is taken whenever a pay period goes over the threshold, so a bonus can trigger one, and a refund can be requested after the tax year if annual income was below the yearly threshold. Repayments stop by themselves when work stops or income falls below the threshold.
+
+Someone on two plans repays {fact:sl_undergraduate_rate} above the lower of the two thresholds, with only one deduction from each pay. With a Postgraduate Loan as well, {fact:sl_postgraduate_rate} is charged above the Postgraduate threshold on top. Where there are two employers, only jobs paying over the threshold are counted, not the two salaries added together.
+
+## Loans are written off after a set period, and cancelled on death
+
+The clock starts in the April the borrower was first due to repay. The period runs from {fact:sl_plan1_writeoff_years} for Plan 1 up to {fact:sl_plan5_writeoff_years} for Plan 5, with {fact:sl_plan2_writeoff_years} for Plans 2 and 4 and for Postgraduate Loans from England and Wales. Older Plan 1 loans are written off at 65, and older Plan 4 loans at 65 or after the set period, whichever comes first. If the borrower dies, the Student Loans Company cancels the loan. It may also cancel it when illness or disability stops someone working and they receive certain benefits.
+
+Interest keeps being added even when nothing is being repaid. Paying early carries no penalty.
+
+## Leaving the UK for more than 3 months has to be reported
+
+The Student Loans Company expects repayments to continue from abroad, unless the borrower shows that their income overseas is below the threshold. Without that report, arrears can build up and must be repaid on top of normal repayments. After returning, the employment details need updating again, or the borrower may keep repaying at the overseas rate and pay more than necessary.
+
+Student loans do not show on credit reports, though lenders may take them into account when checking affordability for a mortgage or other borrowing.",Student Loan Repayment Thresholds {tax_year},"Student loan repayments start once income passes your plan's threshold, at {fact:sl_undergraduate_rate} above it. See which plan applies, how repayments work and when loans end.",,
