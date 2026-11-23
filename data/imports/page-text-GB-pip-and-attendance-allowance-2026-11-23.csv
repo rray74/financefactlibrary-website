@@ -1,0 +1,26 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,disability-and-caring,pip-and-attendance-allowance,PIP and Attendance Allowance,"Who can claim Personal Independence Payment under State Pension age and Attendance Allowance above it, how the two work, and the Scottish equivalents.","## PIP is for working-age adults and Attendance Allowance for those who have reached State Pension age
+
+Personal Independence Payment (PIP) is a payment towards the added costs of living with a lasting physical or mental health condition or disability. Eligibility needs an age of 16 or over, trouble with daily tasks or with moving around, and an expectation that the trouble will last a minimum of 12 months. A first claim usually has to be made before State Pension age. Having a job or savings does not rule anyone out.
+
+Attendance Allowance is the equivalent for people who have reached State Pension age. The condition has to be severe enough that the person needs help looking after themselves, or needs someone to supervise them, and that need must have lasted at least 6 months. Having a carer is not required. It does not cover mobility needs.
+
+The two do not run together. Attendance Allowance is not paid to anyone who receives PIP, Disability Living Allowance, Adult Disability Payment or the Armed Forces Independence Payment, and someone over State Pension age cannot usually start a PIP claim. A fresh PIP claim is still possible for anyone who received PIP or Adult Disability Payment during the past 12 months.
+
+## PIP has two parts, and difficulty has to be frequent
+
+PIP has a daily living part, for help with tasks such as preparing food, washing and managing money, and a mobility part, for help with getting around. Either or both can be paid, each at a lower or higher weekly rate. PIP is tax-free, and income and savings do not change it.
+
+For each task, the Department for Work and Pensions looks at whether it can be done safely, how long it takes and whether help from a person or equipment is needed. The difficulty has to affect the person on most days: more than half of the days across a 12-month stretch. Mobility difficulty can come from a mental health or cognitive condition, not only a physical one.
+
+Attendance Allowance has two rates too, and the higher one is for people who need more care.
+
+## Scotland has its own versions
+
+People in Scotland claim Adult Disability Payment in place of PIP, and Pension Age Disability Payment in place of Attendance Allowance. Someone who moves between Scotland and England or Wales has to claim the equivalent where they have moved to, and the old payment stops 13 weeks after a move to Scotland.
+
+## Other points that catch people out
+
+A person in a care home cannot usually get Attendance Allowance if their local authority pays for their care, but can if they pay all the costs themselves. PIP can be paid alongside most other benefits, with the Armed Forces Independence Payment the exception, and Attendance Allowance can lead to extra Pension Credit, Housing Benefit or Council Tax Reduction. A carer of someone with substantial needs may be able to claim [Carer's Allowance](/uk/work-benefits/disability-and-caring/carers-allowance/).
+
+There are separate rules for people nearing the end of life, who can get a faster decision and a higher rate.",PIP and Attendance Allowance Rates {tax_year},"PIP daily living pays {fact:pip_daily_living_lower} or {fact:pip_daily_living_higher} a week, and Attendance Allowance pays the same two rates. See who qualifies and what applies in Scotland.",,
