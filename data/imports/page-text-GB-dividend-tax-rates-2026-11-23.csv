@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,investment-taxes,dividend-tax-rates,Dividend Tax Rates and Allowance,"How dividends are taxed, the tax-free dividend allowance, how your Income Tax band decides the rate, which dividends fall outside tax, and when HMRC has to be told.","## Part of a person's dividends are tax-free, and the rest is taxed at its own rates
+
+Dividends are the payments a company makes to its shareholders. Any dividend income that falls inside the Personal Allowance is not taxed, and there is also a dividend allowance of {fact:dividend_allowance} a year on top. Tax is due only on dividends above the allowance. Dividends from shares held in an ISA are outside tax altogether.
+
+Dividends have their own tax rates, which differ from the rates on wages and pensions: {fact:dividend_basic_rate} in the basic rate band, {fact:dividend_higher_rate} in the higher rate band and {fact:dividend_additional_rate} in the additional rate band. The rates on earnings are set out on the [Income Tax rates and bands](/uk/tax/income-tax/income-tax-rates-and-bands/) page.
+
+## The band is found by adding dividends to other income
+
+Which rate applies depends on total income. To find the band, dividend income is added to other income, so a single person's dividends can be taxed at more than one rate if they straddle two bands.
+
+Dividend rates apply across the UK, Scotland and Wales included. Welsh and Scottish rates change what is paid on wages and pensions, but not on dividends.
+
+## Dividends have to be reported when tax is due on them
+
+HMRC has to be told every year in which tax is due on dividends. Someone who files a Self Assessment return reports the dividends on it by the usual deadline. Someone who does not file one tells HMRC after the tax year ends on 5 April and before 5 October, either by asking for a change to their tax code, so that the tax is collected from wages or a pension, or by contacting the helpline. Larger amounts of dividend income have to go through Self Assessment, with registration by the same 5 October date.
+
+Nothing needs to be reported when dividends stay within the allowance.",Dividend Tax Rates and Allowance {tax_year},"The dividend allowance is {fact:dividend_allowance} a year. Tax on dividends above it depends on your Income Tax band. How ISAs, tax bands and reporting to HMRC work.",,
