@@ -1,0 +1,19 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,self-employment-and-property,making-tax-digital-income-tax,Making Tax Digital for Income Tax,"When sole traders and landlords must keep digital records and send quarterly updates to HMRC, how qualifying income is counted, and how the phased start dates work.","## Making Tax Digital for Income Tax is being phased in by qualifying income
+
+The scheme covers sole traders and landlords who file Self Assessment returns and earn from self-employment, property, or both. What decides it is qualifying income: gross receipts from trading and letting, before expenses, as shown on an earlier year's return. The start comes in stages. It began on 6 April 2026 for anyone whose qualifying income in the tax year ending 5 April 2025 was over {fact:mtd_itsa_threshold_2026}. It follows on 6 April 2027 for those over {fact:mtd_itsa_threshold_2027} in the year ending 5 April 2026, and on 6 April 2028 for those over {fact:mtd_itsa_threshold_2028} in the year ending 5 April 2027. A start date for partnerships has still to be announced.
+
+Nothing else is included: employment income, dividends, pensions and an individual's share of partnership profit are all excluded. HMRC checks each tax return and writes to people who need to start, but the duty to check and sign up does not depend on receiving a letter.
+
+A person who has started can opt out if their qualifying income has been under the threshold for three tax years running. A person who is exempt, for example because they are digitally excluded, does not use the service but must still file a Self Assessment return.
+
+## What changes is how records and returns are handled, not the deadline
+
+One tax return is still filed each tax year, and tax is still paid by 31 January after it ends. What changes is how the information reaches HMRC:
+
+- Records of self-employment and property income and expenses have to be kept digitally, in software that works with the service, each showing the amount, the date and the category.
+- Every 3 months the software adds up the records into a quarterly update for HMRC. It is a set of totals from the start of the tax year, not a tax return, and it has to be sent even when there was no income or expense in the period.
+- After an update, an estimate of the tax bill for the year so far is available.
+- The tax return is then completed in the software, with any other income added before it is sent.
+
+HMRC provides no software of its own. Spreadsheets can still be used for records, provided that software links to them to send the updates and return.",Making Tax Digital for Income Tax,Making Tax Digital for Income Tax starts above {fact:mtd_itsa_threshold_2026} of qualifying income and widens in 2027 and 2028. Who has to use it and what changes.,,
