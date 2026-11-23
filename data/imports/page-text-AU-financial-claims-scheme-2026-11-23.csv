@@ -1,0 +1,22 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,savings-and-investments,savings-and-interest-rates,financial-claims-scheme,Financial Claims Scheme,"What the Financial Claims Scheme protects if a bank, building society, credit union or general insurer fails, how the limit applies, and which accounts are covered.","## The scheme protects deposits up to a limit at each institution
+
+If a bank, building society or credit union fails, the Government's Financial Claims Scheme (FCS) is the safety net for its depositors. These institutions are known as authorised deposit-taking institutions (ADIs), and the scheme covers those that are incorporated in Australia and authorised by the Australian Prudential Regulation Authority (APRA). The protection is capped at {fact:au_fcs_deposit_limit} for one account holder at any one ADI.
+
+The scheme only starts if the Government activates it after an institution fails. APRA then administers it and aims to return protected deposits to account holders within seven days, in most cases by cheque or by electronic payment to another account they nominate.
+
+## The limit applies to each account holder at each institution
+
+An account holder's entitlement is the sum of all their deposits with that ADI at the time the scheme is declared, up to the limit. Interest up to the declaration is added, and bank fees, charges and any tax are deducted. Deposits at a different ADI are a separate entitlement.
+
+Account holders include individuals, companies, partnerships, the trustees of a trust and the trustees of a self-managed super fund. A group of individual trustees is treated as one account holder. With a super fund, the limit normally covers the fund as a whole, not each member. Citizenship and residency make no difference to whether an account is covered.
+
+## Many deposit accounts are covered, but not all
+
+The scheme covers savings, call, term deposit, current, cheque, debit card and transaction accounts, along with cash management accounts and mortgage offset accounts that are separate deposit accounts. It covers only accounts holding Australian dollars.
+
+The scheme leaves out credit balances on credit cards and other loans, pre-paid card facilities, accounts kept at overseas branches of Australian banks, and accounts holding foreign currency.
+
+## General insurers are covered, but life and health insurers are not
+
+The scheme also covers claims against general insurers regulated by APRA. For general insurers, the scheme covers most policyholder and third-party claims up to {fact:au_fcs_insurance_claim_limit}, and larger claims can be covered for eligible policyholders and some third parties. Life insurers and private health insurers fall outside it.",Financial Claims Scheme: {fact:au_fcs_deposit_limit} Limit,"The Financial Claims Scheme protects deposits up to {fact:au_fcs_deposit_limit} per account holder at each bank, building society or credit union. See what is covered.",,
