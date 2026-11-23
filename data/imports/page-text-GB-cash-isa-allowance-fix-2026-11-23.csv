@@ -1,0 +1,16 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,savings,isas,cash-isa-allowance,Cash ISA Allowance,"How the yearly ISA allowance applies to Cash ISAs, the lower cash limit planned for under-65s from 6 April 2027, and the rules meant to stop it being avoided.","## One allowance covers all your adult ISAs
+
+The {fact:isa_allowance} annual limit is not a separate allowance for each type of adult ISA. It is the total you can pay into your Individual Savings Accounts (ISAs) in a tax year, and money paid into a Cash ISA uses up part of the same allowance that a stocks and shares ISA draws on. A Lifetime ISA has a lower yearly limit of its own, but what you pay into it still counts towards the total. Junior ISAs have a separate allowance.
+
+This limit is set to stay at {fact:isa_allowance} until April 2031.
+
+## From 6 April 2027, under-65s face a lower cash limit
+
+From 6 April 2027, anyone under 65 will be able to put no more than {fact:cash_isa_limit_under_65_2027} a year into cash ISAs. People aged 65 or over can still use the whole {fact:isa_allowance} for cash ISAs.
+
+The lower figure sits inside the overall allowance. An under-65 could therefore still use the rest of the allowance on a stocks and shares ISA.
+
+## Extra rules aim to stop the cash limit being sidestepped
+
+Three safeguards are due from 6 April 2027. First, cash held inside a stocks and shares ISA or an Innovative Finance ISA will have a flat-rate charge taken from the interest it earns. Second, investors under 65 cannot move money from those ISAs into a cash ISA. Third, a stocks and shares ISA cannot be invested entirely in money market funds.",Cash ISA Allowance {tax_year}: {fact:isa_allowance},The Cash ISA allowance is {fact:isa_allowance} a year across all ISAs. See the under-65 cash limit of {fact:cash_isa_limit_under_65_2027} planned from April 2027 and how the rules work.,2026-11-16 22:01:23,2026-11-23 22:26:07
