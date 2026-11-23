@@ -33,7 +33,7 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
 
 - [x] Read the AU map, process, handover, house style and TODO (23 November).
 - [x] Find and test the official addresses (23 November, from the Mac; results below).
-- [ ] **Retest the failures with the VPN on** (RBNZ, Kāinga Ora, ACC, legislation.govt.nz, FMA), from the Mac.
+- [x] **Retested with the VPN on (set to New Zealand), 23 November:** `legislation.govt.nz`, `fma.govt.nz` and `tenancy.govt.nz` now read. RBNZ (Cloudflare 403), Kāinga Ora and ACC (Imperva) are still refused on every variant, so the VPN does not fix them. Then tried the VPN set to the UK (still refused) and the Hostinger server (read-only `check-source-access.php` over SSH, with Richard's OK): **all three are refused on every variant from the server too** (RBNZ Cloudflare 403; Kāinga Ora and ACC return HTTP 200 with 0 characters). So pages 7, 8 and 12 cannot be built on the site's fetcher. **Decision needed: move them to the second wave, or find another official page that reads, or keep a hand-refreshed saved copy.**
 - [ ] **Ask Richard before running `check-source-access.php` over SSH** for the same failures (the server's address is often treated differently).
 - [ ] Richard decides the items under "Decisions waiting" and approves the page list.
 - [ ] Slug collision check on the local database (SQL below).
@@ -48,7 +48,16 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
 
 ### Decisions waiting
 
-See the numbered list under "Things that differ and need a decision". None is settled yet.
+Settled by Richard on 23 November 2026:
+
+- [x] **1. Tax year style:** the dash, **2026–27** (as Australia). Needs a one-line code change to `COUNTRY_TAX_YEARS` for `NZ` (`'style' => 'dash'`): ask before editing.
+- [x] **3. Spelling:** New Zealand English as the government writes it: British -ise spellings, "programme", dates as 1 April 2027, single quotation marks, no em dashes, official names exactly as each body writes them (macrons kept).
+- [x] **5. ACC weekly compensation:** second wave.
+- [x] **Category name:** "KiwiSaver & Retirement", unless further research says otherwise.
+- [x] **6. Regional rows:** add the 16 regional sub-jurisdiction rows in migration 032 (a schema change, so ask first).
+- [x] **13. Drip:** run NZ's drip alongside Australia's.
+
+Still open: 2 (NZ$ or $), 4 (whether titles say "capital gains tax"), 7 (macrons and the importer), 9 (Inland Revenue or IRD in text), 12 (Family Boost and Child Support), and what to do about the three unreadable sites.
 
 ### Loose ends
 
@@ -135,7 +144,7 @@ Rough count: about 70 to 90 figures, depending on pages 12 and 20. **Pages to dr
 
 ## Things that differ from the UK and Australia, and need a decision
 
-1. **Tax year: 1 April to 31 March.** Already coded as `month 4, day 1`. The code's NZ style is `'slash'` (2026/27) copied from the UK. IRD writes years in more than one way (its student loan page said "2026 tax year"). **Decision: slash (2026/27), the AU dash (2026–27), or a single year (the 2027 tax year, which is what IRD calls the year ending 31 March 2027)?** This also changes how `{tax_year}` reads and how the weekly check flags a "year" tag.
+1. **(Settled: dash, 2026–27.)** **Tax year: 1 April to 31 March.** Already coded as `month 4, day 1`. The code's NZ style is `'slash'` (2026/27) copied from the UK. IRD writes years in more than one way (its student loan page said "2026 tax year"). **Decision: slash (2026/27), the AU dash (2026–27), or a single year (the 2027 tax year, which is what IRD calls the year ending 31 March 2027)?** This also changes how `{tax_year}` reads and how the weekly check flags a "year" tag.
 2. **Rate and rounding wording.** NZ official pages mostly write "$", "%" and "per week". **Decision: bare "$" (as AU) or "NZ$" for the first mention?** The site's currency code would be `NZD`.
 3. **Category names.** Categories belong to one country (`jurisdiction_id`), so NZ can name its own. Proposed: Tax; Savings & Investments; **KiwiSaver & Retirement**; Mortgages & Property; Work & Benefits. **Decision: "KiwiSaver & Retirement" or "Retirement" or "Super & Retirement" (AU)?**
 4. **No capital gains tax.** NZ has none in general; the bright-line test and "intention" rules tax some property sales. Page 4 explains the gap. **Decision: leave "capital gains tax" out of page titles, or include it as a plain search term?** (Other pages must not say "there is no capital gains tax" unless a source says so in those words.)
@@ -203,7 +212,7 @@ admit every government site, so list each body's own domain.
 | `tenancy.govt.nz` | Page 14 | **Needed.** Reads, but flaky (a timeout and a 502 on the first tries, then fine) |
 | `rbnz.govt.nz` | Pages 7, 8 | **Needed**, but refused from the Mac. Add it only once it can be read from the server (the importers refuse a source the site cannot read) |
 | `kaingaora.govt.nz` | Page 12 | **Needed if page 12 stays**, but refused from the Mac (JavaScript challenge) |
-| `legislation.govt.nz` | Settling disputed details (the UK work often needed the legislation) | **Optional.** HTTP 202 from the Mac, the same symptom the UK work saw with the VPN off. Retest first |
+| `legislation.govt.nz` | Settling disputed details (the UK work often needed the legislation) | **Optional.** HTTP 202 with the VPN off (the symptom the UK work saw); reads with the VPN on |
 | `acc.co.nz` | ACC pages | **Not needed at launch.** IRD carries the levy rates. Refused from the Mac (Imperva) |
 | `fma.govt.nz` | KiwiSaver provider regulation | **Not needed.** HTTP 403 from the Mac. Out of the launch set |
 | `msd.govt.nz`, `studylink.govt.nz`, `business.govt.nz`, `govt.nz` | Parent bodies, student support, company registration, the portal | **Not needed.** All read from the Mac, so they stay available if a page needs one later |
@@ -214,20 +223,20 @@ any reference source. This was the lesson from the AU build, where none of the f
 
 ### Can the site read them?
 
-A page in the allowlist is no use if `includes/source-pages.php` cannot download it. Tested 23 November 2026 from the Mac, with the
-VPN state unknown, with `scripts/read-source.php` for each address and `scripts/check-source-access.php` for the failures:
+A page in the allowlist is no use if `includes/source-pages.php` cannot download it. Tested 23 November 2026 from the Mac (first with the
+VPN state unknown, then retested with the VPN on and set to New Zealand), with `scripts/read-source.php` for each address and `scripts/check-source-access.php` for the failures:
 
 | Site | Result | What it needs |
 |---|---|---|
 | Inland Revenue (`ird.govt.nz`) | **Read** (every address tried, from the sitemap) | Nothing extra |
 | Employment New Zealand (`employment.govt.nz`) | **Read** | Nothing extra. The `/pay-and-hours/pay/minimum-wage` address I tried first is a 404: the page is under `/pay-and-hours/pay-and-wages/` |
 | Work and Income (`workandincome.govt.nz`) | **Read** | Nothing extra |
-| Tenancy Services (`tenancy.govt.nz`) | **Read, but unreliable.** First calls timed out (30 s), then a 502, then answered. One variant that read it only worked with a plain browser agent, which is not an option without the site's terms checked | Retry; check the terms before changing the fetcher |
-| Reserve Bank of New Zealand (`rbnz.govt.nz`) | **Refused: HTTP 403 from Cloudflare** ("Website unavailable") on all five variants | **Retest with the VPN on, then from the server.** Ask before any SSH |
+| Tenancy Services (`tenancy.govt.nz`) | **Read** (VPN on, second test). Earlier it was unreliable: First calls timed out (30 s), then a 502, then answered. One variant that read it only worked with a plain browser agent, which is not an option without the site's terms checked | Retry; check the terms before changing the fetcher |
+| Reserve Bank of New Zealand (`rbnz.govt.nz`) | **Refused: HTTP 403 from Cloudflare** ("Website unavailable") on all five variants, **also with the VPN on and set to New Zealand** | **Retest with the VPN on, then from the server.** Ask before any SSH |
 | Kāinga Ora (`kaingaora.govt.nz`) | **Refused: Imperva JavaScript challenge**; HTTP 200 but 0 characters on every variant | The server, or no card from this site |
 | ACC (`acc.co.nz`) | **Refused: Imperva** ("Request unsuccessful. Incapsula incident") | Not needed at launch |
-| `legislation.govt.nz` | **HTTP 202** | Retest with VPN on |
-| FMA (`fma.govt.nz`) | **HTTP 403** | Out of scope |
+| `legislation.govt.nz` | **HTTP 202 with the VPN state unknown; read with the VPN on (NZ)** | Needs the VPN on from the Mac. Check from the server |
+| FMA (`fma.govt.nz`) | **HTTP 403 first; read with the VPN on (NZ)** | Out of scope |
 | `msd.govt.nz`, `studylink.govt.nz`, `business.govt.nz`, `govt.nz` | Read | Not needed |
 
 **Stop and ask.** Pages 7, 8 and 12 are the three that depend on a site the fetcher cannot read, and I did not find the address
@@ -331,4 +340,5 @@ Each needs its sources found first.
 | Page | Status |
 |---|---|
 | Planning, 23 November 2026 | Plan written. About 40 NZ addresses tested from the Mac. IRD, Employment NZ and Work and Income read. RBNZ (Cloudflare 403), Kāinga Ora (JavaScript challenge) and ACC (Imperva) refused. `legislation.govt.nz` returned HTTP 202. `tenancy.govt.nz` timed out then answered. No figure was entered anywhere |
+| Source retests, 23 November 2026 | VPN set to NZ: `legislation.govt.nz`, `fma.govt.nz`, `tenancy.govt.nz` read. VPN set to UK and the server: RBNZ, Kāinga Ora and ACC still refused on all variants |
 | (pages: add a row as each batch is built, with the CSV name, the sources read, the dates, and any figure that a web-search summary got wrong) | |
