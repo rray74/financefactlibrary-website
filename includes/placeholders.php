@@ -31,15 +31,17 @@
 
 /**
  * When each country's tax year starts, and how it's written:
- *   slash   2026/27  (UK, New Zealand)
- *   dash    2026–27  (Australia, with an en dash)
+ *   slash   2026/27  (UK)
+ *   dash    2026–27  (Australia and New Zealand, with an en dash)
  *   single  2026     (US, Canada: the tax year is the calendar year)
  * Keyed by jurisdiction code, like COUNTRY_WORDING. A country missing from
  * the list is treated as a calendar-year country.
  */
 const COUNTRY_TAX_YEARS = [
     'GB' => ['month' => 4, 'day' => 6, 'style' => 'slash'],
-    'NZ' => ['month' => 4, 'day' => 1, 'style' => 'slash'],
+    // New Zealand: 1 April to 31 March. Written 2026–27 with an en dash, as Australia's is (decided
+    // by Richard on 23 Nov 2026; it was 'slash', copied from the UK before the NZ plan was made).
+    'NZ' => ['month' => 4, 'day' => 1, 'style' => 'dash'],
     'AU' => ['month' => 7, 'day' => 1, 'style' => 'dash'],
     'US' => ['month' => 1, 'day' => 1, 'style' => 'single'],
     'CA' => ['month' => 1, 'day' => 1, 'style' => 'single'],

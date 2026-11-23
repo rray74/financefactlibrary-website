@@ -61,6 +61,17 @@ const FACT_SOURCE_ALLOWLIST = [
     // pages describe. Licence is NULL (not verified).
     'firsthomebuyers.gov.au'  => null,
     'apra.gov.au'             => null,
+    // New Zealand national bodies, added for the New Zealand launch (plan: docs/content-maps/nz-content-map.md).
+    // Each publishes the rules the pages describe and was read from the Mac on 23 Nov 2026: Inland Revenue
+    // (tax, KiwiSaver, student loans, Working for Families), Employment New Zealand (pay and leave), Work and
+    // Income (NZ Superannuation, Jobseeker Support) and Tenancy Services (bonds and rent). 'govt.nz' as a whole
+    // is deliberately not listed, because it would admit every government site. The Reserve Bank of New Zealand
+    // (rbnz.govt.nz) is NOT here yet: its site refuses the fetcher from every machine tried, and a source the
+    // site cannot read is refused by the importers. Add it only once it can be read. Licence is NULL (not verified).
+    'ird.govt.nz'             => null,
+    'employment.govt.nz'      => null,
+    'workandincome.govt.nz'   => null,
+    'tenancy.govt.nz'         => null,
 ];
 
 /**
