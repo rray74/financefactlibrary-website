@@ -4,7 +4,8 @@ A PHP + MySQL (MariaDB) site of country-by-country finance reference pages:
 Category → Subcategory → Subject (page) → figure cards (facts with sources),
 plus an AI-drafted, human-reviewed explanation per page. Tailwind CSS + DaisyUI.
 UK is live, with all 53 UK pages written (24 Nov 2026); Australia launched 19 Nov 2026 and is
-dripping out 3 pages a week (4 more pages still to build).
+dripping out 3 pages a week (all 19 planned pages written by 24 Nov 2026; about 17 are hidden drafts
+waiting for the drip).
 New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
 
 ## Stack, hosting, deploy
@@ -33,7 +34,9 @@ New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
   Page text: `import-page-text.php` / `export-page-text.php`. Schema: migrations only.
 - Always test on MAMP first, then run on the server over SSH. No phpMyAdmin edits.
   If the tooling can't do something, build the workaround.
-- Read every figure live with `scripts/read-source.php` before it goes in a CSV.
+- Read every figure live with `scripts/read-source.php` before it goes in a CSV, from the official page itself,
+  never a search summary (one gave the wrong HELP threshold). The source's domain must be on
+  `FACT_SOURCE_ALLOWLIST` (`includes/fact-writer.php`); adding one is a code change, so ask first.
 - Page workflow (default, from 22 Nov 2026): Claude Code drafts the page (reads the sources live,
   writes the page-text CSV, imports on MAMP, runs triage and the near-copy check, reads every claim
   against its source) → human review → one commit per page → deploy and import on the server.

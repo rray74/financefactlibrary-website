@@ -30,7 +30,15 @@ The to-do list lives in this file. Items are added as they come up and ticked of
 
 ## 3. What has been completed
 
-### Done in Claude Code, 24 Nov 2026 (latest): the last two UK pages, so every UK page is written
+### Done in Claude Code, 24 Nov 2026 (latest): the last four Australian pages, so every planned page is written
+
+- **HELP Loan Repayments, the Australian Government 5% Deposit Scheme (formerly the First Home Guarantee), the Financial Claims Scheme and the Capital Gains Tax Discount** written and deployed one at a time (`87adc85`, `3abf76d`, `ec0a5be`, `10afbf1`): figures (`au-batch-13.csv` to `au-batch-16.csv`), reference sources, text, review stamp. All four are hidden drafts in the drip queue.
+- **Sources moved:** the First Home Guarantee was renamed and its price caps now sit on `firsthomebuyers.gov.au`; `fcs.gov.au` redirects to `apra.gov.au`. Both domains were added to `FACT_SOURCE_ALLOWLIST` (approved, tested on MAMP first).
+- **CGT:** the ATO confirms the Budget reform is law. From 1 July 2027 the 50% discount is replaced by cost base indexation for gains that accrue from then, with a 30% minimum tax on certain gains.
+- **A web-search summary was wrong:** it gave $67,000 as the 2026–27 HELP threshold; the ATO page says $69,528. Always read the official page itself.
+- All 53 UK and 19 Australian pages are written: 72 pages.
+
+### Done in Claude Code, 24 Nov 2026 (earlier): the last two UK pages, so every UK page is written
 
 - **NS&I Savings Rates and Standard Variable Rate (SVR)** written, previewed on MAMP, then committed and deployed one at a time (`b7429c3`, `ff8dbc8`), imported on the server, checked live and stamped reviewed. 9 reference sources added (the seven NS&I product pages, an FCA mortgage page and a Bank of England explainer).
 - **All 53 UK pages now have an explanation**, so the server has 68 written pages (53 UK, 15 Australia). The 30 UK pages that had none on 22 Nov were all written in Claude Code between 22 and 24 Nov, each previewed by Richard, then committed, deployed, imported and checked live one at a time.
@@ -180,8 +188,9 @@ The routine is in `docs/page-checklist.md`: free triage, then read the sources, 
 - [ ] The work from an earlier chat was never committed and is not in the repo, so there is nothing to give a migration number to: it would be a rebuild. Park it, or scope it again when wanted. Next free migration number is **032**.
 
 ### Multi-country expansion
-- [ ] Australia drip: about 3 pages a week, running (`run-jobs.php` every 5 minutes; keep exactly one worker row). 13 of the 15 written pages are drafts waiting for it, so they publish through about the end of December. All 15 have now had the full routine, so nothing is waiting on page text.
-- [ ] **Four more Australian pages** are planned (15 of 19 written; see `docs/content-maps/au-content-map.md`). They need figures read live, a CSV, then the same page routine.
+- [ ] Australia drip: about 3 pages a week (`run-jobs.php` every 5 minutes; keep exactly one worker row). About 17 of the 19 written pages are drafts waiting for it, so they publish through about the first week of January. Nothing is waiting on page text.
+- [x] **The last four Australian pages** are written and on the server (24 Nov); see the content map.
+- [ ] **Medicare levy low-income thresholds:** add to the Medicare Levy page when the ATO sets the 2026–27 ones.
 - [ ] Country-neutral pieces (staging, review step, drip scheduler that only publishes a page once its explanation is written) are partly built; see `docs/handover-2026-11-21-australia-launch.md`.
 - [ ] Then New Zealand, Canada and the US, each launching at about 15 to 20 pages.
 
@@ -200,6 +209,7 @@ The routine is in `docs/page-checklist.md`: free triage, then read the sources, 
 | **6 Apr 2027** | ISA reform rules come into force: update the ISA page wording. Also: Making Tax Digital threshold drops to £30,000, cash ISA limit for under-65s becomes £12,000, new savings tax rates apply. |
 | **After 6 April 2027** | Personal Savings Allowance text: the paragraph saying savings tax rates are "due to rise from April 2027" needs rewording; also the Cash ISA wording noted above |
 | **After 6 April 2027 (Making Tax Digital)** | Making Tax Digital for Income Tax text names the 2026, 2027 and 2028 stages and says partnerships have no start date yet; reword once the 2027 stage has started or the partnership date is set |
+| **After 1 July 2027 (Capital Gains Tax Discount, Australia)** | The page describes the 50% discount and the change from 1 July 2027 (indexation, 30% minimum tax); reword once the change has started |
 | **April 2028** | Help to Save text: the last paragraph says eligibility will widen then; reword once it has |
 | **Every April** | Most UK rates, allowances and benefit amounts change |
 | **20 March and 20 September** | Services Australia updates payment rates (Age Pension, JobSeeker): the cards are source-checked daily |

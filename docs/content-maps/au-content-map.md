@@ -1,18 +1,18 @@
 # Australia content map (pilot)
 
-Status: **Australia launched on 19 November 2026** with 15 of the 19 planned pages written. The plan was
+Status: **Australia launched on 19 November 2026** with 15 of the 19 planned pages written; **all 19 were written by 24 November 2026**. The plan was
 first written on 4 November 2026. The planning tables below hold **no figure values**: a value goes into a
 CSV only after it has been read off its official source page on the day the CSV is built, as `core.md` and
 the handover require (the build log at the end records the figures that were imported). The source addresses
 below are the ones in migrations 023 to 029 (`sql/migrations/`).
 
 Australia is live (`is_active = 1` since 19 November). Pages are imported as hidden drafts, written, then
-released one at a time by the drip publisher (3 a week). The remaining four pages are built the same way
-and join the drip as they are imported.
+released one at a time by the drip publisher (3 a week). The last four pages (HELP loan repayments, the 5% Deposit Scheme, the Financial
+Claims Scheme and the capital gains tax discount) were built the same way and joined the drip on 24 November.
 
 ## To do
 
-Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 20 November 2026.
+Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 24 November 2026.
 
 ### Doing now (on the server)
 
@@ -69,12 +69,19 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
       Mortgages & Property with the first home buyers subcategory, text on the server.
 - [x] Fifteen Australian pages have text on the server, all imported as hidden drafts (19 November). Combined page-text
       file: `data/imports/page-text-AU-2026-11-19.csv`.
-- [ ] **First Home Guarantee (page 13)**: Housing Australia's price caps page, which the fetcher can read. It is the
-      state-layer test (about 16 figures), in the same category and subcategory as page 14.
-- [ ] **HELP loan repayments (page 6)**: find the ATO's study and training loan thresholds address, then read it live.
-- [ ] **Financial Claims Scheme (page 8)**: find the page on fcs.gov.au that states the protected amount, then read it live.
-- [ ] **Capital gains tax discount (page 5)**: the address is already in the allowlist (migration 024). Read the ATO's
-      Federal Budget alert first, because the discount may change.
+- [x] **HELP loan repayments (page 6)**, 24 November: seven figures (`au-batch-13.csv`) from the ATO's study and training
+      loan thresholds and rates page (2026–27 marginal system), in a new Study Loans subcategory under Tax; two reference sources.
+- [x] **Australian Government 5% Deposit Scheme (page 13, formerly the First Home Guarantee)**, 24 November: 19 figures
+      (`au-batch-14.csv`): the 5% and 2% minimum deposits and 17 price caps, read from the First Home Buyers site. The scheme
+      was renamed and expanded, and the price caps moved from Housing Australia to `firsthomebuyers.gov.au`. Built as
+      `five-percent-deposit-scheme`, same subcategory as page 14. `firsthomebuyers.gov.au` and `apra.gov.au` were added to
+      `FACT_SOURCE_ALLOWLIST` in `includes/fact-writer.php`.
+- [x] **Financial Claims Scheme (page 8)**, 24 November: two figures (`au-batch-15.csv`), $250,000 per account holder per
+      ADI and $5,000 for general insurance claims, from APRA (`fcs.gov.au` redirects there); three reference sources.
+- [x] **Capital gains tax discount (page 5)**, 24 November: four figures (`au-batch-16.csv`): the 50% discount, 12 months,
+      33.33% for complying super funds, and the 30% minimum tax from 1 July 2027. The reform is law: from 1 July 2027 the
+      discount is replaced by cost base indexation for gains that accrue from then. New Capital Gains Tax subcategory.
+      **Dated text: reword after 1 July 2027.**
 - [ ] Add the Medicare levy low-income thresholds to page 3 when the ATO sets the 2026–27 ones.
 - [ ] Optional: the GST **rate** itself, which the registration page does not cover.
 
@@ -291,9 +298,9 @@ Each of these needs the page fetched and checked before its figure is entered.
    `subject_status` set to `draft`, write its explanation, and approve it. Add the
    "Reference page" section to `au.md` once it is approved. **Page 1 approved on 5 November 2026.**
 4. Then the other pages in the order above, in batches of about four. Page 13 goes
-   in the first batch so the state layer is tested early. **In progress: 15 of 19 built (19 November).** The GST page was built as `gst-registration-threshold` (subcategory GST, under Tax) and the super pages sit in a `superannuation` subcategory, so the slugs and subcategories above differ a little from the plan.
+   in the first batch so the state layer is tested early. **Done: 15 of 19 built by 19 November, the last four on 24 November.** The GST page was built as `gst-registration-threshold` (subcategory GST, under Tax) and the super pages sit in a `superannuation` subcategory, so the slugs and subcategories above differ a little from the plan.
 5. Launch by setting `is_active` to 1 on the `AU` row, then
-   start the drip (**done on 19 November at 15 pages, not 19, with the last four to join the drip as they are built**): `php scripts/run-jobs.php --enqueue=drip_country --payload='{"country":"AU","per_week":3}' --unique=drip_country:AU`
+   start the drip (**done on 19 November at 15 pages, not 19, the last four joined the drip on 24 November**): `php scripts/run-jobs.php --enqueue=drip_country --payload='{"country":"AU","per_week":3}' --unique=drip_country:AU`
 
 ### How the CSVs are laid out
 
@@ -385,3 +392,5 @@ Not in the launch set. Each needs its sources found first.
 | Annual leave and Personal and carer's leave, 19 November 2026 | `au-batch-09.csv`, all from the Fair Work Ombudsman NES fact sheet: 4 weeks annual leave plus 1 extra week for some shiftworkers, 10 days paid sick and carer's leave, 2 days unpaid carer's leave, 2 days compassionate leave, 10 days paid family and domestic violence leave. Short pages (168 and 176 words) because the source is short. Text and figures on the server |
 | Parental Leave Pay, Cash rate target and First Home Super Saver Scheme, 19 November 2026 | `au-batch-10.csv`: Parental Leave Pay from 1 July 2026, $200.94 a day (previous $189.62) and $1,004.70 a week (previous $948.10), 130 days (previous 120), 20 reserved days (previous 15) and 20 concurrent days (previous 10), plus the shared super guarantee card. `au-batch-11.csv`: the RBA cash rate target 4.85% from 4 November 2026, reviewed every 42 days, with 8 Board meetings a year and the 2 to 3% inflation target band (source: the RBA's cash rate target overview). `au-batch-12.csv`: First Home Super Saver Scheme, $15,000 a year and $50,000 in total of voluntary contributions that can be released, with 100% of non-concessional and 85% of concessional contributions counted (source: the ATO's about FHSS release amounts page). It creates the Mortgages & Property category and the first home buyers subcategory. Texts written, scored against the sources with the close-copy checker (0 close copies) and on the server |
 | Launch, 19 November 2026 | Preflight: `AU 0`, 15 draft subjects. `is_active` set to 1, `/au/` answered 200, drip queued (job #1, 3 a week). First page published by hand at 22:35: Tax-Free Threshold, next slot in 2 days 8 hours. Live at `/au/tax/income-tax/tax-free-threshold/` and in the sitemap. hPanel cron row set up and proven with a touch test on 20 November |
+| HELP loan repayments, 24 November 2026 | `au-batch-13.csv`: 2026–27 thresholds and rates from the ATO page: minimum repayment income $69,528 (previous $67,000), 15% up to $129,717 (previous $125,000), then $9,028 (previous $8,700) plus 17% up to $186,050 (previous $179,285), and 10% of total repayment income above that. A web-search summary gave $67,000 for 2026–27; the ATO page says $69,528. |
+| 5% Deposit Scheme, Financial Claims Scheme and capital gains tax discount, 24 November 2026 | Allowlist: `firsthomebuyers.gov.au` and `apra.gov.au` added. `au-batch-14.csv`: 5% and 2% deposits and 17 price caps. `au-batch-15.csv`: $250,000 and $5,000. `au-batch-16.csv`: 50%, 12 months, 33.33%, 30%. All four last pages imported on the server, stamped reviewed and queued as drafts for the drip (about 17 waiting at 3 a week). |
