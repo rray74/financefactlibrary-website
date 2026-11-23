@@ -1,0 +1,14 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,stamp-duty,welsh-stamp-duty-ltt,Welsh Stamp Duty (LTT) Rates,"How Land Transaction Tax replaces Stamp Duty in Wales: the main residential bands, the higher rates for extra homes, and how they compare with England.","## Wales has its own bands, and each rate applies only to the slice of the price inside it
+
+Buyers in Wales pay Land Transaction Tax (LTT) rather than Stamp Duty Land Tax. Welsh Ministers decide the bands and rates, with approval needed from the Welsh Parliament. For a residential purchase, freehold or leasehold, nothing is due up to {fact:ltt_nil_rate_threshold}. Above that the main rates climb in four steps from {fact:ltt_band_6pct} to {fact:ltt_band_12pct}, each charged only on the part of the price inside its band. What is owed depends on the effective date, which is usually the day the purchase completes, on whether the property is residential, and on the price.
+
+## Higher rates apply when an extra home is bought
+
+The higher residential rates apply when all the buyers are individuals, the price is £40,000 or more, and the buyer, or a spouse or civil partner living with them, owns an interest in another dwelling at the end of the day of the purchase. A company buying a residential property pays them, and a trust may have to. Their first band, up to £180,000, is taxed at {fact:ltt_higher_rate_first_band}, and the rates rise in steps to {fact:ltt_higher_rate_top_band} above £1.5 million.
+
+A buyer replacing their main residence may not have to pay the higher rates. Where the replacement home is bought before the old one is sold, the higher rates are paid up front, and a refund can be claimed if the old home is sold within 3 years. The claim has to be made within 4 years of the filing date of the return. A purchase under £40,000 is not charged the higher rates.
+
+## Wales has a higher nil-rate threshold than England and Northern Ireland
+
+The nil-rate threshold in Wales is {fact:ltt_nil_rate_threshold}, compared with {fact:sdlt_nil_rate_threshold} for a standard purchase in England and Northern Ireland, which are covered on the [Stamp Duty Land Tax](/uk/tax/stamp-duty/stamp-duty-land-tax-rates/) page. The two systems have different bands, so the same price can give a different bill on either side of the border.",Welsh Stamp Duty (LTT) Rates {tax_year},"Land Transaction Tax in Wales is nil up to {fact:ltt_nil_rate_threshold}, with higher rates when buying an extra home. See the bands and how they differ from England.",,
