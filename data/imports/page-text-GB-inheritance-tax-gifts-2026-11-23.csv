@@ -1,0 +1,20 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,inheritance-tax,inheritance-tax-gifts,Inheritance Tax on Gifts,"How much can be given away each year free of Inheritance Tax, the extra allowances for weddings, and how gifts made in the seven years before death are taxed.","## Several allowances let gifts be made tax-free each year
+
+Each tax year, the annual exemption of {fact:iht_annual_exemption} can be given away without it counting towards the estate, to one person or divided between several. An unused amount carries forward for one tax year only. On top of that, any number of gifts of up to {fact:iht_small_gift_allowance} per person are free of tax, so long as no other allowance has been used on the same person.
+
+Wedding and civil partnership gifts have their own limits: {fact:iht_wedding_gift_child} to a child, {fact:iht_wedding_gift_grandchild} to a grandchild or great-grandchild, and {fact:iht_wedding_gift_other} to anyone else. These can be added to the annual exemption for the same person, but not to the small gift allowance.
+
+Regular payments made out of income, such as paying a child's rent or putting money into a savings account for a child, are not limited as long as they come from regular monthly income and leave enough to meet usual living costs. Gifts between spouses and civil partners are unlimited if both live permanently in the UK, and gifts to charities and political parties are exempt.
+
+## Gifts made in the last seven years before death may be taxed
+
+If the giver lives for {fact:iht_gift_survival_period} after making a gift, no Inheritance Tax is due on it, unless it went into a trust. A gift made less than 3 years before death is taxed at the full rate of {fact:iht_rate}. Between 3 and 7 years the rate falls in steps through taper relief, from {fact:iht_taper_3_to_4_years} for a gift made 3 to 4 years before death down to {fact:iht_taper_6_to_7_years} for one made 6 to 7 years before. Taper relief matters only when the gifts made in those seven years add up to more than the nil-rate band of {fact:iht_nil_rate_band}.
+
+The estate normally pays any tax on gifts. Once more than {fact:iht_nil_rate_band} has been given away in the seven years, however, those who received the gifts become liable for the tax on them.
+
+## Some gifts still count as part of the estate
+
+A gift with reservation is one where the giver still gets a benefit from what has been given away, and it is counted in the estate. The classic example is passing a home to a relative while the giver stays on living there. Similar cases are handing over a caravan that the giver still uses free of charge on holiday, or a valuable painting that continues to hang in the giver's house. A sale for less than market value also leaves a gift, equal to the shortfall.
+
+Whoever deals with the estate has to work out what was given in the seven years before death, so it helps to keep a record of what was given, who received it and what it was worth at the time.",Inheritance Tax on Gifts,"You can give {fact:iht_annual_exemption} a year free of Inheritance Tax, plus small gifts and wedding gifts. See how the survival rule and taper relief tax gifts after death.",,
