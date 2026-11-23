@@ -1,0 +1,31 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+AU,tax,capital-gains-tax,capital-gains-tax-discount,Capital Gains Tax Discount,"How the capital gains tax discount works for Australian residents, who cannot use it, and what changes from 1 July 2027 when it is replaced by cost base indexation.","## Resident individuals can take {fact:au_cgt_discount_rate} off a gain on an asset held for {fact:au_cgt_min_ownership}
+
+The capital gains tax (CGT) discount reduces a capital gain by {fact:au_cgt_discount_rate} when an asset is sold or otherwise disposed of, if the person owned it for at least {fact:au_cgt_min_ownership} and is an Australian resident for tax purposes. It applies to gains that accrue before 1 July 2027, after which the changes described below take over. Capital losses on other assets are subtracted from the gains first, and the discount is applied to what is left.
+
+The ownership period is counted from the day after the asset was acquired up to the day before the CGT event. With a contract of sale, the event falls on the day the contract is made rather than the day of settlement, as in most property sales. Earlier ownership counts towards the period when the asset came through a deceased estate, where the deceased had acquired it on or after 20 September 1985, through a relationship breakdown, or as a rollover replacement for an asset that was lost, destroyed or compulsorily acquired.
+
+Australian trusts can use the same discount, complying super funds can take {fact:au_cgt_super_fund_discount} off a gain, and companies cannot use it. Resident individuals who let property as affordable rental housing to low and moderate income earners may get up to 10% more, which takes the discount to as much as 60%.
+
+## Some situations rule the discount out
+
+The discount is not available for:
+
+- a home that was first used to produce rent or for business less than {fact:au_cgt_min_ownership} before it was disposed of
+- an asset owned since before 21 September 1999 where the person chooses to index the cost for inflation instead, although the discount usually gives a better result
+- a CGT event that brings an asset into existence, for example granting a lease or accepting payment for a restrictive covenant
+- most gains of foreign and temporary residents arising since 8 May 2012, with an apportioned discount possible for any period they spent as Australian residents
+
+It can also be denied on interests in some companies and trusts with fewer than 300 members, and where an income asset is turned into a capital asset to get the discount.
+
+## From 1 July 2027 the discount is replaced for gains that accrue after that date
+
+The May 2026 Federal Budget announced changes to capital gains tax, and they have been passed into law. The tax return for the income year that ended in June 2026 is not affected. From 1 July 2027, resident individuals, trusts and partnerships lose the discount and get cost base indexation instead, but only for gains that accrue from that date. For individuals, a minimum tax of {fact:au_cgt_new_minimum_tax} also applies to certain net capital gains that accrue from the same date. Assets from before 20 September 1985, which sit outside CGT until then, are taxed on gains that build up after 1 July 2027. Three things stay as they are: what counts as a CGT asset, the way CGT events work, and the main residence exemption.
+
+The transition depends on when the asset was acquired:
+
+- An asset bought and sold before 1 July 2027 is not affected.
+- Anything bought from 1 July 2027 onwards falls entirely under the replacement rules.
+- For an asset owned before 1 July 2027 and sold after it, the current arrangements apply to gains up to that date and the replacement rules to later gains. The discount covers the gap between the original cost base and the asset's worth just before 1 July 2027, and that worth then becomes the cost base.
+
+Newly built residential dwellings, and assets used to provide affordable housing, are the exceptions: for those owned on or bought after 1 July 2027, a person can choose to stay with the current arrangements and the {fact:au_cgt_discount_rate} discount. The tax return for the income year ending in June 2028 is the first that could be affected, and only if a CGT event happens in that year.",Capital Gains Tax Discount,Australian resident individuals can reduce a capital gain by {fact:au_cgt_discount_rate} on assets held for {fact:au_cgt_min_ownership}. See who is excluded and what changes from 1 July 2027.,,
