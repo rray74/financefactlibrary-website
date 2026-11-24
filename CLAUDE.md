@@ -52,7 +52,7 @@ New Zealand, Canada and the US follow, each launching at about 15 to 20 pages.
 
 ## Cron and manual routines
 - hPanel cron: `fetch-search-console` 06:00, `draft-pages` 05:00 (paused:
-  `DRAFTS_PAUSED`), `check-page-text` 05:30, `check-sources` 07:30,
+  `DRAFTS_PAUSED`), `check-page-text` 05:30 (fixed 30-page sample: `--pages-file=data/nightly-check-sample.txt`, see `docs/content-creation-process.md`), `check-sources` 07:30,
   `send-alerts` 08:00, `fetch-boe-rates` 07:00,
   `check-bank-rate` 13:00, 15:00 and 17:00 (acts only on MPC decision days; emails a draft CSV), `run-jobs.php` every 5 minutes
   (the Australia drip). Keep exactly one worker row.

@@ -134,7 +134,7 @@ Page text lives in the database, so it moves by CSV:
 | Routine | When | What it does |
 |---|---|---|
 | `check-sources.php` | 07:30 daily | Re-reads every card source and reference source. The AI proposes a change when a figure moves; it only proposes, never applies (`AI_AUTO_APPLY` is false) |
-| `check-page-text.php` | 05:30 daily | AI check of written pages that are due. Skips countries that aren't switched on |
+| `check-page-text.php --pages-file=data/nightly-check-sample.txt` | 05:30 daily | AI check of a **fixed sample of 30 pages** (see below), 5 a night. Without the flag it would check every written page that is due, in a country that is switched on |
 | `fetch-boe-rates.php` | 07:00 daily | Updates the Bank of England-linked rate cards |
 | `check-bank-rate.php` | 13:00, 15:00, 17:00 | On an MPC decision day, emails a draft CSV. Update the Bank Rate CSV and run `import-facts.php` on or after the announcement day (importer refuses a future `effective_from`). Next decision: 17 Dec 2026 |
 | `send-alerts.php` | 08:00 daily | Alert emails |
@@ -142,6 +142,8 @@ Page text lives in the database, so it moves by CSV:
 | `run-jobs.php` | Every 5 minutes | Job worker, including the country drip |
 
 When a check flags a change, the fix goes through the same route as new content: update the CSV, import it, then re-run the page checklist for any text that depended on it.
+
+**The nightly check is a capped test, not a standing process (24 Nov 2026).** Left open, every page added and every fix made after a check puts a page back in the queue, so the test never ends and the spend never settles. So the 05:30 cron runs `check-page-text.php --pages-file=data/nightly-check-sample.txt`: the 30 UK pages written in Claude Code on 22 to 24 Nov (none had been checked), in the order the file lists them, 5 a night. A page in the list whose last result still matches its text needs nothing, so once all 30 have a result the run does nothing and costs nothing (expected by about 1 Dec 2026). The list is data: change the sample by editing `data/nightly-check-sample.txt`, not the script. Pages outside the list (the other UK pages, Australia, New Zealand) are not checked while the flag is on; the editor's Check with AI still works for any page. **When the 30 are done:** assess the findings against the baseline (105 findings on 32 older pages, about 8 real), record them in `docs/claude-code-drafting-test.md` and `docs/reference-sources-evaluation.md`, then decide whether the check stays off, runs on a small rotating sample, or runs only when a source changes. `check-sources.php` (07:30) is separate and stays on. Rules for acting on a finding are in `docs/page-checklist.md` ("When the nightly check finds something").
 
 **Acceptance rule for the nightly AI check on Claude Code pages.** `check-page-text.php` is the second opinion. For each page it reads, any "contradicts source", "likely wrong" or "missing exception" finding means the page is re-checked against its sources by hand, and the result and what was wrong go in `docs/claude-code-drafting-test.md` and `docs/reference-sources-evaluation.md`. If findings of that kind keep appearing on pages that passed the writer's read, this process is revisited (more review, or a second reader) before another country starts. Style findings are ignored unless they are a typed figure, a stated rate or a dating word.
 
