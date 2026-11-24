@@ -1,0 +1,31 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,work-and-benefits,benefits,jobseeker-support,Jobseeker Support,"Who can get Jobseeker Support in New Zealand, the weekly rates, the income limits, the test for 18- and 19-year-olds and how to apply.","## What it is
+
+Jobseeker Support is a weekly payment from Work and Income for people who are looking for work, or who have to step back from work temporarily because of a health condition, injury or disability. It is paid weekly, and a person who still needs it has to re-apply every 26 weeks.
+
+## Who can get it
+
+Eligibility turns on age, the ability to work, income, which includes a partner's, and residency.
+
+The minimum age is 18, rising to 20 for a person who has dependent children. Qualifying situations include having no job and wanting full-time work, or holding a part-time job and wanting additional hours. Alternatively they might need to reduce hours or stop work for a period because of disability, injury or ill health. Full-time students are excluded, but they may find help through StudyLink.
+
+On residency, the person has to be a citizen or hold a residence class visa. Two years of unbroken time living in New Zealand since gaining either status is required, together with ordinary residence here.
+
+## Income limits
+
+A weekly income below a set limit is needed, and the limit depends on the person's situation. The card on this page shows the limit for a single person aged 25 or over. The limits are lower for people under 25, and higher for couples and sole parents. Both partners' combined income counts for a couple.
+
+## What it pays
+
+The rates on this page are the most a person can get, and they differ by age, living situation and whether there are children. A single person under 25 gets less than one aged 25 or over, and a sole parent gets more. Income reduces the payment. If it falls to nothing and stays there, the benefit stops after 6 weeks.
+
+Anyone on Jobseeker Support also gets a Winter Energy Payment in the winter months, a Community Services Card, and may be able to get a family tax credit if they have dependent children under 18.
+
+## The test for 18- and 19-year-olds
+
+Since 2 November 2026, an 18- or 19-year-old without dependent children has had to pass a Parental Assistance Test, as have partners under 20. The test asks whether the person can reasonably rely on their parents for support, for example where a parent is in long-term hospital care or in prison, or whether the parents' combined income is at or below the limit on this page. People already getting the payment keep it, but face the test when they re-apply at 26 weeks.
+
+## Applying and obligations
+
+An application is made online through MyMSD. It needs documents, a Jobseeker profile, a Work Capacity Medical Certificate for anyone whose health affects work, and an appointment with Work and Income. Anyone with work obligations, full or part-time, is also expected to go to a Kōrero Mahi work seminar.
+",NZ Jobseeker Support {tax_year}: {fact:nz_js_single25},"Jobseeker Support pays up to {fact:nz_js_single25} a week before tax for a single person aged 25 or over in {tax_year}. See who qualifies and how to apply in NZ.",,
