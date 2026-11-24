@@ -1,0 +1,27 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,kiwisaver-and-retirement,nz-super,new-zealand-superannuation,New Zealand Superannuation,"Who can get New Zealand Superannuation, the fortnightly rates, how long a person must have lived in New Zealand and how to apply.","## Who can get it
+
+New Zealand Superannuation (NZ Super) is the public pension paid by Work and Income. A person qualifies at the age shown on this page, if they are a New Zealand citizen, a permanent resident or hold a residence class visa. At the time of applying they must be settled in New Zealand, the Cook Islands, Niue or Tokelau, and they must have spent a minimum number of years living in New Zealand.
+
+The residence rules changed for anyone who reaches the eligibility age from 1 July 2024. Work and Income keeps a step-by-step guide on its site for anyone unsure whether they meet them.
+
+## How long a person must have lived in New Zealand
+
+The years are counted from age 20, and the total depends on date of birth. The shortest requirement is 10 years, for people born by 30 June 1959. It then goes up one year for every two-year group of birth dates, reaching 19 years for those born from 1 July 1975 to 30 June 1977. Everyone born from 1 July 1977 onwards needs the longest period, 20 years.
+
+Five of those years must fall after age 50. None of the years need to be consecutive. 'Lived in New Zealand' means resident and physically present at the same time, so time spent travelling overseas may not count. Refugees and protected persons have their years worked out differently, according to the age they began living in the country.
+
+## What it pays
+
+Payments are made fortnightly on a Tuesday, and the cards on this page show the amounts before tax. The rate depends on a person's living situation. A single person living alone gets one rate, a single person sharing a home gets a lower one, and people with a partner are paid a third amount each. Other situations have non-standard rates, set out in Work and Income's benefit rates tables.
+
+Tax is deducted from the payment, and how much depends on the tax code the person uses. Code M is the likely one for a person whose only income is NZ Super. Each 1 April the rates are lifted to keep pace with movements in the average wage.
+
+## Working, other income and overseas pensions
+
+A person can work while receiving NZ Super, and the payment does not depend on income or assets. Other income can still reduce other Work and Income payments, such as the Accommodation Supplement, and may call for a different tax code. If a person is entitled to a pension from another country, they have to claim it, and that claim may change the NZ Super they receive.
+
+## Applying
+
+An application can be lodged from 12 weeks before the eligibility birthday, or at any time after it. Applications are made online through MyMSD, except by people living overseas, who contact Work and Income instead. Someone who applies before that birthday, or on the day, is paid from it. Someone who applies later is paid from the date of the application.
+",NZ Super {tax_year}: {fact:nz_super_alone} Fortnightly,"NZ Super is for people {fact:nz_super_age} old or over. See the {tax_year} fortnightly rates, from {fact:nz_super_couple} before tax, plus the residence rules and how to apply.",,
