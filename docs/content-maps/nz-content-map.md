@@ -41,7 +41,8 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
 ### After the plan is approved (not part of this job)
 
 - [x] **Allowlist and tax-year style (23 November, approved, tested on MAMP, not yet committed):** `ird.govt.nz`, `employment.govt.nz`, `workandincome.govt.nz` and `tenancy.govt.nz` added to `FACT_SOURCE_ALLOWLIST` (`rbnz.govt.nz` left out until it reads); `COUNTRY_TAX_YEARS['NZ']` changed to the dash style, so `{tax_year}` shows 2026–27.
-- [ ] **Migrations** (schema changes, so approval first): migration 032 for the `NZ` jurisdiction row (inactive); migration 033 for the source rows. Check the folder for the next free number before using it.
+- [x] **Migrations 032 and 033 written and applied on MAMP (23 November, not yet committed or on the server):** the `NZ` row (inactive, tax year 1 April) with 16 regions (the macron in Manawatū-Whanganui stores and reads back correctly) and 26 allowlisted source rows (all read that day). Left out of 033 on purpose: RBNZ, Kāinga Ora, ACC and the paid parental leave payment page.
+- [ ] (was) Migration 032 for the `NZ` jurisdiction row (inactive); migration 033 for the source rows. Check the folder for the next free number before using it.
 - [ ] `docs/house-style/nz.md`, modelled on `au.md` (points listed below).
 - [ ] Optional code change: `COUNTRY_TEXT_RULES` entry for NZ once `nz.md` is settled.
 - [ ] Build the pages in Claude Code, one batch at a time, using `docs/content-creation-process.md` (card audit, sources read live, claims table, one commit per page).
