@@ -8,6 +8,8 @@
  *   php scripts/check-page-text.php              check up to PAGE_TEXT_CHECKS_PER_RUN pages
  *   php scripts/check-page-text.php --limit=2    check up to 2 pages this run
  *   php scripts/check-page-text.php --include-hidden   also check pages in countries not switched on yet
+ *   php scripts/check-page-text.php --pages=slug1,slug2   check only these pages, in this order
+ *   php scripts/check-page-text.php --pages-file=data/nightly-check-sample.txt   the same, slugs one per line
  *
  * A written page (one with an explanation) is checked when:
  *   - its saved text has changed since its last check (or it's never been
@@ -28,6 +30,15 @@
  * treated as switched on, as it was before this rule existed. The country of a
  * page is the country of its category (the parent, when the category sits on a
  * state or region).
+ *
+ * A FIXED SAMPLE (--pages, --pages-file; added 24 Nov 2026). Without them the script checks every
+ * written page that needs it, so each page added, and each fix made after a check, lengthens the
+ * queue and the test never ends. With them it looks only at the listed pages and takes them in the
+ * order listed (not by urgency). A listed page whose last check still matches its text, with no
+ * source change and under 90 days old, needs nothing, so once every page in the list has a result
+ * the run does nothing and costs nothing. Slugs that match no written page are reported, not
+ * ignored. Lines starting with # and blank lines in a --pages-file are skipped. --limit still caps
+ * each run. The list is data, so changing the sample means editing the file, not this script.
  *
  * Each check is aiTextCheck() from includes/text-checks.php, the same as
  * the editor's button, run on the saved text. Its AI cost is billed to the
@@ -78,10 +89,43 @@ const PAGE_TEXT_CHECK_REASONS = [
     'due'            => 'last check over ' . PAGE_TEXT_CHECK_MAX_AGE_DAYS . ' days ago',
 ];
 
-$options = getopt('', ['dry-run', 'limit:', 'include-hidden']);
+$options = getopt('', ['dry-run', 'limit:', 'include-hidden', 'pages:', 'pages-file:']);
 $dryRun = isset($options['dry-run']);
 $includeHidden = isset($options['include-hidden']);
 $limit = isset($options['limit']) ? max(1, (int) $options['limit']) : PAGE_TEXT_CHECKS_PER_RUN;
+
+// The fixed sample, if one was given: slugs in the order they should be checked. Null means no
+// sample, so every written page is considered as before.
+$sample = null;
+if (isset($options['pages']) || isset($options['pages-file'])) {
+    $slugs = [];
+    if (isset($options['pages'])) {
+        $slugs = array_merge($slugs, explode(',', (string) $options['pages']));
+    }
+    if (isset($options['pages-file'])) {
+        $path = (string) $options['pages-file'];
+        // A relative path is read from the project root, so cron and the Mac behave the same.
+        if ($path !== '' && $path[0] !== '/') {
+            $path = __DIR__ . '/../' . $path;
+        }
+        $lines = is_file($path) ? file($path, FILE_IGNORE_NEW_LINES) : false;
+        if ($lines === false) {
+            fwrite(STDERR, "FAILED: can't read the --pages-file ($path).\n");
+            exit(1);
+        }
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line !== '' && $line[0] !== '#') {
+                $slugs = array_merge($slugs, [$line]);
+            }
+        }
+    }
+    $sample = array_values(array_unique(array_filter(array_map('trim', $slugs), fn($x) => $x !== '')));
+    if (!$sample) {
+        fwrite(STDERR, "FAILED: --pages or --pages-file was given but lists no page.\n");
+        exit(1);
+    }
+}
 
 $pdo = getDbConnection();
 
@@ -119,7 +163,7 @@ try {
     $writtenPages = "s.status IN ('published', 'draft') AND COALESCE(s.explanation, '') <> ''";
 
     $pages = $pdo->query(
-        "SELECT s.id, s.name, s.intro, s.explanation, s.meta_title, s.meta_description
+        "SELECT s.id, s.slug, s.name, s.intro, s.explanation, s.meta_title, s.meta_description
          $pageCountryJoins
          WHERE $writtenPages"
         . ($includeHidden ? '' : ' AND (country.id IS NULL OR country.is_active = 1)')
@@ -138,6 +182,18 @@ try {
         )->fetchAll();
     }
     $hiddenCount = (int) array_sum(array_column($hidden, 'pages'));
+
+    // A fixed sample narrows the candidates to the listed pages. Say which slugs matched nothing, so a
+    // typo doesn't quietly shrink the test.
+    $sampleNote = '';
+    if ($sample !== null) {
+        $position = array_flip($sample);
+        $foundSlugs = array_column($pages, 'slug');
+        $missing = array_values(array_diff($sample, $foundSlugs));
+        $pages = array_values(array_filter($pages, fn($pg) => isset($position[$pg['slug']])));
+        $sampleNote = 'Fixed sample: ' . count($sample) . ' page(s) listed, ' . count($pages) . ' found'
+            . ($missing ? ' (no written page for: ' . implode(', ', $missing) . ')' : '') . ".\n";
+    }
 
     // --- Which pages need checking, and why. ---
     $due = [];
@@ -177,13 +233,19 @@ try {
         }
     }
 
-    // Most urgent reason first, then the most-searched page.
+    // Most urgent reason first, then the most-searched page. A fixed sample is taken in its listed
+    // order instead, so the same pages are done first on every run.
     $rank = array_flip(array_keys(PAGE_TEXT_CHECK_REASONS));
-    usort($due, fn($a, $b) => [$rank[$a['reason']], $b['impressions'], $a['name']]
-        <=> [$rank[$b['reason']], $a['impressions'], $b['name']]);
+    if ($sample !== null) {
+        usort($due, fn($a, $b) => $position[$a['slug']] <=> $position[$b['slug']]);
+    } else {
+        usort($due, fn($a, $b) => [$rank[$a['reason']], $b['impressions'], $a['name']]
+            <=> [$rank[$b['reason']], $a['impressions'], $b['name']]);
+    }
     $batch = array_slice($due, 0, $limit);
 
     echo ($dryRun ? "DRY RUN: no AI calls, nothing written.\n" : '')
+        . $sampleNote
         . count($pages) . ' written page(s); ' . count($due) . ' need checking; ' . count($batch) . " this run.\n"
         . ($hiddenCount > 0
             ? "Skipped $hiddenCount written page(s) in countries not switched on yet ("

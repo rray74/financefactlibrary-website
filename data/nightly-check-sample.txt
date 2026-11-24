@@ -1,0 +1,34 @@
+# The fixed sample for the nightly AI page check (scripts/check-page-text.php --pages-file=...).
+# Set 24 Nov 2026: the 30 UK pages written in Claude Code on 22 to 24 Nov, none yet checked.
+# Checked in this order; once every page here has a current result the run does nothing.
+# Change the sample by editing this file, not the script. One slug per line.
+junior-isa-allowance
+stamp-duty-land-tax-rates
+income-tax-rates-and-bands
+scottish-income-tax-rates
+employee-national-insurance
+self-employed-national-insurance
+dividend-tax-rates
+inheritance-tax-thresholds
+scottish-stamp-duty-lbtt
+welsh-stamp-duty-ltt
+personal-savings-allowance
+state-pension-age
+pension-annual-allowance
+auto-enrolment-pension
+statutory-sick-pay
+statutory-maternity-paternity-pay
+student-loan-repayment-thresholds
+marriage-allowance
+trading-and-property-allowances
+making-tax-digital-income-tax
+inheritance-tax-gifts
+help-to-save
+nsandi-savings-rates
+standard-variable-rate
+pension-credit
+tax-free-pension-lump-sum
+pip-and-attendance-allowance
+statutory-redundancy-pay
+statutory-holiday-entitlement
+employer-payroll-costs
