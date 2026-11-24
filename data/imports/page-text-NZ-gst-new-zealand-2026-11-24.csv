@@ -1,0 +1,19 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,tax,gst-and-property-tax,gst-new-zealand,GST,"The GST rate in New Zealand, who has to register for GST and when, and which supplies are charged at the zero rate or are exempt from it.","## Registration depends on turnover or on charging GST
+
+Starting a business or organisation does not oblige you to register for GST. An entity must register if it carries out a taxable activity and either of two things applies. The first is a turnover that was at least the registration threshold over the last 12 months, or that it expects to reach in the next 12 months. The second is that it already adds GST to the prices of what it sells.
+
+You can also register voluntarily with a turnover below the threshold. A registered business can claim back GST on costs tied to its taxable activity. In return it has to add GST to its prices, send in returns on a regular schedule and accept penalties for late returns or payments.
+
+## What registration involves
+
+A registered business chooses how often it files returns and how it records GST. It then charges GST to its customers, files returns, pays what it owes and keeps GST records. A return sets the GST collected from customers against the GST paid to suppliers. If more was collected, the difference goes to Inland Revenue. If more was paid, the business can get a refund.
+
+In exceptional circumstances Inland Revenue can backdate a registration, for example where GST has been added to prices before the business registered.
+
+## One standard rate applies to most supplies
+
+A registered business charges GST on most taxable supplies at the standard rate shown on this page, whether it adds GST to the price or treats a GST-inclusive price as containing it. Some supplies are not charged at the standard rate. The list covers land sales, special supplies, exempt supplies and zero-rated ones, which carry GST at 0%.
+
+Land sales have their own rules, and Inland Revenue publishes a separate guide on GST for property transactions.
+",New Zealand GST: {fact:nz_gst_rate} Rate and Registration,"GST is {fact:nz_gst_rate} on most taxable supplies, and a business must register once turnover reaches {fact:nz_gst_thresh}. See who must register and when GST is not charged.",,
