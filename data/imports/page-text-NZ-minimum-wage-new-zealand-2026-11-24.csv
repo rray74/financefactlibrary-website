@@ -1,0 +1,38 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,work-and-benefits,pay-and-leave,minimum-wage-new-zealand,Minimum Wage,"The three minimum wage rates for employees in New Zealand, who each rate applies to, who is not covered, and how to check you are being paid at least the minimum.","## There are three rates, and the adult rate is the default
+
+The minimum wage is the lowest hourly pay an employer can give an employee, before tax. Employees can be on one of three rates, named adult, starting-out and training. The government reviews them every year. The adult rate applies to every employee aged 16 or over who does not fit the starting-out or training rules below.
+
+Each hour worked must be paid at least the minimum rate that applies. A higher rate in your employment agreement overrides the minimum, and your employer has to pay that instead. Migrants working here temporarily have these rights too.
+
+## The starting-out rate only applies in set situations
+
+The starting-out rate is lower, and an employee can be paid it only if they fit one of these:
+
+- They are aged 16 or 17 and are within their first 6 continuous months with their current employer. The adult rate takes over after that.
+- They are 16 to 19 and their employment agreement requires at least 40 credits a year of industry training towards a qualification in the work they do.
+- They are 18 or 19 and have been on a specified benefit for at least 6 months continuously, and have not yet had 6 continuous months with a single employer since they began receiving it. The emergency benefits and the supported living payment are two of those on the list.
+
+The 6 months run from the first day of work, whatever hours are worked, and include any leave. A change of employer starts the count again. Anyone whose job includes supervising or training other workers is outside the starting-out rate.
+
+## The training rate is for industry training, such as apprenticeships
+
+A worker aged 20 or over can be paid the training rate when their employment agreement obliges them to complete 60 or more credits a year of an industry training programme. Apprenticeships are the usual example. An apprentice is otherwise entitled to everything any other employee is. Being trained by your employer when you start a job does not count: the programme has to be an approved industry one. Like the starting-out rate, it does not apply to someone who supervises or trains others, who must receive at least the adult rate.
+
+## Some people are not covered
+
+The minimum wage does not apply to:
+
+- employees under 16, for whom there is no minimum wage
+- people working as members of a charitable institution
+- prisoners in custody, whose pay the Minister of Corrections sets
+- someone whose disability limits the work they can do, if their employer has been granted an exemption permit for them
+
+It also does not cover the time home and community support workers spend travelling between clients, which a separate Act deals with.
+
+## How to check your pay
+
+On a salary, you can get a rough answer by dividing your pre-tax pay for a pay period by the hours you worked in it. For hourly pay, compare the rate on your payslip with the minimum. If your pay depends on how many items you finish, it must still add up to at least the minimum for every hour you work.
+
+An employer's compulsory KiwiSaver contribution is paid on top of the minimum wage, not as part of it. The exception is an employee who has opted out of KiwiSaver and is in no other superannuation scheme. Underpayment can be reported to Employment New Zealand.
+",New Zealand Minimum Wage {tax_year}: {fact:nz_mw_adult},"The adult minimum wage is {fact:nz_mw_adult} an hour before tax. See who can be paid the lower starting-out and training rates, and who is not covered by it.",,
