@@ -224,6 +224,13 @@ The routine is in `docs/page-checklist.md`: free triage, then read the sources, 
 | **Every April** | Most UK rates, allowances and benefit amounts change |
 | **20 March and 20 September** | Services Australia updates payment rates (Age Pension, JobSeeker): the cards are source-checked daily |
 | **1 July** | Most Australian rates change (Minimum Wage, super guarantee, Parental Leave Pay, tax thresholds): re-read the Australian pages' figures and wording |
+| **27 Nov 2026 onwards (New Zealand)** | The NZ drip (job #2, 3 a week) publishes the 15 remaining draft pages in id order, one about every 56 hours from 06:02 on 27 Nov; check `php scripts/run-jobs.php --status` on the server after the first run |
+| **When IRD updates its student loan pages (New Zealand)** | The Student loan repayments page is held: no readable IRD page states the repayment threshold for 1 April 2026 to 31 March 2027 (IRD's pages give the 2026 tax year only). Retest the IRD student loan pages, then build the page (see `docs/content-maps/nz-content-map.md`) |
+| **When the Reserve Bank site is readable (New Zealand)** | The Official Cash Rate page is held: rbnz.govt.nz returns HTTP 403 from the Mac and the server. Retest before building, and read the Monetary Policy Committee's decision calendar live |
+| **31 March 2027 (Working for Families, New Zealand)** | The temporary In-Work Tax Credit increase (7,670 a year, 147 a week) ends, and IRD says it may fall back sooner to 97 a week if petrol stays under $3 a litre for four weeks. Re-read the IRD In-Work Tax Credit page in March 2027, then update the card and the text paragraph |
+| **1 April (New Zealand)** | Most NZ rates change: minimum wage, ACC earners' levy, NZ Superannuation, Jobseeker Support and the other benefits, the Working for Families tax credits, income tax bands. The Work and Income benefit rates page has the year in its address (`benefit-rates-april-2026`), so the reference source needs a new address each April. Re-read each NZ page's figures and check the KiwiSaver contribution rates for staged changes |
+| **1 July (New Zealand)** | The KiwiSaver government contribution year runs 1 July to 30 June, and the paid parental leave maximum and self-employed minimum are reset every 1 July (811.05 and 239.50 a week from 1 July 2026): re-read both pages |
+| **6 Aug 2028 (New Zealand)** | The Employment Leave Act replaces the Holidays Act. The Annual holidays and Sick and bereavement leave pages carry a paragraph on this; reword both once it starts, and read Employment New Zealand's guidance as it appears |
 | **Oct 2027 (approx.)** | Earliest point to let financial-facts.com lapse |
 
 ---
