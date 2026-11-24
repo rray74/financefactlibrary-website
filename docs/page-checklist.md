@@ -88,3 +88,28 @@ needed for.
 If you have run Check with AI more than twice, stop. The checker raises a
 different point each run, and the stop rule allows a small tolerance
 (no substance findings, at most two style findings, program checks clean).
+
+## When the nightly check finds something (added 24 Nov 2026)
+
+`check-page-text.php` re-reads each written page every night it needs it, with no
+memory of earlier runs. It raises a different point on each run, and every fix
+changes the text, which puts the page back in its queue. These two rules stop that
+becoming an endless loop of fix, recheck, fix.
+
+1. **Act only on findings that mean the page may be wrong.** That is "contradicts
+   source", "likely wrong" and "missing exception". Read the finding against the
+   source page itself (`scripts/read-source.php`), and fix the text only if the
+   source supports the finding. Ignore style findings unless they are a typed
+   figure, a stated rate or a dating word (the same rule as step 5 above). Check
+   that the result is current first: a stored result only counts if its text hash
+   matches the live text (`textCheckHash`), and many are stale.
+2. **One fix round per page.** After fixing a page for a real finding, do not chase
+   the next nightly result for that page unless it is again one of the three kinds
+   in rule 1 and the source supports it. A recheck that raises only style points,
+   or points you have already looked at and judged wrong, is the stop signal: leave
+   the page as it is. Note any finding you decided was wrong in the commit message
+   or in `docs/reference-sources-evaluation.md`, so the next reader does not redo it.
+
+Not done yet: stopping a page being re-queued after a fix made in response to a
+check. That is a code change in `check-page-text.php` and waits until the first
+nightly results on the Claude Code pages are in (about 7 Dec 2026).

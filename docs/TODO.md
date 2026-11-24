@@ -1,6 +1,6 @@
 # Finance Fact Library: to-do list
 
-*The running to-do list for the project. Started 21 November 2026 as a handover from the claude.ai "Finance fact library to-do list" chat (the handover is done, so the file is now simply the list); last updated 24 November 2026, night. Read alongside `docs/api-costs.md` (key setup and spend) and `docs/page-checklist.md` (the per-page routine).*
+*The running to-do list for the project. Started 21 November 2026 as a handover from the claude.ai "Finance fact library to-do list" chat (the handover is done, so the file is now simply the list); last updated 24 November 2026, night; API costs re-read 24 Nov (balance $3.71, needs a top-up). Read alongside `docs/api-costs.md` (key setup and spend) and `docs/page-checklist.md` (the per-page routine).*
 
 ---
 
