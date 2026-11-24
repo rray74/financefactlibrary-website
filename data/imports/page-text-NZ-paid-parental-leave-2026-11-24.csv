@@ -1,0 +1,27 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,work-and-benefits,pay-and-leave,paid-parental-leave,Paid parental leave,"Who can get paid parental leave payments in New Zealand, how the weekly payment is worked out, and when to apply.","## What the payment is
+
+The government pays a weekly amount to people who stop work to look after a baby, or a child under 6 who has joined their household. It is separate from parental leave, which is time off work arranged with an employer. The payments come from Inland Revenue, which pays them into a bank account every fortnight, and they last for the number of weeks shown on this page. They are taxable, and Inland Revenue takes tax and any child support or student loan repayments off before paying.
+
+Someone who does not meet the rules for parental leave, such as a person who has resigned or who is self-employed, can still receive the payments if they meet the work requirements and stop work for the period.
+
+## Who qualifies
+
+The person must be the primary carer of a child under 6. That is usually the person who gave birth, and it can also be a partner who has taken primary responsibility, or someone who has permanent responsibility for the child through adoption, a whāngai arrangement or a Permanent Care agreement. The same applies where a baby has died, whether before or after the birth.
+
+The work test is the same for employees and the self-employed: an average of at least 10 hours a week across half of the 52 weeks before the due date, or before the person became the child's primary carer. Hours from more than one employer can be added together. A person does not need to be working when they apply, and neither citizenship nor permanent residence is required, though there must be a sufficient connection with New Zealand.
+
+## How much is paid
+
+An employee is paid whichever is greater out of ordinary weekly pay and average weekly income, with the maximum on this page as a ceiling. Average weekly income comes from the highest-earning half of the 52 weeks before the due date. Where someone has several employers, their incomes are combined. Twins or more children do not raise the payment.
+
+A self-employed person works out their own figure from the income of the previous 6 or 12 months, and gets at least the minimum shown on this page. The maximum and minimum are reset on 1 July each year, so Inland Revenue lists each year's amounts side by side.
+
+## Applying and timing
+
+The application is made online in myIR and must be in before the person returns to work. It can be made until the baby's first birthday, or until the person has had primary responsibility for a child for 12 months. Whichever comes first, the start of parental leave or the start of childbirth, sets the day payments begin. An employee may begin leave as much as 6 weeks ahead of the due date, or sooner if the employer agrees or a medical practitioner advises it. Anyone who applies after the birth receives a lump sum to cover the time since the start date.
+
+## Other points
+
+Paid parental leave and Best Start cannot be paid for the same period, and Best Start starts when the leave payments stop. An entitlement can be transferred to a spouse or partner, once only. Employees can use 'keeping in touch' hours without losing their payments. A primary carer of a baby born before week 37 of the pregnancy may also get preterm baby payments. Some employers add a top-up, so the employment agreement is worth checking.
+",NZ Paid Parental Leave: {fact:nz_ppl_max},"Paid parental leave pays up to {fact:nz_ppl_max} a week before tax for {fact:nz_ppl_weeks}. See who qualifies, how the payment is worked out and when to apply in NZ.",,
