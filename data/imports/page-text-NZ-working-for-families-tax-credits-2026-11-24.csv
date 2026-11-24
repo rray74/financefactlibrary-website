@@ -1,0 +1,31 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,work-and-benefits,benefits,working-for-families-tax-credits,Working for Families tax credits,"The four Working for Families payments in New Zealand, what each pays, the income thresholds, and how the payments reduce as family income rises.","## Four payments
+
+Working for Families is a set of four payments to help with the cost of raising children: the Family Tax Credit, the In-Work Tax Credit, the Minimum Family Tax Credit and Best Start. A family may qualify for all four or only some, and the ones it qualifies for are combined into one payment into its bank account. Either Inland Revenue or Work and Income can pay it. A family can take it weekly or fortnightly, or as a lump sum after the tax year ends on 31 March.
+
+## Who can get it
+
+The person claiming must be 16 or over, care for a dependent child on a permanent basis, be the principal caregiver and meet the residency rules. A parent is not the only person who can claim. Payments depend on family income, which adds the income of the claimant and their partner. It is more than taxable income alone, and children's own income is generally left out.
+
+## Family Tax Credit
+
+The full amount depends on the number of children. It is higher for the eldest than for each other child, as the cards on this page show. A family on income at or below the threshold gets the full amount. Above it, the credit reduces by the abatement: the income over the threshold multiplied by the abatement rate. When the abatement is larger than the credit, nothing is paid and the leftover abatement comes off the In-Work Tax Credit.
+
+## In-Work Tax Credit
+
+This is paid to families who earn income from paid work, which includes self-employed income even where there is a loss. A family with only passive income such as interest, dividends, rent or royalties does not qualify. A break from work of 2 weeks or less does not stop it.
+
+The amount shown on this page is a temporary increase. According to Inland Revenue, it began on 1 April 2026 and will end after 31 March 2027, when the earlier maximum returns. It could also fall back sooner if the petrol price stays under $3 a litre for four weeks. The same threshold and abatement as the Family Tax Credit apply, and four or more children bring an extra amount for each child after the third.
+
+## Minimum Family Tax Credit
+
+This tops up the income of a working family to a guaranteed after-tax level each week. A family's net income for the year has to stay under the limit shown. The hours test is 20 a week for a sole parent. In a two-parent family it is 30 a week, worked by one parent or both between them. The work must be for a salary or wage with tax deducted at source, so self-employed and most shareholder income does not count. Having more children makes no difference to it.
+
+## Best Start
+
+Best Start pays up to the weekly amount shown for a child up to the age of 3. Where the child was born on or after 1 April 2026, the income threshold applies from the first year. For a child born earlier, the first year is not income-tested, and the threshold applies in the second and third years. Best Start cannot be paid at the same time as paid parental leave, and it starts once the leave ends.
+
+## Overpayments
+
+Payments are based on estimates of family income and are checked after 31 March. If income or circumstances change, the family has to tell Inland Revenue straight away, because overpayments must be repaid.
+",NZ Working for Families {tax_year},"Working for Families pays up to {fact:nz_wff_eldest} a year for an eldest child in {tax_year}. See the four payments, the income thresholds and how they reduce.",,
