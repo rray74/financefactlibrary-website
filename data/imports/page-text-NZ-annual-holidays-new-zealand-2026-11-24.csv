@@ -1,0 +1,29 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,work-and-benefits,pay-and-leave,annual-holidays-new-zealand,Annual holidays,"How many paid annual holidays employees get in New Zealand, when they become entitled, how holiday pay is worked out, and how cashing up and closedowns work.","## The entitlement
+
+Every year, each employee must get no less than {fact:nz_ah_weeks} of annual holidays on pay. The entitlement arrives after {fact:nz_ah_months} of continuous employment with the employer, and again after every further period of that length. An employment agreement cannot offer less. It can offer more, and when it does the extra should be written in the agreement.
+
+New Zealand law does not treat holidays as building up gradually, even though some payroll systems show 'accrued' leave on a payslip. An employee who takes holidays before the entitlement date is taking them in advance, which needs the employer's agreement. The entitlement does not expire. It stays until the holidays are taken, cashed up or paid out when employment ends.
+
+## How the weeks are counted
+
+The 'working week' decides what 4 weeks means. For someone who works the same days each week, it is simple: three days a week gives 12 days of holidays, and five days a week gives 20. Where the pattern is regular but not identical, employer and employee can agree to count in days or in hours. For unpredictable work, the two should look for a fair measure, such as the agreed hours in the employment agreement or the average hours over a recent period.
+
+## Holiday pay
+
+Pay for time off is calculated two ways, and the employee gets whichever is higher. One is ordinary weekly pay at the start of the holiday, meaning the usual amount including regular allowances and regular commission or overtime. The other is average weekly earnings: a 52nd of gross earnings over the year ending with the last pay period before the holiday. An employer must pay before the holiday starts unless the employee agrees to be paid in the normal pay cycle.
+
+## Pay-as-you-go and cashing up
+
+In two cases an employer can pay {fact:nz_ah_payg} of gross pay in place of annual holidays, as 'pay-as-you-go' holiday pay: where the contract is fixed-term and lasts under a year, or the work is too irregular for the holidays to be given in the normal way.
+
+Separately, an employee can ask in writing to cash up as much as {fact:nz_ah_cashup} of their entitlement in a year and be paid for it. The request can come only once the entitlement has arrived. The employer must answer within a reasonable time, may refuse, and does not need to give a reason. Nobody can make cashing up a condition of the job.
+
+## Closedowns
+
+An employer may shut the workplace once in any year, as long as it gives {fact:nz_ah_notice} notice. Staff with holidays available must use them. Where they do not have enough, the employer can allow holidays in advance, or the employee can agree to use alternative holidays or unpaid leave. An employee who is not yet entitled to holidays is paid {fact:nz_ah_payg} of gross earnings for the closedown.
+
+## A change due in August 2028
+
+A replacement Act, the Employment Leave Act, takes over from the Holidays Act on 6 August 2028, and leave will work differently from that date. Until then the present rules apply, and employers cannot bring in the later ones early, even if everyone agrees. Employment New Zealand says it will publish guidance before the date.
+",NZ Annual Holidays: {fact:nz_ah_weeks} Paid Leave,"Employees get {fact:nz_ah_weeks} of paid annual holidays after {fact:nz_ah_months} of continuous work. See how holiday pay, cashing up and annual closedowns work in NZ.",,
