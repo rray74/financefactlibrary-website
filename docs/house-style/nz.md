@@ -91,5 +91,10 @@ Adds to core.md. Where the two differ, this file wins for New Zealand pages. Mod
 
 ## Reference page
 
-- To be added once the first page (Minimum wage, `minimum-wage-new-zealand`) is approved, as au.md did after
-  the tax-free threshold page.
+- The first page, Minimum wage (`minimum-wage-new-zealand`), was approved on 24 November 2026. What it settled:
+  a page from one Employment New Zealand source can be 500 to 600 words in five sections; the rules and
+  conditions (who a rate applies to, who is not covered) are the part worth the words, and the figures stay on
+  the cards; the text never types a rate. Ages, credits and month counts that are fixed in law are typed and
+  show as one triage note. Official guidance pages are short and formulaic, so close copies are common: expect to
+  restructure sentences, not swap words, and to rerun the triage several times. Titles name the country and
+  carry `{tax_year}` and the headline figure (New Zealand Minimum Wage 2026–27: $23.95).
