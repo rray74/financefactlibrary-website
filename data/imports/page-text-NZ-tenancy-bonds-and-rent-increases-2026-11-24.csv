@@ -1,0 +1,27 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,mortgages-and-property,renting,tenancy-bonds-and-rent-increases,Tenancy bonds and rent increases,"How much bond a landlord can charge in New Zealand, how pet bonds work, and how often and with what notice rent can be increased.","## General bond
+
+A landlord can choose to charge a general bond, and if they do the tenant pays it at the start of the tenancy. Rent of {fact:nz_ten_bond} is the ceiling for what a landlord can ask. It stands behind damage to the property, unpaid rent and other claims arising from the tenancy. A tenant who looked after the home and settled everything owed should receive it back when the tenancy ends.
+
+Only money counts as a bond. Card details, bank account access and belongings such as a car or laptop cannot be demanded as security. They can ask for a guarantor, who must be 18 or older, agree to pay outstanding tenancy costs, sign the tenancy agreement and be easy to contact. Typical reasons are a tenant aged 17 or younger, or one with no credit history or references. Once a bond is charged, the tenant pays it and the landlord lodges it with Tenancy Services, through Bond Hub or property management software.
+
+## Pet bond
+
+A landlord can also charge a pet bond, at up to {fact:nz_ten_pet} of rent. This applies to a tenant who began keeping the pet from 1 December 2025. The landlord must have consented to the pet, the bond must be a condition of that consent, and it must be clearly labelled as a pet bond in documents and receipts. Only one pet bond can be charged for each tenancy, however many pets are allowed, and it cannot be charged for a disability assist dog.
+
+The pet bond covers pet-related damage beyond fair wear and tear. With the tenant's agreement, or on an order from the Tenancy Tribunal, it can stretch to other damage or unpaid rent as well. A landlord who charges a pet bond where there is no pet can face a penalty of up to $1,500, and one who charges more than the maximum can face a penalty of up to $3,000. Tenants who already had a pet before that date come under the earlier rules.
+
+## Rent increases
+
+Fixed-term and periodic tenancies share one timing rule: an increase can start no sooner than {fact:nz_ten_gap} from the first day of the tenancy, and no sooner than {fact:nz_ten_gap} from the previous increase. A fixed-term tenancy also needs an agreement that allows increases. The landlord must give at least {fact:nz_ten_notice} of written notice, which can be sent before that period has passed. The notice has to say what the rent is going up to and when the higher rent is due.
+
+The law puts no limit on the size of an increase, but it sets out how the increase is done and what a tenant can do if they disagree. Tenants who think their rent is far above similar homes nearby can talk to the landlord, and if that fails they can apply to the Tenancy Tribunal. For a fixed-term tenancy the application has a 3-month limit, counted from the tenancy start or the most recent rent review.
+
+## Increases outside the usual timing
+
+A landlord and tenant can agree a rise inside that limit if the landlord has improved the property, improved facilities or services, or changed the tenancy agreement in the tenant's favour. Repairs do not count as improvements. If the tenant does not agree, the landlord can apply to the Tenancy Tribunal, and can also apply where unforeseen expenses have arisen since the last increase.
+
+## Bond top-ups and rent reductions
+
+When rent goes up, a landlord can ask for a larger bond. The additional amount is lodged online through Bond Hub, and the deadline is 23 working days. Rent can also be reduced for a set period, for example while a room is under repair, if both sides agree in writing with an end date.
+",NZ Tenancy Bond: {fact:nz_ten_bond} Maximum,"Landlords can charge a general bond of up to {fact:nz_ten_bond}' rent and a pet bond of up to {fact:nz_ten_pet}'. Rent can rise after {fact:nz_ten_gap}, with {fact:nz_ten_notice} written notice.",,
