@@ -1,0 +1,25 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,tax,income-tax,income-tax-rates-new-zealand,Income Tax Rates,"The income tax bands and rates for individuals in New Zealand, how tax is taken from pay, and how secondary tax codes work when you have more than one income.","## Your income is taxed in layers
+
+New Zealand taxes individuals at progressive rates, so the rate rises as income rises. Your income is split into layers, each layer carries its own rate, and the upper layers carry higher rates. A higher band therefore changes the tax only on the income inside it, not on everything you earn.
+
+What counts is your total income across the tax year, which finishes on 31 March. That total can include wages or salary, a Work and Income benefit, schedular payments, interest, self-employment earnings, rent from property and income from overseas.
+
+## Tax on most pay is taken before you receive it
+
+Most employment pay, benefit payments and interest reach you after tax has been taken off. How much is deducted rests on the code you chose and the income information you supplied. A wrong code can leave you with a refund or a bill when the tax year ends.
+
+Other income is not taxed in advance. Examples are self-employment earnings, rental income and certain overseas income. You work out the tax on it yourself after the tax year closes and pay Inland Revenue directly.
+
+## The ACC earners' levy comes out through PAYE
+
+Employees also pay the ACC earners' levy. Inland Revenue deducts it along with the income tax, so the amount taken from a pay packet is higher than the tax rate alone. The levy has its own rate and a limit on the earnings it applies to, and has its own page on this site.
+
+## A second income needs a secondary tax code
+
+Each payer sees only what it pays you, so it cannot tell how much you earn in total. When two or more sources pay you in the same period, the additional source needs a secondary tax code. The other source could be a pension, an ACC payment, Student Allowance, paid parental leave or a Work and Income benefit. The code is matched to your estimated annual income from all sources, which lets the payer deduct at the right rate and reduces the chance of a bill at year end.
+
+## You can ask for a tailored rate
+
+A tailored tax code is available for earnings such as a salary, wages, New Zealand Superannuation or a Veteran's Pension, and you apply to Inland Revenue for it. If it agrees, Inland Revenue lets you know the rate. For schedular payments, you can choose your own tax rate.
+",New Zealand Income Tax Rates {tax_year},"Income tax in New Zealand starts at {fact:nz_it_b1_rate} and rises to {fact:nz_it_b5_rate} above {fact:nz_it_b4_top}. See the five bands, how tax is taken from pay and what secondary tax codes do.",,
