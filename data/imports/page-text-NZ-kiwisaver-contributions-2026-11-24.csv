@@ -1,0 +1,25 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,kiwisaver-and-retirement,kiwisaver,kiwisaver-contributions,KiwiSaver contributions,"What an employee puts into KiwiSaver, the default rate, the minimum an employer must add, and how a contribution rate can be changed.","## Who is enrolled, and how
+
+Joining KiwiSaver is a choice, and the savings are meant for retirement. Private providers run the funds, and each member picks one. Citizens and permanent residents who live in the country or ordinarily do can take part, and a member keeps the right to claim New Zealand Superannuation at 65.
+
+Automatic enrolment happens when an eligible person aged between 18 and 65 begins a job with an employer. They can then stay in or opt out. Someone already employed who is not a member can join through their employer or a provider, but once they have joined they cannot opt out. Anyone who is self-employed or out of work signs up with a provider instead.
+
+## What an employee pays
+
+An employee chooses a rate from a short list of set percentages, taken from their pay before tax. If they do not choose, the employer deducts the default rate shown on this page. A member who wants to put in more than the highest rate can pay their provider directly. Someone who cannot afford even the lowest rate can ask for a temporary rate reduction instead.
+
+A change can go through the employer, a myIR account or the provider. Changes are limited to one every 3 months, though an employer may agree to allow them more often. Members who are not employees pay what their contract with the provider sets, which may include a minimum annual sum or set payment periods.
+
+## What an employer adds
+
+An employer must make a compulsory contribution each time it pays salary or wages. It covers staff from age 16 up to, but not including, 65. Three conditions apply: the employee belongs to KiwiSaver or a complying fund, has contributions deducted from pay, and is outside any defined benefit scheme. The contribution is a share of gross pay, and the figure on this page is the lowest it can be. An employer can choose to pay more.
+
+Tax applies to what the employer contributes, called employer superannuation contribution tax (ESCT). If the two have agreed that some or all of the payment counts as pay, it is handled under the PAYE rules and this tax does not apply to that portion.
+
+## Special cases
+
+When a temporary rate reduction applies, the employer must lower the employee's rate, and it can choose to match that lower figure with its own contribution. An employer can stop compulsory contributions for an employee who becomes eligible for New Zealand Superannuation, though some keep paying under an agreement.
+
+Where an employer and employee agree a total pay package, the employer's contribution must be paid on top unless the package already includes it. Take-home pay should not fall because of the compulsory contribution, and the employee must still receive at least the minimum wage without it.
+",KiwiSaver Contributions: {fact:nz_ks_default} Default Rate,"The KiwiSaver default employee rate is {fact:nz_ks_default} of pay, and an employer must add at least {fact:nz_ks_employer_min}. See the rate choices and how to change your rate.",,
