@@ -1,0 +1,13 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,tax,income-tax,acc-earners-levy,ACC Earners' Levy,"What the ACC earners' levy is, who pays it, how it is collected with PAYE, and the earnings above which no more levy is charged.","## Employees pay it to cover injuries outside work
+
+Every employee pays the ACC earners' levy. It contributes to the cost of injuries that happen outside work. Inland Revenue collects it for ACC, and it comes out in the same deduction as your income tax. Nearly all earnings that go through PAYE are subject to the levy.
+
+## A flat rate on earnings, up to a ceiling
+
+The levy is a set percentage of what you earn, and the percentage is fixed for each tax year. It only applies to earnings up to an annual maximum. That maximum also sets the most levy anyone can pay in a year, and the rate and ceiling are both listed as figures on this page. The amounts Inland Revenue publishes include GST.
+
+## It sits on top of income tax
+
+Because the levy is deducted with PAYE, it adds to the income tax taken from your pay. Inland Revenue's PAYE table shows the combined deduction for each band, and the levy stops being added once earnings pass the ceiling. The levy is separate from the tax rates themselves.
+",ACC Earners' Levy {tax_year}: {fact:nz_acc_rate},"The ACC earners' levy is {fact:nz_acc_rate} of earnings, up to {fact:nz_acc_max_earn} a year. See who pays it, how it is collected through PAYE and the maximum payable.",,
