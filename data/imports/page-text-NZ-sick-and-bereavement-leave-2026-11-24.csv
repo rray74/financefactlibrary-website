@@ -1,0 +1,29 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,work-and-benefits,pay-and-leave,sick-and-bereavement-leave,Sick and bereavement leave,"How much paid sick and bereavement leave employees get in New Zealand, who qualifies, how unused sick leave carries over, and how the leave is paid.","## Sick leave
+
+Each year, eligible employees have {fact:nz_sl_days} of sick leave on full pay. It can be used when they are ill or injured, or to care for a partner, a child or another dependant. Part-time and casual employees qualify on the same terms, and the entitlement is not scaled down: a person who works 3 days a week still gets the full amount.
+
+Entitlement starts once the employee has been with the same employer without a break for {fact:nz_sl_months}. There is a second way to qualify for people on shorter hours: over {fact:nz_sl_months} they must average 10 hours weekly, working at least 1 hour in each week or 40 hours in each month. If a person stops meeting the test in a later year, the next year brings no fresh allowance, but any balance carried over can still be used.
+
+## Carrying over and using sick leave
+
+Whatever is left at the end of the year rolls into the following year, with the combined balance capped at {fact:nz_sl_max}. Employer and employee can agree to a higher ceiling. Unused sick leave cannot be cashed up, and it is not paid out when someone leaves.
+
+Sick leave is counted in whole days, so a part day off can use up a full day unless the two sides agree to count hours. Employers are allowed to request a medical certificate or similar evidence that the person is unwell. A routine check-up, such as a repeat prescription, does not carry a right to leave unless the employment agreement says so, but an appointment to diagnose or treat a condition can use sick leave. Stress leave is not a legal entitlement, though a person made unwell by stress can use sick leave as for any other illness.
+
+If someone falls sick just before a holiday, the employer must let them use sick leave for that period. If they fall sick during the holiday, they may be able to switch, with the employer's agreement.
+
+## Bereavement leave
+
+The same {fact:nz_sl_months} test applies, and the entitlement comes round again every 12 months. An employee gets at least {fact:nz_bl_close} for each bereavement where an immediate family member dies, such as a parent, child, partner, grandparent, brother, sister or parent-in-law. The same applies to a miscarriage or stillbirth affecting the employee or, in listed situations, their partner or another person they were to care for the child with.
+
+Where someone else dies, the minimum is {fact:nz_bl_other}, provided the employer accepts that the employee has had a bereavement. Relevant matters are how close the employee was to the person, how much responsibility they carry for the arrangements and any cultural duties. The days can be taken at any time and need not run consecutively. Employers can give more, for example where a funeral is far away. The law is silent about proof, so it cannot be a condition of leave, though an employer may ask for it in good faith.
+
+## How the leave is paid
+
+A day off counts for pay only if the employee would otherwise have been working. Someone who falls ill on a day they were not due to work gets no paid leave for that day. For a person with an irregular pattern, a day counts if they were rostered or had agreed to work, or could have expected to be. The money comes in the usual pay run. Its size is set by one of two measures of a normal day's pay: relevant daily pay or average daily pay. Family violence leave follows the same qualifying test and payment rules.
+
+## A change due in August 2028
+
+From 6 August 2028 a different law, the Employment Leave Act, takes the place of the Holidays Act. The present rules stay in force until then, and employers cannot move to the later ones early.
+",NZ Sick and Bereavement Leave: {fact:nz_sl_days},"Employees get {fact:nz_sl_days} of paid sick leave a year after {fact:nz_sl_months} of work. See bereavement leave, how unused leave carries over and how leave is paid in NZ.",,
