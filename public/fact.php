@@ -2,6 +2,14 @@
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/worked-examples.php';
 
+// PREVIEW MODE. public/admin/preview.php (admin login required) defines FFL_PREVIEW and then loads
+// this file, so a reviewer can see exactly what a page will look like, including a hidden draft or a
+// page in a country that is not switched on yet. In preview mode only, the draft, retired,
+// country-not-live and canonical-address checks below are skipped, the page is marked noindex and a
+// banner says it is a preview. The public route never defines FFL_PREVIEW, so visitors still get
+// "Subject not found" for drafts and for countries that are not live.
+$previewMode = defined('FFL_PREVIEW');
+
 // Subject slugs are unique, so the slug alone identifies the page. The
 // country, category and subcategory in the URL are checked below by
 // redirecting to the subject's real address.
@@ -11,7 +19,7 @@ $subject = $slug ? getSubjectBySlug($slug) : null;
 // Draft subjects don't exist as far as the public is concerned, so they
 // get the same 404 as a missing slug. So do subjects in a country that
 // isn't live yet.
-if (!$subject || $subject['status'] === 'draft' || !$subject['country_active'] || !$subject['country_prefix']) {
+if (!$subject || (!$previewMode && ($subject['status'] === 'draft' || !$subject['country_active'])) || !$subject['country_prefix']) {
     showErrorPage(404, 'Subject not found.');
 }
 
@@ -19,7 +27,7 @@ if (!$subject || $subject['status'] === 'draft' || !$subject['country_active'] |
 // was removed on purpose and can be dropped from the index. When a
 // retired page has a natural replacement, a 301 redirect to it is
 // better. That can be added here once there's a column to store it.
-if ($subject['status'] === 'retired') {
+if ($subject['status'] === 'retired' && !$previewMode) {
     showErrorPage(410, 'This page is no longer available.');
 }
 
@@ -28,9 +36,23 @@ if ($subject['status'] === 'retired') {
 $canonicalPath = subjectUrl(
     $subject['country_prefix'], $subject['category_slug'], $subject['subcategory_slug'], $subject['slug']
 );
-redirectToCanonical($canonicalPath);
+if (!$previewMode) {
+    redirectToCanonical($canonicalPath);
+}
 
+// getCountryByPrefix() only knows live countries, so a preview of a hidden country reads the row directly.
 $country = getCountryByPrefix($subject['country_prefix']);
+if (!$country && $previewMode) {
+    $countryStmt = getDbConnection()->prepare('SELECT * FROM jurisdictions WHERE url_prefix = :p AND parent_id IS NULL LIMIT 1');
+    $countryStmt->execute(['p' => $subject['country_prefix']]);
+    $country = $countryStmt->fetch() ?: null;
+}
+if (!$country) {
+    showErrorPage(404, 'Subject not found.');
+}
+if ($previewMode) {
+    $noindex = true; // header.php adds noindex, nofollow, so a preview can never be indexed
+}
 
 $facts = getFactsForSubject($subject['id']);
 
@@ -72,6 +94,15 @@ $breadcrumbJson = json_encode([
 
 include __DIR__ . '/../includes/header.php';
 ?>
+
+<?php if ($previewMode): ?>
+<div class="mb-6 border-2 border-dashed border-secondary px-4 py-3 text-sm">
+    <strong>Preview, not public.</strong>
+    Status: <?= e($subject['status']) ?>. Country live: <?= $subject['country_active'] ? 'yes' : 'no' ?>.
+    Links in the header and footer may point at pages that do not exist yet.
+    <a href="/admin/subject.php?id=<?= (int) $subject['id'] ?>" class="underline">Back to the editor</a>
+</div>
+<?php endif; ?>
 
 <script type="application/ld+json"><?= $breadcrumbJson ?></script>
 

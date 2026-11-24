@@ -510,11 +510,17 @@ include __DIR__ . '/../../includes/admin-nav.php';
 <section class="mb-10">
     <div class="flex flex-wrap items-baseline justify-between gap-3">
         <h1 class="font-display text-3xl font-semibold"><?= e($subject['name']) ?></h1>
-        <?php if ($subject['status'] === 'published'): ?>
-        <a href="<?= e($publicUrl) ?>" target="_blank" class="text-sm text-secondary underline hover:text-accent">
-            View page &#8599;
-        </a>
-        <?php endif; ?>
+        <span class="flex flex-wrap gap-4">
+            <?php // Preview works for any status, including drafts and countries that are not live yet (public/admin/preview.php). ?>
+            <a href="/admin/preview.php?id=<?= (int) $subjectId ?>" target="_blank" class="text-sm text-secondary underline hover:text-accent">
+                Preview page &#8599;
+            </a>
+            <?php if ($subject['status'] === 'published'): ?>
+            <a href="<?= e($publicUrl) ?>" target="_blank" class="text-sm text-secondary underline hover:text-accent">
+                View page &#8599;
+            </a>
+            <?php endif; ?>
+        </span>
     </div>
     <p class="font-mono text-xs opacity-50 mt-1"><?= e($publicUrl) ?></p>
 </section>
