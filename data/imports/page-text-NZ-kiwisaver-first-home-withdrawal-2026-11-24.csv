@@ -1,0 +1,29 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,kiwisaver-and-retirement,kiwisaver,kiwisaver-first-home-withdrawal,KiwiSaver first home withdrawal,"When a KiwiSaver member can take savings out to buy a first home, what can be withdrawn, and how much has to stay in the account.","## What the rule allows
+
+A KiwiSaver member who is buying a first home may be able to withdraw savings from the account to help pay for it. It is meant for first-time buyers. Inland Revenue's advice is to speak to both the provider and Kāinga Ora - Homes and Communities before going ahead, and it notes that some funds do not permit these withdrawals.
+
+## How long a member must have been in KiwiSaver
+
+The member must have been in KiwiSaver, or in an eligible fund, for the minimum period shown on this page before a first-home withdrawal can be made.
+
+## What can be withdrawn and what must stay
+
+Five kinds of money can be taken out:
+
+- the member's own contributions
+- the employer's contributions
+- the government contribution
+- interest earned on the account
+- any fee subsidies the member received
+
+Not everything is available. Savings that were transferred in from an Australian complying superannuation scheme are excluded. A set amount, shown on this page, also has to stay in the account.
+
+## If the buyer has owned a home before
+
+Owning a home in the past does not always close the door. Savings may still be usable for a later purchase, and the provider can send the member to Kāinga Ora, which assesses whether their position matches that of a first-home buyer.
+
+## Supporting an application
+
+Inland Revenue's myIR service can produce a PDF showing a member's income and KiwiSaver deductions, which can be printed or saved and used to support an application made through Kāinga Ora.
+",KiwiSaver First Home Withdrawal: Rules,"You must be in KiwiSaver for {fact:nz_ksfh_years} before a first-home withdrawal, and {fact:nz_ksfh_left} has to stay in your account. See what you can take out and who to ask.",,
