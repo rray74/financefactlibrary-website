@@ -1,0 +1,25 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,savings-and-investments,investing,pie-tax-rates,PIE tax rates,"How New Zealand taxes income from managed funds and KiwiSaver funds that are portfolio investment entities, which rates apply, and what happens if the wrong one is used.","## What a PIE is
+
+Savings held in a managed fund of the kind called a portfolio investment entity (PIE) are taxed under special rules. A person's KiwiSaver scheme might be such a fund. In a multi-rate PIE, tax on an investor's income is worked out at a rate that belongs to that investor.
+
+## The three rates
+
+The rate is called the prescribed investor rate (PIR). A New Zealand resident individual has three to choose from, shown on this page. They cannot choose 0%. Which one fits depends on how much the person earned over the past 2 tax years, and Inland Revenue provides a set of questions that works it out. The two years counted are the two tax years before the current one.
+
+A person with a temporary tax exemption lasting 4 years may use a 0% rate, but only by investing in a zero-rate PIE.
+
+## Giving the PIE your rate
+
+An investor gives the PIE their rate and their IRD number when the account is opened, and has to tell the PIE if the rate changes. Each year a PIE will ask its investors to check that their rate is still right. Someone investing for the first time gets 6 weeks to pass on an IRD number. After that the PIE may close the account and return the money, minus tax.
+
+If no rate is given, the PIE uses the highest rate, which is also the default.
+
+## If the wrong rate was used
+
+At the end of the year, Inland Revenue works out what the tax should have been, using the correct rate. Too much tax paid produces a PIE credit, which is offset against any income tax owing, and any remainder is refunded. Too little produces a PIE debt, which is added to the person's income tax bill. A higher rate used when a fund makes a loss can also leave the investor with a debt, because the loss credit given was larger than the one they were entitled to.
+
+## Other effects
+
+A locked-in fund, a KiwiSaver scheme for example, keeps its PIE income out of the Working for Families and student loan calculations. Income from a fund without that lock, or a payout from a listed PIE, does go into them, and myIR lets the person adjust the figure. Someone who withdraws a whole investment during a quarter, from a PIE that files quarterly and calculates tax at the zero rate, may owe tax at the end of the year.
+",NZ PIE Tax Rates: {fact:nz_pir_low} to {fact:nz_pir_top},"The prescribed investor rates for a PIE, including most KiwiSaver funds, are {fact:nz_pir_low}, {fact:nz_pir_mid} and {fact:nz_pir_top}. See how your rate is chosen and what the default is.",,
