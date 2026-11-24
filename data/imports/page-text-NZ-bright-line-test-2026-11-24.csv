@@ -1,0 +1,31 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,tax,gst-and-property-tax,bright-line-test,Bright-line test,"When profit from selling a residential property is taxable under New Zealand's bright-line test, how the period is counted, and what is excluded.","## What the test does
+
+When a person sells a residential property within a set period, any profit is taxable. That period is the bright-line period, and the test applies unless an exclusion or rollover relief covers the sale. It covers New Zealand tax residents who trade in residential property abroad as well. Inland Revenue has a property tax decision tool to help a seller work out which property rules apply.
+
+For a sale on or after 1 July 2024, the question is whether the bright-line end date falls within the period shown on this page of the bright-line start date. Different rules apply to sales before that date.
+
+## How the period is counted
+
+In a typical purchase the clock starts when Land Information New Zealand registers the transfer to the buyer, normally the settlement date. For an ordinary sale, it ends on the date the seller signs a binding sale and purchase agreement.
+
+Other kinds of acquisition and disposal have their own dates. An off-the-plan purchase starts on the date of the sale and purchase agreement, and subdivided land starts on the original registration date for the undivided land. A gift ends the period on the date it was made, a compulsory acquisition on the date of acquisition, and a mortgagee sale on the date the property is disposed of because of the owner's default. If two types of disposal both fit, the earlier date is the one that counts.
+
+## What the test leaves out
+
+The test does not apply to a sale of a main home, business premises or farmland, nor to property inherited or sold by the executor or administrator of an estate. The main home exclusion needs both more than half of the property's area and more than half of the bright-line period to have been main home use. A person with two homes has only one main home, decided by factors such as time lived in each, where family lives and where social ties are strongest.
+
+The exclusion does not apply to someone with a regular pattern of buying and selling or building and selling their main home, or to someone who has already used it twice in the 2 years before the sale. Homes held in trust can qualify where the home was a beneficiary's main home and certain conditions are met. Rollover relief can apply to some ownership transfers, in which case the test looks at how long both the previous owner and the new owner held the property.
+
+## Sales outside the period
+
+Selling after the period ends does not bring the bright-line test into play, but other rules can still tax the sale. They cover buying with the intention of selling, a pattern of buying and selling or of building and selling, and properties connected with a dealing, developing or building business.
+
+## Property sold before 1 July 2024
+
+The test works differently for these sales, and the date of acquisition decides the period. From 27 March 2021 the window was 10 years, except that a qualifying new build had 5. A purchase made from 29 March 2018 up to 26 March 2021 carried a 5-year window. The main home criteria also differ according to whether the purchase came before 27 March 2021 or after it.
+
+## Reporting a sale
+
+Reporting involves two steps: an IR833 form for the sale, and the net profit shown in the seller's income tax return. Offshore sellers can have residential land withholding tax deducted at settlement unless they hold a valid certificate of exemption.
+",NZ Bright-Line Test: Sell Within {fact:nz_bl_years},"Profit on a residential property sold within {fact:nz_bl_years} of buying is taxable under the bright-line test. See the dates, main home exclusion and older rules.",,
