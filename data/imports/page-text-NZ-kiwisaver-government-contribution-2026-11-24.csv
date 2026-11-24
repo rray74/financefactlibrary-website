@@ -1,0 +1,21 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,kiwisaver-and-retirement,kiwisaver,kiwisaver-government-contribution,KiwiSaver government contribution,"How much the government adds to a KiwiSaver account each year, what a member must put in to get the maximum, and who qualifies.","## What the contribution is
+
+Each contribution year, which runs from 1 July to 30 June, the government pays money into the KiwiSaver accounts of eligible members who have put in some of their own. The payment is a top-up on a member's own savings, and the maximum a member can receive in a year is shown on this page.
+
+A member does not apply. The provider claims it for them after the year ends, and it appears in the account some weeks later. The advice is to look at the account once July is over, as the money can take until the end of August to arrive. Questions about a missing payment go to the provider.
+
+## Who qualifies
+
+Three tests apply: the member has annual taxable income at or below the limit shown on this page, they are contributing to their account, and they are aged between 16 and 65. Residence matters as well. A member must meet one of three residence conditions. They live mainly in New Zealand, or they are a government employee posted outside the country, or they do overseas work for an approved charity as a volunteer or for a token payment, in line with the Student Loan Scheme Act 2011.
+
+## How much a member receives
+
+The government adds a set number of cents for every dollar a member contributes in the year. To receive the maximum, a member has to contribute the amount shown on this page of their own money between 1 July and 30 June. Three things are left out of that total: what the employer pays in, government contributions from earlier years, and money transferred from Australian retirement schemes. The member can pay through wage deductions, through Inland Revenue or directly to the provider, and a voluntary extra payment counts if it reaches the account by 30 June.
+
+A member who contributes less still gets the same cents on each dollar. Someone who puts in $50, for example, receives $12.50.
+
+## When the amount is reduced
+
+The payment is worked out by the number of days in the year that the member met the conditions. It is smaller for someone who joins during the year, turns 16 or 65 during it, or stops meeting the eligibility rules at some point. A member who stops being eligible partway through gets a share of the year, not nothing.
+",KiwiSaver Government Contribution: {fact:nz_ksgc_max},"The KiwiSaver government contribution is up to {fact:nz_ksgc_max} a year, for members on {fact:nz_ksgc_income} or less. See what you must put in and who is eligible.",,
