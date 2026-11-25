@@ -1,0 +1,28 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,tax,income-tax,basic-personal-amount-canada,Basic Personal Amount,"The federal basic personal amount, who can claim it, how the amount depends on net income, and how provincial and territorial amounts differ.","## What the basic personal amount is
+
+Canada treats a set amount of your income as free of federal income tax through a non-refundable credit called the basic personal amount. You claim it on your tax return.
+
+## How much you can claim
+
+Which of the federal amounts applies depends on the net income reported on line 23600.
+
+- If your net income is at or below {fact:ca_it_b3_top}, where the fourth federal tax band begins, you can claim the maximum of {fact:ca_bpa_max}.
+- If your net income is at or above {fact:ca_it_b4_top}, where the top federal tax band begins, you can claim the minimum of {fact:ca_bpa_min}.
+- Between those two amounts, the CRA's Federal Worksheet works out your claim.
+
+## Who can claim it
+
+Residents of Canada, and people treated as deemed residents, can generally claim the credit for that year. Anyone who went bankrupt, or who moved into or out of the country partway through the year, faces special rules, and the Canada Revenue Agency (CRA) is the contact for those.
+
+## Provincial and territorial amounts
+
+A province or territory can add its own basic personal amount, based on where you lived at the end of the year. The amounts differ from place to place, and some depend on net income. Manitoba's amount, for example, falls to nothing at higher incomes. Yukon residents claim the same figure they entered for the federal amount, and the CRA sends Quebec residents to Revenu Québec.
+
+## How to claim it
+
+The federal claim is entered at line 30000. Anyone outside Quebec also enters a provincial or territorial claim, at line 58040 of Form 428.
+
+## The amounts are indexed each year
+
+The basic personal amount rises with inflation, using the Consumer Price Index that Statistics Canada reports, and the increase takes effect on January 1.",Basic Personal Amount Canada {tax_year}: {fact:ca_bpa_max},The federal basic personal amount is up to {fact:ca_bpa_max}. It falls to {fact:ca_bpa_min} at higher incomes. See who can claim it and how the amount is worked out.,,
