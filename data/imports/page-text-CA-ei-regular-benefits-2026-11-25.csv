@@ -1,0 +1,32 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,work-and-benefits,benefits,ei-regular-benefits,EI Regular Benefits,"What EI regular benefits pay, how the weekly amount is worked out, how many weeks you can get, the hours you need and who is eligible.","## What EI regular benefits pay
+
+The basic Employment Insurance (EI) regular benefit is {fact:ca_eir_rate} of your average insurable weekly earnings for most people, and it never exceeds {fact:ca_eir_max_week} a week. Wages, tips, bonuses and commissions are among the earnings that count, and the Canada Revenue Agency decides which types are insurable. EI benefits are taxable, so federal and provincial or territorial tax is deducted from each payment.
+
+## How the weekly amount is worked out
+
+Service Canada looks at your insurable earnings in your best weeks, which are the weeks you earned the most. It adds them up, divides by the number of best weeks set for your region, and multiplies the result by {fact:ca_eir_rate}. The number of best weeks runs from 14, in regions with the highest unemployment, to 22, in regions with the lowest. Once your weekly rate is set, it stays the same for the whole claim.
+
+## How many weeks you can get
+
+Benefits last from {fact:ca_eir_min_weeks} up to {fact:ca_eir_max_weeks}. How long you can claim depends on regional unemployment when you apply and on the hours of insurable work you have built up, counting back 52 weeks or to your previous claim, whichever is closer. Seasonal workers may be able to get extra weeks, still within that maximum. Moving to another region after your benefit period starts leaves your number of weeks as it was.
+
+## The hours you need
+
+To qualify you need {fact:ca_eir_hours_min} to {fact:ca_eir_hours_max} of insurable employment in your qualifying period, and a higher regional unemployment rate means fewer hours. Your qualifying period is the 52 weeks leading up to your claim, or the time since a previous benefit period started if that is shorter. In some cases it can stretch to 104 weeks. A notice of violation for earlier benefit periods raises the hours you need.
+
+## Other conditions
+
+Besides the hours, you need to show that you:
+
+- had insurable work that ended through no fault of yours, or were affected by flooding or wildfires
+- have had a gap of at least 7 consecutive days with no work and no pay in the last 52 weeks
+- are ready, willing and able to work every day
+- are searching for work and logging each employer you contact
+
+You report every 2 weeks to keep receiving payments. You are generally not eligible if you left your job without just cause, lost it through your own misconduct, or are out of work because of a strike or lockout. No EI is payable while you are in a jail, penitentiary or similar institution.
+
+## A supplement for low-income families
+
+A family counts as low-income when net family income is {fact:ca_eir_family} or less, there are children, and you or your spouse receive the Canada child benefit. A low-income family may be eligible for the EI family supplement, which can raise your rate to as much as 80% of your average insurable earnings. Only one spouse can receive it. It shrinks as income rises and is nothing once income reaches the limit.
+",EI Benefits Canada: Up to {fact:ca_eir_max_week} a Week,"EI regular benefits pay {fact:ca_eir_rate} of average insurable weekly earnings, up to {fact:ca_eir_max_week} a week. See who qualifies, how many weeks you can get and the hours needed.",,
