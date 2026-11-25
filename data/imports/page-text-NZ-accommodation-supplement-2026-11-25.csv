@@ -1,0 +1,37 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,work-and-benefits,benefits,accommodation-supplement,Accommodation Supplement,"How New Zealand's Accommodation Supplement works: who can get it, the four areas, the most it pays each week, entry thresholds and the 2027 change for homeowners.","## What it is
+
+Work and Income pays this untaxed weekly amount to people who need help meeting rent, board or the cost of a home they own. How much a person gets depends on their income, their assets, their accommodation costs, their family circumstances and where they live.
+
+## Who can get it
+
+The applicant has to be at least {fact:nz_as_age}, hold New Zealand citizenship or permanent residence, and normally live here with the intention of staying. They must also have accommodation costs above a minimum amount (the entry threshold, below), and cannot be paying rent for a public (social) housing property, which means one provided by Kāinga Ora or an approved community housing provider. Their own and their partner's income count, as do money and assets, and any payments from boarders or renters.
+
+Assets are capped. A single person can have no more than {fact:nz_as_asset_single}, and a couple (with or without children) or a sole parent no more than {fact:nz_as_asset_couple}. The cap may rise after certain lump sums from ACC or under the Accident Insurance Act 1998.
+
+## Entry thresholds
+
+The entry threshold is the least a person must be paying each week in accommodation costs. It depends on the main benefit or pension they get, and anyone not on one has the Jobseeker Support thresholds. For Jobseeker Support, rent or board and mortgage thresholds are:
+
+- Single, no children: {fact:nz_as_t_single_rent} and {fact:nz_as_t_single_mort}
+- Couple, no children: {fact:nz_as_t_couple_rent} and {fact:nz_as_t_couple_mort}
+- Sole parent: {fact:nz_as_t_sp_rent} and {fact:nz_as_t_sp_mort}
+- Couple with children: {fact:nz_as_t_cwc_rent} and {fact:nz_as_t_cwc_mort}
+
+Other main benefits and the pensions have their own figures, which Work and Income lists with its benefit rates.
+
+## How much it pays
+
+The most a person can get depends on their situation and on which of four areas they live in. For a single person the maximum is {fact:nz_as_s1} in Area 1, then {fact:nz_as_s2}, {fact:nz_as_s3} and {fact:nz_as_s4} in Areas 2, 3 and 4. A couple with no children, or a sole parent with 1 child, can get up to {fact:nz_as_c1}, {fact:nz_as_c2}, {fact:nz_as_c3} and {fact:nz_as_c4}. A couple with children, or a sole parent with 2 or more children, can get up to {fact:nz_as_k1}, {fact:nz_as_k2}, {fact:nz_as_k3} and {fact:nz_as_k4}.
+
+## The four areas
+
+The areas have applied since 1 April 2018, and they are built from Statistics New Zealand's 2017 Statistical Area Units, so they do not match postal suburbs, towns or cities, even where the names are the same. Area 1 takes in parts of Auckland, Tauranga, Queenstown (including Arrowtown and Wanaka), Pukekohe and Waiuku. Area 2 includes Wellington, Lower Hutt, Upper Hutt, Porirua, Christchurch, Hamilton, Napier, Hastings, Nelson, New Plymouth, Whangarei and Blenheim. Area 3 includes Dunedin, Palmerston North, Rotorua and Gisborne, and Area 4 is anywhere not listed in the other three. Work and Income's definitions of areas list every location.
+
+## Homeowners from 1 April 2027
+
+A law passed on 25 August 2026 changes the entry threshold for homeowners. At present it is {fact:nz_as_home_now} of the relevant base rate, and from 1 April 2027 it will be {fact:nz_as_home_new} for most homeowners. It applies to those getting Accommodation Supplement for the costs of owning a home, such as a mortgage, house insurance and rates. It does not apply to rent or board. It also does not apply if the person or their partner gets NZ Super, Veteran's Pension, Supported Living Payment or an equivalent Emergency Benefit.
+
+## Applying and keeping it
+
+A person can apply online through MyMSD or with the Extra Help application form, and people already receiving a payment from Work and Income use an application form for existing clients. Work and Income can grant what the person is entitled to from the day they first made contact, if the application is completed within 20 working days of it. A change in accommodation costs or circumstances must be reported. Circumstances are reviewed at least every 52 weeks, and payments stop if the confirmation form is not returned by its due date.",NZ Accommodation Supplement Rates,"Who can get New Zealand's Accommodation Supplement, the four areas, the maximum weekly payments, entry thresholds and the 2027 change for homeowners.",,
