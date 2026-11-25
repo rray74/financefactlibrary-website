@@ -1,0 +1,27 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,tax,payroll-deductions,ei-premiums,Employment Insurance Premiums,"The Employment Insurance premium rate and maximums for employees and employers, how the employer share is set, and how Quebec and self-employed workers differ.","## What employees and employers pay
+
+Employment Insurance (EI) premiums come out of your pay from the first dollar you earn, up to a yearly maximum. There is no age limit. The employee rate is {fact:ca_ei_rate} of insurable earnings, up to the maximum annual insurable earnings of {fact:ca_ei_max_earn}. The most an employee pays in a year is {fact:ca_ei_emp_max}.
+
+Your employer pays 1.4 times the premium deducted from your pay. The most an employer pays for one employee is {fact:ca_ei_er_max}. Deductions stop once your insurable earnings or your premiums reach the yearly maximum in your job with that employer.
+
+## Insurable earnings
+
+Insurable earnings are what you earn from insurable employment, paid in cash. Salary, wages, commissions, bonuses, honorariums and most taxable benefits paid in cash all count, as do certain tips and gratuities.
+
+## More than one job
+
+The maximum applies to each job separately, so two employers with different business numbers each deduct up to it. If you change employers during the year, the next one deducts premiums without counting what the first took, even if you had already reached the maximum. Anything you overpay comes back when you file your return. Employers do not get their share back.
+
+## Quebec has a reduced rate
+
+If your province of employment is Quebec, your employer deducts a reduced EI premium, whichever province or territory you live in. The employee rate is {fact:ca_ei_qc_rate}, and the most an employee pays in a year is {fact:ca_ei_qc_emp_max}. Premiums for the Quebec Parental Insurance Plan (QPIP) are paid in addition. In Quebec, maternity, parental and adoption benefits are run by the province, and Revenu Québec has the details.
+
+## If you are self-employed
+
+Self-employed people can choose whether to take part in EI. Taking part is optional for the self-employed. The conditions are Canadian citizenship or permanent residence, plus either a business of your own or a corporation you work for and hold over 40% of the voting shares of. Barbers, hairdressers, fishers, and taxi and other passenger-vehicle drivers do not use the self-employed program and apply as employees.
+
+## A reduced employer rate
+
+An employer that provides a wage-loss plan for short-term disability can ask Employment and Social Development Canada for a reduced rate. An approved reduction brings the employer's multiple below 1.4 times the employee premium. It applies only to employees covered by the plan, and the employer has to pass part of the savings on to them.
+",EI Premiums Canada {tax_year}: {fact:ca_ei_rate},Employees pay {fact:ca_ei_rate} EI on insurable earnings up to {fact:ca_ei_max_earn}. and employers pay 1.4 times that. See the premium maximums and how Quebec differs.,,
