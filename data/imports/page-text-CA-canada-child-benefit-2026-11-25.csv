@@ -1,0 +1,40 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,work-and-benefits,benefits,canada-child-benefit,Canada Child Benefit (CCB),"What the Canada child benefit is, who can get it, the maximum amounts for each child, and how family income reduces the payment.","## What the Canada child benefit is
+
+The Canada Revenue Agency (CRA) pays the Canada child benefit (CCB) each month to families caring for a child under 18 who lives with them. The money is tax-free and stays off your return. Each payment year runs from July to June, and the CRA recalculates your amount every July from the previous year's tax return.
+
+## Who qualifies
+
+Every condition has to be met for each child. You must live with a child under 18 and be mainly responsible for their care and upbringing, which covers supervising their daily activities, seeing that their medical needs are met and arranging child care where needed. Residency in Canada for tax purposes is required as well.
+
+At least one of you, meaning you or your spouse or common-law partner, must hold one of these statuses:
+
+- a Canadian citizen
+- a permanent resident
+- a protected person
+- a temporary resident, which needs 18 months in Canada and a permit that is valid in the 19th month
+- a person registered under the Indian Act, or entitled to be
+
+Where children's special allowances are payable for a foster child in a given month, the CCB is not available for that child that month.
+
+## How much you can get
+
+For each child under 6 the maximum is {fact:ca_ccb_max_u6} a year, and for each child aged 6 to 17 it is {fact:ca_ccb_max_6_17}. These are reduced only if your adjusted family net income is above {fact:ca_ccb_phase1}. That income is your family net income, less any Universal Child Care Benefit and Registered Disability Savings Plan income, plus any of those amounts you repaid.
+
+A child who qualifies for the disability tax credit can also bring a child disability benefit of up to {fact:ca_cdb_max} a year.
+
+## How income reduces the payment
+
+Between {fact:ca_ccb_phase1} and {fact:ca_ccb_phase2}, the benefit falls by a share of your income above the first figure. The share is 7% with one child, 13.5% with two, 19% with three and 23% with four or more.
+
+Above {fact:ca_ccb_phase2}, the reduction is a fixed amount plus a share of the income above that figure:
+
+- one child: {fact:ca_ccb_base_1} plus 3.2%
+- two children: {fact:ca_ccb_base_2} plus 5.7%
+- three children: {fact:ca_ccb_base_3} plus 8%
+- four or more children: {fact:ca_ccb_base_4} plus 9.5%
+
+## How it is paid
+
+Payments are made monthly. If your total benefit for the year is under $240, you receive it as a single payment with your July instalment.
+",Canada Child Benefit: Up to {fact:ca_ccb_max_u6} a Year,The Canada child benefit pays up to {fact:ca_ccb_max_u6} a year for a child under 6 and {fact:ca_ccb_max_6_17} for ages 6 to 17. See who qualifies and how income reduces it.,,
