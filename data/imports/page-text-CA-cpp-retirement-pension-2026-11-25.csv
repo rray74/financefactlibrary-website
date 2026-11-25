@@ -1,0 +1,30 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,retirement-and-pensions,canada-pension-plan,cpp-retirement-pension,Canada Pension Plan (CPP) Retirement Pension,"Who can get a CPP retirement pension, how it is worked out, the maximum and average amounts, and how starting before or after 65 changes the payment.","## What the CPP retirement pension is
+
+The Canada Pension Plan (CPP) retirement pension is a monthly, taxable payment that replaces part of your income when you retire. Once it starts, it is paid for the rest of your life.
+
+## Who qualifies
+
+To qualify you need to have reached 60 and to hold at least one valid CPP contribution. Work in Canada creates contributions, and so can credits transferred to you when a marriage or common-law relationship ends. Working while you receive the pension does not reduce it. If you are under 70 and still contributing, you earn a CPP post-retirement benefit, paid automatically the next year.
+
+The CPP and the Quebec Pension Plan (QPP) work together so that everyone who contributed gets a pension. Retraite Québec should be contacted by people who worked only in Quebec, by those who worked in Quebec and elsewhere but live in Quebec, and by those who live outside Canada with Quebec as their last province of residence.
+
+## How the amount is set
+
+Your pension reflects when you start it, the size and length of your contributions, and your average earnings over your working life. A pension that starts at 65 can be as high as {fact:ca_cppr_max} a month. The average at that age is {fact:ca_cppr_avg}. Neither figure is a guarantee, because your own history decides what you get.
+
+Some years can be left out so that they do not drag your pension down. For the base part of the pension, up to 8 of your lowest-earning years are excluded. For the enhanced part, your best 40 years of earnings are used. Years spent raising young children, or receiving a CPP disability pension, are also treated in your favour.
+
+## Starting earlier or later
+
+Most people start at 65, though anything from 60 to 70 is allowed.
+
+- A start at 60, the earliest, lowers the pension by 36% in total, at 0.6% for each month before 65 (7.2% a year).
+- A start at 70, the last age allowed, lifts it by 42%, at 0.7% for each month after 65 (8.4% a year).
+
+Waiting past 70 brings no further increase. Applying after 65 lets you request a retroactive start of up to 11 months before the month the application was received, with the month after your 65th birthday as the earliest date.
+
+## Sharing the pension
+
+Sharing the pension with a spouse or common-law partner can reduce your taxable income, and so your tax, in retirement. After a separation or divorce, credit splitting shares CPP contributions equally between the two of you.
+",CPP Retirement Pension: Up to {fact:ca_cppr_max},"The maximum CPP retirement pension at 65 is {fact:ca_cppr_max} a month. See who qualifies, how the start age changes the amount and how the pension is worked out.",,
