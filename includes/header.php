@@ -83,7 +83,8 @@ if (!empty($metaDescription)) {
     // Applies a saved light or dark choice before the page is drawn, so there is no flash of the wrong
     // theme. Storage can be blocked (private windows), so every use is in try/catch and the page works
     // without it. Also wires the toggle button(s) marked data-theme-toggle: they switch to the other
-    // theme, save the choice, and keep their label and aria-pressed state right.
+    // theme, save the choice, and keep their accessible name right ("Switch to dark mode"). A
+    // [data-theme-label] span inside the button, if present, shows the same words on wider screens.
     ?>
     <script>
     (function () {
@@ -98,9 +99,10 @@ if (!empty($metaDescription)) {
         }
         function label() {
             document.querySelectorAll('[data-theme-toggle]').forEach(function (b) {
-                var dark = current() === 'dark';
-                b.setAttribute('aria-pressed', dark ? 'true' : 'false');
-                b.textContent = dark ? 'Light mode' : 'Dark mode';
+                var text = current() === 'dark' ? 'Light mode' : 'Dark mode';
+                b.setAttribute('aria-label', 'Switch to ' + text.toLowerCase());
+                var span = b.querySelector('[data-theme-label]');
+                if (span) { span.textContent = text; }
             });
         }
         document.addEventListener('DOMContentLoaded', function () {
@@ -132,22 +134,60 @@ if (!empty($metaDescription)) {
 
 <body class="bg-base-100 text-base-content font-sans min-h-screen flex flex-col">
 
-    <header class="border-b-2 border-primary bg-base-100">
-        <div class="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
-            <?php // Wordmark uses SITE_NAME so it always matches the <title>. ?>
-            <a href="<?= e($homeUrl) ?>" class="font-display text-2xl font-semibold tracking-tight text-primary">
-                <?= e(SITE_NAME) ?>
-            </a>
-            <nav class="flex gap-6 font-sans text-sm">
-                <?php foreach ($navCategories as $cat): ?>
-                <a href="<?= e(categoryUrl($navCountry['url_prefix'], $cat['slug'])) ?>" class="hover:text-accent transition-colors">
-                    <?= e($cat['name']) ?>
+    <?php
+    // Restyle Step 3: daisyUI navbar. Below the md breakpoint the category links collapse into a dropdown
+    // menu; from md up they sit on a second row (no JavaScript needed: daisyUI's dropdown opens on focus), because five or more links don't fit
+    // on a phone. The wordmark and links come from SITE_NAME and the country's categories, not typed here.
+    // Buttons are the default size (3rem tall) so they are comfortable touch targets.
+    ?>
+    <header class="bg-base-100 border-b border-base-300">
+        <div class="navbar max-w-4xl mx-auto px-4 sm:px-6 min-h-16 gap-1">
+            <div class="navbar-start w-auto flex-1 min-w-0 gap-1">
+                <?php if (!empty($navCategories)): ?>
+                <div class="dropdown md:hidden">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-square" aria-label="Open menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </div>
+                    <ul tabindex="0" class="menu dropdown-content bg-base-100 rounded-box z-10 mt-2 w-56 p-2 shadow-lg border border-base-300">
+                        <?php foreach ($navCategories as $cat): ?>
+                        <li><a href="<?= e(categoryUrl($navCountry['url_prefix'], $cat['slug'])) ?>"><?= e($cat['name']) ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <?php endif; ?>
+                <?php // Wordmark uses SITE_NAME so it always matches the <title>. ?>
+                <a href="<?= e($homeUrl) ?>" class="font-display text-lg sm:text-2xl font-semibold tracking-tight leading-tight py-2">
+                    <?= e(SITE_NAME) ?>
                 </a>
-                <?php endforeach; ?>
-            </nav>
-            <?php // Interim toggle (restyle Step 2); moves into the daisyUI navbar in Step 3. ?>
-            <button type="button" class="btn btn-sm btn-outline ml-4" data-theme-toggle aria-pressed="false">Dark mode</button>
+            </div>
+            <?php // Light and dark toggle, wired by the script in <head>. Icon only on a phone, icon and words from sm up. ?>
+            <div class="navbar-end w-auto flex-none">
+                <button type="button" class="btn btn-ghost px-3" data-theme-toggle aria-label="Switch to dark mode">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor" />
+                    </svg>
+                    <span data-theme-label class="hidden sm:inline">Dark mode</span>
+                </button>
+            </div>
         </div>
+        <?php
+        // From md up the category links sit on their own row under the wordmark, so any number of categories
+        // fits at any width (five or more beside the wordmark and toggle do not). menu-horizontal wraps if needed.
+        ?>
+        <?php if (!empty($navCategories)): ?>
+        <nav class="hidden md:block max-w-4xl mx-auto px-4 sm:px-6 pb-2" aria-label="Main">
+            <ul class="menu menu-horizontal -ml-5 flex-wrap">
+                <?php foreach ($navCategories as $cat): ?>
+                <li><a href="<?= e(categoryUrl($navCountry['url_prefix'], $cat['slug'])) ?>"><?= e($cat['name']) ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
+        <?php endif; ?>
     </header>
 
-    <main class="flex-1 max-w-4xl mx-auto px-6 py-10 w-full">
+    <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10 w-full">

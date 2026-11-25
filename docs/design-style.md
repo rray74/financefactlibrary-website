@@ -118,17 +118,23 @@ Rules:
 
 ## Layout and spacing
 
-*Pre-restyle, replaced in Steps 3 to 6. The responsive and light and dark requirements above apply to all new work.*
+*Rewritten for the restyle (Step 3). The grid and card spacing below it is still pre-restyle, replaced in Steps 4 and 5.*
 
-- Page width: `max-w-4xl mx-auto px-6`, the same in the header, `<main>` and footer. Page padding is `py-10` for `<main>`.
+- Page width: `max-w-4xl mx-auto px-4 sm:px-6`, the same in the header, `<main>` and footer. `<main>` padding is
+  `py-8 sm:py-10`. Side padding is 16px on a phone and 24px from `sm` up.
+- Breakpoints used: `sm` (640px) for two-column grids and the wider footer; `md` (768px) for the header's desktop links.
+- Check every page at 320, 375, 768, 1024 and 1440px. No horizontal page scroll at any width. Wide tables sit in
+  `overflow-x-auto`.
+- Touch targets are at least 44px: use daisyUI's default button size (3rem), not `btn-sm`, for anything tapped on a phone.
+
+*Pre-restyle, replaced in Steps 4 and 5:*
+
 - Reading width: prose and lists are capped, `max-w-2xl` for the explanation, `max-w-xl` for intros and short paragraphs,
   and `.article-body` at 68ch with a 1.7 line height. Never let body text run the full 4xl width.
 - Vertical rhythm between page sections: `mb-8` to `mb-14` (`mt-14` before the explanation, worked examples and "What's
   changed"). Between paragraphs: `mb-4`. Between a heading and its content: `mb-2` to `mb-4`.
 - Figure grids: `grid sm:grid-cols-2 gap-5` (or `gap-6` for larger cards). One column on a phone, two from `sm`. Three
   columns (`sm:grid-cols-3 gap-4`) only for small tiles.
-- Mobile first. Every page must work at phone width with no horizontal page scroll. Wide tables sit in
-  `overflow-x-auto`.
 - Borders are 2px navy (`border-b-2 border-primary`) for structure (header, footer, table heads, section rules) and 1px at
   20% (`border-b border-primary/20`) for row dividers. Corners are square: don't add `rounded-*` except on the small region
   tag.
@@ -137,17 +143,28 @@ Rules:
 
 *Pre-restyle, replaced in Steps 3 to 6. The responsive and light and dark requirements above apply to all new work.*
 
-### Header and footer
-- Header: paper, `border-b-2 border-primary`. The wordmark is left, the category links right (`text-sm`, `gap-6`,
-  `hover:text-accent transition-colors`). The wordmark and links come from `SITE_NAME` and the country's categories: don't
-  type them into a page.
-- Footer: `border-t-2 border-primary`, trust links (About, How we check our figures, Disclaimer, Privacy), the copyright
-  line and the independent-information statement in `font-mono text-xs opacity-70`. Both include files are shared by every
-  page.
+### Header
+*Restyled in Step 3.* `includes/header.php`, a daisyUI `navbar` in a `bg-base-100` bar with a `border-b border-base-300`.
+- Top row: the wordmark (`font-display`, from `SITE_NAME`) and the light and dark toggle. The toggle is a `btn btn-ghost`
+  with a half-filled circle icon; the words "Dark mode" or "Light mode" show from `sm` up, and the accessible name
+  ("Switch to dark mode") is always set. It is wired by the script in `<head>` through the `data-theme-toggle` attribute.
+- Below `md`: a hamburger `btn btn-square` opens a daisyUI `dropdown` with a `menu` of the country's categories. It needs no
+  JavaScript. From `md` up the same links sit on a second row (`menu menu-horizontal`), so any number of categories fits at
+  any width. Links come from the country's categories, never typed into a page.
+- The wordmark is `text-lg` on a phone and `text-2xl` from `sm`, so it fits beside the hamburger and toggle at 320px.
+
+### Footer
+*Restyled in Step 3.* `includes/footer.php`, a daisyUI `footer` on `bg-base-200` with `border-t border-base-300`. It stacks on a
+phone and sits in two columns from `sm` (`footer sm:footer-horizontal`). Column one is an "About this site" `footer-title`
+and `link link-hover` links (About, How we check our figures, Disclaimer, Privacy); column two is the copyright line and the
+independent-information statement. Both are on every page, and the disclaimer link must stay.
 
 ### Breadcrumb
-`font-mono text-xs uppercase tracking-wide text-secondary mb-4`, levels joined by a `/` in `opacity-50`, links
-`hover:text-accent`. It sits above the h1 and shows Category / Subcategory.
+*Restyled in Step 3.* daisyUI `breadcrumbs text-sm mb-2` around a `<ul>`, inside `<nav aria-label="Breadcrumb">`. Used on
+the subject page (Category, Subcategory) and the subcategory page (Category, then the current page as plain text). The
+component scrolls sideways inside itself if the trail is too wide for a phone. Don't build breadcrumbs by hand.
+
+*Pre-restyle, replaced in Steps 4 to 6:*
 
 ### Figure card (the signature component)
 `<div class="fact-card p-5">`, defined in `src/input.css`:

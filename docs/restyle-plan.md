@@ -49,12 +49,13 @@ Decided:
 - Update `design-style.md`: Stack (the applied setup and the toggle) and Colour.
 - Run `npm run build` (node is on Richard's Mac terminal, not in the Claude shell) and commit the compiled CSS with the source.
 
-### Step 3: Shared shell
+### Step 3: Shared shell - DONE 25 Nov 2026 (checked at 320, 375, 800 and 1100px in light and dark)
 - `includes/header.php`: `navbar` with a mobile menu (dropdown or drawer; five or more category links don't fit on a phone),
   the theme toggle, and daisyUI `breadcrumbs` for the trail (scrollable or truncated on narrow screens).
 - `includes/footer.php`: daisyUI `footer`.
 - Check one page at phone and desktop width before continuing, since every page changes.
-- Update `design-style.md`: Layout, Header and footer, Breadcrumb.
+- Update `design-style.md`: Layout, Header, Footer, Breadcrumb. Done.
+- Breadcrumbs only exist on the subject and subcategory pages (the category page has none), so only those two changed.
 
 ### Step 4: Subject page (`public/fact.php`)
 The page most visitors see, and the most components:

@@ -1,15 +1,19 @@
     </main>
 
-    <footer class="border-t-2 border-primary">
-        <div class="max-w-4xl mx-auto px-6 py-8 text-sm">
-            <?php // Links to the trust pages appear site-wide, which is where readers and search engines look for them. ?>
-            <nav class="flex flex-wrap gap-x-6 gap-y-2 mb-4">
-                <a href="/about/" class="hover:text-accent">About</a>
-                <a href="/how-we-check-our-figures/" class="hover:text-accent">How we check our figures</a>
-                <a href="/disclaimer/" class="hover:text-accent">Disclaimer</a>
-                <a href="/privacy/" class="hover:text-accent">Privacy</a>
+    <?php
+    // Restyle Step 3: daisyUI footer. Stacks on a phone and sits in columns from sm up. The trust pages
+    // are linked from every page, which is where readers and search engines look for them.
+    ?>
+    <footer class="bg-base-200 border-t border-base-300 mt-8">
+        <div class="footer sm:footer-horizontal max-w-4xl mx-auto px-4 sm:px-6 py-8 text-sm gap-y-6">
+            <nav aria-label="About this site">
+                <h2 class="footer-title">About this site</h2>
+                <a href="/about/" class="link link-hover py-1">About</a>
+                <a href="/how-we-check-our-figures/" class="link link-hover py-1">How we check our figures</a>
+                <a href="/disclaimer/" class="link link-hover py-1">Disclaimer</a>
+                <a href="/privacy/" class="link link-hover py-1">Privacy</a>
             </nav>
-            <div class="flex flex-col sm:flex-row justify-between gap-4">
+            <aside class="max-w-md">
                 <?php // SITE_NAME comes from includes/site-info.php, loaded by header.php, so the name is set in one place. ?>
                 <p>&copy; <?= date('Y') ?> <?= e(SITE_NAME) ?>. Every figure is sourced and dated individually.</p>
                 <?php
@@ -17,11 +21,11 @@
                 // regulated firm, so no one mistakes it for a broker or adviser with a
                 // similar name. Links to the full disclaimer for the detail.
                 ?>
-                <p class="font-mono text-xs opacity-70 sm:text-right">
+                <p class="opacity-70">
                     Independent information site. General information, not regulated financial advice.
-                    <a href="/disclaimer/" class="underline hover:text-accent">Read the disclaimer</a>.
+                    <a href="/disclaimer/" class="link">Read the disclaimer</a>.
                 </p>
-            </div>
+            </aside>
         </div>
     </footer>
 

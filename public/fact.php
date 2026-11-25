@@ -106,15 +106,12 @@ include __DIR__ . '/../includes/header.php';
 
 <script type="application/ld+json"><?= $breadcrumbJson ?></script>
 
-<nav class="font-mono text-xs uppercase tracking-wide text-secondary mb-4">
-    <a href="<?= e(categoryUrl($subject['country_prefix'], $subject['category_slug'])) ?>" class="hover:text-accent">
-        <?= e($subject['category_name']) ?>
-    </a>
-    <span class="opacity-50">/</span>
-    <a href="<?= e(subcategoryUrl($subject['country_prefix'], $subject['category_slug'], $subject['subcategory_slug'])) ?>"
-        class="hover:text-accent">
-        <?= e($subject['subcategory_name']) ?>
-    </a>
+<?php // daisyUI breadcrumbs (restyle Step 3). The component scrolls sideways inside itself if the trail is too wide for a phone. ?>
+<nav class="breadcrumbs text-sm mb-2" aria-label="Breadcrumb">
+    <ul>
+        <li><a href="<?= e(categoryUrl($subject['country_prefix'], $subject['category_slug'])) ?>"><?= e($subject['category_name']) ?></a></li>
+        <li><a href="<?= e(subcategoryUrl($subject['country_prefix'], $subject['category_slug'], $subject['subcategory_slug'])) ?>"><?= e($subject['subcategory_name']) ?></a></li>
+    </ul>
 </nav>
 
 <section class="mb-10">

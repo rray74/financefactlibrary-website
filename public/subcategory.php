@@ -23,12 +23,12 @@ $subjects = getSubjectsBySubcategoryId($subcategory['id']);
 include __DIR__ . '/../includes/header.php';
 ?>
 
-<nav class="font-mono text-xs uppercase tracking-wide text-secondary mb-4">
-    <a href="<?= e(categoryUrl($country['url_prefix'], $subcategory['category_slug'])) ?>" class="hover:text-accent">
-        <?= e($subcategory['category_name']) ?>
-    </a>
-    <span class="opacity-50">/</span>
-    <?= e($subcategory['name']) ?>
+<?php // daisyUI breadcrumbs (restyle Step 3). The last item is the current page, so it is not a link. ?>
+<nav class="breadcrumbs text-sm mb-2" aria-label="Breadcrumb">
+    <ul>
+        <li><a href="<?= e(categoryUrl($country['url_prefix'], $subcategory['category_slug'])) ?>"><?= e($subcategory['category_name']) ?></a></li>
+        <li><?= e($subcategory['name']) ?></li>
+    </ul>
 </nav>
 
 <section class="mb-10">
