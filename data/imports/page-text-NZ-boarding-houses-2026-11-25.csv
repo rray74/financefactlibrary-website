@@ -1,0 +1,32 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,mortgages-and-property,renting,boarding-houses,Boarding houses,"How boarding house tenancies work in New Zealand: what counts as one, bonds, rent in advance, rent increases, inspections and the notice each side must give.","## What counts as a boarding house
+
+Tenancy Services treats a property as probably a boarding house when at least {fact:nz_bh_people} of them rent a room or sleeping area under one roof and share facilities, such as a kitchen, bathroom or laundry. The Residential Tenancies Act 1986 then applies, and the rules are close to those for standard tenancies, with some differences. Tenancy Services has an online tool to check.
+
+## Starting the tenancy
+
+A boarding house agreement is like a standard one but must also give the landlord's phone number, the room number, whether the room is shared and the most people who may use it, whether the tenancy is joint, any services provided, the manager's contact details if the manager is not the landlord, and the fire evacuation procedures. A landlord can add conditions only if they relate to damage or extra wear and tear, and none can break the law.
+
+House rules are allowed. They set out services and how the shared facilities are used, and they cannot breach the Act or other laws such as the Human Rights Act. A copy goes to each tenant at the start, and a change needs written notice of at least {fact:nz_bh_rules}.
+
+## Bond and rent
+
+The most a landlord can ask as a bond is {fact:nz_bh_bond} of rent. A bond above one week's rent has to be lodged with Tenancy Services within {fact:nz_bh_lodge}, and the tenant must get a receipt. During the tenancy, a landlord can ask for rent in advance, one week or {fact:nz_bh_advance} at the most. The next payment cannot be requested until the rent already paid has run out.
+
+Before a rent increase, the tenant must receive written notice of at least {fact:nz_bh_incr_notice}. An increase is allowed only once every {fact:nz_bh_incr_gap}, and not within that time of the tenancy starting.
+
+## Healthy homes
+
+Whoever runs it, Kāinga Ora and community housing providers included, a boarding house has to meet the healthy homes standards. These deal with warmth, insulation, airflow, damp and drainage, and draughts. A boarding house that falls short when it is required to comply may face a penalty of {fact:nz_bh_hh}. Since 1 December 2020, an agreement made or renewed for a boarding house has had to carry a compliance statement.
+
+## During the tenancy
+
+Maintenance duties match those for standard tenancies: the landlord keeps the house in a reasonable state of repair and the facilities reasonably clean, while tenants keep their own rooms reasonably clean and tidy. To inspect a room a landlord must give at least {fact:nz_bh_inspect} of notice, no more often than every {fact:nz_bh_inspect_gap}, and between 8am and 6pm unless the two sides agree otherwise. The shared parts of the house are open to the landlord at any time, but not tenants' rooms, and nobody's quiet enjoyment may be disturbed.
+
+Other reasons for entering a room with the same notice include showing it to a prospective tenant, buyer or lender. Entry without notice is allowed with the tenant's agreement, where there is a serious risk to life or property, to provide agreed services, or under a Tenancy Tribunal order. Tenants must always have access to their room and to the toilet and bathroom, and working smoke alarms are compulsory in every rental home, including boarding houses.
+
+## Ending the tenancy
+
+A tenant can leave with {fact:nz_bh_tenant_notice} of notice. The usual notice from a landlord is {fact:nz_bh_land_notice}, in writing. A landlord can end a tenancy immediately if the tenant has seriously damaged the house, put people or property in danger, or badly disrupted the other tenants, or has threatened any of these. Two days' written notice is enough where overdue rent is still unpaid 10 days after a written request, where the room is put to an illegal use, or where it appears abandoned and rent is overdue.
+
+A retaliatory notice, given because a tenant stood up for their rights, is unlawful, and the tenant has 28 working days to ask the Tenancy Tribunal to set it aside. If a sole tenant dies, the tenancy ends two days later.",NZ Boarding House Tenancy Rules,"How boarding house tenancies work in New Zealand: what counts as one, bonds, rent in advance, rent increases, inspections and the notice each side gives.",,
