@@ -1,6 +1,6 @@
 # AI costs and the API key setup
 
-Last updated 24 Nov 2026. Figures are from the Claude Console (Cost & spend), in UTC, which lags by up to an hour (latest reading: 24 Nov, 09:38 UTC). Costs are in US dollars.
+Last updated 25 Nov 2026. Figures are from the Claude Console (Cost & spend), in UTC, which lags by up to an hour (latest reading: 25 Nov, 07:56 UTC). Costs are in US dollars.
 
 This file explains which API key pays for what, how to check each part is wired correctly, and what the AI work has cost so far. It contains no key values: keep those only in `config/database.local.php`.
 
@@ -72,17 +72,17 @@ Expected:
 
 All six were confirmed on 12 Nov 2026.
 
-## 6. What has been spent (last 30 days, read 24 Nov 2026, 09:38 UTC)
+## 6. What has been spent (last 30 days, read 25 Nov 2026, 07:56 UTC)
 
 | Key | Total | Notes |
 |---|---|---|
 | ff-website | $13.93 | Read on 12 Nov, not re-read since. Everything before 5 Nov: building, testing and the first pages (Pension Tax Relief and VAT cost over $2 each before the loop was cut back) |
 | ffl-pages | $3.90 | Live-site page work since 5 Nov, **unchanged since 21 Nov: the last spend was 19 Nov, so Claude Code drafting is costing nothing here**. Of that, **about $0.41 was local testing** (Sonnet 4.6) billed here until the Mac's config was fixed on 12 Nov, so the page-only figure is about $3.49. No Sonnet 4.6 spend since 11 Nov |
-| ffl-sources | $3.13 | Daily source and page checks, since 5 Nov. Up $1.22 since 21 Nov. The daily bar was about $0.25 on 20 and 21 Nov, then roughly $0.47 (22 Nov), $0.35 (23 Nov) and $0.41 (24 Nov, part day), read off the chart. **The cause is not yet known** (section 8): the stored results show only 2, 1 and 5 page checks on 22, 23 and 24 Nov, too few to explain those bars on their own |
+| ffl-sources | $3.43 | Daily source and page checks, since 5 Nov. Daily bars read off the chart: about $0.25 (20 Nov), $0.24 (21), $0.47 (22), $0.35 (23), $0.41 (24), $0.30 (25). Each of those days was 5 page checks (see section 8), so **about $0.05 to $0.09 a page, average about $0.07** |
 | ffl-multicountry | $0.30 | Two days of use, 16 and 18 Nov. Nothing since (unchanged on 24 Nov) |
-| **All keys** | **about $21.26** | Uses ff-website as read on 12 Nov |
+| **All keys** | **about $21.56** | Uses ff-website as read on 12 Nov |
 
-Balance: **$3.71** on 24 Nov (it was $4.94 on 21 Nov, $6.19 on 19 Nov, $3.38 on 12 Nov). The drop from 21 Nov to 24 Nov, $1.23, equals the rise on ffl-sources ($1.22), so the keys account for all of the spend.
+Balance: **$3.41** on 25 Nov (it was $3.71 on 24 Nov, $4.94 on 21 Nov, $6.19 on 19 Nov, $3.38 on 12 Nov). The drop from 24 Nov to 25 Nov, $0.30, equals the rise on ffl-sources ($0.30), and the drop from 21 to 24 Nov ($1.23) equals its rise then ($1.22), so the keys account for all of the spend.
 
 ## 7. Cost of one page
 
@@ -122,7 +122,7 @@ Prices (per million tokens, from Anthropic's pricing page, 27 Oct 2026), as set 
 
 | Item | Cost |
 |---|---|
-| Daily source and page checks (ffl-sources) | about $0.12 a day before 20 Nov. Since then $0.25 to $0.47 a day. **Cause not confirmed.** Stored results (`subject_text_checks`, read 24 Nov) show page checks of 5 on 20 Nov, 5 on 21 Nov, 2 on 22 Nov, 1 on 23 Nov and 5 on 24 Nov, so the page check is not the whole story and does not run at a steady 5 a night. As of 24 Nov the dry run lists 66 of 72 written pages needing a check (1 New Zealand page skipped), so the queue is long, but its nightly rate and cost are unmeasured. `check-sources.php` (daily, same key) also asks the AI about any figure it cannot find on its page; it is the other suspect. **From 25 Nov the page check is capped to a fixed sample of 30 pages (`data/nightly-check-sample.txt`), 5 a night, so it ends by about 1 Dec and then costs nothing.** Read each day's ffl-sources bar for 25 to 30 Nov in the Console's table: with 5 pages a night, the bar divided by 5 is the measured cost per page (`check-sources.php` adds close to nothing on a normal day, as its 24 Nov dry run showed). Record that figure here. |
+| Daily source and page checks (ffl-sources) | about $0.12 a day before 20 Nov. Since 20 Nov the nightly page check has run 5 pages every night (`cron_runs`: 5, 5, 5, 5, 5, 5 for 20 to 25 Nov), at **about $0.05 to $0.09 a page, average about $0.07**, so $0.25 to $0.47 a night. That explains the rise. (`check-sources.php` costs close to nothing on a normal day: its 24 Nov dry run found 380 figures, 0 missing, 0 AI calls.) **From 25 Nov the check is capped to a fixed sample** (`data/nightly-check-sample.txt`), now 25 pages: 5 nights at about $0.35, **about $1.75 in all**, finishing about 30 Nov, then nothing. **Beware reading `subject_text_checks` for run counts:** it keeps one row per page, so a recheck overwrites the earlier result. On 24 Nov the table seemed to show only 1 to 2 checks on 22 and 23 Nov; `cron_runs` shows 5 each night |
 | Nightly drafting (paused; `DRAFTS_PAUSED`) | about $0.17 to $0.32 a page for the jobs alone, so about $0.75 to $0.95 a night at three pages |
 | A new country at 15 to 20 pages | roughly $7 to $9 of AI cost, plus your time |
 
@@ -148,8 +148,8 @@ If nightly drafting is resumed, set `DRAFTS_PER_NIGHT` to the number of pages ac
 
 - Disable the **ff-website** key (no spend since 5 Nov).
 - Add `define('AI_KEY_PURPOSE', 'MULTICOUNTRY');` to the multi-country worker and any AI script written for it, so they bill correctly on the server.
-- ffl-sources rise (about $0.25 to $0.47 a day since 20 Nov): cause not confirmed. Compare each day's bar with the number of rows in `subject_text_checks` for that day, and with what `check-sources.php` sent to the AI (see the 24 Nov dry run in `docs/TODO.md` if recorded).
+- ffl-sources rise: explained (25 Nov). The nightly page check ran 5 pages a night from 20 Nov at about $0.07 a page. Now capped to the fixed sample; check the Console after about 30 Nov that the daily bar has fallen back to about $0.12 or less.
 - For Cash ISA, Average Savings Rates and Buy-to-Let, the job estimates were not all recorded. Note each page's "Estimated cost" line when it finishes.
 - Update the stale "about ten minutes" comment in `run-polish-jobs.php`.
 - Optional: a separate Console workspace with a monthly spend limit for the multi-country key.
-- **Check the balance.** It was $3.71 on 24 Nov. At $0.35 to $0.47 a day that lasts roughly 8 to 10 days, so top it up before the start of December unless the daily cost falls. Drafting in Claude Code does not use it.
+- **Balance is enough for now.** It was $3.41 on 25 Nov. The capped sample needs about $1.75 more, so about $1.65 should be left on 30 Nov. Top up before any further AI work (a new country's drafting is Claude Code, so $0).
