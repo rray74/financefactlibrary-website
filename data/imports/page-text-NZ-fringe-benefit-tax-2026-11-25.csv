@@ -1,0 +1,30 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,tax,employer-tax,fringe-benefit-tax,Fringe benefit tax,"How fringe benefit tax works for New Zealand employers: the two rates, the limits on small benefits and gift cards, vehicles, low-interest loans and when returns are due.","## What it is
+
+Fringe benefit tax (FBT) is paid by an employer on non-cash benefits that go to employees. The benefit may be provided by the employer or by someone else on the employer's arrangement. The tax counts as an employee anyone who gets, or is due, salary, wages, lump sums or schedular payments, and that reaches shareholder-employees, former employees and people whose agreements have yet to begin. Six kinds of benefit are covered: vehicles that employees can use privately, cheap loans, subsidised transport, employer payments into employee funds and schemes, unclassified benefits (free, subsidised or discounted goods and services), and gift cards.
+
+## The two rates
+
+An employer can use the single rate of {fact:nz_fbt_single}, which applies to every benefit however much the employees earn and can be used in quarterly, income year and annual returns. The alternate rate of {fact:nz_fbt_alt} is available only in quarters 1 to 3 of quarterly returns, and it may suit an employer whose employees' income plus benefits is under {fact:nz_fbt_alt_cap} for the year. An employer not using the alternate rate has to use the single rate.
+
+In quarter 4, an employer that used the alternate rate in any earlier quarter must work out the tax with one of three alternate rate calculations: full, short form or pooled. One that used the single rate throughout can also do so, which may avoid overpaying for lower earners. Employers filing income year or annual returns choose between the single rate and one of the alternate rate calculations.
+
+## Small benefits and gift cards
+
+For unclassified benefits and gift cards, tax applies only once the taxable value passes a limit. For each employee the limit is {fact:nz_fbt_lim_q} when the return covers a quarter, and {fact:nz_fbt_lim_y} when it covers an income year or annual period. Across all employees there is also an annual limit of {fact:nz_fbt_lim_all}. If either limit is exceeded, FBT is due on the full amount, not just the excess. Benefits provided by associated persons, and by other companies in a group, count towards the all-employee limit.
+
+Changes took effect during 2025 and 2026. An employer has a choice for gift cards, which can either come under the FBT rules or be paid as employment income with PAYE deducted, and the same choice covers employee reimbursements that would otherwise be unclassified benefits. FBT does not apply to unbranded personal protective equipment.
+
+## Motor vehicles
+
+Every day that a vehicle could be used privately by an employee attracts FBT, whether or not it is actually used that way. Sole traders and partners do not pay FBT on their own business vehicles, charities do not pay it on work vehicles unless they run a business outside their charitable purposes, and close companies can opt out of the vehicle rules. A vehicle can be valued at cost price or tax book value, and the valuation method has to stay in place for a set period.
+
+The taxable value is the private use days multiplied by the vehicle's value divided by the number of days in the period, then multiplied by a percentage. With the cost price method, the percentage (GST inclusive) is {fact:nz_fbt_mv_cost_q} for a quarter and {fact:nz_fbt_mv_cost_y} for an income year. With tax book value it is {fact:nz_fbt_mv_tbv_q} and {fact:nz_fbt_mv_tbv_y}. From 1 April 2026, a vehicle whose tax book value reflects an Investment Boost reduction has its own percentages, {fact:nz_fbt_mv_ib_q} and {fact:nz_fbt_mv_ib_y}. Old vehicles are valued at a floor of {fact:nz_fbt_mv_min}, or {fact:nz_fbt_mv_min_ib} where Investment Boost was claimed.
+
+## Low-interest loans
+
+For loans to employees at a low rate of interest, the benefit is valued using the prescribed interest rate, which Inland Revenue (IRD) reviews every quarter. It stands at {fact:nz_fbt_loan} for the quarter from 1 October to 31 December 2026, and rises to {fact:nz_fbt_loan_next} from 1 January 2027. An increase starts at the beginning of a quarter, but a reduction can apply to the current quarter.
+
+## Returns and due dates
+
+Every employer can file quarterly returns without electing anything, and must do so unless IRD has approved another option. Close companies that meet the conditions can elect income year returns, and employers can elect annual returns for ordinary employees. An election has to be made in time, and late ones are refused. Quarterly returns and payments are due on 20 July, 20 October and 20 January for the first three quarters, and 31 May for the fourth. Annual returns are due on 31 May after the year ends.",NZ Fringe Benefit Tax: {fact:nz_fbt_single} Single Rate,"How fringe benefit tax works for New Zealand employers: the {fact:nz_fbt_single} and {fact:nz_fbt_alt} rates, limits on small benefits and gift cards, vehicles and loans.",,
