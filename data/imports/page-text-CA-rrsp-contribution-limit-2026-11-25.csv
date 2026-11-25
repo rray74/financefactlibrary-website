@@ -1,0 +1,26 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,savings-and-investments,registered-accounts,rrsp-contribution-limit,Registered Retirement Savings Plan (RRSP),"How the RRSP deduction limit is worked out, who can contribute and until what age, and the tax on contributing too much.","## Your RRSP deduction limit is the most you can deduct
+
+Your RRSP deduction limit caps what you can claim for a year. It applies to money put into your own registered retirement savings plans (RRSPs), into a pooled registered pension plan (PRPP) or specified pension plan (SPP), and into your spouse's or common-law partner's RRSP or SPP. Form T1028 states it, as do your notices of assessment and reassessment.
+
+## How the limit is worked out
+
+The Canada Revenue Agency (CRA) generally begins with the deduction room left unused at the end of the previous year. It adds whichever is smaller: {fact:ca_rrsp_pct} of the previous year's earned income, or the annual RRSP dollar limit of {fact:ca_rrsp_limit}. It then adjusts for pensions: your pension adjustment (or the prescribed amount for connected persons) is deducted, a pension adjustment reversal is added back and a net past service pension adjustment is deducted. Chart 3 of the CRA's Guide T4040 lets you do the sum yourself.
+
+So a person earning a lot adds at most the dollar limit, and a person earning less adds the percentage of last year's earnings. Room you do not use carries forward, and you can also claim contributions from an earlier year that you have not yet deducted.
+
+## Who can contribute, and until when
+
+You can generally contribute until December 31 of the year you turn 71, and only while you have room in your deduction limit. For a spouse's or common-law partner's plan, the last date to contribute is December 31 of the year that person reaches 71.
+
+## What you can and cannot deduct
+
+You can claim what you paid into your own plans and into your spouse's or common-law partner's plan, along with contributions from earlier years that you have not yet claimed. You cannot deduct administration fees, brokerage fees for buying and selling within a trusteed RRSP, interest on money you borrowed to contribute, capital losses inside the plan or an employer's contributions to your PRPP.
+
+## What happens if you contribute too much
+
+Contributions more than {fact:ca_rrsp_buffer} above your deduction limit generally attract a tax of 1% for every month they stay over. The extra allowance is for people who reached 18 at some point in the year. The tax may not apply to an excess you withdrew before the end of the month in which it was made, and the CRA lists other exceptions. When the tax applies, Form T1-OVP is the return to file, and it is due with the payment 90 days after the year ends.
+
+## Tax inside the plan
+
+While the money stays in the plan, the income it earns is usually exempt from tax.",RRSP Contribution Limit {tax_year}: {fact:ca_rrsp_limit},The RRSP dollar limit is {fact:ca_rrsp_limit}. New room is {fact:ca_rrsp_pct} of earned income up to that. See how the limit is worked out and what over-contributing costs.,,
