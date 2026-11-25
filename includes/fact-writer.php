@@ -72,6 +72,18 @@ const FACT_SOURCE_ALLOWLIST = [
     'employment.govt.nz'      => null,
     'workandincome.govt.nz'   => null,
     'tenancy.govt.nz'         => null,
+    // Canadian national bodies, added 25 Nov 2026 for the Canada launch (plan: docs/content-maps/ca-content-map.md,
+    // decision D, approved by Richard). Each was read from the Mac on 25 Nov 2026. 'canada.ca' is listed as a
+    // whole because the Canada Revenue Agency, Employment and Social Development Canada, Service Canada and the
+    // Financial Consumer Agency of Canada all publish under it. Unlike 'gov.au' or 'govt.nz' it is one national
+    // government, and every card source is still read page by page. The Bank of Canada sets the policy interest
+    // rate, the Canada Deposit Insurance Corporation states deposit protection, and the Canada Mortgage and
+    // Housing Corporation publishes mortgage insurance rules. A province's own domain (ontario.ca and so on) is
+    // NOT here: add it when a provincial page is built. Licence is NULL (not verified).
+    'canada.ca'               => null,
+    'bankofcanada.ca'         => null,
+    'cdic.ca'                 => null,
+    'cmhc-schl.gc.ca'         => null,
 ];
 
 /**
