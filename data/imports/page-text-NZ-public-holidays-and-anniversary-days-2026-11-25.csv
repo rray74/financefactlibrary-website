@@ -1,0 +1,30 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,work-and-benefits,pay-and-leave,public-holidays-and-anniversary-days,Public holidays and anniversary days,"Which days are public holidays in New Zealand, what an employee gets when one falls on a working day, and when each province's anniversary day falls.","## The national holidays
+
+{fact:nz_ph_count} public holidays apply across the country: New Year's Day, the day after New Year's Day, Waitangi Day, Good Friday, Easter Monday, Anzac Day, King's Birthday, Matariki, Labour Day, Christmas Day and Boxing Day. Where one lands on a day an employee would otherwise work, they get a paid day off. The day they actually get is the observed date, and that is not always the calendar date.
+
+The Holidays Act 2003 names the holidays without fixing most of their dates. Some are set by separate Acts, including those for Waitangi Day (1976), Anzac Day (1966) and the sovereign's birthday (1952), and Matariki has an Act too. Easter and Christmas are religious holidays. King's Birthday falls on the first Monday in June and Labour Day on the fourth Monday in October. Good Friday, Easter Monday and Matariki move each year. In 2027 they are {fact:nz_ph_goodfri}, {fact:nz_ph_eastmon} and {fact:nz_ph_matariki}, King's Birthday is {fact:nz_ph_kings}, and Labour Day is {fact:nz_ph_labour}.
+
+## When a holiday falls on a weekend
+
+A weekday date is kept for Christmas Day, Boxing Day, New Year's Day and 2 January. On a weekend the answer depends on the employee. Someone who would have worked that Saturday or Sunday has the holiday then. Someone who would not has it on the next Monday, or in some cases the Tuesday. Christmas Day in 2027 is a Saturday, so it works this way.
+
+Waitangi Day and Anzac Day follow a separate rule. If either falls on a weekend and the employee would not have worked that day, the holiday moves to the next Monday. The source calls this 'Mondayised'.
+
+## Pay and alternative holidays
+
+An employee is paid for a public holiday that falls on a day they would otherwise have worked, even in the middle of annual holidays, and the day does not come out of their annual holidays balance. Nothing is owed for a public holiday that falls during parental leave or planned unpaid leave, because the employee would not have been working.
+
+Working on such a holiday brings extra rights. An employee who works the holiday earns a rate of time and a half or more for those hours, and is owed an alternative holiday as well. There is no alternative holiday for someone whose normal working days do not include the holiday, or who is employed only to work on public holidays. The employer and employee agree the day. Failing agreement, the employer chooses, giving at least 14 days' notice.
+
+## Anniversary days
+
+Every province has an anniversary day of its own. Local custom decides how it is observed, and regional or city councils usually set the date. The provinces date back to the 19th century and do not match the current districts or regions. The source warns that its list may contain unintentional errors and suggests checking the date with the local council.
+
+The usual practice is the Monday nearest the actual date, with exceptions. To keep clear of Easter, Taranaki holds its day on the second Monday in March. Hawke's Bay moves to the Friday ahead of Labour Day, while Marlborough's day is the Monday that follows it. In the north and centre of Canterbury the holiday is Show Day, as set by Christchurch City: a Friday in November, the second one after the first Tuesday of the month. Dominion Day, the fourth Monday in September, is South Canterbury's day. Within Westland the day differs from place to place, and Greymouth keeps the official one. Southland normally observes Easter Tuesday.
+
+Otago has no single day of local observance. Unless the employment agreement or custom and practice settles it, the employee and employer should try to agree how to observe the day. The cards above give the 2027 observed date for each province.
+
+## Law changing in 2028
+
+In August 2028 the Holidays Act is due to give way to the Employment Leave Act, so the rules above hold only until then.",NZ Public Holidays and Anniversary Days,"Which days are public holidays in New Zealand, how weekend holidays move, how workers are paid, and the anniversary day for each province in 2027.",,
