@@ -1,0 +1,36 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,work-and-benefits,benefits,canada-groceries-and-essentials-benefit,Canada Groceries and Essentials Benefit (CGEB),"What the Canada Groceries and Essentials Benefit is, who is eligible, the maximum amounts for each situation, the income limits and how payments are made.","## What the CGEB is
+
+Individuals and families on low and modest incomes receive the Canada Groceries and Essentials Benefit (CGEB) free of tax, in four instalments a year. From July 2026 it takes the place of the GST/HST credit. According to the CRA, nothing about who qualifies, how the amount is worked out or how it is structured has changed. In July 2026 the benefit amount rose by 25%, and that increase is meant to stay for 5 years, from 2026 to 2031. Related provincial and territorial programs can add to the payments, and none of it has to be reported on your return.
+
+## Who is eligible
+
+You can qualify even with no income in the year. Residency in Canada for tax purposes is required at two points: the month before a payment, and the start of the month it is paid. You also need to be 19 or older. Someone under 19 can qualify if they have a spouse or common-law partner, or are a parent living with their child. If you are turning 19, the first payment comes on the next payment date after your birthday, once your tax return has been filed.
+
+A child you receive the Canada child benefit for is counted automatically. If you share custody of a child, you may qualify for half the amount for that child, and the same halving applies to related provincial and territorial programs.
+
+## How much you can get
+
+How much you receive turns on your adjusted family net income, whether you are single or have a partner, and how many eligible children under 19 you have. At most, a single individual gets {fact:ca_cgeb_single_max} a year, a married or common-law couple gets {fact:ca_cgeb_couple_max}, and each eligible child adds {fact:ca_cgeb_child}.
+
+Those amounts build up from a base of {fact:ca_cgeb_adult} for an eligible individual and for a spouse. A single individual without children gets an additional amount that phases in on income above {fact:ca_cgeb_phasein}. The benefit starts to fall once adjusted family net income passes {fact:ca_cgeb_phaseout}.
+
+## The income limits
+
+Adjusted family net income has to be below these limits to get anything:
+
+- {fact:ca_cgeb_cut_single} for a single individual without children
+- {fact:ca_cgeb_cut_couple} for a couple without children
+- {fact:ca_cgeb_cut_1} with one child
+- {fact:ca_cgeb_cut_2} with 2 children
+- {fact:ca_cgeb_cut_3} with 3 children
+- {fact:ca_cgeb_cut_4} with 4 or more children
+
+## How the payment year works
+
+Every July the CRA works the amount out again from the prior year's return, and the payment period then lasts until the end of June. It is also recalculated when something changes, such as your marital status, the number of children in your care or the CRA reassessing a tax return.
+
+## How to get it
+
+You do not need to apply. File your tax return every year, even with no income, and the CRA checks your eligibility. File by April 30 to avoid a break in payments. If you file late, payments may stop for a while, and any missed amounts are paid later. People arriving in Canada as residents may need to apply in their first year of residence.
+",CGEB Canada: Up to {fact:ca_cgeb_single_max} a Year,"The CGEB pays up to {fact:ca_cgeb_single_max} a year to a single adult and {fact:ca_cgeb_couple_max} to a couple, with more for each child. See the income limits and who can qualify for it.",,
