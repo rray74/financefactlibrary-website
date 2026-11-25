@@ -1,0 +1,28 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,tax,payroll-deductions,cpp-contributions,Canada Pension Plan Contributions,"The CPP contribution rate and limits for employees, employers and the self-employed, the second additional contribution (CPP2) above the first ceiling, and where Quebec differs.","## Employees and employers each pay the same rate
+
+Canada Pension Plan (CPP) contributions come out of your pay, and your employer pays an equal amount. The rate is {fact:ca_cpp_rate} on your pensionable earnings, which include salary, wages, commissions, bonuses and most taxable benefits. The first {fact:ca_cpp_exempt} of the year is exempt, so contributions are worked out on the earnings above it, up to the maximum annual pensionable earnings of {fact:ca_cpp_ympe}.
+
+The most an employee pays in the year is {fact:ca_cpp_max}, and the employer pays the same amount. Deductions stop once you reach that maximum in your job with an employer.
+
+## CPP2 applies above the first ceiling
+
+A second additional contribution, known as CPP2, applies to earnings above the maximum annual pensionable earnings and up to the additional maximum of {fact:ca_cpp2_ceiling}. Employees and employers each pay {fact:ca_cpp2_rate} on those earnings, to a maximum of {fact:ca_cpp2_max} each. CPP2 has applied since 2024.
+
+## Who pays, and from what age
+
+Deductions apply to people aged 18 to 69 in pensionable employment, including those already receiving a CPP or Quebec Pension Plan (QPP) retirement pension. Employees who are disabled under the CPP or QPP are not required to contribute.
+
+Between 65 and 69, an employee who receives a CPP or QPP retirement pension can choose to stop contributing by giving their employer Form CPT30.
+
+## More than one job
+
+The maximum applies to each job you hold with a different employer, meaning a different business number. If you change employers during the year, the next employer deducts CPP from the start without counting what the first one deducted. If your total goes over the maximum, you get the extra back when you file your return. Employers do not get a refund of their share.
+
+## If you are self-employed
+
+Self-employed people have to contribute once their net self-employment income or pensionable employment income goes over {fact:ca_cpp_exempt}. The most they pay in the year is {fact:ca_cpp_selfmax}, plus up to {fact:ca_cpp2_selfmax} for CPP2. The amount is calculated on the income tax and benefit return.
+
+## Quebec has its own plan
+
+If your province of employment is Quebec, your employer deducts Quebec Pension Plan contributions instead of CPP contributions, whichever province or territory you live in. Revenu Québec publishes the Quebec rules.",CPP Contributions Canada {tax_year}: {fact:ca_cpp_rate},Employees and employers each pay {fact:ca_cpp_rate} CPP on earnings up to {fact:ca_cpp_ympe}. CPP2 applies above that. See the contribution limits and how Quebec's plan differs.,,
