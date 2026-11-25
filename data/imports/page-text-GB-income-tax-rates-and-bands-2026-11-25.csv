@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,income-tax,income-tax-rates-and-bands,"Income Tax Rates and Bands (England, Wales and NI)","The Income Tax rates and bands for earnings, pensions and other income outside Scotland, how taxable income is split across them, and how Wales differs.","## The bands sit on top of the Personal Allowance, so the rates apply to taxable income
+
+Earnings, profits from self-employment, most pensions (the State Pension included) and most rental income are all taxed at these rates. Tax is charged on income above your allowance, which is {fact:personal_allowance} for most people. The next £37,700 of taxable income is the basic rate band, taxed at {fact:income_tax_basic_rate}. That band is why the higher rate starts above {fact:higher_rate_threshold}: the allowance and the basic rate band added together. The higher rate of {fact:income_tax_higher_rate} then runs up to {fact:additional_rate_threshold}, and {fact:income_tax_additional_rate} is charged above that.
+
+The £37,700 basic rate band is held at that level, like the allowance, until 5 April 2031. Each rate applies only to the slice of income that falls within its band, not to everything you earn.
+
+## The thresholds quoted for each band assume the standard allowance
+
+Because the bands start after the allowance, the figures above hold only for someone with the standard Personal Allowance. Blind Person's Allowance is added to the Personal Allowance, so someone who claims it can earn more before paying Income Tax. High earners lose it gradually: once adjusted net income passes {fact:pa_taper_threshold}, each extra £2 takes £1 off the allowance, and none is left at {fact:additional_rate_threshold}.
+
+## Northern Ireland uses these rates, while Wales and Scotland set their own
+
+The rates on this page apply in England and Northern Ireland. Wales has its own Welsh rates, set by the Welsh Government, and for {tax_year} they match England's. The Welsh rates go to anyone who spends more of a tax year living in Wales than in any other part of the UK, and HMRC marks their tax code with a C at the start. Scotland sets its own rates and bands, which are covered on the [Scottish Income Tax rates](/uk/tax/income-tax/scottish-income-tax-rates/) page.
+
+## Savings interest and dividends are taxed under separate rules
+
+Interest on savings and dividends from shares have their own allowances, and dividends have their own tax rates, different from the three above. These are the same in Wales as in the rest of the UK.","Income Tax Rates and Bands {tax_year}","Income Tax outside Scotland: {fact:personal_allowance} tax-free, then {fact:income_tax_basic_rate} up to {fact:higher_rate_threshold}, then higher rates. See how the bands work and Welsh rates.",,"2026-11-25 09:09:52"
