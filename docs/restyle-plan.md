@@ -57,14 +57,16 @@ Decided:
 - Update `design-style.md`: Layout, Header, Footer, Breadcrumb. Done.
 - Breadcrumbs only exist on the subject and subcategory pages (the category page has none), so only those two changed.
 
-### Step 4: Subject page (`public/fact.php`)
+### Step 4: Subject page (`public/fact.php`) - DONE 25 Nov 2026 (checked on three pages at 375px and desktop, light and dark)
 The page most visitors see, and the most components:
 - Figure cards: `card` (or `stat` for number-led tiles), `badge` for the region tag.
 - Explanation text: `renderExplanation()` in `includes/functions.php` (paragraph, h3 and list classes); consider the daisyUI
   `prose`-style approach or Tailwind typography.
 - Worked-example `table`, "What's changed" as `timeline` or a `list`, preview banner as an `alert`.
 - Check against real pages: a long one, one with regional tags, one with worked examples, one in preview mode.
-- Update `design-style.md`: Figure card, Region tag, Links, Tables, Change list, Explanation text, Preview banner.
+- Update `design-style.md`: Figure card, Region badge, Links, Tables, Change list, Explanation text, Preview banner. Done.
+- `article.php` still uses the old `.fact-card` and moves to the daisyUI card in Step 5, after which `.fact-card` and
+  `.article-body` are deleted from `src/input.css`.
 
 ### Step 5: Everything else public
 - Browse pages: `index.php`, `category.php`, `subcategory.php`, plus the country switch.

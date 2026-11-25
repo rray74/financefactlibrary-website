@@ -96,11 +96,14 @@ include __DIR__ . '/../includes/header.php';
 ?>
 
 <?php if ($previewMode): ?>
-<div class="mb-6 border-2 border-dashed border-secondary px-4 py-3 text-sm">
-    <strong>Preview, not public.</strong>
-    Status: <?= e($subject['status']) ?>. Country live: <?= $subject['country_active'] ? 'yes' : 'no' ?>.
-    Links in the header and footer may point at pages that do not exist yet.
-    <a href="/admin/subject.php?id=<?= (int) $subject['id'] ?>" class="underline">Back to the editor</a>
+<?php // Preview banner (restyle Step 4): a daisyUI warning alert, since this view is not public. ?>
+<div role="alert" class="alert alert-warning alert-soft mb-6 text-sm">
+    <span>
+        <strong>Preview, not public.</strong>
+        Status: <?= e($subject['status']) ?>. Country live: <?= $subject['country_active'] ? 'yes' : 'no' ?>.
+        Links in the header and footer may point at pages that do not exist yet.
+        <a href="/admin/subject.php?id=<?= (int) $subject['id'] ?>" class="link">Back to the editor</a>
+    </span>
 </div>
 <?php endif; ?>
 
@@ -125,48 +128,51 @@ include __DIR__ . '/../includes/header.php';
 <?php if (empty($facts)): ?>
 <p class="opacity-70">No facts added for this subject yet.</p>
 <?php else: ?>
-<div class="grid sm:grid-cols-2 gap-5">
+<?php
+// Figure cards (restyle Step 4): a daisyUI card on the page surface. The value is the biggest thing on the card,
+// in the display font with tabular figures so numbers line up. Source and dates sit small underneath.
+?>
+<div class="grid sm:grid-cols-2 gap-4 sm:gap-5">
     <?php foreach ($facts as $fact): ?>
-    <div class="fact-card p-5">
-        <p class="text-sm opacity-70">
-            <?= e($fact['label']) ?>
-            <?php if (isRegionalFact($fact)): ?>
-            <?php // Nation-specific figure, e.g. Scottish income tax, so say where it applies. ?>
-            <span
-                class="font-mono text-xs uppercase tracking-wide ml-1 px-1.5 py-0.5 rounded bg-secondary/10 text-secondary">
-                <?= e($fact['jurisdiction_name']) ?>
-            </span>
+    <div class="card card-border border-base-content/20 bg-base-100">
+        <div class="card-body p-5 gap-1">
+            <p class="text-sm opacity-80">
+                <?= e($fact['label']) ?>
+                <?php if (isRegionalFact($fact)): ?>
+                <?php // Nation-specific figure, e.g. Scottish income tax, so say where it applies. ?>
+                <span class="badge badge-outline badge-sm ml-1"><?= e($fact['jurisdiction_name']) ?></span>
+                <?php endif; ?>
+            </p>
+            <p class="font-display text-3xl font-semibold tabular-nums break-words">
+                <?= e(formatFactValue($fact)) ?>
+            </p>
+            <?php if ($fact['context']): ?>
+            <p class="text-sm opacity-80"><?= e($fact['context']) ?></p>
             <?php endif; ?>
-        </p>
-        <p class="fact-value font-display text-3xl font-semibold text-primary my-1">
-            <?= e(formatFactValue($fact)) ?>
-        </p>
-        <?php if ($fact['context']): ?>
-        <p class="text-sm opacity-80 mb-2"><?= e($fact['context']) ?></p>
-        <?php endif; ?>
-        <p class="text-xs opacity-60">
-            <?php if ($fact['source_url']): ?>
-            <?php // Linking the source lets readers check the figure themselves, which builds trust. ?>
-            <a href="<?= e($fact['source_url']) ?>" target="_blank" rel="noopener" class="underline hover:text-accent">
-                <?= e($fact['source_name'] ?? 'Source') ?>
-            </a>
-            <?php elseif ($fact['source_name']): ?>
-            <?= e($fact['source_name']) ?>
+            <p class="text-xs opacity-70 mt-1">
+                <?php if ($fact['source_url']): ?>
+                <?php // Linking the source lets readers check the figure themselves, which builds trust. ?>
+                <a href="<?= e($fact['source_url']) ?>" target="_blank" rel="noopener" class="link">
+                    <?= e($fact['source_name'] ?? 'Source') ?>
+                </a>
+                <?php elseif ($fact['source_name']): ?>
+                <?= e($fact['source_name']) ?>
+                <?php endif; ?>
+                <?php if ($fact['effective_from']): ?>
+                &middot; since <?= date('j M Y', strtotime($fact['effective_from'])) ?>
+                <?php endif; ?>
+                <?php // "Checked" is the last verification, which can be newer than the last change. ?>
+                &middot; checked <?= date('j M Y', strtotime($fact['last_verified_at'] ?? $fact['last_updated'])) ?>
+            </p>
+            <?php if (!$fact['is_primary'] && $fact['owner_status'] === 'published'): ?>
+            <?php // Shared fact: link to the page that owns it, for readers and for internal linking. ?>
+            <p class="text-xs mt-1">
+                <a href="<?= e(subjectUrlById((int) $fact['primary_subject_id'])) ?>" class="link link-primary">
+                    More on <?= e($fact['owner_name']) ?> &rarr;
+                </a>
+            </p>
             <?php endif; ?>
-            <?php if ($fact['effective_from']): ?>
-            &middot; since <?= date('j M Y', strtotime($fact['effective_from'])) ?>
-            <?php endif; ?>
-            <?php // "Checked" is the last verification, which can be newer than the last change. ?>
-            &middot; checked <?= date('j M Y', strtotime($fact['last_verified_at'] ?? $fact['last_updated'])) ?>
-        </p>
-        <?php if (!$fact['is_primary'] && $fact['owner_status'] === 'published'): ?>
-        <?php // Shared fact: link to the page that owns it, for readers and for internal linking. ?>
-        <p class="text-xs mt-2">
-            <a href="<?= e(subjectUrlById((int) $fact['primary_subject_id'])) ?>" class="text-secondary hover:text-accent">
-                More on <?= e($fact['owner_name']) ?> &rarr;
-            </a>
-        </p>
-        <?php endif; ?>
+        </div>
     </div>
     <?php endforeach; ?>
 </div>
@@ -184,27 +190,28 @@ include __DIR__ . '/../includes/header.php';
 <section class="mt-14">
     <h2 class="font-display text-2xl font-semibold mb-2"><?= e($example['title']) ?></h2>
     <p class="opacity-80 max-w-xl mb-4"><?= e($example['intro']) ?></p>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm border-collapse">
+    <?php // daisyUI table (restyle Step 4). It scrolls sideways inside its own box on a phone, so wide tables never widen the page. ?>
+    <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+        <table class="table">
             <thead>
-                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
+                <tr>
                     <?php foreach ($example['columns'] as $column): ?>
-                    <th class="py-2 pr-4"><?= e($column) ?></th>
+                    <th class="whitespace-nowrap"><?= e($column) ?></th>
                     <?php endforeach; ?>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($example['rows'] as $row): ?>
-                <tr class="border-b border-primary/20">
+                <tr>
                     <?php foreach ($row as $i => $cell): ?>
-                    <td class="py-3 pr-4 <?= $i === 0 ? 'font-semibold' : 'fact-value' ?>"><?= e((string) $cell) ?></td>
+                    <td class="<?= $i === 0 ? 'font-semibold' : 'tabular-nums' ?>"><?= e((string) $cell) ?></td>
                     <?php endforeach; ?>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
-    <p class="text-xs opacity-60 mt-3"><?= e($example['note']) ?></p>
+    <p class="text-xs opacity-70 mt-3"><?= e($example['note']) ?></p>
 </section>
 <?php endforeach; ?>
 
@@ -212,8 +219,9 @@ include __DIR__ . '/../includes/header.php';
 <?php if (!empty($changes)): ?>
 <section class="mt-14">
     <h2 class="font-display text-2xl font-semibold mb-4">What's changed</h2>
-    <ul class="space-y-3 max-w-2xl">
-        <?php foreach ($changes as $change): ?>
+    <?php // daisyUI timeline (restyle Step 4), one compact column with the date above each change. ?>
+    <ul class="timeline timeline-vertical timeline-compact max-w-2xl">
+        <?php foreach ($changes as $i => $change): ?>
         <?php
         // Describe the direction of numeric changes in words as well as figures.
         $direction = 'changed';
@@ -221,14 +229,21 @@ include __DIR__ . '/../includes/header.php';
             $direction = (float) $change['new_value_numeric'] > (float) $change['old_value_numeric'] ? 'rose' : 'fell';
         }
         ?>
-        <li class="border-l-2 border-primary/30 pl-4">
-            <span class="font-mono text-xs uppercase tracking-wide text-secondary block">
-                <?= date('j F Y', strtotime($change['changed_on'])) ?>
-            </span>
-            <?= e($change['label']) ?> <?= $direction ?> from
-            <span class="fact-value font-semibold"><?= e(formatHistoryValue($change, 'old')) ?></span>
-            to
-            <span class="fact-value font-semibold"><?= e(formatHistoryValue($change, 'new')) ?></span>.
+        <li>
+            <?php if ($i > 0): ?><hr /><?php endif; ?>
+            <div class="timeline-middle">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-4 w-4" aria-hidden="true">
+                    <circle cx="10" cy="10" r="5" fill="currentColor" />
+                </svg>
+            </div>
+            <div class="timeline-end mb-6">
+                <time class="text-xs opacity-70 block"><?= date('j F Y', strtotime($change['changed_on'])) ?></time>
+                <?= e($change['label']) ?> <?= $direction ?> from
+                <span class="font-semibold tabular-nums"><?= e(formatHistoryValue($change, 'old')) ?></span>
+                to
+                <span class="font-semibold tabular-nums"><?= e(formatHistoryValue($change, 'new')) ?></span>.
+            </div>
+            <?php if ($i < count($changes) - 1): ?><hr /><?php endif; ?>
         </li>
         <?php endforeach; ?>
     </ul>

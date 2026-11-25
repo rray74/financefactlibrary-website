@@ -127,17 +127,15 @@ Rules:
   `overflow-x-auto`.
 - Touch targets are at least 44px: use daisyUI's default button size (3rem), not `btn-sm`, for anything tapped on a phone.
 
-*Pre-restyle, replaced in Steps 4 and 5:*
+*Rewritten through Step 4:*
 
-- Reading width: prose and lists are capped, `max-w-2xl` for the explanation, `max-w-xl` for intros and short paragraphs,
-  and `.article-body` at 68ch with a 1.7 line height. Never let body text run the full 4xl width.
+- Reading width: prose and lists are capped, `max-w-2xl` for the explanation, `max-w-xl` for intros and short paragraphs.
+  Never let body text run the full 4xl width. (`.article-body`, 68ch, is pre-restyle and goes in Step 5.)
 - Vertical rhythm between page sections: `mb-8` to `mb-14` (`mt-14` before the explanation, worked examples and "What's
   changed"). Between paragraphs: `mb-4`. Between a heading and its content: `mb-2` to `mb-4`.
-- Figure grids: `grid sm:grid-cols-2 gap-5` (or `gap-6` for larger cards). One column on a phone, two from `sm`. Three
-  columns (`sm:grid-cols-3 gap-4`) only for small tiles.
-- Borders are 2px navy (`border-b-2 border-primary`) for structure (header, footer, table heads, section rules) and 1px at
-  20% (`border-b border-primary/20`) for row dividers. Corners are square: don't add `rounded-*` except on the small region
-  tag.
+- Figure grids: `grid sm:grid-cols-2 gap-4 sm:gap-5`. One column on a phone, two from `sm`.
+- Borders are 1px, from tokens (`border-base-300`, or `border-base-content/20` where a border must be clearly visible). Use
+  daisyUI's radii (`rounded-box`); don't set fixed corner sizes.
 
 ## Components
 
@@ -164,53 +162,55 @@ independent-information statement. Both are on every page, and the disclaimer li
 the subject page (Category, Subcategory) and the subcategory page (Category, then the current page as plain text). The
 component scrolls sideways inside itself if the trail is too wide for a phone. Don't build breadcrumbs by hand.
 
-*Pre-restyle, replaced in Steps 4 to 6:*
+### Figure card
+*Restyled in Step 4.* A daisyUI card on the page surface, in a `sm:grid-cols-2 gap-4 sm:gap-5` grid (one column on a phone):
 
-### Figure card (the signature component)
-`<div class="fact-card p-5">`, defined in `src/input.css`:
-- White background, 2px navy border, a solid 4px offset navy shadow (no blur), and the top-right corner clipped by 16px so
-  it reads as an index card.
-- On hover it lifts 2px up and left and the shadow grows to 6px. It's deliberately flat otherwise.
-- Padding `p-4` to `p-6`. `p-5` is the standard. Use `p-6 block` when the whole card is a link.
+```
+<div class="card card-border border-base-content/20 bg-base-100">
+  <div class="card-body p-5 gap-1"> ... </div>
+</div>
+```
 
-Contents, in this order: label (`text-sm opacity-70`), optional region tag, value, optional context line
-(`text-sm opacity-80`), then the source line (`text-xs opacity-60`: linked source name, "since" date, "checked" date,
-separated by `&middot;`), then an optional "More on ... &rarr;" link in `text-xs text-secondary hover:text-accent`.
+Contents, in this order: label (`text-sm opacity-80`) with an optional region badge, the value
+(`font-display text-3xl font-semibold tabular-nums break-words`), an optional context line (`text-sm opacity-80`), the source
+line (`text-xs opacity-70`: linked source name, "since" date, "checked" date, separated by `&middot;`), then an optional
+"More on ... &rarr;" link (`link link-primary text-xs`). The border is `base-content` at 20% so it shows in both themes.
+Use `tabular-nums` on every figure that should line up. The old `.fact-card` class is gone from `fact.php` but is still used
+by `article.php` until Step 5.
 
-The clipped corner uses `clip-path`, so it also clips any outline or shadow that would cross the corner. Don't put anything
-in the top-right 16px.
-
-### Region tag
-A small label for a figure that applies to one region: `font-mono text-xs uppercase tracking-wide ml-1 px-1.5 py-0.5
-rounded bg-secondary/10 text-secondary`. The one place rounded corners are used.
+### Region badge
+*Restyled in Step 4.* daisyUI `badge badge-outline badge-sm ml-1` next to the label of a figure that applies to one region.
 
 ### Links
-- Inline links in body text and source lines: `underline hover:text-accent`.
-- Navigation and breadcrumb links: no underline, `hover:text-accent`.
-- External source links open in a new tab with `target="_blank" rel="noopener"`.
+*Restyled in Step 4.* daisyUI `link`. Source links and other inline links: `link`. Links that lead to another page of the
+site, including those in the explanation text: `link link-primary`. Navigation links have no underline (menu items).
+External source links open in a new tab with `target="_blank" rel="noopener"`.
 
 ### Tables (worked examples)
-`w-full text-sm border-collapse` inside `overflow-x-auto`. Header row: `border-b-2 border-primary text-left font-mono text-xs
-uppercase tracking-wide`, cells `py-2 pr-4`. Body rows: `border-b border-primary/20`, cells `py-3 pr-4`; the first cell is
-`font-semibold` and number cells use `fact-value`. Followed by a `text-xs opacity-60 mt-3` note. No zebra striping, no
-cell borders, no coloured header.
+*Restyled in Step 4.* A daisyUI `table` inside `overflow-x-auto rounded-box border border-base-300 bg-base-100`. The wrapper
+scrolls sideways on a phone, so a wide table never widens the page. Header cells are `whitespace-nowrap`; the first column is
+`font-semibold`, number columns `tabular-nums`. A `text-xs opacity-70` note sits under the table. No zebra striping.
 
 ### Change list ("What's changed")
-A `space-y-3 max-w-2xl` list. Each item has a left rule `border-l-2 border-primary/30 pl-4`, a mono date label in
-`text-secondary` above it, then one sentence with old and new values in `fact-value font-semibold`.
+*Restyled in Step 4.* daisyUI `timeline timeline-vertical timeline-compact max-w-2xl`. Each `<li>` has a small dot in
+`timeline-middle` and a `timeline-end mb-6` block: the date (`<time class="text-xs opacity-70 block">`) then one sentence with
+old and new values in `font-semibold tabular-nums`. Don't add `timeline-snap-icon`: it breaks the compact layout.
 
 ### Explanation text
-Rendered by `renderExplanation()`: paragraphs `mb-4`, h3 sub-headings as above, lists `list-disc` (or `list-decimal`)
-`pl-6 mb-4 space-y-1`. No images, callout boxes or tables inside explanations.
+*Restyled in Step 4.* Built in PHP by `renderExplanation()` in `includes/functions.php`, so classes are set there, not in a
+template: paragraphs `mb-4`, h2 `font-display text-2xl font-semibold mt-8 mb-3`, h3 `font-display text-xl font-semibold mt-6
+mb-2`, lists `list-disc` or `list-decimal pl-6 mb-4 space-y-1`, links `link link-primary`. Wrapped in `max-w-2xl
+leading-relaxed`. No images, callouts or tables inside explanations.
 
 ### Preview banner (admin and previews only)
-`mb-6 border-2 border-dashed border-secondary px-4 py-3 text-sm`. A dashed border means "not public". Don't use it for
-anything a visitor sees.
+*Restyled in Step 4.* A daisyUI `alert alert-warning alert-soft` with `role="alert"`, because the view is not public. Don't
+use it for anything a visitor sees.
 
-### daisyUI components
-Used mainly in the admin editor (buttons, inputs, alerts). They take the theme colours automatically. On the public site,
-prefer plain Tailwind with the patterns above. If a daisyUI component is added to a public page, check its text and
-border contrast against the paper background first (inputs once had near-invisible borders until `base-content` was set).
+### Other daisyUI components
+*Rewritten in Step 4.* Every component is a daisyUI component (card, badge, table, timeline, alert, navbar, menu, dropdown,
+footer, breadcrumbs, link, btn, and the admin form controls). Plain Tailwind is for layout, spacing and type only. Use a
+component's own modifiers (`btn-primary`, `alert-warning`) rather than recolouring it with utility classes, and check any new
+component in light and dark and at 320px before using it.
 
 ## Motion
 
