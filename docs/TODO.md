@@ -233,6 +233,7 @@ The routine is in `docs/page-checklist.md`: free triage, then read the sources, 
 | **After 6 April 2027 (Making Tax Digital)** | Making Tax Digital for Income Tax text names the 2026, 2027 and 2028 stages and says partnerships have no start date yet; reword once the 2027 stage has started or the partnership date is set |
 | **After 1 July 2027 (Capital Gains Tax Discount, Australia)** | The page describes the 50% discount and the change from 1 July 2027 (indexation, 30% minimum tax); reword once the change has started |
 | **6 April 2027 (Student Loan Repayment Thresholds)** | The Student Loans Company announcement of 12 Nov 2026 says the Plan 5 threshold rises to £26,025 from 6 April 2027 and the Plan 2 threshold stays the same until 5 April 2028: update the Plan 5 card (and check the page text) on the day |
+| **1 April 2027 (Canada, Federal Minimum Wage)** | The federal rate is adjusted every April 1. Re-read the Service Canada pay page, update `ca_mw_federal` (new value, `previous_value` 18.15, `effective_from` 2027-04-01) and re-check the page text. The page's source is `.../federal-labour-standards/pay-deductions.html`; the CPI rule is on the ESDC news release |
 | **April 2028** | Help to Save text: the last paragraph says eligibility will widen then; reword once it has |
 | **Every April** | Most UK rates, allowances and benefit amounts change |
 | **20 March and 20 September** | Services Australia updates payment rates (Age Pension, JobSeeker): the cards are source-checked daily |

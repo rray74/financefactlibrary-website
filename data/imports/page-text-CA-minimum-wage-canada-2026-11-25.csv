@@ -1,0 +1,33 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,work-and-benefits,pay-and-leave,minimum-wage-canada,Federal Minimum Wage,"The federal minimum wage rate, which workplaces it covers, how it works with provincial and territorial rates, and what the federal rules say about salaried employees, call-in shifts and room and board.","## The federal minimum wage covers federally regulated workplaces
+
+The federal minimum wage is the lowest hourly rate an employer can pay an employee in a federally regulated workplace. It is set at {fact:ca_mw_federal} an hour and comes from Part III of the Canada Labour Code, which also sets rules on hours of work, vacations and general holidays.
+
+It is not the minimum wage for every job in Canada. The industries that must follow Part III include air transportation, banks, most federal Crown corporations (Canada Post Corporation is one) and radio and television broadcasting. Telecommunications are covered too. So are railways, trucking and bus services, shipping and pipelines that cross provincial or international borders, and First Nations Band Councils, including certain community services on reserve. Federal labour standards do not reach employees of other businesses, and provinces and territories set their own minimum wages.
+
+## The higher rate applies
+
+Where your province or territory has set a minimum wage above the federal rate, you are entitled to that higher provincial or territorial rate instead. Whichever of the two rates is larger is the one a federally regulated employer owes.
+
+## The rate is adjusted each April 1
+
+The federal rate is adjusted each April 1 to follow inflation. It uses the Consumer Price Index that Statistics Canada publishes for the calendar year before, and the result is rounded up to the nearest 5 cents.
+
+## It applies to employees, not self-employed workers
+
+These standards protect people who are employees of a federally regulated business. Self-employed and independent workers are outside them, and interns are inside. The federal guidance treats you as an employee if your employer schedules your shifts, supplies the tools and workspace, directs how the work is done and can discipline you. Someone who is self-employed decides their own hours and fees, supplies their own tools and can turn work down. The Canada Revenue Agency uses its own definition of an employee, which can give a different answer from the Labour Program's.
+
+## If you are not paid by the hour, or are called in
+
+Pay that is not based on time, such as a salary or a mileage rate, still has to match the minimum wage. To find the equivalent hourly rate, divide the pay you received by the hours you worked, leaving out vacation pay, general holiday pay and overtime pay.
+
+When you report to work at your employer's call, you are owed at least 3 hours of pay at your regular rate, even if you are given no work after you report.
+
+## Employees under 18, apprentices, and room and board
+
+The minimum wage applies to employees under 18. The federal rules set conditions for employing someone under 18: provincial law must not require them to attend school, the work must not be likely to endanger their health or safety, they cannot be required to work underground in a mine, and they cannot be required to work between 11 p.m. and 6 a.m.
+
+An employer does not have to pay the minimum wage to an apprentice who is registered under a provincial apprenticeship act and paid in line with it.
+
+If an employer provides room or board and you accept it, the employer may pay you less than the minimum wage. Wages cannot be reduced by more than {fact:ca_mw_meal} a meal, or by more than {fact:ca_mw_quarters} a day for living quarters.
+",Federal Minimum Wage Canada {tax_year}: {fact:ca_mw_federal},"The federal minimum wage is {fact:ca_mw_federal} an hour. See who it covers, how it changes each April 1 and how it works with provincial and territorial rates.",,

@@ -64,3 +64,13 @@ added once the first page (Minimum wage) is approved.
 - The Bank of Canada's policy interest rate and any other rate checked every 42 days or less. See core.md, section 2.
 - Call it the policy interest rate, as the Bank does. The Bank's Governing Council sets it at scheduled announcements: check the
   Council's name and the schedule on the Bank's own page before writing them down.
+
+## Reference page
+
+- The first page, Federal Minimum Wage (`minimum-wage-canada`), was approved on 25 November 2026. What it settled: a page from one
+  Service Canada source plus three reference sources (the news release that states the indexing rule, "Who is covered" and the
+  Part III industry list) can be about 560 words in six sections. The federal rate covers only federally regulated workplaces, so the
+  page says provinces and territories set their own wage and the higher rate applies. Card source: the stable Service Canada page, not
+  a dated news release. Text never types the rate or the room and board deduction amounts (placeholders). Typed legal figures (age 18,
+  11 p.m., 3 hours, 5 cents) show as one triage note. Official guidance is short and formulaic, so expect to restructure sentences,
+  not swap words, and to rerun the triage several times. Title: Federal Minimum Wage Canada {tax_year}: {fact:ca_mw_federal}.
