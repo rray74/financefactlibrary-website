@@ -507,26 +507,39 @@ function formatHistoryValue(array $change, string $side): string
  * Live figures for the "How we check our figures" page, so the claims
  * it makes about sourcing are always true: how many facts are published,
  * which publishers they come from, and when a figure was last checked.
+ *
+ * Only figures a visitor can actually see are counted: a published fact
+ * whose main page (primary_subject_id) is published, in a country that is
+ * live (jurisdictions.is_active = 1). Without this the page counted every
+ * published fact in the database, including those for countries not yet
+ * launched and for hidden draft pages, so its totals overstated what the
+ * site shows and its publisher list named sources for countries still to
+ * come. (Fixed 25 Nov 2026.)
  */
 function getSourcingStats(): array
 {
     $pdo = getDbConnection();
+
+    // Shared by both queries: facts on a published page in a live country.
+    $visible = "FROM facts f
+         JOIN subjects s ON s.id = f.primary_subject_id AND s.status = 'published'
+         JOIN subcategories sc ON sc.id = s.subcategory_id
+         JOIN categories c ON c.id = sc.category_id
+         JOIN jurisdictions j ON j.id = c.jurisdiction_id AND j.is_active = 1
+         LEFT JOIN sources src ON src.id = f.source_id
+         WHERE f.status = 'published'";
 
     $totals = $pdo->query(
         "SELECT COUNT(*) AS facts,
                 COUNT(DISTINCT f.source_id) AS sources,
                 SUM(src.is_allowlisted = 1) AS primary_facts,
                 MAX(f.last_verified_at) AS last_checked
-         FROM facts f
-         LEFT JOIN sources src ON src.id = f.source_id
-         WHERE f.status = 'published'"
+         $visible"
     )->fetch();
 
     $publishers = $pdo->query(
         "SELECT src.publisher, COUNT(*) AS facts
-         FROM facts f
-         JOIN sources src ON src.id = f.source_id
-         WHERE f.status = 'published'
+         $visible AND src.publisher IS NOT NULL
          GROUP BY src.publisher
          ORDER BY facts DESC, src.publisher ASC"
     )->fetchAll();
