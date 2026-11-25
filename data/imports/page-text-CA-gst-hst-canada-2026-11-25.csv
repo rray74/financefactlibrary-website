@@ -1,0 +1,30 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,tax,gst-hst,gst-hst-canada,GST and HST,"The GST and HST rates by place of supply, which goods are zero-rated, and when a business has to register to charge GST/HST.","## Which rate applies depends on where the supply is made
+
+The goods and services tax (GST) is a federal tax. In the participating provinces, the harmonized sales tax (HST) applies instead and includes a provincial portion. A supplier works out which rate to charge from the place of supply, which is where the sale, lease or other supply is made.
+
+- In a non-participating province, the GST rate is {fact:ca_gst_rate}.
+- In Ontario, the HST rate is {fact:ca_hst_on}.
+- In Nova Scotia, the HST rate is {fact:ca_hst_ns}.
+- In any other participating province, the HST rate is {fact:ca_hst_other}.
+
+## Some supplies are zero-rated or exempt
+
+Zero-rated supplies, such as basic groceries, are taxed at 0% in every province and territory. Some other supplies are exempt, and a business that only makes exempt supplies generally cannot register for a GST/HST account.
+
+Provincial sales tax (PST), where it applies, is left out of the price on which the GST is worked out.
+
+## How the place of supply is decided
+
+For goods, the place of supply is usually the province where the goods are delivered, or the province they are sent to if the supplier mails them, ships them or sends them by courier. For real property, the rate follows the property: the province that holds it decides. Services follow three general rules, with other specific rules that take over in some cases.
+
+Picture a mattress sold by a furniture store in British Columbia and delivered to Toronto. Ontario's HST applies, since that is where the goods end up.
+
+## When a business has to register
+
+Registration is required when a business makes taxable supplies in Canada and is not a small supplier. These are the rules for most businesses, and different rules apply to some others.
+
+A business is a small supplier while it does not go over {fact:ca_gst_small} across four consecutive calendar quarters. It does not have to register, though it can register voluntarily if it makes taxable supplies.
+
+- If it goes over {fact:ca_gst_small} in a single calendar quarter, it stops being a small supplier on the day of the supply that took it over. It has to register and charge the tax on that supply.
+- If it goes over {fact:ca_gst_small} across the previous four quarters, but not in any one of them, it stops being a small supplier at the end of the month after the quarter in which it went over.",Canada GST/HST: {fact:ca_gst_rate} GST and HST Rates,GST is {fact:ca_gst_rate} where there is no HST and HST is {fact:ca_hst_on} to {fact:ca_hst_other} in participating provinces. See the rate by place of supply and the small supplier limit.,,
