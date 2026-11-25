@@ -1,0 +1,28 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,work-and-benefits,benefits,child-support,Child support,"How child support works in New Zealand, who can get it or must pay it, how the formula counts shared care, and when payments are due.","## What child support is
+
+Child support is money that a parent who lives apart from their child, or who shares care with someone else, pays towards the cost of raising that child. The payer is known as the liable parent, or paying parent. The receiving carer, who gets the money, does not have to be a parent, and a grandparent, friend or other relative can fill the role. It is separate from Working for Families, and parents who have separated may be able to get both.
+
+## Four ways to set it up
+
+Parents can agree the amount between themselves with a private agreement and run the payments without Inland Revenue. With a voluntary agreement they still choose the amount, but they register it and Inland Revenue collects and passes on the money. With a formula assessment, Inland Revenue works out who pays and how much, and it collects the payments too. The fourth route is a Family Court order, which Inland Revenue then collects. If the child is on an Unsupported Child's Benefit, the route is fixed: Inland Revenue's formula. Under a formula assessment the parents cannot set the amount.
+
+## Who qualifies
+
+The tests below cover voluntary agreements and formula assessments. A private agreement can be on any terms the parents agree. To be required to pay, a parent either lives apart from the child or shares their care with someone else, and is not in a relationship and living with the person receiving the money. A parent can be named on the birth certificate, have adopted the child, have been married to the other parent at the conception or birth, or have been declared a parent by a court, among other routes. Residence matters too. The parent should either be a New Zealand citizen or ordinarily live here, or, for formula assessments only, live in Australia or another country that has a child support agreement with New Zealand.
+
+A child qualifies while under 18. At 18 they still qualify if enrolled at school, and support then stops on 31 December of the year of that birthday. They must be unmarried and financially dependent, which means under 16, or 16 or older and working an average of under 30 hours a week without a student allowance or a main benefit. They also need New Zealand citizenship or ordinary residence here.
+
+## How the formula works
+
+The formula takes in the child's age, each parent's income and living situation, how much time the child spends in each parent's care, what it costs to bring up a child, and the cost of any other children the parent supports. Non-parent carers' incomes are left out. Spending tables turn the income ranges into costs, and the assessment is redone when a child turns 13. Every 1 April several yearly figures are updated. For the {tax_year} year the living allowance is {fact:nz_cs_living}, or {fact:nz_cs_living_slp} for someone on supported living payments, and the minimum rate is {fact:nz_cs_min} a year.
+
+## Shared care
+
+The formula counts time with each parent as recognised care, based on nights. A child has to be with a parent at least {fact:nz_cs_care_formula} of the time for it to count at all, and below that the formula treats it as 0% care. Receiving payments needs a higher share: {fact:nz_cs_care_receive} of the time. That can leave nobody paying: a much higher earner with at least 9 nights a fortnight of care may owe the other parent, who cannot receive support without {fact:nz_cs_care_receive} of the care. Only ongoing arrangements are recognised, so a school holiday swap will probably not change the percentage.
+
+A change in care should be reported within four weeks, and the record is then updated from the date of the change. A later report takes effect only from the day Inland Revenue is told, because it cannot backdate.
+
+## When payments are due
+
+Once an application or agreement is accepted, the first monthly payment falls due within 30 days. Later payments reach Inland Revenue by the 20th of the following month, and it passes them on by the 23rd if it was paid on time. April's payment, for example, is due on 20 May and reaches the carer by 23 May. For someone starting out with child support, in most cases the employer takes the payments from their wages.",NZ Child Support: {fact:nz_cs_min} Minimum a Year,"How child support works in New Zealand: the four ways to set it up, who qualifies, how the formula treats shared care, and the {tax_year} minimum rate.",,
