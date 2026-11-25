@@ -1,0 +1,31 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,savings-and-investments,registered-accounts,first-home-savings-account,First Home Savings Account (FHSA),"Who can open a first home savings account, how much room there is each year and over a lifetime, how withdrawals for a first home work, and when the account has to close.","## What an FHSA is
+
+An FHSA is a registered plan that helps first-time buyers save for a qualifying first home, within limits. Money you pay in can generally be deducted to lower your tax, but a transfer into an FHSA from your registered retirement savings plans (RRSPs) cannot.
+
+## Who can open one
+
+You have to meet every condition when you open the account:
+
+- You are 18 or older, or 19 where that is the legal age to sign a contract in your province or territory.
+- At the end of the year you open the account, you are no older than 71.
+- You are a resident of Canada.
+- You are a first-time home buyer, which means you did not live in a qualifying home that you owned or jointly owned as your principal residence in the current calendar year or the previous 4 calendar years. The same test applies to a home owned by your current spouse or common-law partner, if you have one.
+
+Qualifying homes are housing units in Canada, existing or under construction: detached and semi-detached houses, townhouses, mobile homes, condo units and apartments in duplexes or larger buildings. A co-operative housing share counts if it gives you equity, and does not count if it only gives you the right to rent.
+
+## How much you can put in
+
+Open your first FHSA and that year's participation room is {fact:ca_fhsa_annual}. That room covers contributions and transfers from your RRSPs combined, and it is shared across every FHSA you hold. Later years add any unused room that carries forward, and the CRA applies a lifetime limit of {fact:ca_fhsa_lifetime}. Income earned inside the account does not use up room. Only the account holder can contribute to an FHSA or claim the deduction.
+
+Going over your room creates an excess amount, taxed at 1% per month on the highest excess in the month.
+
+## Taking money out
+
+A qualifying withdrawal is tax-free and does not have to be repaid. There is no minimum time money must stay in the account first. The withdrawal rules use their own first-time buyer test, which differs from the one for opening an account. You must not have lived in a home you owned earlier in the current calendar year (the 30 days immediately before withdrawing are ignored) or in the 4 calendar years before that. The home must also be covered by a signed contract, and the sale or construction has to be completed before October 1 of the year following the withdrawal. Other withdrawals are generally taxable and are included in your income.
+
+You can combine an FHSA qualifying withdrawal with a Home Buyers' Plan withdrawal from your RRSP for the same home, as long as you meet the conditions for each.
+
+## When the account has to close
+
+Participation is time-limited. The period begins the day you open your first FHSA. Whichever of three events comes first sets the end date, which is December 31 of that year: the 15th anniversary of opening, the year you turn 71, or the year after your first qualifying withdrawal. Before then, you can generally transfer what is left into an RRSP or registered retirement income fund (RRIF) on a tax-deferred basis. Property still in the account after the period ends stops being an FHSA, and its fair market value is added to your income for that year.",FHSA Canada: {fact:ca_fhsa_annual} Annual Room,An FHSA helps first-time buyers save for a home. Room is {fact:ca_fhsa_annual} a year with a {fact:ca_fhsa_lifetime} lifetime limit. See who qualifies and how withdrawals work.,,
