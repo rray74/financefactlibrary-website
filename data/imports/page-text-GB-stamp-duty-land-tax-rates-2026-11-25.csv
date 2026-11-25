@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,tax,stamp-duty,stamp-duty-land-tax-rates,"Stamp Duty Land Tax Rates (England & NI)","What buyers in England and Northern Ireland pay in Stamp Duty Land Tax at each price band, with first-time buyer relief, the extra homes surcharge and the non-resident surcharge.","## Each rate applies only to the slice of the price inside its band
+
+Buyers of residential property in England or Northern Ireland pay Stamp Duty Land Tax (SDLT) in slices, with the rate stepping up as the price passes each band boundary. The first {fact:sdlt_nil_rate_threshold} of a standard purchase is taxed at nothing, and four bands above it rise from {fact:sdlt_band_2pct} to {fact:sdlt_band_12pct}, each applying only to the part of the price that falls inside it. What is owed also depends on when the property was bought and whether a relief or exemption applies. Scotland and Wales have their own taxes, set out on the [Scottish LBTT](/uk/tax/stamp-duty/scottish-stamp-duty-lbtt/) and [Welsh LTT](/uk/tax/stamp-duty/welsh-stamp-duty-ltt/) pages.
+
+For a lease being granted for the first time, SDLT is charged on the lease premium at the same rates. Where the total rent over the life of the lease is above the nil-rate threshold, a further 1% is due on the excess.
+
+Some purchases follow their own SDLT calculations instead of these bands. Buying through a company or trust is one, as is buying six or more homes in a single transaction, taking on a shared ownership property or making linked purchases from the same seller.
+
+## First-time buyers pay nothing up to {fact:sdlt_ftb_nil_rate_threshold}, but only on homes up to a price cap
+
+The relief is available when everyone buying is a first-time buyer. No SDLT is due up to {fact:sdlt_ftb_nil_rate_threshold}, and the next slice, up to {fact:sdlt_ftb_relief_cap}, is taxed at {fact:sdlt_band_5pct}. Above that price, the relief cannot be claimed at all, and the rules for people who have bought a home before apply to the whole purchase, not only to the excess.
+
+## Extra homes and non-residents pay surcharges on top
+
+A surcharge of {fact:sdlt_additional_property_surcharge} is added to the standard rates when a purchase means the buyer will own more than one residential property. It is not charged where the property being bought replaces the buyer's main residence and the previous one was sold within 36 months of completing the purchase. A buyer who has not sold the old home by the day of completion pays the higher rates, because they then own two, and may be able to claim a refund afterwards.
+
+Buyers who have not been in the UK for at least 183 days in the year before the purchase count as non-residents, and normally pay a surcharge of {fact:sdlt_non_resident_surcharge} on residential purchases in England or Northern Ireland. It comes on top of any other rates, including the extra homes surcharge or the first-time buyer rates, and certain properties, transactions and types of buyer are exempt from it.","Stamp Duty Land Tax Rates (England and NI)","Stamp Duty in England and Northern Ireland is nil up to {fact:sdlt_nil_rate_threshold}. See the bands, first-time buyer relief and the surcharges for extra homes.",,"2026-11-25 09:11:46"
