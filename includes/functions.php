@@ -845,7 +845,12 @@ function showErrorPage(int $status, string $message): void
     $pageTitle = $status === 410 ? 'No longer available' : 'Not found';
     $noindex = true;
     include __DIR__ . '/header.php';
-    echo '<p>' . e($message) . '</p>';
+    // Restyle Step 5: a heading, the message and a clear way back, so a dead end is never a bare line of text.
+    echo '<section class="max-w-xl py-6">'
+        . '<h1 class="font-display text-4xl font-semibold mb-3">' . e($pageTitle) . '</h1>'
+        . '<p class="opacity-80 mb-6">' . e($message) . '</p>'
+        . '<a href="/" class="btn btn-primary">Go to the home page</a>'
+        . '</section>';
     include __DIR__ . '/footer.php';
     exit;
 }

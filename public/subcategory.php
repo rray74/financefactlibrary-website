@@ -41,16 +41,19 @@ include __DIR__ . '/../includes/header.php';
 <?php if (empty($subjects)): ?>
 <p class="opacity-70">No subjects here yet.</p>
 <?php else: ?>
-<div class="grid sm:grid-cols-2 gap-6">
+<div class="grid sm:grid-cols-2 gap-4 sm:gap-5">
     <?php foreach ($subjects as $subject): ?>
+    <?php // daisyUI card as a link (restyle Step 5): the whole card is the tap target. ?>
     <a href="<?= e(subjectUrl($country['url_prefix'], $subcategory['category_slug'], $subcategory['slug'], $subject['slug'])) ?>"
-        class="fact-card p-6 block">
-        <h3 class="font-display text-xl font-semibold mb-2"><?= e($subject['name']) ?></h3>
-        <?php // Intros can contain placeholders, filled in the same way as on the subject page. ?>
-        <?php $cardIntro = fillSubjectPlaceholders($subject['intro'], (int) $subject['id'], $country['code']); ?>
-        <?php if ($cardIntro): ?>
-        <p class="text-sm opacity-80"><?= e($cardIntro) ?></p>
-        <?php endif; ?>
+        class="card card-border border-base-content/20 bg-base-100 hover:bg-base-200 transition-colors">
+        <div class="card-body p-5 gap-1">
+            <h3 class="card-title font-display text-xl"><?= e($subject['name']) ?></h3>
+            <?php // Intros can contain placeholders, filled in the same way as on the subject page. ?>
+            <?php $cardIntro = fillSubjectPlaceholders($subject['intro'], (int) $subject['id'], $country['code']); ?>
+            <?php if ($cardIntro): ?>
+            <p class="text-sm opacity-80"><?= e($cardIntro) ?></p>
+            <?php endif; ?>
+        </div>
     </a>
     <?php endforeach; ?>
 </div>

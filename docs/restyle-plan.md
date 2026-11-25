@@ -68,7 +68,7 @@ The page most visitors see, and the most components:
 - `article.php` still uses the old `.fact-card` and moves to the daisyUI card in Step 5, after which `.fact-card` and
   `.article-body` are deleted from `src/input.css`.
 
-### Step 5: Everything else public
+### Step 5: Everything else public - DONE 25 Nov 2026 (checked at 375px and desktop, light and dark)
 - Browse pages: `index.php`, `category.php`, `subcategory.php`, plus the country switch.
 - Long-text pages: `about.php`, `how-we-check.php`, `disclaimer.php`, `privacy.php`, `article.php` (build the long-text layout once).
 - Error and 404 pages, and optional extras (favicon, social share image). The site has none today.

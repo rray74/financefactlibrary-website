@@ -5,9 +5,9 @@ tone) see `docs/house-style/`. Written 25 November 2026 from the live code: `src
 `includes/header.php`, `includes/footer.php`, `public/fact.php` and `renderExplanation()` in `includes/functions.php`.
 If this file and the code disagree, the code wins: fix this file.
 
-**Restyle in progress (from 25 November 2026):** the site is being rebuilt on daisyUI with light and dark themes (see
-`docs/restyle-plan.md`). This guide is updated in the same commit as each restyle step. Until a section is rewritten it
-describes the old navy-and-paper design and is marked as such.
+**Restyle in progress (from 25 November 2026):** the public site is now on daisyUI with light and dark themes (Steps 1 to 5
+of `docs/restyle-plan.md`). The admin editor (Step 6) is still to do, and the Components notes for it are marked
+pre-restyle. This guide is updated in the same commit as each restyle step.
 
 ## Principles
 
@@ -90,35 +90,30 @@ Three families, loaded from Google Fonts in `includes/header.php` and mapped in 
 | IBM Plex Sans | `font-sans` (the body default) | 400, 500, 600 | Body text, navigation, tables, notes |
 | IBM Plex Mono | `font-mono` | 500 | Small uppercase labels and dates |
 
-The type scale, the label style and the opacity steps below are the old design's. They are replaced as each page type is
-restyled (Steps 3 to 5); only the three families above are current.
-
-*Pre-restyle, replaced in Steps 3 to 5:*
-
-Type scale in use (don't invent new steps without a reason):
+*Rewritten through Step 5.* Type scale in use (don't invent new steps without a reason):
 
 | Element | Classes |
 |---|---|
-| Wordmark | `font-display text-2xl font-semibold tracking-tight` |
+| Wordmark | `font-display text-lg sm:text-2xl font-semibold tracking-tight` |
 | Page title (h1) | `font-display text-4xl font-semibold mb-3` (hero variant: `text-4xl sm:text-5xl leading-tight`) |
 | Section heading (h2) | `font-display text-2xl font-semibold mb-3` |
 | Sub-heading (h3, in explanations) | `font-display text-xl font-semibold mt-6 mb-2` |
 | Intro / lead paragraph | `text-lg opacity-80 max-w-xl` |
 | Body | default size, `leading-relaxed` in explanations |
-| Small print and notes | `text-sm`, `text-xs opacity-60` for source lines |
-| Label (breadcrumb, table head, dates) | `font-mono text-xs uppercase tracking-wide` (+ `text-secondary` for breadcrumbs and dates) |
-| Figure value | `fact-value font-display text-3xl font-semibold text-primary` (`text-2xl` in tight lists) |
+| Small print and notes | `text-sm`; `text-xs opacity-70` for source lines |
+| Section label | `font-mono text-xs uppercase tracking-wide opacity-70` |
+| Figure value | `font-display text-3xl font-semibold tabular-nums break-words` (`text-2xl` in small cards) |
 
 Rules:
-- Every number that should line up uses the `fact-value` class (tabular figures). Use it in table cells and figure cards.
-- Headings are semibold serif, sentence case. Don't use `font-bold` or all-caps headings. All-caps is for mono labels only.
-- Secondary text is made lighter with opacity, in steps: `opacity-80` (intro, supporting), `opacity-70` (captions, empty
-  states), `opacity-60` (source lines), `opacity-50` (separators). Don't go below 50.
+- Every number that should line up uses `tabular-nums` (table cells, figure values, counts).
+- Headings are semibold serif, sentence case. Don't use `font-bold` or all-caps headings. All-caps is for section labels only.
+- Secondary text is made lighter with opacity, in steps: `opacity-80` (intro, supporting), `opacity-70` (captions, labels,
+  source lines, empty states). Don't go below 70 for text people need to read.
 - One h1 per page. Headings go in order (h1, h2, h3), not chosen for size.
 
 ## Layout and spacing
 
-*Rewritten for the restyle (Step 3). The grid and card spacing below it is still pre-restyle, replaced in Steps 4 and 5.*
+*Rewritten for the restyle (Steps 3 to 5).*
 
 - Page width: `max-w-4xl mx-auto px-4 sm:px-6`, the same in the header, `<main>` and footer. `<main>` padding is
   `py-8 sm:py-10`. Side padding is 16px on a phone and 24px from `sm` up.
@@ -127,10 +122,8 @@ Rules:
   `overflow-x-auto`.
 - Touch targets are at least 44px: use daisyUI's default button size (3rem), not `btn-sm`, for anything tapped on a phone.
 
-*Rewritten through Step 4:*
-
 - Reading width: prose and lists are capped, `max-w-2xl` for the explanation, `max-w-xl` for intros and short paragraphs.
-  Never let body text run the full 4xl width. (`.article-body`, 68ch, is pre-restyle and goes in Step 5.)
+  Never let body text run the full 4xl width. 
 - Vertical rhythm between page sections: `mb-8` to `mb-14` (`mt-14` before the explanation, worked examples and "What's
   changed"). Between paragraphs: `mb-4`. Between a heading and its content: `mb-2` to `mb-4`.
 - Figure grids: `grid sm:grid-cols-2 gap-4 sm:gap-5`. One column on a phone, two from `sm`.
@@ -139,7 +132,7 @@ Rules:
 
 ## Components
 
-*Pre-restyle, replaced in Steps 3 to 6. The responsive and light and dark requirements above apply to all new work.*
+*Public components restyled in Steps 3 to 5. Admin components are still to do (Step 6).*
 
 ### Header
 *Restyled in Step 3.* `includes/header.php`, a daisyUI `navbar` in a `bg-base-100` bar with a `border-b border-base-300`.
@@ -175,8 +168,7 @@ Contents, in this order: label (`text-sm opacity-80`) with an optional region ba
 (`font-display text-3xl font-semibold tabular-nums break-words`), an optional context line (`text-sm opacity-80`), the source
 line (`text-xs opacity-70`: linked source name, "since" date, "checked" date, separated by `&middot;`), then an optional
 "More on ... &rarr;" link (`link link-primary text-xs`). The border is `base-content` at 20% so it shows in both themes.
-Use `tabular-nums` on every figure that should line up. The old `.fact-card` class is gone from `fact.php` but is still used
-by `article.php` until Step 5.
+Use `tabular-nums` on every figure that should line up. The old `.fact-card` class has been deleted from the CSS.
 
 ### Region badge
 *Restyled in Step 4.* daisyUI `badge badge-outline badge-sm ml-1` next to the label of a figure that applies to one region.
@@ -206,6 +198,42 @@ leading-relaxed`. No images, callouts or tables inside explanations.
 *Restyled in Step 4.* A daisyUI `alert alert-warning alert-soft` with `role="alert"`, because the view is not public. Don't
 use it for anything a visitor sees.
 
+### Link cards (home, category and subcategory pages)
+*Restyled in Step 5.* The whole card is one link, so the whole card is the tap target:
+
+```
+<a href="..." class="card card-border border-base-content/20 bg-base-100 hover:bg-base-200 transition-colors">
+  <div class="card-body p-5 gap-1"> <h3 class="card-title font-display text-xl">...</h3> <p class="text-sm opacity-80">...</p> </div>
+</a>
+```
+In a `grid sm:grid-cols-2 gap-4 sm:gap-5`. The country picker on the main home page uses the same card with
+`card-title font-display text-2xl`.
+
+### Subject lists (country home page)
+*Restyled in Step 5.* Under each category: an h2 link (`link link-hover`) over a `border-b border-base-300` rule, then for each
+subcategory a small mono label and a list of `link link-hover inline-block py-2` links (the padding keeps each one a
+comfortable tap target).
+
+### Section label
+*Restyled in Step 5.* The small uppercase label above a heading or list: `font-mono text-xs uppercase tracking-wide opacity-70`.
+It's neutral text, not a brand colour, so it keeps its contrast whatever the palette becomes.
+
+### Long-text pages (About, How we check, Disclaimer, Privacy)
+*Restyled in Step 5.* One `article.max-w-2xl`: h1 `font-display text-4xl font-semibold mb-6`, a `text-lg opacity-80` lead, h2
+`font-display text-2xl font-semibold mb-3`, paragraphs `mb-4` or `mb-8` before the next heading, lists `list-disc pl-6
+space-y-1`, links `link link-primary`, and a `text-sm opacity-70` "Last updated" line. The live totals on How we check are a
+daisyUI `stats stats-vertical sm:stats-horizontal` (stacked on a phone), and the publisher list is a daisyUI `list` with
+`list-row` and `list-col-grow`.
+
+### Article page
+*Restyled in Step 5.* The body is stored HTML with no classes, so the wrapper styles its children with Tailwind arbitrary
+variants (`max-w-2xl leading-relaxed [&_p]:mb-4 [&_h2]:font-display ...`). "Figures used" are the same daisyUI figure card as
+the subject page, smaller (`card-body p-4`). The old `.article-body` CSS is deleted.
+
+### Error pages
+*Restyled in Step 5.* `showErrorPage()` in `includes/functions.php`: an h1 (`font-display text-4xl`), the message in
+`opacity-80`, and a `btn btn-primary` back to the home page. Still `noindex` and sent with the real 404 or 410 status.
+
 ### Other daisyUI components
 *Rewritten in Step 4.* Every component is a daisyUI component (card, badge, table, timeline, alert, navbar, menu, dropdown,
 footer, breadcrumbs, link, btn, and the admin form controls). Plain Tailwind is for layout, spacing and type only. Use a
@@ -214,30 +242,33 @@ component in light and dark and at 320px before using it.
 
 ## Motion
 
-*Pre-restyle, replaced in Steps 3 to 6. The responsive and light and dark requirements above apply to all new work.*
-
-Only two things move: figure cards lift on hover (0.15s ease) and links change colour (`transition-colors`). No
-animation on load, no scroll effects, no carousels. Respect reduced motion if anything else is ever added.
+*Rewritten in Step 5.* Only two things move: link cards change background on hover and links change colour, both with
+`transition-colors`. No animation on load, no scroll effects, no carousels. Respect `prefers-reduced-motion` if anything else
+is ever added.
 
 ## Accessibility
 
-*Pre-restyle, replaced in Steps 3 to 6. The responsive and light and dark requirements above apply to all new work.*
+*Rewritten in Step 5. The stock palette's contrast has not been measured: check it, in both themes, before relying on it,
+and again after any palette override.*
 
-- Navy on paper is high contrast (well above WCAG AA). Check any new colour pairing before using it, especially sage
-  and mustard text on paper and white.
+- Body text is `base-content` on `base-100`. Check any new colour pairing, especially brand colours used as text or as a
+  button fill, in both themes.
 - Meaning is never carried by colour alone.
-- Links are identifiable in body text (underlined). Keep visible focus outlines: don't remove them with `outline-none`
-  unless a replacement is added.
+- Links are identifiable in body text (daisyUI `link` underlines). Keep visible focus outlines: don't remove them with
+  `outline-none` unless a replacement is added.
+- Icon-only buttons (the menu button and theme toggle) have an `aria-label`; decorative icons are `aria-hidden="true"`.
+- Tap targets are at least 44px on a phone: default-size buttons, `py-2` on text links in lists, whole-card links.
 - `<html lang>` comes from the country's locale (for example `en-GB`). Don't hard-code it.
-- Images (if ever added) need alt text. The site currently uses no images or icons.
-- Breadcrumbs, figures and tables use real `<nav>`, `<table>` and heading elements, and pages carry breadcrumb JSON-LD.
+- Navigation, breadcrumbs, tables and headings use real elements (`<nav aria-label>`, `<table>`, `<h1>` to `<h3>`), and
+  pages carry breadcrumb JSON-LD.
+- The site has no photos or illustrations. Add alt text if any are ever added.
 
 ## Adding or changing design
 
 1. Reuse a pattern above first. Most pages need no new classes.
-2. If a pattern is missing, add it to `src/input.css` (a named class with a comment saying why) rather than repeating a long
-   class string across templates.
+2. If a pattern is missing, build it from daisyUI components first. Only if that can't be done, add a named class to
+   `src/input.css` with a comment saying why, and list it in this guide.
 3. Run `npm run build`, check the page at phone width and at desktop width on MAMP, and commit the compiled
    `public/assets/css/tailwind.css` with the change.
 4. Update this file in the same commit.
-5. Ask before changing the palette, fonts or the figure card: they're the site's identity and affect every page.
+5. Changing the palette or fonts is expected (see Stack) but affects every page: check each page type in both themes.

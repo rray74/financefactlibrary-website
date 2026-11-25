@@ -35,7 +35,7 @@ if (($_GET['country'] ?? '') === '') {
     </section>
 
     <section class="mb-14">
-        <h2 class="font-mono text-xs uppercase tracking-wide text-secondary mb-4">
+        <h2 class="font-mono text-xs uppercase tracking-wide opacity-70 mb-4">
             Choose your country
         </h2>
         <ul class="grid sm:grid-cols-2 gap-4 max-w-xl">
@@ -45,10 +45,11 @@ if (($_GET['country'] ?? '') === '') {
                   // Australia or New Zealand go live. ?>
             <?php foreach (getActiveCountries() as $liveCountry): ?>
             <li>
+                <?php // daisyUI card as a link (restyle Step 5): the whole card is the tap target. ?>
                 <a href="<?= e(countryUrl($liveCountry['url_prefix'])) ?>"
-                    class="block border-2 border-primary p-5 hover:text-accent transition-colors">
-                    <span class="font-display text-2xl font-semibold">
-                        <?= e($liveCountry['name']) ?>
+                    class="card card-border border-base-content/20 bg-base-100 hover:bg-base-200 transition-colors">
+                    <span class="card-body p-5">
+                        <span class="card-title font-display text-2xl"><?= e($liveCountry['name']) ?></span>
                     </span>
                 </a>
             </li>
@@ -98,9 +99,9 @@ include __DIR__ . '/../includes/header.php';
 <?php if (empty($subcategories)) continue; ?>
 
 <section class="mb-14">
-    <div class="flex items-baseline justify-between border-b-2 border-primary pb-2 mb-6">
+    <div class="flex items-baseline justify-between border-b border-base-300 pb-2 mb-6">
         <h2 class="font-display text-2xl font-semibold">
-            <a href="<?= e(categoryUrl($country['url_prefix'], $category['slug'])) ?>" class="hover:text-accent">
+            <a href="<?= e(categoryUrl($country['url_prefix'], $category['slug'])) ?>" class="link link-hover">
                 <?= e($category['name']) ?>
             </a>
         </h2>
@@ -110,20 +111,20 @@ include __DIR__ . '/../includes/header.php';
         <?php foreach ($subcategories as $subcategory): ?>
         <?php $subjects = getSubjectsBySubcategoryId($subcategory['id']); ?>
         <div>
-            <h3 class="font-mono text-xs uppercase tracking-wide text-secondary mb-3">
+            <h3 class="font-mono text-xs uppercase tracking-wide opacity-70 mb-2">
                 <?= e($subcategory['name']) ?>
             </h3>
-            <ul class="space-y-2">
+            <ul>
                 <?php foreach ($subjects as $subject): ?>
                 <li>
                     <a href="<?= e(subjectUrl($country['url_prefix'], $category['slug'], $subcategory['slug'], $subject['slug'])) ?>"
-                        class="hover:text-accent transition-colors">
+                        class="link link-hover inline-block py-2">
                         <?= e($subject['name']) ?>
                     </a>
                 </li>
                 <?php endforeach; ?>
                 <?php if (empty($subjects)): ?>
-                <li class="opacity-50 text-sm">Nothing here yet.</li>
+                <li class="opacity-70 text-sm py-2">Nothing here yet.</li>
                 <?php endif; ?>
             </ul>
         </div>

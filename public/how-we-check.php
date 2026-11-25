@@ -24,20 +24,21 @@ include __DIR__ . '/../includes/header.php';
     </p>
 
     <?php // Live summary from the database. ?>
-    <div class="grid sm:grid-cols-3 gap-4 mb-10">
-        <div class="fact-card p-5">
-            <p class="text-sm opacity-70">Figures published</p>
-            <p class="fact-value font-display text-3xl font-semibold text-primary"><?= number_format((int) $totals['facts']) ?></p>
+    <?php // daisyUI stats (restyle Step 5): stacked on a phone, in a row from sm up. ?>
+    <div class="stats stats-vertical sm:stats-horizontal w-full border border-base-content/20 bg-base-100 mb-10">
+        <div class="stat">
+            <div class="stat-title">Figures published</div>
+            <div class="stat-value font-display tabular-nums"><?= number_format((int) $totals['facts']) ?></div>
         </div>
-        <div class="fact-card p-5">
-            <p class="text-sm opacity-70">Source pages used</p>
-            <p class="fact-value font-display text-3xl font-semibold text-primary"><?= number_format((int) $totals['sources']) ?></p>
+        <div class="stat">
+            <div class="stat-title">Source pages used</div>
+            <div class="stat-value font-display tabular-nums"><?= number_format((int) $totals['sources']) ?></div>
         </div>
-        <div class="fact-card p-5">
-            <p class="text-sm opacity-70">Most recent check</p>
-            <p class="fact-value font-display text-2xl font-semibold text-primary">
+        <div class="stat">
+            <div class="stat-title">Most recent check</div>
+            <div class="stat-value font-display text-2xl sm:text-3xl tabular-nums">
                 <?= $totals['last_checked'] ? date('j M Y', strtotime($totals['last_checked'])) : '—' ?>
-            </p>
+            </div>
         </div>
     </div>
 
@@ -47,11 +48,12 @@ include __DIR__ . '/../includes/header.php';
         departments, tax authorities and public bodies. Each fact links to the exact page it came
         from. The figures on this site currently come from:
     </p>
-    <ul class="mb-8 space-y-1">
+    <?php // daisyUI list (restyle Step 5). ?>
+    <ul class="list rounded-box border border-base-300 bg-base-100 mb-8">
         <?php foreach ($stats['publishers'] as $publisher): ?>
-        <li class="flex justify-between border-b border-primary/20 py-1">
-            <span><?= e($publisher['publisher']) ?></span>
-            <span class="font-mono text-xs opacity-60"><?= (int) $publisher['facts'] ?> figures</span>
+        <li class="list-row items-center">
+            <span class="list-col-grow"><?= e($publisher['publisher']) ?></span>
+            <span class="text-xs opacity-70 tabular-nums"><?= (int) $publisher['facts'] ?> figures</span>
         </li>
         <?php endforeach; ?>
     </ul>
@@ -99,7 +101,7 @@ include __DIR__ . '/../includes/header.php';
     <h2 class="font-display text-2xl font-semibold mb-3">Reporting an error</h2>
     <p>
         If you think a figure is wrong or out of date, please email
-        <a href="mailto:<?= e(SITE_CONTACT_EMAIL) ?>" class="underline hover:text-accent"><?= e(SITE_CONTACT_EMAIL) ?></a>.
+        <a href="mailto:<?= e(SITE_CONTACT_EMAIL) ?>" class="link link-primary"><?= e(SITE_CONTACT_EMAIL) ?></a>.
         It will be checked against its source and corrected if needed.
     </p>
     <?php endif; ?>

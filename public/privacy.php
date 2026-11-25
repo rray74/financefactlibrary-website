@@ -102,7 +102,7 @@ include __DIR__ . '/../includes/header.php';
         Depending on where you live, you may have the right to ask what personal information is held
         about you, and to have it corrected or deleted.<?php if (SITE_CONTACT_EMAIL !== ''): ?>
         To do this, or for any privacy question, email
-        <a href="mailto:<?= e(SITE_CONTACT_EMAIL) ?>" class="underline hover:text-accent"><?= e(SITE_CONTACT_EMAIL) ?></a>.<?php endif; ?>
+        <a href="mailto:<?= e(SITE_CONTACT_EMAIL) ?>" class="link link-primary"><?= e(SITE_CONTACT_EMAIL) ?></a>.<?php endif; ?>
     </p>
     <p class="mb-8">
         If you're not happy with the reply, you can complain to the privacy regulator where you live:
