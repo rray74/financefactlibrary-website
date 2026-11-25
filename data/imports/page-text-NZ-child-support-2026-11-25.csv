@@ -5,7 +5,7 @@ Child support is money that a parent who lives apart from their child, or who sh
 
 ## Four ways to set it up
 
-Parents can agree the amount between themselves with a private agreement and run the payments without Inland Revenue. With a voluntary agreement they still choose the amount, but they register it and Inland Revenue collects and passes on the money. With a formula assessment, Inland Revenue works out who pays and how much, and it collects the payments too. The fourth route is a Family Court order, which Inland Revenue then collects. If the child is on an Unsupported Child's Benefit, the route is fixed: Inland Revenue's formula. Under a formula assessment the parents cannot set the amount.
+Parents can agree the amount between themselves with a private agreement and run the payments without Inland Revenue (IRD). With a voluntary agreement they still choose the amount, but they register it and IRD collects and passes on the money. With a formula assessment, IRD works out who pays and how much, and it collects the payments too. The fourth route is a Family Court order, which IRD then collects. If the child is on an Unsupported Child's Benefit, the route is fixed: IRD's formula. Under a formula assessment the parents cannot set the amount.
 
 ## Who qualifies
 
@@ -21,8 +21,8 @@ The formula takes in the child's age, each parent's income and living situation,
 
 The formula counts time with each parent as recognised care, based on nights. A child has to be with a parent at least {fact:nz_cs_care_formula} of the time for it to count at all, and below that the formula treats it as 0% care. Receiving payments needs a higher share: {fact:nz_cs_care_receive} of the time. That can leave nobody paying: a much higher earner with at least 9 nights a fortnight of care may owe the other parent, who cannot receive support without {fact:nz_cs_care_receive} of the care. Only ongoing arrangements are recognised, so a school holiday swap will probably not change the percentage.
 
-A change in care should be reported within four weeks, and the record is then updated from the date of the change. A later report takes effect only from the day Inland Revenue is told, because it cannot backdate.
+A change in care should be reported within four weeks, and the record is then updated from the date of the change. A later report takes effect only from the day IRD is told, because it cannot backdate.
 
 ## When payments are due
 
-Once an application or agreement is accepted, the first monthly payment falls due within 30 days. Later payments reach Inland Revenue by the 20th of the following month, and it passes them on by the 23rd if it was paid on time. April's payment, for example, is due on 20 May and reaches the carer by 23 May. For someone starting out with child support, in most cases the employer takes the payments from their wages.",NZ Child Support: {fact:nz_cs_min} Minimum a Year,"How child support works in New Zealand: the four ways to set it up, who qualifies, how the formula treats shared care, and the {tax_year} minimum rate.",,
+Once an application or agreement is accepted, the first monthly payment falls due within 30 days. Later payments reach IRD by the 20th of the following month, and it passes them on by the 23rd if it was paid on time. April's payment, for example, is due on 20 May and reaches the carer by 23 May. For someone starting out with child support, in most cases the employer takes the payments from their wages.",NZ Child Support: {fact:nz_cs_min} Minimum a Year,"How child support works in New Zealand: the four ways to set it up, who qualifies, how the formula treats shared care, and the {tax_year} minimum rate.",,
