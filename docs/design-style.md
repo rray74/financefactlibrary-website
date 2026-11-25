@@ -11,56 +11,85 @@ describes the old navy-and-paper design and is marked as such.
 
 ## Principles
 
-- **A reference library, not a SaaS product.** The look is an index card on paper in ink: warm off-white, navy ink, hard
-  edges, flat offset shadows. No gradients, blur shadows, glass, rounded pill buttons or stock illustration.
-- **The figure is the hero.** A number is the biggest thing on its card, set in the display serif, with its source and dates
-  small underneath. Trust comes from showing the source, "since" date and "checked" date on every figure.
-- **Quiet and readable.** Generous white space, one column of text, hierarchy through size and weight, not colour.
+*Rewritten for the restyle (Step 1, 25 November 2026).*
+
+- **A reference library.** Calm, plain and easy to scan. Standard daisyUI components, used as they come, with no custom
+  component CSS unless a pattern can't be built from daisyUI and Tailwind layout classes. Anything custom is named, commented
+  and listed in this guide.
+- **The figure is the hero.** A number is the biggest thing on its card, with its source and dates small underneath. Trust
+  comes from showing the source, "since" date and "checked" date on every figure.
+- **Theme tokens only.** Colour comes from daisyUI tokens, never fixed hex values or `bg-white`, so the palette can be
+  changed in one place later and light and dark both work.
+- **Fully responsive.** Mobile first, from a 320px phone up to a wide desktop. No horizontal page scroll, tap targets at
+  least 44px, wide tables scroll inside their own container.
+- **Light and dark.** Both are first-class. Every component is checked in both.
 - **Same on every country page.** Country pages differ in content, never in layout or colour.
 
 ## Stack
 
-Tailwind CSS 4 plus daisyUI 5, compiled by the Tailwind CLI. The theme is a single custom daisyUI theme,
-`financefactlibrary` (set on `<html data-theme="financefactlibrary">`), with `themes: false` so no stock theme is bundled.
+*Rewritten for the restyle (Step 1). The compiled setup below is applied in Step 2: until then the code still has the old
+custom theme.*
+
+Tailwind CSS 4 plus daisyUI 5, compiled by the Tailwind CLI.
 
 - Source: `src/input.css`. Output: `public/assets/css/tailwind.css` (minified, committed).
 - After any change to a template class or `src/input.css`, run `npm run build` and commit the compiled CSS. Tailwind only
   includes classes it can see in the templates, so a class that isn't in the compiled file will not show.
 - `assetUrl()` adds the file's modified time to the CSS and JS addresses, so a rebuild is never missed by caches.
-- Light only. There is no dark mode (`color-scheme: light`). Don't add `dark:` classes.
+- **Themes: daisyUI's built-in `light` and `dark`**, loaded as `themes: light --default, dark --prefersdark`. The device
+  setting picks the theme on a first visit, and a toggle in the header lets the visitor override it and remembers the choice.
+- **Changing the palette later:** add an override block in `src/input.css` named `light` (and one named `dark`) using
+  `@plugin "daisyui/theme"`, set only the tokens that change (primary, secondary and so on), then rebuild. Templates need no
+  edits, because they only use tokens.
+- **Changing fonts later:** the three families are mapped in the `@theme` block in `src/input.css` and loaded in
+  `includes/header.php`. Change them in those two places only.
 
 ## Colour
 
-Always use the theme tokens (`text-primary`, `bg-base-100`, `border-primary`), never raw hex in a template. Each colour has a
-matching `-content` colour for text that sits on top of it; keep both when changing a theme value.
+*Rewritten for the restyle (Step 1). The palette is daisyUI's stock `light` and `dark`, kept as a placeholder to be changed
+later.*
 
-| Role | Token | Hex | Use |
-|---|---|---|---|
-| Paper (page background) | `base-100` | `#f7f5f0` | Page background, `bg-base-100` on `<body>`, header and footer |
-| Paper, darker | `base-200`, `base-300` | `#eeebe3`, `#e0dcd0` | Second surfaces for daisyUI components only |
-| Ink navy | `primary`, `neutral`, `base-content` | `#1b2a4a` | All body text, headings, borders, card shadow |
-| Sage | `secondary`, `success` | `#6b8f71` | Small labels (breadcrumbs, dates, region tags), "more on" links |
-| Mustard | `accent`, `warning` | `#c9a227` | Link hover only |
-| Info blue | `info` | `#3b5a87` | Informational alerts |
-| Brick red | `error` | `#b3452c` | Errors only |
-| Card white | n/a | `#ffffff` | Inside `.fact-card` only (the one hard-coded colour, in the CSS) |
+Use tokens only (`bg-base-100`, `text-base-content`, `btn-primary`, `border-base-300`). Each colour has a `-content` token for
+text that sits on it. Never use a raw hex value, `bg-white` or `text-black`.
+
+| Role | Token | Use |
+|---|---|---|
+| Page and card surfaces | `base-100`, `base-200`, `base-300` | Page background, cards, and progressively darker (light) or deeper (dark) surfaces |
+| Text and borders | `base-content` | Body text, headings; soften with opacity |
+| Brand colour | `primary` | Main buttons, key links and highlights |
+| Second brand colour | `secondary` | Secondary buttons and labels |
+| Accent | `accent` | Occasional emphasis, not body text |
+| Neutral | `neutral` | Dark UI surfaces such as a tooltip |
+| Status | `info`, `success`, `warning`, `error` | Alerts and badges that mean what they say |
+
+Current stock values (from `node_modules/daisyui/theme/light.css` and `dark.css`, in OKLCH): the primary is an indigo
+(`oklch(45% 0.24 277)` light, `oklch(58% 0.233 277)` dark), secondary a pink (`oklch(65% 0.241 354)`), accent a teal
+(`oklch(77% 0.152 182)`). Light surfaces are white to light grey; dark surfaces are a dark blue-grey. Both themes use 0.5rem
+box and selector radii and 0.25rem field radii.
 
 Rules:
-- Body text is navy on paper, never pure black or grey. Soften with opacity (see Text) rather than a grey colour.
-- Sage is for small mono labels and secondary links. Don't use it for body text (too low a contrast at body size).
-- Mustard is a hover colour, not a fill. Don't use it as text on paper.
-- Red only for something wrong. Don't use red or green to say a number rose or fell: pages state facts, not judgements.
-- Filled daisyUI components (buttons, alerts) already take the right text colour from the `-content` tokens.
+- **Don't give a hue a meaning.** The palette will change, so never write "the pink one" in a template or rely on a colour
+  to mean something. Use the role (`primary`, `secondary`) instead.
+- Red and green are only for errors and success, never to say a number rose or fell: pages state facts, not judgements.
+- Meaning is never carried by colour alone.
+- Check contrast again whenever a token is overridden, in both themes.
 
 ## Typography
 
-Three families, loaded from Google Fonts in `includes/header.php` and mapped in `@theme`:
+*Rewritten for the restyle (Step 1). Fonts are unchanged from the old design and may change later.*
+
+Three families, loaded from Google Fonts in `includes/header.php` and mapped in the `@theme` block of `src/input.css`:
 
 | Family | Tailwind | Weights | Use |
 |---|---|---|---|
 | Fraunces (serif) | `font-display` | 400, 600, 700 | Site name, page and section headings, figure values |
 | IBM Plex Sans | `font-sans` (the body default) | 400, 500, 600 | Body text, navigation, tables, notes |
-| IBM Plex Mono | `font-mono` | 500 | Small uppercase labels, dates, the footer disclaimer |
+| IBM Plex Mono | `font-mono` | 500 | Small uppercase labels and dates |
+
+The type scale, the label style and the opacity steps below are the old design's. They are replaced as each page type is
+restyled (Steps 3 to 5); only the three families above are current.
+
+*Pre-restyle, replaced in Steps 3 to 5:*
 
 Type scale in use (don't invent new steps without a reason):
 
@@ -85,6 +114,8 @@ Rules:
 
 ## Layout and spacing
 
+*Pre-restyle, replaced in Steps 3 to 6. The responsive and light and dark requirements above apply to all new work.*
+
 - Page width: `max-w-4xl mx-auto px-6`, the same in the header, `<main>` and footer. Page padding is `py-10` for `<main>`.
 - Reading width: prose and lists are capped, `max-w-2xl` for the explanation, `max-w-xl` for intros and short paragraphs,
   and `.article-body` at 68ch with a 1.7 line height. Never let body text run the full 4xl width.
@@ -99,6 +130,8 @@ Rules:
   tag.
 
 ## Components
+
+*Pre-restyle, replaced in Steps 3 to 6. The responsive and light and dark requirements above apply to all new work.*
 
 ### Header and footer
 - Header: paper, `border-b-2 border-primary`. The wordmark is left, the category links right (`text-sm`, `gap-6`,
@@ -160,10 +193,14 @@ border contrast against the paper background first (inputs once had near-invisib
 
 ## Motion
 
+*Pre-restyle, replaced in Steps 3 to 6. The responsive and light and dark requirements above apply to all new work.*
+
 Only two things move: figure cards lift on hover (0.15s ease) and links change colour (`transition-colors`). No
 animation on load, no scroll effects, no carousels. Respect reduced motion if anything else is ever added.
 
 ## Accessibility
+
+*Pre-restyle, replaced in Steps 3 to 6. The responsive and light and dark requirements above apply to all new work.*
 
 - Navy on paper is high contrast (well above WCAG AA). Check any new colour pairing before using it, especially sage
   and mustard text on paper and white.

@@ -25,24 +25,28 @@ knows which parts are current.
 
 Each step ends with a check and a commit. Nothing is pushed until the end of Step 6 (a push deploys the live site).
 
-### Step 1: Choose the theme (Richard)
-- Compare candidate built-in themes on a sample subject page (`theme-compare.html`, built in the scratchpad).
-- Pick a light theme and a dark theme that belong together (for example corporate with business, or nord with a dark
-  counterpart). Check both on the sample page, including figure cards, alerts and tables.
-- Pick fonts (the current Fraunces, IBM Plex Sans and Mono are not required). Keep to one or two families.
-- Output: the chosen theme names and any colour tweaks, recorded here and in `design-style.md` (Principles, Stack, Colour
-  and Typography sections rewritten for the new direction; the other sections marked pre-restyle).
+### Step 1: Choose the theme (Richard) - DONE 25 Nov 2026
+Decided:
+- **Themes: daisyUI's built-in `light` and `dark`**, as they come. Their stock palette (indigo primary, pink secondary, teal
+  accent) is a placeholder: Richard will change the palette (primary, secondary and so on) at a later date.
+- **Fonts: unchanged** (Fraunces, IBM Plex Sans, IBM Plex Mono). Also may change later.
+- Both are therefore built so a later change is cheap: templates use tokens only (never hex, never a hue's name), the
+  palette is overridden in one place in `src/input.css`, and the fonts are set in one `@theme` block plus the font link in
+  `header.php`.
+- Recorded in `design-style.md` (Principles, Stack, Colour and Typography rewritten; other sections marked pre-restyle).
+- The comparison page (`theme-compare.html`, scratchpad) is no longer needed.
 
 ### Step 2: Theme and base CSS
-- `src/input.css`: replace the custom `financefactlibrary` theme with the chosen built-in theme, plus any tweaks. Delete
+- `src/input.css`: replace the custom `financefactlibrary` theme with `@plugin "daisyui" { themes: light --default, dark
+  --prefersdark; }` (no override blocks yet; add them later to change the palette). Delete
   `.fact-card` and `.article-body` once the templates no longer use them (Steps 3 to 5 replace them).
 - Configure both themes in `@plugin "daisyui"` (one default light, one `prefersdark`), so the site follows the device
   setting. Add a theme toggle (daisyUI `theme-controller` or `swap`) that stores the choice in `localStorage` (in a
   try/catch) and is applied before first paint, in `<head>`, to avoid a flash of the wrong theme.
 - Use theme tokens only (`bg-base-100`, `text-base-content`, `border-base-300`), never fixed hex or `bg-white`, so every
   component works in both modes. Remove the hard-coded `#ffffff` and navy values.
-- Update the font links in `includes/header.php` and the `@theme` font mapping.
-- Update `design-style.md`: Stack, Colour, Typography and the theme toggle.
+- Fonts stay as they are (Step 1 decision): keep the `@theme` font mapping and the font link in `includes/header.php`.
+- Update `design-style.md`: Stack (the applied setup and the toggle) and Colour.
 - Run `npm run build` (node is on Richard's Mac terminal, not in the Claude shell) and commit the compiled CSS with the source.
 
 ### Step 3: Shared shell
