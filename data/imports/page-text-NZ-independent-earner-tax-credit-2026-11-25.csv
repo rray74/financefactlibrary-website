@@ -1,0 +1,24 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,tax,income-tax,independent-earner-tax-credit,Independent earner tax credit,"Who can get New Zealand's independent earner tax credit, the income range it covers, the most it pays, who cannot get it, and how to claim it.","## Who can get it
+
+The independent earner tax credit (IETC) is for New Zealand tax residents whose total income before tax for the tax year falls between {fact:nz_ietc_low} and {fact:nz_ietc_cut}. The income can come from many places: wages or salary, self-employment, investments, a business run through a trust or any other business, and also the Student Allowance, ACC compensation, Veterans' weekly compensation and paid parental leave. Any losses carried forward from earlier years are not taken off that income.
+
+## How much it pays
+
+Income from {fact:nz_ietc_low} up to {fact:nz_ietc_full} earns the full credit of {fact:nz_ietc_week} a week. Above {fact:nz_ietc_full}, the credit shrinks by {fact:nz_ietc_abate} of every dollar of the extra income, and it disappears at {fact:nz_ietc_cut}. Across a whole year the credit tops out at {fact:nz_ietc_max}. These limits apply from 31 July 2024, when the upper limit was raised.
+
+## Who cannot get it
+
+The credit is out of reach for anyone who, or whose partner, is entitled to and gets Working for Families. The same goes for anyone who receives an income-tested benefit, New Zealand Superannuation or a Veteran's Pension, or an overseas equivalent of any of those. The credit is worked out in whole months, so receiving one of those payments at any point in a month removes the whole month from the entitlement. Someone on Working for Families for 3 months of the year, for example, can qualify for the other 9.
+
+## Claiming through a tax code
+
+For salary or wages, the credit comes through the tax code. A person with one job and income in the range, or whose main job pays more than {fact:nz_ietc_low} with total income in the range, fills in a tax code declaration (IR330) and gives it to their employer before the next payday. The code is ME, or ME SL with a student loan. Tax then comes off in smaller amounts each payday. Every change of job calls for another IR330. If the pay in the job is too high for the credit, the code is M or M SL instead. Because the credit works in whole months, a job change can leave a person with too little or too much, and a tailored tax code can fix that.
+
+Someone whose main job pays under {fact:nz_ietc_low}, although their total income is in the range, can wait and receive the credit after the year ends, or apply for a tailored tax code.
+
+## Other income and benefit leavers
+
+Income not taxed before it is paid, such as self-employment income, is claimed on the individual tax return (IR3), with the number of months of entitlement. Where tax has already been taken, as with contract payments or investment income, Inland Revenue includes the credit in the income tax assessment sent after the year ends. A refund or a tax bill may follow, depending on the tax already paid.
+
+Someone leaving a benefit for work can claim from the month after the benefit ends. During the year it takes two IR330 forms: one with code M or M SL when the job starts in the month the benefit ended, and another with code ME or ME SL after the last pay of that month. Anything missed during the year is paid after the income tax assessment, though not for the months on a benefit.",NZ Independent Earner Tax Credit: {fact:nz_ietc_max},"Who can get New Zealand's independent earner tax credit, the income range it covers, the most it pays, who is excluded and how to claim it with a tax code.",,
