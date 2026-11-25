@@ -1,0 +1,34 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,savings-and-investments,savings-accounts,resident-withholding-tax-on-interest,Resident withholding tax on interest,"How resident withholding tax works on New Zealand bank interest: the rates an individual can choose, what happens if they do not choose, and who is exempt.","## How the tax is taken
+
+Interest earned on New Zealand bank accounts and investments is taxable, and so is income from overseas accounts and investments. For New Zealand tax residents, the bank or fund manager paying the interest takes the tax off first and sends the rest. That deduction goes by the name RWT, short for resident withholding tax. For an individual, the rate depends on their tax status, the kind of interest and the details they have given the payer. Dividends and unit trust distributions all carry the same {fact:nz_rwt_div}, whereas the rate for a portfolio investment entity (PIE) depends on the type of fund.
+
+## Choosing a rate
+
+A person who has given the payer their IRD number picks one of five rates for interest from a savings account or term deposit: {fact:nz_rwt_r1}, {fact:nz_rwt_r2}, {fact:nz_rwt_r3}, {fact:nz_rwt_r4} or {fact:nz_rwt_r5}. The aim is a rate that matches their income tax rate, set by total taxable income:
+
+- Up to {fact:nz_rwt_b1}: {fact:nz_rwt_r1}
+- Above {fact:nz_rwt_b1} and up to {fact:nz_rwt_b2}: {fact:nz_rwt_r2}
+- Above {fact:nz_rwt_b2} and up to {fact:nz_rwt_b3}: {fact:nz_rwt_r3}
+- Above {fact:nz_rwt_b3} and up to {fact:nz_rwt_b4}: {fact:nz_rwt_r4}
+- Above {fact:nz_rwt_b4}: {fact:nz_rwt_r5}
+
+These bands apply from 31 July 2024. Someone who gives an IRD number but chooses nothing is taxed at {fact:nz_rwt_default}. Someone who has not given an IRD number is taxed at {fact:nz_rwt_nodecl}, the non-declaration rate. A person whose circumstances change should check whether their rate still fits and, if it does not, tell the payer. A rate that is too low can lead to a bill after the year ends.
+
+## Companies, trusts and Māori authorities
+
+Different rules apply to other kinds of taxpayer. A company must tell the payer it is a company. It can then choose {fact:nz_rwt_company}, {fact:nz_rwt_r4} or {fact:nz_rwt_r5}, and if it chooses nothing, the rate is {fact:nz_rwt_company}. Trustees need not state a company status, and their choices are {fact:nz_rwt_r2}, {fact:nz_rwt_r3}, {fact:nz_rwt_r4} and {fact:nz_rwt_r5}. The trustee of a testamentary trust can also choose {fact:nz_rwt_r1}. Māori authorities have the same choices as other trustees, without the lowest rate.
+
+## Joint accounts
+
+A joint account can have only one RWT rate, so the holders have to agree on the one that suits them best. If both earn over {fact:nz_rwt_b4}, choosing {fact:nz_rwt_r5} avoids a bill when the year ends. If one earns above {fact:nz_rwt_b2} and the other earns that or less, choosing {fact:nz_rwt_r3} spares the higher earner a bill.
+
+Interest on a joint investment is split equally between the holders who gave valid IRD numbers, and that includes partnerships other than limited partnerships. A holder can change an unequal split when filing a return or at the year-end assessment, though they may need papers to support it. If a resident and a non-resident share an account, RWT comes off all of the interest. The non-resident can claim it back with an IR3NR return or an IR386 refund request.
+
+## At the end of the year
+
+Inland Revenue checks each person's tax once the year ends, comparing what RWT took off with what was owed. Financial institutions report investment income to Inland Revenue the month after they pay it, and it can show in a person's myIR account. A New Zealand company or unit trust can pass on imputation credits with a dividend, and these credits can reduce the RWT deducted.
+
+## Exemptions
+
+Some payees are exempt, and their payer stops deducting RWT. The list includes registered banks, local authorities, community trusts, PIEs and not-for-profit organisations. Someone who has earned or expects to earn more than $2 million a year can apply, as can someone who can show losses or a refund of $500 or more. A charity on the Charities Services register is added to the exemption register automatically. An exempt person must tell the payer, and if RWT was taken off anyway, the refund request is form IR454. If Inland Revenue cancels an exemption, the person must tell the payer within 5 working days.",NZ RWT on Interest: {fact:nz_rwt_default} Default,"How resident withholding tax is taken from New Zealand bank interest, the five rates an individual can choose, the default rate and exemptions.",,
