@@ -1,0 +1,24 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+NZ,kiwisaver-and-retirement,nz-super,veterans-pension,Veteran's Pension,"Who can get Veteran's Pension in New Zealand, what it pays each fortnight, the residence rules, and how other income reduces the payment.","## Who can get it
+
+The pension goes to people with Qualifying Operational Service in the New Zealand Armed Forces. They must also be {fact:nz_vp_age} or older, and be a New Zealand citizen, a permanent resident or the holder of a residence class visa. At the time of applying they must be living in New Zealand, the Cook Islands, Niue or Tokelau as their main home, which the source calls ordinary residence. The payment is taxable and goes out fortnightly, on a Tuesday.
+
+## The residence test
+
+From the age of 20, an applicant needs a set number of years living in New Zealand, and five of them must come after the age of 50. The years need not run consecutively. The total rises with date of birth, from 10 years for people born before 1 July 1959 to 20 years for those born from 1 July 1977. To count as having lived in New Zealand, a person has to have been resident and physically present at the same time, so time spent travelling may not count.
+
+Someone short of the required years may be able to count time in a Cook Islands, Niue or Tokelau, or in a country with a social security agreement with New Zealand: Australia, Canada, Denmark, Greece, Ireland, Jersey, Guernsey, Malta, the Netherlands, South Korea or the United Kingdom. Refugees and protected persons have the years worked out differently. A person who does not meet the residence test at {fact:nz_vp_age} can wait until they do.
+
+## What it pays
+
+The amount depends on the living situation and the tax code used. Before tax, a single person living alone or with a dependent child gets {fact:nz_vp_alone} a fortnight. A single person living with someone aged 18 or older, or with a visitor who stays more than 13 weeks in any 26-week period, gets {fact:nz_vp_shared}. A person with a partner gets {fact:nz_vp_couple}, and that amount is paid to each partner when both meet the criteria. The rates rise every 1 April in line with the average wage. A person with only Veteran's Pension will probably use tax code M.
+
+## Other income
+
+Other income affects the payment in some cases only. One is a person under {fact:nz_vp_age} who was getting Veteran's Pension on 7 December 2014, when the Veterans' Support Act 2014 replaced the War Pensions Act 1954, and who chose it instead of weekly income compensation from Veterans' Affairs. The other is a person {fact:nz_vp_age} or older who has included a partner in the payment.
+
+Together, the person and partner have {fact:nz_vp_free} a week of income, before tax, that does not count against the payment. For someone under {fact:nz_vp_age}, income above that and up to {fact:nz_vp_mid} reduces the payment by {fact:nz_vp_cut_mid} of each dollar, and income above {fact:nz_vp_mid} reduces it by {fact:nz_vp_cut_top}. For someone {fact:nz_vp_age} or older, income above {fact:nz_vp_free} reduces it by {fact:nz_vp_cut_top} of each dollar. An overseas pension does not rule out Veteran's Pension, but it may affect the amount.
+
+## Changes and travel
+
+A person receiving Veteran's Pension must tell Work and Income about changes that affect the payment, such as a change of relationship, address or tax code. If they do not, the payment could be reduced or stopped. A partner included in the payment has obligations too. Going overseas may not end the payment, and what happens depends on whether the trip is a holiday or a move abroad. After a recipient's death, extra help may be open to a surviving partner or dependent child.",NZ Veteran's Pension: {fact:nz_vp_alone},"Who can get Veteran's Pension in New Zealand, the fortnightly rates from {fact:nz_vp_couple} before tax, the residence rules and how other income reduces it.",,
