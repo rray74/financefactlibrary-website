@@ -1,0 +1,32 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,retirement-and-pensions,old-age-security,old-age-security,Old Age Security (OAS),"Who can get an Old Age Security pension, the maximum monthly amounts, the income limits and recovery tax, and how delaying the start raises the payment.","## What the OAS pension is
+
+Old Age Security (OAS) is a monthly pension paid by the federal government from age 65. How much you get depends on your age, how long you have lived in Canada since turning 18, and your income. It counts as taxable income. At age 75 the pension rises by 10%, starting the month after your 75th birthday.
+
+## The maximum amounts
+
+A full pension pays up to {fact:ca_oas_max_65} a month between 65 and 74, and up to {fact:ca_oas_max_75} from 75. Those are maximums, so your own amount can be lower. Four times a year, in January, April, July and October, the amounts are checked against the Consumer Price Index. They rise with living costs but never drop.
+
+## Who qualifies
+
+You must be 65 or older. Residence rules differ by where you live:
+
+- From inside Canada: citizen or legal resident when approved, plus a minimum of 10 years' residence after age 18.
+- From outside Canada: citizen or legal resident on the day before leaving, plus 20 years' residence after age 18.
+
+Working does not stop you from getting OAS, but income does. The pension is not paid once your annual net world income reaches {fact:ca_oas_limit_65} for ages 65 to 74 or {fact:ca_oas_limit_75} from age 75. You also have to file a tax return each year.
+
+Net income counts pensions, benefits such as Employment Insurance, wages, rental income, RRSP withdrawals, and taxable interest, dividends and capital gains. It leaves out OAS, the Guaranteed Income Supplement, the Allowance, Registered Disability Savings Plan payments and GST/HST credit payments.
+
+## A full pension needs 40 years in Canada
+
+Fewer than 40 years of adult residence gives a partial pension: your years in Canada since age 18, out of 40. The minimum is 10 years of residence for people living here and 20 for people living abroad.
+
+## Starting later raises the payment
+
+You can start OAS at 65 or put it off until 70. Each month you wait after 65 adds {fact:ca_oas_defer}, up to 36% at 70. Waiting past 70 earns nothing more, and there is no gain from waiting if you qualify for the Guaranteed Income Supplement.
+
+## The recovery tax
+
+Income above {fact:ca_oas_recovery} (for {tax_year}) can trigger a recovery tax that takes back part or all of the pension. The threshold is set each year.
+",OAS Canada: Up to {fact:ca_oas_max_65} a Month,"The OAS pension pays up to {fact:ca_oas_max_65} a month at 65 to 74 and {fact:ca_oas_max_75} from 75. See who qualifies, the income limits and how delaying changes it.",,
