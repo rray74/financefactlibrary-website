@@ -2,7 +2,7 @@
 
 Adds to core.md. Where the two differ, this file wins for New Zealand pages. Modelled on au.md. Written
 23 November 2026 from Richard's decisions in `docs/content-maps/nz-content-map.md`. Points marked
-**(provisional)** are still open there and are written the way the plan proposes. Change them here once decided.
+**(provisional)** are still open there and are written the way the plan proposes. Change them here once decided. The four open points were decided on 25 November 2026 (money, Inland Revenue or IRD, capital gains wording, macrons).
 
 ## Language
 
@@ -13,7 +13,7 @@ Adds to core.md. Where the two differ, this file wins for New Zealand pages. Mod
 - Dates are written 1 April 2027: no ordinals ("1st"), no comma between the month and the year.
 - Numbers: use a comma from four digits up (4,210 and $18,200), never a space. Use numerals for 2 and above
   ("3 weeks"), and write "one" in words.
-- Money **(provisional)**: the dollar sign goes straight in front of the numerals ($1,000), with no ".00" on
+- Money (decided 25 November 2026): the dollar sign goes straight in front of the numerals ($1,000), with no ".00" on
   whole dollars, as the Australian pages do. Write amounts under $1 in cents (15c). Percentages have no space
   (15%). Round amounts of a million or more can mix numerals and words ($2.5 million). The currency is the New
   Zealand dollar. Do not write "NZ$" unless a page compares New Zealand with another country.
@@ -25,8 +25,8 @@ Adds to core.md. Where the two differ, this file wins for New Zealand pages. Mod
 - Te reo Māori names keep their macrons wherever the source writes them (Kāinga Ora, Manawatū-Whanganui,
   Te Whatu Ora). Do not add a macron the source leaves out, and do not take one away. Slugs and file names
   stay in plain letters.
-- Name schemes and bodies as the source does: Inland Revenue (**provisional:** write "Inland Revenue" at first
-  mention and "IRD" only where the source page does, since readers search for both), Work and Income (part of
+- Name schemes and bodies as the source does: Inland Revenue (decided 25 November 2026: write "Inland Revenue (IRD)" at the first
+  mention on a page, then "IRD", since readers search for both), Work and Income (part of
   the Ministry of Social Development), Employment New Zealand, Tenancy Services, the Reserve Bank of New
   Zealand, the Accident Compensation Corporation (ACC). Schemes and payments keep their official capitals:
   KiwiSaver, New Zealand Superannuation (NZ Super is fine after the first mention), Jobseeker Support,
