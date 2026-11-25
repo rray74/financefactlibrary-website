@@ -1,0 +1,30 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,retirement-and-pensions,old-age-security,guaranteed-income-supplement,Guaranteed Income Supplement (GIS),"What the Guaranteed Income Supplement is, who can get it, the maximum monthly amounts and income limits for each situation, and how payments are reviewed.","## What the GIS is
+
+The Guaranteed Income Supplement (GIS) is paid each month, free of tax, to Old Age Security (OAS) pensioners aged 65 or older whose income is low. In most cases Service Canada enrols you automatically and tells you by mail. Where no enrolment letter shows up a month after your 64th birthday, an application may be needed.
+
+## How much it pays
+
+The amount depends on your marital status and income. These are the maximum monthly payments and the income you must stay under:
+
+- If you are single, widowed or divorced, you can get up to {fact:ca_gis_single_max} a month, with an annual income below {fact:ca_gis_single_limit}.
+- If your spouse or common-law partner receives the full OAS pension, you can get up to {fact:ca_gis_couple_max}, with a combined annual income below {fact:ca_gis_couple_limit}.
+- If your spouse or common-law partner receives the Allowance, you can get up to {fact:ca_gis_couple_max}, with a combined annual income below {fact:ca_gis_allow_limit}.
+- If your spouse or common-law partner receives neither OAS nor the Allowance, you can get up to {fact:ca_gis_single_max}, with a combined annual income below {fact:ca_gis_nonoas_limit}.
+
+Your actual payment can be lower, since it is worked out from your income. Amounts are reviewed each January, April, July and October for cost of living, and they do not fall if prices do.
+
+## Who qualifies
+
+Four things apply: you are 65 or older, you receive an OAS pension, you live in Canada and no sponsorship agreement covers you. Your income must also sit under the limit for your situation. Sponsored immigrants cannot get the GIS, the Allowance or the Allowance for the Survivor while the sponsorship lasts, unless the sponsor has died, been jailed for more than 6 months, been convicted of an offence against them or declared personal bankruptcy. Immigrants without a sponsor are treated like anyone else, so qualifying for OAS is what matters.
+
+Income counts pensions, benefits such as Employment Insurance, wages, rental income, RRSP withdrawals, and taxable interest, dividends and capital gains. OAS, GIS, Allowance, Allowance for the Survivor, Registered Disability Savings Plan and GST/HST credit payments are left out.
+
+## Payments are recalculated every July
+
+A July recalculation uses last calendar year's net income to set your payment. It can go up, go down or stop. Filing your tax return on time matters, because without one the payments may stop or be reduced.
+
+## Related benefits
+
+A partner of a GIS recipient who is aged 60 to 64 may qualify for the Allowance. A widowed person aged 60 to 64 on a low income may be able to get the Allowance for the Survivor. Both depend on income and residence in Canada, and neither is taxable.
+",GIS Canada: Up to {fact:ca_gis_single_max} a Month,The GIS pays up to {fact:ca_gis_single_max} a month to a single pensioner on a low income. See the amounts and income limits for each situation and who qualifies.,,
