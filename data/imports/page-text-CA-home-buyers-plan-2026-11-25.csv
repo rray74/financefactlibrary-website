@@ -1,0 +1,30 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,mortgages-and-property,first-home-buyers,home-buyers-plan,Home Buyers' Plan,"How the Home Buyers' Plan lets first-time buyers withdraw from their RRSPs, who is eligible, how to withdraw, and how and when the money is paid back.","## What the Home Buyers' Plan is
+
+The Home Buyers' Plan (HBP) lets people put RRSP savings toward a qualifying home that they plan to buy or build, for themselves or for a specified disabled person. RRSP stands for registered retirement savings plan. Your total withdrawals are capped at {fact:ca_hbp_limit}, and the money is paid back over {fact:ca_hbp_years}. Withdrawals can come from several RRSPs, provided you are the annuitant of each. Locked-in and group RRSPs are among those that do not allow them.
+
+An FHSA qualifying withdrawal can go toward the same home, provided you meet each plan's conditions when you withdraw.
+
+## Who is eligible
+
+To take part you need:
+
+- A first-time buyer's history: you, and your current spouse or common-law partner, must not have lived in a home you owned (or jointly owned) in the current calendar year before the withdrawal, ignoring the 30 days just before it, or in the 4 calendar years before that. This test does not apply if you are buying for a specified disabled person.
+- A signed agreement to buy or build the home. A mortgage pre-approval does not count as one.
+- Canadian residency from your first withdrawal until the home is acquired.
+- The intention to live in the home as your principal residence within a year of buying or building it.
+- Completion of the purchase or build before October 1 of the year following your first withdrawal.
+
+Someone who used the plan before can use it again once their HBP balance has reached zero by January 1 of the withdrawal year.
+
+## Making a withdrawal
+
+Each withdrawal needs its own Form T1036, which you give to your RRSP issuer. Further withdrawals are allowed only in the calendar year of the first one and the following January. The issuer does not withhold tax on a total of {fact:ca_hbp_limit} or less. Any amount above that is reported as income, and the issuer has to withhold tax on it.
+
+Contributions you make to an RRSP in the 89 days before an HBP withdrawal from it may not be deductible. The part you cannot deduct is whatever those contributions exceed the RRSP's value just after the withdrawal.
+
+## Paying it back
+
+Repayments are made over a {fact:ca_hbp_years} period. For a first withdrawal made from January 1, 2022 to December 31, 2028, temporary relief delays the start. Repayment then begins {fact:ca_hbp_defer} after the year of your first withdrawal. Earlier first withdrawals start repaying in the second year after the year they were made.
+
+To repay, you contribute to an RRSP in the year the repayment is due or in the first 60 days of the next year, then designate the amount on Schedule 7 of your return. Each year's minimum is your remaining HBP balance split across the years of the repayment period still to run. If you repay less than the minimum, the difference is added to your income. If you repay more, later minimums fall. You can repay the whole balance at any time. A designated repayment is not deductible, and it does not affect your RRSP deduction limit.",Home Buyers' Plan Canada: {fact:ca_hbp_limit} Limit,The Home Buyers' Plan lets you withdraw up to {fact:ca_hbp_limit} from your RRSPs to buy a first home. See who is eligible and how withdrawals and repayments work.,,
