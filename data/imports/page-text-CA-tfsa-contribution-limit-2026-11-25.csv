@@ -1,0 +1,26 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,savings-and-investments,registered-accounts,tfsa-contribution-limit,Tax-Free Savings Account (TFSA),"What a TFSA is, who can open one, how the annual dollar limit and contribution room work, and what happens if you contribute too much.","## A TFSA is a registered account that holds savings and investments
+
+A tax-free savings account (TFSA) can hold cash as well as investments. The government oversees the accounts, and banks, credit unions, insurance companies and trust companies issue them. What you put in is not tax deductible, which is the main difference from a registered retirement savings plan (RRSP). In return, the income the account earns, whether interest, dividends or capital gains, is generally tax-free, and so is a withdrawal.
+
+There are three main types: a deposit TFSA, which works like a savings account or a guaranteed investment certificate, an annuity contract with an insurance company, and an arrangement in trust, usually a mutual fund or trading account. A TFSA can also be self-directed, so you choose the investments yourself. Trading as often and as skilfully as a professional puts the account at risk of deregistration, with its income taxed as a business.
+
+## Who can open one
+
+Opening a TFSA takes three things: residency in Canada for income tax purposes, an age of at least 18 and a valid Social Insurance Number. Earned income is not required. Where the age to sign a contract is 19, you wait until then to open one, but you keep the room from the year you turned 18.
+
+## How contribution room works
+
+The government tops up your room every January 1 by the annual dollar limit, {fact:ca_tfsa_limit}. Room begins to build at 18 for residents, and from the year of arrival for people who become residents later. Unused room carries forward, and the figure covers all your TFSAs together, not each one.
+
+A contribution reduces your room straight away. A withdrawal does not give the room back until January 1 of the next calendar year, when it is added on top of that year's limit.
+
+Your CRA account only catches up with the previous year's transactions once a year, in spring, so it can be out of date. The CRA says to rely on your own records and your financial institution's.
+
+## If you contribute too much
+
+Anything above your room is taxed at 1% a month until it leaves the account. Withdraw it quickly and report it on a TFSA Return. Issuers send the CRA a summary of the year's transactions by the end of February, so an excess can sit in an account for months before you hear about it.
+
+## A TFSA does not affect federal benefits
+
+Money earned inside a TFSA, and money taken out of it, leaves your federal benefits untouched. Old Age Security, the Guaranteed Income Supplement and Employment Insurance are all unaffected, and so are the Canada child benefit and the Canada workers benefit.",TFSA Contribution Limit {tax_year}: {fact:ca_tfsa_limit},The TFSA dollar limit is {fact:ca_tfsa_limit} a year. See who can open a TFSA and how contribution room builds up. Also see what happens if you go over it.,,
