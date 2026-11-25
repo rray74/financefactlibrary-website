@@ -2,11 +2,7 @@
 # Set 24 Nov 2026: the 30 UK pages written in Claude Code on 22 to 24 Nov, none yet checked.
 # Checked in this order; once every page here has a current result the run does nothing.
 # Change the sample by editing this file, not the script. One slug per line.
-junior-isa-allowance
-stamp-duty-land-tax-rates
-income-tax-rates-and-bands
-scottish-income-tax-rates
-employee-national-insurance
+# Checked on 25 Nov 2026 (results kept; text fixed afterwards, so they would otherwise be re-queued): junior-isa-allowance, stamp-duty-land-tax-rates, income-tax-rates-and-bands, scottish-income-tax-rates, employee-national-insurance.
 self-employed-national-insurance
 dividend-tax-rates
 inheritance-tax-thresholds
