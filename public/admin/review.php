@@ -151,39 +151,39 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
         New figures the automated checks didn't publish, usually because the change was unusually
         large. Check the source, then approve to publish or reject to keep the current figure.
     </p>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm border-collapse">
+    <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+        <table class="table table-sm">
             <thead>
-                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
-                    <th class="py-2 pr-4">Fact</th>
-                    <th class="py-2 pr-4">Current</th>
-                    <th class="py-2 pr-4">Proposed</th>
-                    <th class="py-2 pr-4">Why held</th>
-                    <th class="py-2 pr-4">Action</th>
+                <tr class="text-left font-mono text-xs uppercase tracking-wide">
+                    <th>Fact</th>
+                    <th>Current</th>
+                    <th>Proposed</th>
+                    <th>Why held</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($heldChanges as $change): ?>
-                <tr class="border-b border-primary/20 align-top">
-                    <td class="py-3 pr-4">
-                        <a href="<?= e(subjectUrlById((int) $change['primary_subject_id'])) ?>" target="_blank" class="hover:text-accent">
+                <tr class="align-top">
+                    <td>
+                        <a href="<?= e(subjectUrlById((int) $change['primary_subject_id'])) ?>" target="_blank" class="link link-hover">
                             <?= e($change['label']) ?>
                         </a>
                         <?php if ($change['source_url']): ?>
                         <a href="<?= e($change['source_url']) ?>" target="_blank" rel="noopener"
-                            class="block text-xs text-secondary underline hover:text-accent"><?= e($change['source_name'] ?? 'Source') ?> &#8599;</a>
+                            class="block text-xs link"><?= e($change['source_name'] ?? 'Source') ?> &#8599;</a>
                         <?php endif; ?>
                     </td>
-                    <td class="py-3 pr-4 fact-value"><?= e(formatFactValue($change)) ?></td>
-                    <td class="py-3 pr-4 fact-value font-semibold">
+                    <td class="tabular-nums"><?= e(formatFactValue($change)) ?></td>
+                    <td class="tabular-nums font-semibold">
                         <?= e(formatFactValue(['value' => $change['proposed_value'], 'value_numeric' => $change['proposed_value_numeric'],
                             'value_type' => $change['value_type'], 'unit' => $change['unit'], 'value_display' => null])) ?>
                     </td>
-                    <td class="py-3 pr-4 text-xs opacity-80">
+                    <td class="text-xs opacity-80">
                         <?= e($change['status_reason'] ?? '') ?>
-                        <span class="block opacity-60 mt-1"><?= e($change['evidence_snippet'] ?? '') ?></span>
+                        <span class="block opacity-70 mt-1"><?= e($change['evidence_snippet'] ?? '') ?></span>
                     </td>
-                    <td class="py-3 pr-4">
+                    <td>
                         <form method="post" class="flex gap-1">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token']) ?>">
                             <input type="hidden" name="change_id" value="<?= (int) $change['id'] ?>">
@@ -207,31 +207,31 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
         The source check couldn't find these figures on their source pages, usually because the page
         now shows a new value. Open the source, then confirm the figure or enter the new one.
     </p>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm border-collapse">
+    <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+        <table class="table table-sm">
             <thead>
-                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
-                    <th class="py-2 pr-4">Fact</th>
-                    <th class="py-2 pr-4">Current value</th>
-                    <th class="py-2 pr-4">Problem</th>
-                    <th class="py-2 pr-4">Action</th>
+                <tr class="text-left font-mono text-xs uppercase tracking-wide">
+                    <th>Fact</th>
+                    <th>Current value</th>
+                    <th>Problem</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($needsAttention as $fact): ?>
-                <tr class="border-b border-primary/20 align-top">
-                    <td class="py-3 pr-4">
-                        <a href="<?= e(subjectUrlById((int) $fact['primary_subject_id'])) ?>" target="_blank" class="hover:text-accent">
+                <tr class="align-top">
+                    <td>
+                        <a href="<?= e(subjectUrlById((int) $fact['primary_subject_id'])) ?>" target="_blank" class="link link-hover">
                             <?= e($fact['label']) ?>
                         </a>
-                        <span class="block font-mono text-xs opacity-50"><?= e($fact['fact_key']) ?></span>
+                        <span class="block font-mono text-xs opacity-70"><?= e($fact['fact_key']) ?></span>
                         <?php if ($fact['source_url']): ?>
                         <a href="<?= e($fact['source_url']) ?>" target="_blank" rel="noopener"
-                            class="block text-xs text-secondary underline hover:text-accent"><?= e($fact['source_name'] ?? 'Source') ?> &#8599;</a>
+                            class="block text-xs link"><?= e($fact['source_name'] ?? 'Source') ?> &#8599;</a>
                         <?php endif; ?>
                     </td>
-                    <td class="py-3 pr-4 fact-value font-semibold"><?= e(formatFactValue($fact)) ?></td>
-                    <td class="py-3 pr-4 text-xs">
+                    <td class="tabular-nums font-semibold"><?= e(formatFactValue($fact)) ?></td>
+                    <td class="text-xs">
                         <?php if ($fact['check_result'] === 'source_error'): ?>
                         Source page could not be opened
                         <?php elseif ($fact['check_note'] === 'tax_year_ended'): ?>
@@ -240,9 +240,9 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
                         <?php else: ?>
                         Not found on the source page
                         <?php endif; ?>
-                        <span class="block opacity-60"><?= date('j M Y', strtotime($fact['checked_at'])) ?></span>
+                        <span class="block opacity-70"><?= date('j M Y', strtotime($fact['checked_at'])) ?></span>
                     </td>
-                    <td class="py-3 pr-4">
+                    <td>
                         <form method="post" class="mb-2">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token']) ?>">
                             <input type="hidden" name="fact_id" value="<?= (int) $fact['id'] ?>">
@@ -254,9 +254,9 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
                             <input type="hidden" name="fact_id" value="<?= (int) $fact['id'] ?>">
                             <input type="hidden" name="action" value="update">
                             <input type="text" name="new_value" placeholder="New value" required
-                                class="input input-xs input-bordered w-24">
+                                class="input input-xs w-24">
                             <input type="date" name="effective_from" title="Effective from (optional)"
-                                class="input input-xs input-bordered">
+                                class="input input-xs">
                             <button type="submit" class="btn btn-xs btn-primary">Update</button>
                         </form>
                     </td>
@@ -269,61 +269,61 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
 <?php endif; ?>
 
 <?php if (empty($dueFacts)): ?>
-<p class="fact-card p-6 text-secondary font-display text-lg">
+<p class="card card-border border-base-content/20 bg-base-100 p-6 opacity-70 font-display text-lg">
     Nothing due right now — every fact is within its review window.
 </p>
 <?php else: ?>
-<div class="overflow-x-auto">
-    <table class="w-full text-sm border-collapse">
+<div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+    <table class="table table-sm">
         <thead>
-            <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
-                <th class="py-2 pr-4">Subject</th>
-                <th class="py-2 pr-4">Fact</th>
-                <th class="py-2 pr-4">Current value</th>
-                <th class="py-2 pr-4">Last checked</th>
-                <th class="py-2 pr-4">Overdue by</th>
-                <th class="py-2 pr-4">Source</th>
-                <th class="py-2 pr-4">Action</th>
+            <tr class="text-left font-mono text-xs uppercase tracking-wide">
+                <th>Subject</th>
+                <th>Fact</th>
+                <th>Current value</th>
+                <th>Last checked</th>
+                <th>Overdue by</th>
+                <th>Source</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($dueFacts as $fact): ?>
-            <tr class="border-b border-primary/20 align-top">
-                <td class="py-3 pr-4">
-                    <a href="<?= e(subjectUrlById((int) $fact['primary_subject_id'])) ?>" class="hover:text-accent" target="_blank">
+            <tr class="align-top">
+                <td>
+                    <a href="<?= e(subjectUrlById((int) $fact['primary_subject_id'])) ?>" class="link link-hover" target="_blank">
                         <?= e($fact['subject_name']) ?>
                     </a>
                 </td>
-                <td class="py-3 pr-4">
+                <td>
                     <?= e($fact['label']) ?>
-                    <span class="block font-mono text-xs opacity-50"><?= e($fact['fact_key']) ?></span>
+                    <span class="block font-mono text-xs opacity-70"><?= e($fact['fact_key']) ?></span>
                 </td>
-                <td class="py-3 pr-4 fact-value font-semibold">
+                <td class="tabular-nums font-semibold">
                     <?= e(formatFactValue($fact)) ?>
                 </td>
-                <td class="py-3 pr-4 opacity-70">
+                <td class="opacity-70">
                     <?= date('j M Y', strtotime($fact['last_verified_at'] ?? $fact['last_updated'])) ?>
                 </td>
-                <td class="py-3 pr-4">
-                    <span class="font-mono text-xs px-2 py-1 rounded bg-error/10 text-error">
+                <td>
+                    <span class="font-mono badge badge-sm badge-error whitespace-nowrap">
                         <?= (int) $fact['days_overdue'] ?> days
                     </span>
                 </td>
-                <td class="py-3 pr-4">
+                <td>
                     <?php if ($fact['source_url']): ?>
                     <a href="<?= e($fact['source_url']) ?>" target="_blank" rel="noopener"
-                        class="text-secondary hover:text-accent underline">
+                        class="link">
                         <?= e($fact['source_name'] ?? 'Check source') ?> &#8599;
                     </a>
                     <?php // Non-allowlisted sources will always need a human check once the pipeline runs. ?>
                     <?php if (!$fact['source_allowlisted']): ?>
-                    <span class="block font-mono text-xs opacity-50">not allowlisted</span>
+                    <span class="block font-mono text-xs opacity-70">not allowlisted</span>
                     <?php endif; ?>
                     <?php else: ?>
-                    <span class="opacity-50">No source</span>
+                    <span class="opacity-70">No source</span>
                     <?php endif; ?>
                 </td>
-                <td class="py-3 pr-4">
+                <td>
                     <?php // Figure is unchanged: one click resets its review window. ?>
                     <form method="post" class="mb-2">
                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token']) ?>">
@@ -337,9 +337,9 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
                         <input type="hidden" name="fact_id" value="<?= (int) $fact['id'] ?>">
                         <input type="hidden" name="action" value="update">
                         <input type="text" name="new_value" placeholder="New value" required
-                            class="input input-xs input-bordered w-24">
+                            class="input input-xs w-24">
                         <input type="date" name="effective_from" title="Effective from (optional)"
-                            class="input input-xs input-bordered">
+                            class="input input-xs">
                         <button type="submit" class="btn btn-xs btn-primary">Update</button>
                     </form>
                 </td>
@@ -349,7 +349,7 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
     </table>
 </div>
 
-<p class="text-xs opacity-50 mt-6 font-mono">
+<p class="text-xs opacity-70 mt-6 font-mono">
     Use these buttons rather than editing values in phpMyAdmin. Changes made here are
     recorded in fact_history. The unit is optional when entering a new value, so 4.5 and 4.5% both work.
 </p>
@@ -363,33 +363,33 @@ include __DIR__ . '/../../includes/admin-nav.php'; // shared admin links, log ou
         focus, or merge them, so they don't compete for the same searches.
     </p>
     <?php if (empty($overlaps)): ?>
-    <p class="fact-card p-6 text-secondary">No overlapping subjects.</p>
+    <p class="card card-border border-base-content/20 bg-base-100 p-6 opacity-70">No overlapping subjects.</p>
     <?php else: ?>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm border-collapse">
+    <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+        <table class="table table-sm">
             <thead>
-                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
-                    <th class="py-2 pr-4">Subject</th>
-                    <th class="py-2 pr-4">Overlaps with</th>
-                    <th class="py-2 pr-4">Shared facts</th>
-                    <th class="py-2 pr-4">Overlap</th>
+                <tr class="text-left font-mono text-xs uppercase tracking-wide">
+                    <th>Subject</th>
+                    <th>Overlaps with</th>
+                    <th>Shared facts</th>
+                    <th>Overlap</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($overlaps as $pair): ?>
-                <tr class="border-b border-primary/20">
-                    <td class="py-3 pr-4">
-                        <a href="<?= e(subjectUrlById((int) $pair['subject_a_id'])) ?>" target="_blank" class="hover:text-accent">
+                <tr class="border-b border-base-300">
+                    <td>
+                        <a href="<?= e(subjectUrlById((int) $pair['subject_a_id'])) ?>" target="_blank" class="link link-hover">
                             <?= e($pair['subject_a_name']) ?>
                         </a>
                     </td>
-                    <td class="py-3 pr-4">
-                        <a href="<?= e(subjectUrlById((int) $pair['subject_b_id'])) ?>" target="_blank" class="hover:text-accent">
+                    <td>
+                        <a href="<?= e(subjectUrlById((int) $pair['subject_b_id'])) ?>" target="_blank" class="link link-hover">
                             <?= e($pair['subject_b_name']) ?>
                         </a>
                     </td>
-                    <td class="py-3 pr-4"><?= (int) $pair['shared_facts'] ?></td>
-                    <td class="py-3 pr-4 font-mono"><?= round($pair['overlap'] * 100) ?>%</td>
+                    <td><?= (int) $pair['shared_facts'] ?></td>
+                    <td class="font-mono"><?= round($pair['overlap'] * 100) ?>%</td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

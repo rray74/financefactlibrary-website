@@ -74,14 +74,14 @@ The page most visitors see, and the most components:
 - Error and 404 pages, and optional extras (favicon, social share image). The site has none today.
 - Update `design-style.md`: browse and long-text page patterns, error pages, favicon and share image.
 
-### Step 6: Admin editor (`public/admin/`, 8 pages, about 3,200 lines)
+### Step 6: Admin editor - DONE 25 Nov 2026 (every admin page viewed at desktop and 375px; forms and AI flows not submitted) (`public/admin/`, 8 pages, about 3,200 lines)
 - Uses `includes/admin-nav.php` and `includes/admin-auth.php`. Restyle login, subjects list, subject editor (the biggest),
   review, lessons and preview with daisyUI forms (`input`, `textarea`, `select`, `fieldset`), `btn`, `alert`, `tabs`, `badge`
   and `table`.
 - Remove the hard-coded colours left in admin: `includes/admin-nav.php` (a `<style>` block with `#f7f5f0`) and the dialog
   in `public/admin/subject.php` (about line 1297, inline `#1b2a4a` styles).
 - Do not change behaviour, form field names or the job and AI flows: markup and classes only. Test every form on MAMP.
-- Update `design-style.md`: add an Admin section (forms, buttons, tabs, alerts).
+- Update `design-style.md`: add an Admin section (forms, buttons, tabs, alerts). Done.
 
 ### Step 7: Docs and checks
 - Final read-through of `docs/design-style.md` against the finished site: remove every "pre-restyle" note, confirm each

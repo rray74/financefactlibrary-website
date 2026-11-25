@@ -477,7 +477,7 @@ function renderFieldDraft(?array $draft, string $field, string $currentValue): s
     $open = trim($currentValue) === '' ? ' open' : '';
     $when = date('j M', strtotime($draft['created_at']));
     return '<details class="mt-2 border-l-2 border-secondary/40 pl-3"' . $open . '>'
-        . '<summary class="text-xs text-secondary cursor-pointer">AI draft (' . e($when) . ')</summary>'
+        . '<summary class="text-xs cursor-pointer link">AI draft (' . e($when) . ')</summary>'
         . '<div class="whitespace-pre-wrap text-sm opacity-80 my-2' . ($field === 'explanation' ? ' font-mono' : '') . '">'
         . e($text) . '</div>'
         . '<button type="button" class="btn btn-xs btn-outline" data-use-draft="' . e($field) . '">Use draft</button>'
@@ -499,11 +499,11 @@ include __DIR__ . '/../../includes/header.php';
 include __DIR__ . '/../../includes/admin-nav.php';
 ?>
 
-<nav class="font-mono text-xs uppercase tracking-wide text-secondary mb-4">
-    <a href="/admin/subjects.php" class="hover:text-accent">Subjects</a>
-    <span class="opacity-50">/</span>
+<nav class="font-mono text-xs uppercase tracking-wide opacity-70 mb-4">
+    <a href="/admin/subjects.php" class="link link-hover">Subjects</a>
+    <span class="opacity-70">/</span>
     <?= e($subject['category_name']) ?>
-    <span class="opacity-50">/</span>
+    <span class="opacity-70">/</span>
     <?= e($subject['subcategory_name']) ?>
 </nav>
 
@@ -512,28 +512,28 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <h1 class="font-display text-3xl font-semibold"><?= e($subject['name']) ?></h1>
         <span class="flex flex-wrap gap-4">
             <?php // Preview works for any status, including drafts and countries that are not live yet (public/admin/preview.php). ?>
-            <a href="/admin/preview.php?id=<?= (int) $subjectId ?>" target="_blank" class="text-sm text-secondary underline hover:text-accent">
+            <a href="/admin/preview.php?id=<?= (int) $subjectId ?>" target="_blank" class="text-sm link">
                 Preview page &#8599;
             </a>
             <?php if ($subject['status'] === 'published'): ?>
-            <a href="<?= e($publicUrl) ?>" target="_blank" class="text-sm text-secondary underline hover:text-accent">
+            <a href="<?= e($publicUrl) ?>" target="_blank" class="text-sm link">
                 View page &#8599;
             </a>
             <?php endif; ?>
         </span>
     </div>
-    <p class="font-mono text-xs opacity-50 mt-1"><?= e($publicUrl) ?></p>
+    <p class="font-mono text-xs opacity-70 mt-1"><?= e($publicUrl) ?></p>
 </section>
 
 <?php // ---------- Google search (Search Console, last 28 days) ---------- ?>
 <section id="search" class="mb-10 scroll-mt-6">
     <?php if (!$searchStats): ?>
-    <p class="text-sm opacity-60">
+    <p class="text-sm opacity-70">
         No Google search data for this page in the last 28 days.
     </p>
     <?php else: ?>
-    <div class="fact-card p-5">
-        <p class="font-mono text-xs uppercase tracking-wide text-secondary mb-2">
+    <div class="card card-border border-base-content/20 bg-base-100 p-5">
+        <p class="font-mono text-xs uppercase tracking-wide opacity-70 mb-2">
             Google search, <?= date('j M', strtotime($searchStats['period_start'])) ?> to <?= date('j M Y', strtotime($searchStats['period_end'])) ?>
         </p>
         <p class="text-sm">
@@ -545,23 +545,23 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <?php if ($searchQueries): ?>
         <?php // What people searched for: useful for the intro, explanation and meta title. ?>
         <details class="mt-3">
-            <summary class="text-sm text-secondary cursor-pointer">Top searches showing this page</summary>
-            <table class="w-full text-sm border-collapse mt-2">
+            <summary class="text-sm cursor-pointer link">Top searches showing this page</summary>
+            <table class="table table-sm mt-2">
                 <thead>
-                    <tr class="border-b border-primary/40 text-left font-mono text-xs uppercase tracking-wide">
-                        <th class="py-1 pr-4">Search</th>
-                        <th class="py-1 pr-4 text-right">Impr.</th>
-                        <th class="py-1 pr-4 text-right">Clicks</th>
-                        <th class="py-1 text-right">Pos.</th>
+                    <tr class="text-left font-mono text-xs uppercase tracking-wide">
+                        <th>Search</th>
+                        <th class="text-right">Impr.</th>
+                        <th class="text-right">Clicks</th>
+                        <th class="text-right">Pos.</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($searchQueries as $query): ?>
-                    <tr class="border-b border-primary/10">
-                        <td class="py-1 pr-4"><?= e($query['query']) ?></td>
-                        <td class="py-1 pr-4 text-right"><?= number_format((int) $query['impressions']) ?></td>
-                        <td class="py-1 pr-4 text-right"><?= number_format((int) $query['clicks']) ?></td>
-                        <td class="py-1 text-right"><?= number_format((float) $query['position'], 1) ?></td>
+                    <tr>
+                        <td><?= e($query['query']) ?></td>
+                        <td class="text-right"><?= number_format((int) $query['impressions']) ?></td>
+                        <td class="text-right"><?= number_format((int) $query['clicks']) ?></td>
+                        <td class="text-right"><?= number_format((float) $query['position'], 1) ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -612,7 +612,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <input type="hidden" name="action" value="save_subject">
 
         <?php // The checklist for finishing a page. The same text is in docs/page-checklist.md. ?>
-        <details class="fact-card p-4 text-sm">
+        <details class="card card-border border-base-content/20 bg-base-100 p-4 text-sm">
             <summary class="font-semibold cursor-pointer">Checklist for finishing a page</summary>
             <ol class="list-decimal pl-5 mt-3 space-y-2">
                 <li><strong>Draft.</strong> Draft and polish in the background, then run the job. Keep its "AI use" line. Open this page and click Use draft on all four fields.</li>
@@ -629,12 +629,12 @@ include __DIR__ . '/../../includes/admin-nav.php';
 
         <?php // AI draft: what's stored, anything to check, and the button to redraft now. ?>
         <?php if ($draft || aiProposalsAvailable()): ?>
-        <div class="fact-card p-4 text-sm">
+        <div class="card card-border border-base-content/20 bg-base-100 p-4 text-sm">
             <div class="flex flex-wrap items-baseline justify-between gap-2">
                 <p class="font-semibold">
                     <?php if ($draft): ?>
                     AI draft from <?= e(date('j M Y, H:i', strtotime($draft['created_at']))) ?>
-                    <span class="font-normal opacity-60">(<?= $draft['made_by'] === 'nightly' ? 'made overnight' : 'made here' ?>)</span>
+                    <span class="font-normal opacity-70">(<?= $draft['made_by'] === 'nightly' ? 'made overnight' : 'made here' ?>)</span>
                     <?php else: ?>
                     No AI draft for this page yet
                     <?php endif; ?>
@@ -674,7 +674,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <p class="text-xs mt-2"><strong>Automatic rewrite:</strong> <?= e($rewriteSummary) ?></p>
             <?php endif; ?>
             <?php if ($rewriteDetails !== ''): ?>
-            <p class="text-xs mt-1 opacity-60"><?= e($rewriteDetails) ?></p>
+            <p class="text-xs mt-1 opacity-70"><?= e($rewriteDetails) ?></p>
             <?php endif; ?>
             <?php endif; ?>
             <?php if ($draft && $draft['problems']): ?>
@@ -694,13 +694,13 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <?php // AI check: the latest result, and the button to check the text in the boxes now. ?>
         <?php if ($textCheck || aiProposalsAvailable()): ?>
         <?php $checkMatchesBoxes = $textCheck && textCheckHash($form) === $textCheck['text_hash']; ?>
-        <div id="text-check" class="fact-card p-4 text-sm scroll-mt-6">
+        <div id="text-check" class="card card-border border-base-content/20 bg-base-100 p-4 text-sm scroll-mt-6">
             <div class="flex flex-wrap items-baseline justify-between gap-2">
                 <p class="font-semibold">
                     <?php if ($textCheck): ?>
                     AI check from <?= e(date('j M Y, H:i', strtotime($textCheck['checked_at']))) ?>
                     <?php // Matched by fingerprint, so a check of unsaved text still counts once it's saved unchanged. ?>
-                    <span class="font-normal <?= $checkMatchesBoxes ? 'opacity-60' : 'text-error' ?>">
+                    <span class="font-normal <?= $checkMatchesBoxes ? 'opacity-70' : 'text-error' ?>">
                         (<?= $checkMatchesBoxes ? 'of the text in the boxes' : 'the text has changed since' ?>)
                     </span>
                     <?php else: ?>
@@ -725,7 +725,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             </div>
             <p class="text-xs opacity-70 mt-1">
                 Reads the text in the boxes, with figures filled in, against this page's figures, their
-                source pages, the house style and the <a href="/admin/lessons.php" class="underline hover:text-accent">lessons
+                source pages, the house style and the <a href="/admin/lessons.php" class="link">lessons
                 learned so far</a>. Saved or not, nothing is changed. Up to two minutes.
             </p>
             <?php // Reference sources (migration 030): official pages the text rests on that no figure cites. They are read too. ?>
@@ -734,7 +734,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <p class="text-xs opacity-70 mt-1">
                 It also reads this page's reference sources (official pages the text rests on that no figure cites):
                 <?php foreach ($referenceSources as $referenceIndex => $reference): ?>
-                <a href="<?= e($reference['url']) ?>" target="_blank" rel="noopener" class="underline hover:text-accent"
+                <a href="<?= e($reference['url']) ?>" target="_blank" rel="noopener" class="link"
                     title="<?= e((string) ($reference['note'] ?? '')) ?>"><?= e($reference['publisher']) ?></a><?= $referenceIndex < count($referenceSources) - 1 ? ',' : '.' ?>
                 <?php endforeach; ?>
             </p>
@@ -742,7 +742,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
 
             <?php if ($textCheck): ?>
             <?php if (!$textCheck['findings']): ?>
-            <p class="mt-3 text-secondary">No problems found.</p>
+            <p class="mt-3 opacity-70">No problems found.</p>
             <?php else: ?>
             <ul class="mt-3 space-y-3">
                 <?php foreach ($textCheck['findings'] as $findingIndex => $finding): ?>
@@ -760,7 +760,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
                     <span class="block mt-2">
                         <button type="submit" name="propose_fix" value="<?= (int) $findingNumber ?>" formnovalidate
                             class="btn btn-xs btn-outline" data-propose-fix>Propose fix</button>
-                        <span class="text-xs opacity-60 ml-1">asks the AI for the smallest change that fixes this one; nothing changes until you apply it</span>
+                        <span class="text-xs opacity-70 ml-1">asks the AI for the smallest change that fixes this one; nothing changes until you apply it</span>
                     </span>
                     <?php endif; ?>
 
@@ -777,13 +777,13 @@ include __DIR__ . '/../../includes/admin-nav.php';
                         <p class="font-semibold">Proposed change<?= count($changes) === 1 ? '' : 's (' . count($changes) . ', applied together)' ?></p>
                         <?php foreach ($changes as $change): ?>
                         <div class="space-y-1">
-                            <p class="opacity-60 uppercase tracking-wide">
+                            <p class="opacity-70 uppercase tracking-wide">
                                 <?= e(TEXT_FIELD_LABELS[$change['field']] ?? $change['field']) ?>:
                                 <?= $change['new'] === '' ? 'delete this text' : 'replace this text' ?>
                             </p>
                             <p class="font-mono whitespace-pre-wrap line-through opacity-80"><?= e($change['old']) ?></p>
                             <?php if ($change['new'] !== ''): ?>
-                            <p class="opacity-60 uppercase tracking-wide">Instead</p>
+                            <p class="opacity-70 uppercase tracking-wide">Instead</p>
                             <p class="font-mono whitespace-pre-wrap"><?= e($change['new']) ?></p>
                             <?php if (strpos($change['new'], '{') !== false): ?>
                             <p class="opacity-70">Shows as: <?= e($fillPreview($change['new'])) ?></p>
@@ -815,7 +815,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <?php endif; ?>
 
             <?php // What it read, so a source that couldn't be read is visible. ?>
-            <p class="text-xs opacity-60 mt-3">
+            <p class="text-xs opacity-70 mt-3">
                 <?php if (!$textCheck['sources']): ?>
                 No source pages to read (figures without a source, or Bank of England data only).
                 <?php else: ?>
@@ -834,7 +834,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <?php endif; ?>
 
         <?php // Placeholders: click one to put it where the cursor was in any of the four fields. ?>
-        <details open class="fact-card p-4">
+        <details open class="card card-border border-base-content/20 bg-base-100 p-4">
             <summary class="font-semibold cursor-pointer text-sm">Placeholders for this page</summary>
             <p class="text-xs opacity-70 mt-2 mb-3">
                 Use these instead of typing figures that change, in any of the fields below. Click one to
@@ -845,8 +845,8 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 <?php foreach ($placeholderValues as $token => $value): ?>
                 <li class="flex flex-wrap items-baseline gap-x-3">
                     <button type="button" class="btn btn-xs btn-outline font-mono" data-insert="<?= e($token) ?>"><?= e($token) ?></button>
-                    <span class="fact-value font-semibold"><?= e($value) ?></span>
-                    <span class="text-xs opacity-60"><?= e($pageFactLabels[$token] ?? 'Tax year of this page\'s figures') ?></span>
+                    <span class="tabular-nums font-semibold"><?= e($value) ?></span>
+                    <span class="text-xs opacity-70"><?= e($pageFactLabels[$token] ?? 'Tax year of this page\'s figures') ?></span>
                 </li>
                 <?php endforeach; ?>
             </ul>
@@ -859,9 +859,9 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 page, and used as the search result description when the meta description below is
                 blank. One sentence, 120 to 200 characters, no figures.
             </p>
-            <textarea id="intro" name="intro" rows="3" class="textarea textarea-bordered w-full"
+            <textarea id="intro" name="intro" rows="3" class="textarea w-full"
                 data-counter="intro-count" data-limit="200" data-min="120"><?= e($form['intro']) ?></textarea>
-            <p id="intro-count" class="text-xs opacity-60 mt-1"></p>
+            <p id="intro-count" class="text-xs opacity-70 mt-1"></p>
             <?= renderFieldDraft($draft, 'intro', $form['intro']) ?>
         </div>
 
@@ -874,9 +874,9 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 <code class="font-mono">**bold**</code> and <code class="font-mono">[link text](/uk/tax/)</code>.
                 A blank line starts a new paragraph.
             </p>
-            <textarea id="explanation" name="explanation" rows="16" class="textarea textarea-bordered w-full font-mono text-sm"
+            <textarea id="explanation" name="explanation" rows="16" class="textarea w-full font-mono text-sm"
                 data-counter="explanation-count" data-words="1"><?= e($form['explanation']) ?></textarea>
-            <p id="explanation-count" class="text-xs opacity-60 mt-1"></p>
+            <p id="explanation-count" class="text-xs opacity-70 mt-1"></p>
             <?= renderFieldDraft($draft, 'explanation', $form['explanation']) ?>
 
             <?php // Preview of the SAVED version, rendered exactly as the public page does it. ?>
@@ -884,8 +884,8 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <?php $savedExplanationHtml = renderExplanation($fillPreview($subject['explanation'] ?? null)); ?>
             <?php if ($savedExplanationHtml !== ''): ?>
             <details class="mt-3">
-                <summary class="text-sm text-secondary cursor-pointer">Preview (as last saved)</summary>
-                <div class="border border-primary/20 rounded p-5 mt-2 leading-relaxed [&>:first-child]:mt-0">
+                <summary class="text-sm cursor-pointer link">Preview (as last saved)</summary>
+                <div class="border border-base-300 rounded p-5 mt-2 leading-relaxed [&>:first-child]:mt-0">
                     <?= $savedExplanationHtml ?>
                 </div>
             </details>
@@ -902,11 +902,11 @@ include __DIR__ . '/../../includes/admin-nav.php';
             </p>
             <?php // No maxlength: a browser trims pasted text to it without saying. The counter below warns, and the server refuses text over SUBJECT_META_TITLE_COLUMN_MAX. ?>
             <input type="text" id="meta_title" name="meta_title"
-                class="input input-bordered w-full" value="<?= e($form['meta_title']) ?>"
+                class="input w-full" value="<?= e($form['meta_title']) ?>"
                 placeholder="<?= e($fallbackTitle) ?>" data-counter="meta-title-count" data-limit="42"
                 data-column-limit="<?= SUBJECT_META_TITLE_COLUMN_MAX ?>"
                 data-preview="meta-title-preview">
-            <p id="meta-title-count" class="text-xs opacity-60 mt-1"></p>
+            <p id="meta-title-count" class="text-xs opacity-70 mt-1"></p>
             <?php // Filled in by the script below when the title uses placeholders. ?>
             <p id="meta-title-preview" class="text-xs mt-1"></p>
             <?= renderFieldDraft($draft, 'meta_title', $form['meta_title']) ?>
@@ -923,11 +923,11 @@ include __DIR__ . '/../../includes/admin-nav.php';
             </p>
             <?php // No maxlength, as for the title. The database holds SUBJECT_META_DESCRIPTION_COLUMN_MAX characters as typed. ?>
             <textarea id="meta_description" name="meta_description" rows="3"
-                class="textarea textarea-bordered w-full" placeholder="<?= e($fallbackDescription) ?>"
+                class="textarea w-full" placeholder="<?= e($fallbackDescription) ?>"
                 data-counter="meta-description-count" data-limit="155" data-min="140"
                 data-column-limit="<?= SUBJECT_META_DESCRIPTION_COLUMN_MAX ?>"
                 data-preview="meta-description-preview"><?= e($form['meta_description']) ?></textarea>
-            <p id="meta-description-count" class="text-xs opacity-60 mt-1"></p>
+            <p id="meta-description-count" class="text-xs opacity-70 mt-1"></p>
             <p id="meta-description-preview" class="text-xs mt-1"></p>
             <?= renderFieldDraft($draft, 'meta_description', $form['meta_description']) ?>
         </div>
@@ -948,7 +948,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
 
         <button type="submit" class="btn btn-primary">Save page details</button>
         <?php // Saving is how a review is recorded (subjects.text_reviewed_at). ?>
-        <p class="text-xs opacity-60 mt-2">Saving also marks this page's text as reviewed today.</p>
+        <p class="text-xs opacity-70 mt-2">Saving also marks this page's text as reviewed today.</p>
     </form>
 </section>
 
@@ -958,12 +958,12 @@ include __DIR__ . '/../../includes/admin-nav.php';
     <p class="opacity-80 max-w-xl mb-6 text-sm">
         In page order. Facts this page owns can be edited here, and new ones added at the bottom. Shared facts belong to another
         page and are edited there. Values change on the
-        <a href="/admin/review.php" class="underline hover:text-accent">review page</a> or through the
+        <a href="/admin/review.php" class="link">review page</a> or through the
         importer, so every change is recorded in the fact's history.
     </p>
 
     <?php if (empty($facts)): ?>
-    <p class="fact-card p-6 text-secondary">No facts linked to this page yet.</p>
+    <p class="card card-border border-base-content/20 bg-base-100 p-6 opacity-70">No facts linked to this page yet.</p>
     <?php endif; ?>
 
     <div class="space-y-5">
@@ -974,18 +974,18 @@ include __DIR__ . '/../../includes/admin-nav.php';
         // Put back what was typed if this fact's save just failed.
         $factForm = $oldFactId === $factId ? $old : $fact;
         ?>
-        <div id="fact-<?= $factId ?>" class="fact-card p-5 scroll-mt-6">
+        <div id="fact-<?= $factId ?>" class="card card-border border-base-content/20 bg-base-100 p-5 scroll-mt-6">
             <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
-                <p class="fact-value font-display text-2xl font-semibold"><?= e(formatFactValue($fact)) ?></p>
+                <p class="tabular-nums font-display text-2xl font-semibold"><?= e(formatFactValue($fact)) ?></p>
                 <p class="font-mono text-xs">
                     <?php // Only published facts show on the public page. ?>
                     <?php if ($fact['status'] !== 'published'): ?>
-                    <span class="px-2 py-1 rounded bg-error/10 text-error"><?= e($fact['status']) ?>, not shown</span>
+                    <span class="badge badge-sm badge-error whitespace-nowrap"><?= e($fact['status']) ?>, not shown</span>
                     <?php endif; ?>
                     <?php if (isRegionalFact($fact)): ?>
-                    <span class="px-2 py-1 rounded bg-secondary/10 text-secondary"><?= e($fact['jurisdiction_name']) ?></span>
+                    <span class="badge badge-sm badge-outline whitespace-nowrap"><?= e($fact['jurisdiction_name']) ?></span>
                     <?php endif; ?>
-                    <span class="opacity-50 ml-1"><?= e($fact['fact_key']) ?></span>
+                    <span class="opacity-70 ml-1"><?= e($fact['fact_key']) ?></span>
                 </p>
             </div>
 
@@ -998,17 +998,17 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 <div>
                     <label for="label-<?= $factId ?>" class="block text-sm font-semibold mb-1">Label</label>
                     <input type="text" id="label-<?= $factId ?>" name="label" required maxlength="255"
-                        class="input input-bordered input-sm w-full" value="<?= e((string) $factForm['label']) ?>">
+                        class="input input-sm w-full" value="<?= e((string) $factForm['label']) ?>">
                 </div>
 
                 <div>
                     <label for="context-<?= $factId ?>" class="block text-sm font-semibold mb-1">Context</label>
                     <input type="text" id="context-<?= $factId ?>" name="context"
-                        class="input input-bordered input-sm w-full" value="<?= e((string) ($factForm['context'] ?? '')) ?>"
+                        class="input input-sm w-full" value="<?= e((string) ($factForm['context'] ?? '')) ?>"
                         placeholder="One line under the figure, e.g. who it applies to">
                     <?php if ((int) $fact['linked_pages'] > 1): ?>
                     <?php // Shared pages show this context unless they have their own override. ?>
-                    <p class="text-xs opacity-60 mt-1">
+                    <p class="text-xs opacity-70 mt-1">
                         Also shown on <?= (int) $fact['linked_pages'] - 1 ?> other
                         page<?= (int) $fact['linked_pages'] - 1 === 1 ? '' : 's' ?>, which use this context
                         unless they have their own.
@@ -1021,7 +1021,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
                         <label for="review-<?= $factId ?>" class="block text-sm font-semibold mb-1">Review every</label>
                         <span class="flex items-center gap-2">
                             <input type="number" id="review-<?= $factId ?>" name="review_frequency_days"
-                                min="1" max="3650" step="1" required class="input input-bordered input-sm w-24"
+                                min="1" max="3650" step="1" required class="input input-sm w-24"
                                 value="<?= e((string) $factForm['review_frequency_days']) ?>">
                             <span class="text-sm opacity-70">days</span>
                         </span>
@@ -1030,32 +1030,32 @@ include __DIR__ . '/../../includes/admin-nav.php';
 
                 <?php // How the weekly source check (scripts/check-sources.php) finds this figure. ?>
                 <details class="text-sm" <?= $oldFactId === $factId ? 'open' : '' ?>>
-                    <summary class="cursor-pointer text-secondary">Source and how it's checked</summary>
+                    <summary class="cursor-pointer link">Source and how it's checked</summary>
                     <div class="space-y-3 mt-3">
                         <div>
                             <label for="source-<?= $factId ?>" class="block text-sm font-semibold mb-1">Source page</label>
                             <input type="url" id="source-<?= $factId ?>" name="source_url"
-                                class="input input-bordered input-sm w-full font-mono"
+                                class="input input-sm w-full font-mono"
                                 value="<?= e((string) ($factForm['source_url'] ?? '')) ?>">
-                            <p class="text-xs opacity-60 mt-1">
+                            <p class="text-xs opacity-70 mt-1">
                                 The page the weekly check reads. Change it if the figure has moved to another page.
                             </p>
                         </div>
                         <div>
                             <label for="publisher-<?= $factId ?>" class="block text-sm font-semibold mb-1">Publisher</label>
                             <input type="text" id="publisher-<?= $factId ?>" name="source_publisher" maxlength="255"
-                                class="input input-bordered input-sm w-full"
+                                class="input input-sm w-full"
                                 value="<?= e((string) ($factForm['source_publisher'] ?? $factForm['source_name'] ?? '')) ?>">
-                            <p class="text-xs opacity-60 mt-1">Only used when the source page is new to the site, e.g. GOV.UK — DWP.</p>
+                            <p class="text-xs opacity-70 mt-1">Only used when the source page is new to the site, e.g. GOV.UK — DWP.</p>
                         </div>
                         <div>
                             <label for="match-<?= $factId ?>" class="block text-sm font-semibold mb-1">
-                                Text to look for <span class="font-normal opacity-60">(optional)</span>
+                                Text to look for <span class="font-normal opacity-70">(optional)</span>
                             </label>
                             <input type="text" id="match-<?= $factId ?>" name="source_match_text" maxlength="255"
-                                class="input input-bordered input-sm w-full"
+                                class="input input-sm w-full"
                                 value="<?= e((string) ($factForm['source_match_text'] ?? '')) ?>">
-                            <p class="text-xs opacity-60 mt-1">
+                            <p class="text-xs opacity-70 mt-1">
                                 Leave blank to look for the figure itself. Fill in for figures the source writes in
                                 words, copying its exact wording, e.g. "one week's pay for each full year".
                             </p>
@@ -1071,20 +1071,20 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <p class="text-sm opacity-80">
                 <?= e((string) ($fact['context_override'] ?? $fact['context'] ?? '')) ?>
                 <?php if ($fact['context_override'] !== null): ?>
-                <span class="font-mono text-xs opacity-60">(this page's own context)</span>
+                <span class="font-mono text-xs opacity-70">(this page's own context)</span>
                 <?php endif; ?>
             </p>
             <p class="text-xs mt-2">
                 Shared from
                 <a href="/admin/subject.php?id=<?= (int) $fact['owner_id'] ?>#fact-<?= $factId ?>"
-                    class="text-secondary underline hover:text-accent"><?= e($fact['owner_name']) ?></a>.
+                    class="link"><?= e($fact['owner_name']) ?></a>.
                 Edit it there.
             </p>
             <?php endif; ?>
 
-            <p class="text-xs opacity-60 mt-3">
+            <p class="text-xs opacity-70 mt-3">
                 <?php if ($fact['source_url']): ?>
-                <a href="<?= e($fact['source_url']) ?>" target="_blank" rel="noopener" class="underline hover:text-accent">
+                <a href="<?= e($fact['source_url']) ?>" target="_blank" rel="noopener" class="link">
                     <?= e($fact['source_name'] ?? 'Source') ?> &#8599;
                 </a>
                 <?php else: ?>
@@ -1099,7 +1099,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
 
 <?php // ---------- Add a fact (folded away unless a previous attempt failed) ---------- ?>
 <section class="mb-14">
-<details id="add-fact" class="fact-card p-5 scroll-mt-6" <?= $addFactFailed ? 'open' : '' ?>>
+<details id="add-fact" class="card card-border border-base-content/20 bg-base-100 p-5 scroll-mt-6" <?= $addFactFailed ? 'open' : '' ?>>
     <summary class="font-semibold cursor-pointer">Add a fact to this page</summary>
 
     <p class="text-sm opacity-80 mt-3 max-w-xl">
@@ -1114,16 +1114,16 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <div>
             <label for="nf-label" class="block text-sm font-semibold mb-1">Label</label>
             <input type="text" id="nf-label" name="label" required maxlength="255"
-                class="input input-bordered input-sm w-full" value="<?= e((string) $newFact['label']) ?>"
+                class="input input-sm w-full" value="<?= e((string) $newFact['label']) ?>"
                 placeholder="e.g. Junior ISA annual allowance">
         </div>
 
         <div>
             <label for="nf-key" class="block text-sm font-semibold mb-1">Key</label>
             <input type="text" id="nf-key" name="fact_key" required maxlength="100" pattern="[a-z0-9]+(_[a-z0-9]+)*"
-                class="input input-bordered input-sm w-full font-mono" value="<?= e((string) $newFact['fact_key']) ?>"
+                class="input input-sm w-full font-mono" value="<?= e((string) $newFact['fact_key']) ?>"
                 placeholder="junior_isa_allowance">
-            <p class="text-xs opacity-60 mt-1">
+            <p class="text-xs opacity-70 mt-1">
                 The fact's permanent id, used by the importer, worked examples and checks. Filled in from
                 the label. Must be unique, and can't be changed later.
             </p>
@@ -1133,14 +1133,14 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <div>
                 <label for="nf-value" class="block text-sm font-semibold mb-1">Value</label>
                 <input type="text" id="nf-value" name="value" required
-                    class="input input-bordered input-sm w-40" value="<?= e((string) $newFact['value']) ?>"
+                    class="input input-sm w-40" value="<?= e((string) $newFact['value']) ?>"
                     placeholder="9,000">
             </div>
             <div>
                 <label for="nf-unit" class="block text-sm font-semibold mb-1">Unit</label>
                 <?php // Suggestions only. Any short unit can be typed. ?>
                 <input type="text" id="nf-unit" name="unit" maxlength="20" list="unit-suggestions"
-                    class="input input-bordered input-sm w-28" value="<?= e((string) $newFact['unit']) ?>"
+                    class="input input-sm w-28" value="<?= e((string) $newFact['unit']) ?>"
                     placeholder="£">
                 <datalist id="unit-suggestions">
                     <option value="£"><option value="%"><option value="years"><option value="weeks"><option value="days">
@@ -1148,7 +1148,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             </div>
             <div>
                 <label for="nf-jurisdiction" class="block text-sm font-semibold mb-1">Applies to</label>
-                <select id="nf-jurisdiction" name="jurisdiction_id" class="select select-bordered select-sm">
+                <select id="nf-jurisdiction" name="jurisdiction_id" class="select select-sm">
                     <?php foreach ($jurisdictionOptions as $option): ?>
                     <option value="<?= (int) $option['id'] ?>"
                         <?= (int) $newFact['jurisdiction_id'] === (int) $option['id'] ? 'selected' : '' ?>>
@@ -1158,14 +1158,14 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 </select>
             </div>
         </div>
-        <p class="text-xs opacity-60 -mt-2">
+        <p class="text-xs opacity-70 -mt-2">
             Enter the number as the source shows it. The unit is added on display, so 9000 with £ shows as £9,000.
         </p>
 
         <div>
-            <label for="nf-context" class="block text-sm font-semibold mb-1">Context <span class="font-normal opacity-60">(optional)</span></label>
+            <label for="nf-context" class="block text-sm font-semibold mb-1">Context <span class="font-normal opacity-70">(optional)</span></label>
             <input type="text" id="nf-context" name="context"
-                class="input input-bordered input-sm w-full" value="<?= e((string) $newFact['context']) ?>"
+                class="input input-sm w-full" value="<?= e((string) $newFact['context']) ?>"
                 placeholder="One line under the figure, e.g. who it applies to">
         </div>
 
@@ -1173,39 +1173,39 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <div class="flex-1 min-w-64">
                 <label for="nf-source" class="block text-sm font-semibold mb-1">Source page</label>
                 <input type="url" id="nf-source" name="source_url"
-                    class="input input-bordered input-sm w-full" value="<?= e((string) $newFact['source_url']) ?>"
+                    class="input input-sm w-full" value="<?= e((string) $newFact['source_url']) ?>"
                     placeholder="https://www.gov.uk/...">
             </div>
             <div>
                 <label for="nf-publisher" class="block text-sm font-semibold mb-1">Publisher</label>
                 <input type="text" id="nf-publisher" name="source_publisher" maxlength="255"
-                    class="input input-bordered input-sm w-40" value="<?= e((string) $newFact['source_publisher']) ?>"
+                    class="input input-sm w-40" value="<?= e((string) $newFact['source_publisher']) ?>"
                     placeholder="GOV.UK">
             </div>
         </div>
-        <p class="text-xs opacity-60 -mt-2">
+        <p class="text-xs opacity-70 -mt-2">
             Use the exact page the figure appears on, since the weekly check looks for it there. Publisher
             is only used if this page hasn't been used as a source before.
         </p>
 
         <div class="flex flex-wrap gap-4 items-end">
             <div>
-                <label for="nf-effective" class="block text-sm font-semibold mb-1">In effect from <span class="font-normal opacity-60">(optional)</span></label>
+                <label for="nf-effective" class="block text-sm font-semibold mb-1">In effect from <span class="font-normal opacity-70">(optional)</span></label>
                 <?php // Future dates are refused: figures go live the moment they're saved. ?>
                 <input type="date" id="nf-effective" name="effective_from" max="<?= date('Y-m-d') ?>"
-                    class="input input-bordered input-sm" value="<?= e((string) $newFact['effective_from']) ?>">
+                    class="input input-sm" value="<?= e((string) $newFact['effective_from']) ?>">
             </div>
             <div>
-                <label for="nf-tax-year" class="block text-sm font-semibold mb-1">Tax year <span class="font-normal opacity-60">(optional)</span></label>
+                <label for="nf-tax-year" class="block text-sm font-semibold mb-1">Tax year <span class="font-normal opacity-70">(optional)</span></label>
                 <input type="text" id="nf-tax-year" name="tax_year" pattern="\d{4}/\d{2}"
-                    class="input input-bordered input-sm w-28" value="<?= e((string) $newFact['tax_year']) ?>"
+                    class="input input-sm w-28" value="<?= e((string) $newFact['tax_year']) ?>"
                     placeholder="2026/27">
             </div>
             <div>
                 <label for="nf-review" class="block text-sm font-semibold mb-1">Review every</label>
                 <span class="flex items-center gap-2">
                     <input type="number" id="nf-review" name="review_frequency_days" min="1" max="3650" step="1" required
-                        class="input input-bordered input-sm w-24" value="<?= e((string) $newFact['review_frequency_days']) ?>">
+                        class="input input-sm w-24" value="<?= e((string) $newFact['review_frequency_days']) ?>">
                     <span class="text-sm opacity-70">days</span>
                 </span>
             </div>
@@ -1222,7 +1222,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <?php endforeach; ?>
             <?php if ($subject['status'] !== 'published'): ?>
             <?php // A published fact on a draft page still isn't public until the page is published. ?>
-            <p class="text-xs opacity-60 mt-2">This page is <?= e($subject['status']) ?>, so its facts aren't public yet either way.</p>
+            <p class="text-xs opacity-70 mt-2">This page is <?= e($subject['status']) ?>, so its facts aren't public yet either way.</p>
             <?php endif; ?>
         </fieldset>
 
@@ -1285,38 +1285,35 @@ include __DIR__ . '/../../includes/admin-nav.php';
                     resolve(window.confirm(title + '\n\n' + lines.concat(warning ? [warning] : []).join('\n\n')));
                     return;
                 }
-                if (!document.getElementById('ffl-ask-style')) {
-                    var style = document.createElement('style');
-                    style.id = 'ffl-ask-style';
-                    style.textContent = 'dialog.ffl-ask::backdrop { background: rgba(27, 42, 74, 0.55); }';
-                    document.head.appendChild(style);
-                }
-
+                // daisyUI modal (restyle Step 6): colours come from the theme, so it works in light and dark.
                 var dialog = document.createElement('dialog');
-                dialog.className = 'ffl-ask';
-                dialog.style.cssText = 'width: min(32rem, calc(100% - 2rem)); padding: 1.5rem; border: 2px solid #1b2a4a; '
-                    + 'background: #f7f5f0; color: #1b2a4a; box-shadow: 6px 6px 0 rgba(27, 42, 74, 0.25);';
+                dialog.className = 'modal';
+
+                var box = document.createElement('div');
+                box.className = 'modal-box';
+                dialog.appendChild(box);
 
                 var heading = document.createElement('h3');
                 heading.textContent = title;
-                heading.style.cssText = 'font-weight: 700; font-size: 1.125rem; margin: 0 0 0.75rem;';
-                dialog.appendChild(heading);
+                heading.className = 'font-display text-xl font-semibold mb-3';
+                box.appendChild(heading);
 
                 lines.forEach(function (line) {
                     var p = document.createElement('p');
                     p.textContent = line;
-                    p.style.cssText = 'margin: 0 0 0.75rem;';
-                    dialog.appendChild(p);
+                    p.className = 'mb-3';
+                    box.appendChild(p);
                 });
                 if (warning) {
-                    var note = document.createElement('p');
+                    var note = document.createElement('div');
+                    note.setAttribute('role', 'alert');
+                    note.className = 'alert alert-warning font-semibold mb-3';
                     note.textContent = warning;
-                    note.style.cssText = 'margin: 0 0 0.75rem; padding: 0.5rem 0.75rem; border-left: 4px solid #b3452c; background: #ece6da; font-weight: 600;';
-                    dialog.appendChild(note);
+                    box.appendChild(note);
                 }
 
                 var row = document.createElement('div');
-                row.style.cssText = 'display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem;';
+                row.className = 'modal-action';
                 var cancel = document.createElement('button');
                 cancel.type = 'button';
                 cancel.className = 'btn btn-outline';
@@ -1327,7 +1324,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 go.textContent = actionLabel;
                 row.appendChild(cancel);
                 row.appendChild(go);
-                dialog.appendChild(row);
+                box.appendChild(row);
 
                 var answer = false;
                 go.addEventListener('click', function () { answer = true; dialog.close(); });

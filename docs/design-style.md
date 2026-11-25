@@ -6,8 +6,7 @@ tone) see `docs/house-style/`. Written 25 November 2026 from the live code: `src
 If this file and the code disagree, the code wins: fix this file.
 
 **Restyle in progress (from 25 November 2026):** the public site is now on daisyUI with light and dark themes (Steps 1 to 5
-of `docs/restyle-plan.md`). The admin editor (Step 6) is still to do, and the Components notes for it are marked
-pre-restyle. This guide is updated in the same commit as each restyle step.
+of `docs/restyle-plan.md`) and the admin editor (Step 6). Step 7 (final checks) is still to do. This guide is updated in the same commit as each restyle step.
 
 ## Principles
 
@@ -132,7 +131,7 @@ Rules:
 
 ## Components
 
-*Public components restyled in Steps 3 to 5. Admin components are still to do (Step 6).*
+*Public components restyled in Steps 3 to 5; admin components in Step 6 (see Admin editor below).*
 
 ### Header
 *Restyled in Step 3.* `includes/header.php`, a daisyUI `navbar` in a `bg-base-100` bar with a `border-b border-base-300`.
@@ -195,7 +194,7 @@ mb-2`, lists `list-disc` or `list-decimal pl-6 mb-4 space-y-1`, links `link link
 leading-relaxed`. No images, callouts or tables inside explanations.
 
 ### Preview banner (admin and previews only)
-*Restyled in Step 4.* A daisyUI `alert alert-warning alert-soft` with `role="alert"`, because the view is not public. Don't
+*Restyled in Step 4.* A daisyUI `alert alert-warning` with `role="alert"`, because the view is not public. Don't
 use it for anything a visitor sees.
 
 ### Link cards (home, category and subcategory pages)
@@ -233,6 +232,30 @@ the subject page, smaller (`card-body p-4`). The old `.article-body` CSS is dele
 ### Error pages
 *Restyled in Step 5.* `showErrorPage()` in `includes/functions.php`: an h1 (`font-display text-4xl`), the message in
 `opacity-80`, and a `btn btn-primary` back to the home page. Still `noindex` and sent with the real 404 or 410 status.
+
+## Admin editor
+
+*Restyled in Step 6 (25 November 2026).* The admin pages (`public/admin/`, with `includes/admin-nav.php`) use the same theme
+and the same rules as the public site: daisyUI components, tokens only, light and dark. Behaviour, form field names and the
+job and AI flows are unchanged: classes and markup only.
+
+- **Section nav:** daisyUI `tabs tabs-border` (Dashboard, Subjects, Review, Lessons), the current one `tab-active` with
+  `aria-current="page"`, and Log out pushed right with `ml-auto`. The tabs wrap onto two rows on a phone.
+- **Flash message:** a daisyUI `alert` (`alert-success`, `alert-info` or `alert-error`), set in `admin-nav.php`.
+- **Panels:** the same card as the public site, `card card-border border-base-content/20 bg-base-100`, with `p-5` directly on
+  it (admin panels don't use `card-body`). Whole-card links add `hover:bg-base-200 transition-colors`.
+- **Tables:** daisyUI `table table-sm`, inside `overflow-x-auto rounded-box border border-base-300 bg-base-100`. Cells take
+  their padding from the table, so don't add `py-*` or `pr-*` to `td` and `th`. Header cells keep the small mono label style.
+  Wide tables scroll inside their box on a phone; the page itself never widens.
+- **Status badges:** daisyUI `badge badge-sm whitespace-nowrap`: `badge-outline` for normal and live states, solid `badge-error`
+  for a problem. Soft badges and plain red text are too faint on the page surface, so use the solid badge.
+- **Forms:** daisyUI `input`, `textarea`, `select`, `radio`, `checkbox` and `btn` with their default borders (daisyUI 5 has no
+  `-bordered` modifiers). Sizes `input-sm`, `btn-sm` and `btn-xs` are allowed in the admin's dense tables and rows, because
+  the editor is a desktop tool; use default sizes for anything that stands alone.
+- **Confirmation dialog** (`ask()` in `subject.php`): a daisyUI `modal` built in JavaScript (`modal`, `modal-box`,
+  `modal-action`, a solid `alert alert-warning` for the warning line), so it follows the theme. No inline colours.
+- **Links and toggles:** `link` or `link link-hover`; `<summary>` toggles are `cursor-pointer link`.
+- No hard-coded colours remain in the admin. Don't add `<style>` blocks or `style=` colours.
 
 ### Other daisyUI components
 *Rewritten in Step 4.* Every component is a daisyUI component (card, badge, table, timeline, alert, navbar, menu, dropdown,

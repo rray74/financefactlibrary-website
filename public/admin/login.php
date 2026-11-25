@@ -54,12 +54,12 @@ include __DIR__ . '/../../includes/header.php';
         <label class="block">
             <span class="text-sm">Username</span>
             <input type="text" name="username" autocomplete="username" required autofocus
-                class="input input-bordered w-full mt-1">
+                class="input w-full mt-1">
         </label>
         <label class="block">
             <span class="text-sm">Password</span>
             <input type="password" name="password" autocomplete="current-password" required
-                class="input input-bordered w-full mt-1">
+                class="input w-full mt-1">
         </label>
         <button type="submit" class="btn btn-primary w-full">Log in</button>
     </form>

@@ -21,21 +21,17 @@ $adminLinks = [
     'lessons'   => ['/admin/lessons.php', 'Lessons'],
 ];
 ?>
-<?php // Readable text on the admin's coloured boxes and filled buttons, whatever stylesheet the browser has.
-      // The site's theme gives these the right text colours (src/input.css), but an out-of-date copy of the
-      // compiled stylesheet leaves them dark on dark: unreadable boxes and buttons with no visible label.
-      // These rules come after the stylesheet, so they apply either way, and match the theme once it is current. ?>
-<style>
-    .alert-info, .alert-error, .btn-primary { color: #f7f5f0; }
-</style>
-
-<nav class="flex flex-wrap gap-5 items-center font-mono text-xs uppercase tracking-wide mb-8 pb-3 border-b border-primary/20">
-    <span class="opacity-50">Admin</span>
+<?php
+// Restyle Step 6: daisyUI tabs for the admin sections, with Log out pushed to the right. The old <style> block that
+// forced light text on alerts and buttons is gone: the daisyUI theme sets those colours, in light and dark.
+?>
+<nav class="tabs tabs-border mb-8 items-center" aria-label="Admin">
+    <span class="tab font-mono text-xs uppercase tracking-wide opacity-70 pointer-events-none">Admin</span>
     <?php foreach ($adminLinks as $key => [$href, $text]): ?>
-    <a href="<?= e($href) ?>"
-        class="hover:text-accent <?= $adminSection === $key ? 'text-accent font-semibold' : '' ?>"><?= e($text) ?></a>
+    <a href="<?= e($href) ?>" class="tab <?= $adminSection === $key ? 'tab-active font-semibold' : '' ?>"
+        <?= $adminSection === $key ? 'aria-current="page"' : '' ?>><?= e($text) ?></a>
     <?php endforeach; ?>
-    <a href="/admin/logout.php" class="ml-auto text-secondary hover:text-accent">Log out</a>
+    <a href="/admin/logout.php" class="tab ml-auto">Log out</a>
 </nav>
 
 <?php if ($adminFlash): ?>

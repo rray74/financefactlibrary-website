@@ -97,7 +97,7 @@ include __DIR__ . '/../includes/header.php';
 
 <?php if ($previewMode): ?>
 <?php // Preview banner (restyle Step 4): a daisyUI warning alert, since this view is not public. ?>
-<div role="alert" class="alert alert-warning alert-soft mb-6 text-sm">
+<div role="alert" class="alert alert-warning mb-6 text-sm">
     <span>
         <strong>Preview, not public.</strong>
         Status: <?= e($subject['status']) ?>. Country live: <?= $subject['country_active'] ? 'yes' : 'no' ?>.

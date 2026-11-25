@@ -154,28 +154,28 @@ include __DIR__ . '/../../includes/admin-nav.php';
     </p>
     <div class="space-y-5">
         <?php foreach ($proposed as $lesson): ?>
-        <form method="post" class="fact-card p-5">
+        <form method="post" class="card card-border border-base-content/20 bg-base-100 p-5">
             <?= adminCsrfField() ?>
             <input type="hidden" name="lesson_id" value="<?= (int) $lesson['id'] ?>">
-            <p class="font-mono text-xs uppercase tracking-wide text-secondary mb-2">
+            <p class="font-mono text-xs uppercase tracking-wide opacity-70 mb-2">
                 <?= e(lessonReference((int) $lesson['id'])) ?> &middot;
                 <?= e($scopeLabel($lesson['scope'])) ?>
                 <?php if ($lesson['subject_name']): ?>
                 &middot; from <?= e($lesson['subject_name']) ?>
                 <?php endif; ?>
             </p>
-            <textarea name="lesson" rows="3" maxlength="1000" class="textarea textarea-bordered w-full text-sm"><?= e($lesson['lesson']) ?></textarea>
+            <textarea name="lesson" rows="3" maxlength="1000" class="textarea w-full text-sm"><?= e($lesson['lesson']) ?></textarea>
             <?php if ($lesson['example_before'] || $lesson['example_after']): ?>
             <?php // The wording from the draft and from the saved text that showed the problem. ?>
             <details class="text-sm mt-3">
-                <summary class="cursor-pointer text-secondary">What was changed</summary>
+                <summary class="cursor-pointer link">What was changed</summary>
                 <div class="mt-2 space-y-2">
                     <?php if ($lesson['example_before']): ?>
-                    <p><span class="font-mono text-xs uppercase tracking-wide opacity-60">Draft</span><br>
+                    <p><span class="font-mono text-xs uppercase tracking-wide opacity-70">Draft</span><br>
                         <span class="italic">&ldquo;<?= e($lesson['example_before']) ?>&rdquo;</span></p>
                     <?php endif; ?>
                     <?php if ($lesson['example_after']): ?>
-                    <p><span class="font-mono text-xs uppercase tracking-wide opacity-60">Saved</span><br>
+                    <p><span class="font-mono text-xs uppercase tracking-wide opacity-70">Saved</span><br>
                         <span class="italic">&ldquo;<?= e($lesson['example_after']) ?>&rdquo;</span></p>
                     <?php endif; ?>
                 </div>
@@ -192,7 +192,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
 </section>
 
 <?php // ---------- Add one by hand ---------- ?>
-<details id="add-lesson" class="fact-card p-5 mb-12">
+<details id="add-lesson" class="card card-border border-base-content/20 bg-base-100 p-5 mb-12">
     <summary class="font-semibold cursor-pointer">Add a lesson yourself</summary>
     <form method="post" class="space-y-4 mt-4 max-w-2xl">
         <?= adminCsrfField() ?>
@@ -200,15 +200,15 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <div>
             <label for="new-lesson" class="block text-sm font-semibold mb-1">The rule</label>
             <textarea id="new-lesson" name="lesson" rows="3" maxlength="1000" required
-                class="textarea textarea-bordered w-full text-sm"></textarea>
-            <p class="text-xs opacity-60 mt-1">
+                class="textarea w-full text-sm"></textarea>
+            <p class="text-xs opacity-70 mt-1">
                 One or two sentences, in the imperative, general enough to follow on any page. For example: "Say each rule once."
                 It is approved straight away.
             </p>
         </div>
         <div>
             <label for="new-scope" class="block text-sm font-semibold mb-1">Applies to</label>
-            <select id="new-scope" name="scope" class="select select-bordered select-sm">
+            <select id="new-scope" name="scope" class="select select-sm">
                 <option value="all">All countries</option>
                 <?php foreach ($countries as $country): ?>
                 <option value="<?= e($country['code']) ?>"><?= e($country['name']) ?> only</option>
@@ -234,10 +234,10 @@ include __DIR__ . '/../../includes/admin-nav.php';
     <?php else: ?>
     <ul class="space-y-3 max-w-3xl">
         <?php foreach (array_reverse($approved) as $lesson): ?>
-        <li class="border-l-2 border-primary/30 pl-4" id="lesson-<?= (int) $lesson['id'] ?>">
+        <li class="border-l-2 border-base-300 pl-4" id="lesson-<?= (int) $lesson['id'] ?>">
             <div class="flex items-start gap-4">
                 <div class="flex-1">
-                    <span class="font-mono text-xs uppercase tracking-wide text-secondary block">
+                    <span class="font-mono text-xs uppercase tracking-wide opacity-70 block">
                         <?= e(lessonReference((int) $lesson['id'])) ?>
                         &middot; <?= e($scopeLabel($lesson['scope'])) ?>
                         &middot; <?= e(date('j M Y', strtotime($lesson['decided_at'] ?? $lesson['created_at']))) ?>
@@ -247,13 +247,13 @@ include __DIR__ . '/../../includes/admin-nav.php';
 
                     <?php // Edit in place: the wording changes, the reference and the scope do not. ?>
                     <details class="mt-2">
-                        <summary class="cursor-pointer text-xs text-secondary">Edit the wording</summary>
+                        <summary class="cursor-pointer text-xs link">Edit the wording</summary>
                         <form method="post" class="mt-2 space-y-2">
                             <?= adminCsrfField() ?>
                             <input type="hidden" name="action" value="edit_lesson">
                             <input type="hidden" name="lesson_id" value="<?= (int) $lesson['id'] ?>">
                             <textarea name="lesson" rows="3" maxlength="1000" required
-                                class="textarea textarea-bordered w-full text-sm"><?= e($lesson['lesson']) ?></textarea>
+                                class="textarea w-full text-sm"><?= e($lesson['lesson']) ?></textarea>
                             <button type="submit" class="btn btn-xs btn-primary">Save wording</button>
                         </form>
                     </details>
@@ -284,29 +284,29 @@ include __DIR__ . '/../../includes/admin-nav.php';
         How much of the explanation was changed between the draft and the saved text, on words. The aim is for
         these to fall as the lessons build up.
     </p>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm border-collapse">
+    <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+        <table class="table table-sm">
             <thead>
-                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
-                    <th class="py-2 pr-4">Page</th>
-                    <th class="py-2 pr-4 text-right">Explanation changed</th>
-                    <th class="py-2 pr-4">Saved</th>
-                    <th class="py-2 pr-4">Lessons</th>
+                <tr class="text-left font-mono text-xs uppercase tracking-wide">
+                    <th>Page</th>
+                    <th class="text-right">Explanation changed</th>
+                    <th>Saved</th>
+                    <th>Lessons</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($recentEdits as $edit): ?>
-                <tr class="border-b border-primary/20 align-top">
-                    <td class="py-3 pr-4">
-                        <a href="/admin/subject.php?id=<?= (int) $edit['subject_id'] ?>" class="font-semibold hover:text-accent">
+                <tr class="align-top">
+                    <td>
+                        <a href="/admin/subject.php?id=<?= (int) $edit['subject_id'] ?>" class="font-semibold link link-hover">
                             <?= e($edit['subject_name']) ?>
                         </a>
                     </td>
-                    <td class="py-3 pr-4 text-right">
+                    <td class="text-right">
                         <?= $edit['explanation_change_pct'] === null ? '&mdash;' : (int) $edit['explanation_change_pct'] . '%' ?>
                     </td>
-                    <td class="py-3 pr-4 text-xs"><?= e(date('j M Y', strtotime($edit['saved_at']))) ?></td>
-                    <td class="py-3 pr-4 text-xs"><?= $edit['learned_at'] ? 'Looked at' : '<span class="opacity-60">Not looked at yet</span>' ?></td>
+                    <td class="text-xs"><?= e(date('j M Y', strtotime($edit['saved_at']))) ?></td>
+                    <td class="text-xs"><?= $edit['learned_at'] ? 'Looked at' : '<span class="opacity-70">Not looked at yet</span>' ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

@@ -70,36 +70,36 @@ const WRITING_QUEUE_WAITING_SHOWN = 100;
 function printWritingQueueTable(array $pages): void
 {
     ?>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm border-collapse">
+    <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+        <table class="table table-sm">
             <thead>
-                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
-                    <th class="py-2 pr-4">Page</th>
-                    <th class="py-2 pr-4">Status</th>
-                    <th class="py-2 pr-4 text-right">Impressions</th>
-                    <th class="py-2 pr-4">AI draft</th>
+                <tr class="text-left font-mono text-xs uppercase tracking-wide">
+                    <th>Page</th>
+                    <th>Status</th>
+                    <th class="text-right">Impressions</th>
+                    <th>AI draft</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($pages as $page): ?>
-                <tr class="border-b border-primary/20 align-top">
-                    <td class="py-3 pr-4">
-                        <a href="/admin/subject.php?id=<?= (int) $page['id'] ?>#subject-details" class="font-semibold hover:text-accent">
+                <tr class="align-top">
+                    <td>
+                        <a href="/admin/subject.php?id=<?= (int) $page['id'] ?>#subject-details" class="font-semibold link link-hover">
                             <?= e($page['name']) ?>
                         </a>
                     </td>
-                    <td class="py-3 pr-4 font-mono text-xs"><?= e($page['status']) ?></td>
-                    <td class="py-3 pr-4 text-right"><?= number_format((int) $page['impressions']) ?></td>
-                    <td class="py-3 pr-4 text-xs">
+                    <td class="font-mono text-xs"><?= e($page['status']) ?></td>
+                    <td class="text-right"><?= number_format((int) $page['impressions']) ?></td>
+                    <td class="text-xs">
                         <?php if ($page['has_draft']): ?>
-                        <span class="font-mono px-2 py-1 rounded bg-secondary/10 text-secondary">
+                        <span class="font-mono badge badge-sm badge-outline whitespace-nowrap">
                             Ready <?= e(date('j M', strtotime($page['draft_created_at']))) ?>
                         </span>
                         <?php elseif ((int) $page['published_facts'] === 0): ?>
                         <?php // Drafts are written from the page's figures, so it needs some first. ?>
-                        <span class="opacity-60">Needs published figures first</span>
+                        <span class="opacity-70">Needs published figures first</span>
                         <?php else: ?>
-                        <span class="opacity-60">Waiting</span>
+                        <span class="opacity-70">Waiting</span>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -151,11 +151,13 @@ include __DIR__ . '/../../includes/admin-nav.php';
 <section class="mb-12">
     <div class="grid sm:grid-cols-3 gap-5">
         <?php foreach ($waiting as [$title, $count, $help]): ?>
-        <a href="/admin/review.php" class="fact-card p-5 block hover:border-accent">
-            <p class="text-sm opacity-70"><?= e($title) ?></p>
-            <?php // Red when something is waiting, so it stands out. ?>
-            <p class="font-display text-3xl font-semibold my-1 <?= $count > 0 ? 'text-error' : '' ?>"><?= (int) $count ?></p>
-            <p class="text-xs opacity-60"><?= e($help) ?></p>
+        <a href="/admin/review.php" class="card card-border border-base-content/20 bg-base-100 p-5 block hover:bg-base-200 transition-colors">
+            <p class="text-sm opacity-70"><?= e($title) ?>
+                <?php // A solid error badge when something is waiting, so it stands out (plain red text on the page surface is too faint). ?>
+                <?php if ($count > 0): ?><span class="badge badge-sm badge-error ml-1">Waiting</span><?php endif; ?>
+            </p>
+            <p class="font-display text-3xl font-semibold my-1"><?= (int) $count ?></p>
+            <p class="text-xs opacity-70"><?= e($help) ?></p>
         </a>
         <?php endforeach; ?>
     </div>
@@ -165,14 +167,14 @@ include __DIR__ . '/../../includes/admin-nav.php';
 <section class="mb-12">
     <h2 class="font-display text-2xl font-semibold mb-2">Scheduled jobs</h2>
     <p class="opacity-80 max-w-xl mb-4 text-sm">The latest run of each cron script.</p>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm border-collapse">
+    <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+        <table class="table table-sm">
             <thead>
-                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
-                    <th class="py-2 pr-4">Script</th>
-                    <th class="py-2 pr-4">Last started</th>
-                    <th class="py-2 pr-4">Status</th>
-                    <th class="py-2 pr-4">Result</th>
+                <tr class="text-left font-mono text-xs uppercase tracking-wide">
+                    <th>Script</th>
+                    <th>Last started</th>
+                    <th>Status</th>
+                    <th>Result</th>
                 </tr>
             </thead>
             <tbody>
@@ -181,22 +183,22 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 $run = $latestRuns[$script] ?? null;
                 $state = describeCronRun($run, $script);
                 ?>
-                <tr class="border-b border-primary/20 align-top">
-                    <td class="py-3 pr-4">
+                <tr class="align-top">
+                    <td>
                         <span class="font-mono"><?= e($script) ?></span>
                         <?php if (array_key_exists($script, ADMIN_EXPECTED_CRON_SCRIPTS)): ?>
-                        <span class="block text-xs opacity-60"><?= e(ADMIN_EXPECTED_CRON_SCRIPTS[$script]) ?></span>
+                        <span class="block text-xs opacity-70"><?= e(ADMIN_EXPECTED_CRON_SCRIPTS[$script]) ?></span>
                         <?php endif; ?>
                     </td>
-                    <td class="py-3 pr-4 opacity-80">
+                    <td class="opacity-80">
                         <?= $state['started'] ? date('D j M Y, H:i', $state['started']) : '—' ?>
                     </td>
-                    <td class="py-3 pr-4">
-                        <span class="font-mono text-xs px-2 py-1 rounded <?= $state['bad'] ? 'bg-error/10 text-error' : 'bg-secondary/10 text-secondary' ?>">
+                    <td>
+                        <span class="font-mono badge badge-sm whitespace-nowrap <?= $state['bad'] ? 'badge-error' : 'badge-outline' ?>">
                             <?= e($state['label']) ?>
                         </span>
                     </td>
-                    <td class="py-3 pr-4 text-xs opacity-80">
+                    <td class="text-xs opacity-80">
                         <?php // The scripts store their summary (or the error) in the error column. ?>
                         <?= e((string) ($run['error'] ?? '')) ?>
                     </td>
@@ -211,22 +213,22 @@ include __DIR__ . '/../../includes/admin-nav.php';
 <section class="mb-12">
     <h2 class="font-display text-2xl font-semibold mb-4">Content</h2>
     <div class="grid sm:grid-cols-3 gap-5">
-        <div class="fact-card p-5">
+        <div class="card card-border border-base-content/20 bg-base-100 p-5">
             <p class="text-sm opacity-70">Published pages</p>
             <p class="font-display text-3xl font-semibold my-1"><?= (int) $counts['published_subjects'] ?></p>
-            <p class="text-xs opacity-60"><?= (int) $counts['draft_subjects'] ?> draft</p>
+            <p class="text-xs opacity-70"><?= (int) $counts['draft_subjects'] ?> draft</p>
         </div>
-        <div class="fact-card p-5">
+        <div class="card card-border border-base-content/20 bg-base-100 p-5">
             <p class="text-sm opacity-70">Published figures</p>
             <p class="font-display text-3xl font-semibold my-1"><?= (int) $counts['published_facts'] ?></p>
-            <p class="text-xs opacity-60"><?= (int) $counts['draft_facts'] ?> draft &middot; <?= (int) $counts['sources_used'] ?> source pages</p>
+            <p class="text-xs opacity-70"><?= (int) $counts['draft_facts'] ?> draft &middot; <?= (int) $counts['sources_used'] ?> source pages</p>
         </div>
         <?php // Jumps to the writing queue below. ?>
-        <a href="#writing-queue" class="fact-card p-5 block hover:border-accent">
+        <a href="#writing-queue" class="card card-border border-base-content/20 bg-base-100 p-5 block hover:bg-base-200 transition-colors">
             <p class="text-sm opacity-70">Pages needing writing</p>
             <?php // Content gaps on published pages: the plan is to expand intros and add explanations. ?>
             <p class="font-display text-3xl font-semibold my-1"><?= (int) $counts['no_explanation'] ?></p>
-            <p class="text-xs opacity-60">
+            <p class="text-xs opacity-70">
                 without an explanation &middot; <?= (int) $counts['short_intros'] ?> with a short intro
             </p>
         </a>
@@ -243,30 +245,30 @@ include __DIR__ . '/../../includes/admin-nav.php';
         <?= count($reviewFlagged) ?> written page<?= count($reviewFlagged) === 1 ? '' : 's' ?> to look at again,
         most important first. Each page's editor shows the same reasons at the top.
     </p>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm border-collapse">
+    <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+        <table class="table table-sm">
             <thead>
-                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
-                    <th class="py-2 pr-4">Page</th>
-                    <th class="py-2 pr-4">Why</th>
-                    <th class="py-2 pr-4 text-right">Impressions</th>
+                <tr class="text-left font-mono text-xs uppercase tracking-wide">
+                    <th>Page</th>
+                    <th>Why</th>
+                    <th class="text-right">Impressions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($reviewFlagged as $page): ?>
-                <tr class="border-b border-primary/20 align-top">
-                    <td class="py-3 pr-4">
-                        <a href="/admin/subject.php?id=<?= (int) $page['id'] ?>#subject-details" class="font-semibold hover:text-accent">
+                <tr class="align-top">
+                    <td>
+                        <a href="/admin/subject.php?id=<?= (int) $page['id'] ?>#subject-details" class="font-semibold link link-hover">
                             <?= e($page['name']) ?>
                         </a>
                     </td>
-                    <td class="py-3 pr-4 text-xs">
+                    <td class="text-xs">
                         <?php // One line per reason; the details are on the page's editor. ?>
                         <?php foreach ($page['reasons'] as $reason): ?>
                         <span class="block"><?= e(REVIEW_FLAG_LABELS[$reason['kind']]) ?></span>
                         <?php endforeach; ?>
                     </td>
-                    <td class="py-3 pr-4 text-right"><?= number_format((int) $page['impressions']) ?></td>
+                    <td class="text-right"><?= number_format((int) $page['impressions']) ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -291,7 +293,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
 
     <?php // Lessons the AI has learned from your edits (includes/lessons.php). ?>
     <p class="text-sm mb-6">
-        <a href="/admin/lessons.php" class="underline hover:text-accent font-semibold">Lessons for the AI</a>:
+        <a href="/admin/lessons.php" class="link">Lessons for the AI</a>:
         <?= $lessonsProposed ?> waiting for your decision<?= $editsNotLookedAt > 0
             ? ', ' . $editsNotLookedAt . ' saved edit' . ($editsNotLookedAt === 1 ? '' : 's') . ' not looked at yet'
             : '' ?>.
@@ -299,7 +301,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
 
     <?php if ($writingQueue): ?>
     <?php // Pages with a draft ready: the ones to work on now. ?>
-    <h3 class="font-mono text-xs uppercase tracking-wide text-secondary mb-2">
+    <h3 class="font-mono text-xs uppercase tracking-wide opacity-70 mb-2">
         Ready to write (<?= count($writingQueueReady) ?>)
     </h3>
     <?php if ($writingQueueReady): ?>
@@ -318,7 +320,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
 
     <?php // Pages still waiting for a draft, in the order the nightly job takes them. ?>
     <?php if ($writingQueueWaiting): ?>
-    <h3 class="font-mono text-xs uppercase tracking-wide text-secondary mt-10 mb-2">
+    <h3 class="font-mono text-xs uppercase tracking-wide opacity-70 mt-10 mb-2">
         Waiting for a draft (<?= count($writingQueueWaiting) ?>)
     </h3>
     <p class="opacity-70 text-xs mb-2">
@@ -331,7 +333,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
     </p>
     <?php printWritingQueueTable(array_slice($writingQueueWaiting, 0, WRITING_QUEUE_WAITING_SHOWN)); ?>
     <?php if (count($writingQueueWaiting) > WRITING_QUEUE_WAITING_SHOWN): ?>
-    <p class="text-xs opacity-60 mt-2">
+    <p class="text-xs opacity-70 mt-2">
         And <?= count($writingQueueWaiting) - WRITING_QUEUE_WAITING_SHOWN ?> more, further down the same order.
     </p>
     <?php endif; ?>
@@ -343,7 +345,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
 <section class="mb-12">
     <h2 class="font-display text-2xl font-semibold mb-2">Google search</h2>
     <?php if (!$searchTotals): ?>
-    <p class="fact-card p-6 text-secondary">
+    <p class="card card-border border-base-content/20 bg-base-100 p-6 opacity-70">
         No Search Console data yet. It appears after the first run of
         <span class="font-mono">scripts/fetch-search-console.php</span>.
     </p>
@@ -354,54 +356,54 @@ include __DIR__ . '/../../includes/admin-nav.php';
         (Search Console runs about 3 days behind).
     </p>
     <div class="grid sm:grid-cols-3 gap-5 mb-6">
-        <div class="fact-card p-5">
+        <div class="card card-border border-base-content/20 bg-base-100 p-5">
             <p class="text-sm opacity-70">Impressions</p>
             <p class="font-display text-3xl font-semibold my-1"><?= number_format((int) $searchTotals['impressions']) ?></p>
-            <p class="text-xs opacity-60">times a page appeared in results</p>
+            <p class="text-xs opacity-70">times a page appeared in results</p>
         </div>
-        <div class="fact-card p-5">
+        <div class="card card-border border-base-content/20 bg-base-100 p-5">
             <p class="text-sm opacity-70">Clicks</p>
             <p class="font-display text-3xl font-semibold my-1"><?= number_format((int) $searchTotals['clicks']) ?></p>
-            <p class="text-xs opacity-60"><?= (int) $searchTotals['pages'] ?> pages seen in search</p>
+            <p class="text-xs opacity-70"><?= (int) $searchTotals['pages'] ?> pages seen in search</p>
         </div>
-        <div class="fact-card p-5">
+        <div class="card card-border border-base-content/20 bg-base-100 p-5">
             <p class="text-sm opacity-70">Average position</p>
             <?php // Lower is better: 1 is the top result. ?>
             <p class="font-display text-3xl font-semibold my-1">
                 <?= $searchTotals['position'] !== null ? number_format((float) $searchTotals['position'], 1) : '—' ?>
             </p>
-            <p class="text-xs opacity-60">1 is the top of the results</p>
+            <p class="text-xs opacity-70">1 is the top of the results</p>
         </div>
     </div>
 
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm border-collapse">
+    <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+        <table class="table table-sm">
             <thead>
-                <tr class="border-b-2 border-primary text-left font-mono text-xs uppercase tracking-wide">
-                    <th class="py-2 pr-4">Page</th>
-                    <th class="py-2 pr-4 text-right">Impressions</th>
-                    <th class="py-2 pr-4 text-right">Clicks</th>
-                    <th class="py-2 pr-4 text-right">CTR</th>
-                    <th class="py-2 pr-4 text-right">Position</th>
+                <tr class="text-left font-mono text-xs uppercase tracking-wide">
+                    <th>Page</th>
+                    <th class="text-right">Impressions</th>
+                    <th class="text-right">Clicks</th>
+                    <th class="text-right">CTR</th>
+                    <th class="text-right">Position</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($searchPages as $searchPage): ?>
                 <?php $pageSubject = $subjectNamesByPath[$searchPage['page_path']] ?? null; ?>
-                <tr class="border-b border-primary/20 align-top">
-                    <td class="py-3 pr-4">
+                <tr class="align-top">
+                    <td>
                         <?php if ($pageSubject): ?>
                         <?php // Subject pages link to their editor, where the page's top searches are listed. ?>
-                        <a href="/admin/subject.php?id=<?= (int) $pageSubject['id'] ?>#search" class="font-semibold hover:text-accent">
+                        <a href="/admin/subject.php?id=<?= (int) $pageSubject['id'] ?>#search" class="font-semibold link link-hover">
                             <?= e($pageSubject['name']) ?>
                         </a>
                         <?php endif; ?>
-                        <span class="block font-mono text-xs opacity-60"><?= e($searchPage['page_path']) ?></span>
+                        <span class="block font-mono text-xs opacity-70"><?= e($searchPage['page_path']) ?></span>
                     </td>
-                    <td class="py-3 pr-4 text-right"><?= number_format((int) $searchPage['impressions']) ?></td>
-                    <td class="py-3 pr-4 text-right"><?= number_format((int) $searchPage['clicks']) ?></td>
-                    <td class="py-3 pr-4 text-right"><?= number_format((float) $searchPage['ctr'] * 100, 1) ?>%</td>
-                    <td class="py-3 pr-4 text-right"><?= number_format((float) $searchPage['position'], 1) ?></td>
+                    <td class="text-right"><?= number_format((int) $searchPage['impressions']) ?></td>
+                    <td class="text-right"><?= number_format((int) $searchPage['clicks']) ?></td>
+                    <td class="text-right"><?= number_format((float) $searchPage['ctr'] * 100, 1) ?>%</td>
+                    <td class="text-right"><?= number_format((float) $searchPage['position'], 1) ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -414,19 +416,19 @@ include __DIR__ . '/../../includes/admin-nav.php';
 <section class="mb-12">
     <h2 class="font-display text-2xl font-semibold mb-4">Latest figure changes</h2>
     <?php if (empty($recentChanges)): ?>
-    <p class="fact-card p-6 text-secondary">No changes recorded yet.</p>
+    <p class="card card-border border-base-content/20 bg-base-100 p-6 opacity-70">No changes recorded yet.</p>
     <?php else: ?>
     <ul class="space-y-3 max-w-2xl">
         <?php foreach ($recentChanges as $change): ?>
-        <li class="border-l-2 border-primary/30 pl-4">
-            <span class="font-mono text-xs uppercase tracking-wide text-secondary block">
+        <li class="border-l-2 border-base-300 pl-4">
+            <span class="font-mono text-xs uppercase tracking-wide opacity-70 block">
                 <?= date('j M Y', strtotime($change['changed_at'])) ?> &middot; <?= e((string) $change['change_source']) ?>
             </span>
-            <a href="<?= e(subjectUrlById((int) $change['primary_subject_id'])) ?>" target="_blank" class="hover:text-accent">
+            <a href="<?= e(subjectUrlById((int) $change['primary_subject_id'])) ?>" target="_blank" class="link link-hover">
                 <?= e($change['label']) ?></a>:
-            <span class="fact-value"><?= e(formatHistoryValue($change, 'old')) ?></span>
+            <span class="tabular-nums"><?= e(formatHistoryValue($change, 'old')) ?></span>
             &rarr;
-            <span class="fact-value font-semibold"><?= e(formatHistoryValue($change, 'new')) ?></span>
+            <span class="tabular-nums font-semibold"><?= e(formatHistoryValue($change, 'new')) ?></span>
         </li>
         <?php endforeach; ?>
     </ul>
