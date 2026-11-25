@@ -27,8 +27,7 @@ describes the old navy-and-paper design and is marked as such.
 
 ## Stack
 
-*Rewritten for the restyle (Step 1). The compiled setup below is applied in Step 2: until then the code still has the old
-custom theme.*
+*Rewritten for the restyle. Applied in the code in Step 2 (25 November 2026).*
 
 Tailwind CSS 4 plus daisyUI 5, compiled by the Tailwind CLI.
 
@@ -38,6 +37,11 @@ Tailwind CSS 4 plus daisyUI 5, compiled by the Tailwind CLI.
 - `assetUrl()` adds the file's modified time to the CSS and JS addresses, so a rebuild is never missed by caches.
 - **Themes: daisyUI's built-in `light` and `dark`**, loaded as `themes: light --default, dark --prefersdark`. The device
   setting picks the theme on a first visit, and a toggle in the header lets the visitor override it and remembers the choice.
+- **No `data-theme` on `<html>`** by default: with none set, daisyUI follows the device. The script in `<head>` of
+  `includes/header.php` adds `data-theme="light"` or `"dark"` only when the visitor has chosen one (stored in `localStorage`
+  under `ffl-theme`, in try/catch, applied before first paint so there is no flash). Any button with the attribute
+  `data-theme-toggle` switches to the other theme and keeps its label and `aria-pressed` right. Don't hard-code a
+  `data-theme` anywhere else.
 - **Changing the palette later:** add an override block in `src/input.css` named `light` (and one named `dark`) using
   `@plugin "daisyui/theme"`, set only the tokens that change (primary, secondary and so on), then rebuild. Templates need no
   edits, because they only use tokens.
@@ -49,7 +53,7 @@ Tailwind CSS 4 plus daisyUI 5, compiled by the Tailwind CLI.
 *Rewritten for the restyle (Step 1). The palette is daisyUI's stock `light` and `dark`, kept as a placeholder to be changed
 later.*
 
-Use tokens only (`bg-base-100`, `text-base-content`, `btn-primary`, `border-base-300`). Each colour has a `-content` token for
+Body text is `text-base-content` (set on `<body>`). `text-primary` is the brand colour, not the text colour. Use tokens only (`bg-base-100`, `text-base-content`, `btn-primary`, `border-base-300`). Each colour has a `-content` token for
 text that sits on it. Never use a raw hex value, `bg-white` or `text-black`.
 
 | Role | Token | Use |

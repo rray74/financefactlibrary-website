@@ -36,7 +36,7 @@ Decided:
 - Recorded in `design-style.md` (Principles, Stack, Colour and Typography rewritten; other sections marked pre-restyle).
 - The comparison page (`theme-compare.html`, scratchpad) is no longer needed.
 
-### Step 2: Theme and base CSS
+### Step 2: Theme and base CSS - DONE 25 Nov 2026 (built and checked on MAMP serving; Richard to eyeball)
 - `src/input.css`: replace the custom `financefactlibrary` theme with `@plugin "daisyui" { themes: light --default, dark
   --prefersdark; }` (no override blocks yet; add them later to change the palette). Delete
   `.fact-card` and `.article-body` once the templates no longer use them (Steps 3 to 5 replace them).
@@ -75,6 +75,8 @@ The page most visitors see, and the most components:
 - Uses `includes/admin-nav.php` and `includes/admin-auth.php`. Restyle login, subjects list, subject editor (the biggest),
   review, lessons and preview with daisyUI forms (`input`, `textarea`, `select`, `fieldset`), `btn`, `alert`, `tabs`, `badge`
   and `table`.
+- Remove the hard-coded colours left in admin: `includes/admin-nav.php` (a `<style>` block with `#f7f5f0`) and the dialog
+  in `public/admin/subject.php` (about line 1297, inline `#1b2a4a` styles).
 - Do not change behaviour, form field names or the job and AI flows: markup and classes only. Test every form on MAMP.
 - Update `design-style.md`: add an Admin section (forms, buttons, tabs, alerts).
 

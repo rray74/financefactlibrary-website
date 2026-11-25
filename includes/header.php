@@ -57,7 +57,8 @@ if (!empty($metaDescription)) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?= e($htmlLang) ?>" data-theme="financefactlibrary">
+<?php // No data-theme here: with none set, daisyUI follows the device's light or dark setting. The script in <head> adds one only if the visitor has picked a theme. ?>
+<html lang="<?= e($htmlLang) ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -78,6 +79,44 @@ if (!empty($metaDescription)) {
     <meta name="robots" content="noindex, nofollow">
     <?php endif; ?>
 
+    <?php
+    // Applies a saved light or dark choice before the page is drawn, so there is no flash of the wrong
+    // theme. Storage can be blocked (private windows), so every use is in try/catch and the page works
+    // without it. Also wires the toggle button(s) marked data-theme-toggle: they switch to the other
+    // theme, save the choice, and keep their label and aria-pressed state right.
+    ?>
+    <script>
+    (function () {
+        var KEY = 'ffl-theme', root = document.documentElement;
+        try {
+            var saved = localStorage.getItem(KEY);
+            if (saved === 'light' || saved === 'dark') { root.setAttribute('data-theme', saved); }
+        } catch (e) {}
+        function current() {
+            return root.getAttribute('data-theme') ||
+                (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        }
+        function label() {
+            document.querySelectorAll('[data-theme-toggle]').forEach(function (b) {
+                var dark = current() === 'dark';
+                b.setAttribute('aria-pressed', dark ? 'true' : 'false');
+                b.textContent = dark ? 'Light mode' : 'Dark mode';
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            label();
+            document.querySelectorAll('[data-theme-toggle]').forEach(function (b) {
+                b.addEventListener('click', function () {
+                    var next = current() === 'dark' ? 'light' : 'dark';
+                    root.setAttribute('data-theme', next);
+                    try { localStorage.setItem(KEY, next); } catch (e) {}
+                    label();
+                });
+            });
+        });
+    })();
+    </script>
+
     <!-- Compiled by Tailwind CLI + DaisyUI (see package.json / README "Node build tooling").
          Run `npm run build` after any src/ change, then commit the output. -->
     <?php // assetUrl() puts the file's last-changed time on the address, so a rebuilt file is never missed. ?>
@@ -91,7 +130,7 @@ if (!empty($metaDescription)) {
     <script src="<?= e(assetUrl('/assets/js/main.js')) ?>" defer></script>
 </head>
 
-<body class="bg-base-100 text-primary font-sans min-h-screen flex flex-col">
+<body class="bg-base-100 text-base-content font-sans min-h-screen flex flex-col">
 
     <header class="border-b-2 border-primary bg-base-100">
         <div class="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
@@ -106,6 +145,8 @@ if (!empty($metaDescription)) {
                 </a>
                 <?php endforeach; ?>
             </nav>
+            <?php // Interim toggle (restyle Step 2); moves into the daisyUI navbar in Step 3. ?>
+            <button type="button" class="btn btn-sm btn-outline ml-4" data-theme-toggle aria-pressed="false">Dark mode</button>
         </div>
     </header>
 
