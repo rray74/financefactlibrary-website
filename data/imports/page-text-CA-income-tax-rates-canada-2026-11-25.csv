@@ -1,0 +1,20 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,tax,income-tax,income-tax-rates-canada,Federal Income Tax Rates,"The five federal income tax bands and rates for individuals, how each rate applies only to the income in its band, and how provincial and territorial tax is added to the federal tax.","## Federal income tax has five bands
+
+Your taxable income is divided into bands, and each band has its own federal rate. A rate applies only to the part of your income that falls inside its band, not to all of your income. The five rates are {fact:ca_it_b1_rate}, {fact:ca_it_b2_rate}, {fact:ca_it_b3_rate}, {fact:ca_it_b4_rate} and {fact:ca_it_b5_rate}.
+
+The first band covers taxable income up to {fact:ca_it_b1_top}. The second band covers income above that and up to {fact:ca_it_b2_top}, and the third covers income up to {fact:ca_it_b3_top}. The fourth band stops at {fact:ca_it_b4_top}. Any income above that falls in the top band, which has no upper limit.
+
+## Provincial and territorial tax is on top
+
+The federal rates are not the whole bill. Provincial or territorial income tax rates apply in addition to them, and your province or territory of residence on December 31 decides which ones. Each province and territory has its own bands and rates, and the Canada Revenue Agency (CRA) lists them next to the federal rates. For Quebec, the CRA refers readers to Revenu Québec for the rates.
+
+This page covers the federal rates only.
+
+## Which income the rates cover
+
+The rates on this page are for income earned in {tax_year}. They apply to the tax return for that year, which is filed in the following year.
+
+## The bands are indexed each year
+
+Each year the band limits rise with inflation, using the Consumer Price Index that Statistics Canada reports. The increases take effect on January 1. Many credit amounts, such as the basic personal amount, are indexed in the same way.",Federal Income Tax Rates Canada {tax_year},Federal income tax rates in Canada run from {fact:ca_it_b1_rate} to {fact:ca_it_b5_rate} across five bands. See the bands and how provincial and territorial tax is added on top.,,
