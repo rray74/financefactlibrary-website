@@ -233,6 +233,7 @@ The routine is in `docs/page-checklist.md`: free triage, then read the sources, 
 | **1 July (New Zealand)** | The KiwiSaver government contribution year runs 1 July to 30 June, and the paid parental leave maximum and self-employed minimum are reset every 1 July (811.05 and 239.50 a week from 1 July 2026): re-read both pages |
 | **6 Aug 2028 (New Zealand)** | The Employment Leave Act replaces the Holidays Act. The Annual holidays and Sick and bereavement leave pages carry a paragraph on this; reword both once it starts, and read Employment New Zealand's guidance as it appears |
 | **Each autumn, before the 2028 dates are due (New Zealand)** | The Public holidays and anniversary days page carries 2027 dates only (Good Friday, Easter Monday, King's Birthday, Matariki, Labour Day and the 12 provincial anniversary days). When Employment New Zealand publishes the 2028 table, replace the 13 date cards and re-run the page checks. The page's wording on exceptions (Taranaki, Hawke's Bay, Marlborough, Canterbury, Westland, Otago, Southland) should be re-read against the source at the same time |
+| **Whenever the NZ income tax bands change (New Zealand)** | The Resident withholding tax on interest page has its own cards for the four income band limits (from 31 July 2024) and the rates, taken from IRD's RWT rate page. They repeat the Income tax rates bands, so when either changes, re-read the IRD RWT rate page and update both pages |
 | **Oct 2027 (approx.)** | Earliest point to let financial-facts.com lapse |
 
 ---
