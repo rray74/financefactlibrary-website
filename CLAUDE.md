@@ -81,6 +81,9 @@ The old `ff-website` key is retired.
   phpMyAdmin edits.
 - Migrations: use the next free number in `sql/migrations`.
 - Code changes: add explanatory comments where code changes.
+- Design: any change to how the site looks (classes, theme, components, fonts, layout) also updates `docs/design-style.md` in
+  the same commit, so the guide is never behind the code. If they disagree, the code wins and the guide is fixed. The
+  restyle is run from `docs/restyle-plan.md` (daisyUI components, fully responsive, light and dark mode).
 - After any change, show each file's full path from the project root, say whether
   it is new or a replacement, in a table.
 - Cost awareness: use the right `AI_KEY_PURPOSE`; run free checks (close-copy
@@ -103,3 +106,4 @@ The old `ff-website` key is retired.
 - `docs/claude-code-drafting-test.md`: the test that made Claude Code drafting the default.
 - `docs/page-checklist.md`: per-page finishing routine.
 - `docs/house-style/core.md`, `uk.md`, `au.md`: writing rules (the drafting tool reads these).
+- `docs/design-style.md`: visual design guide (theme, type, components). `docs/restyle-plan.md`: step-by-step restyle plan.

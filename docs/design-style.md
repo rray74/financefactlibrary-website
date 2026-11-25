@@ -5,6 +5,10 @@ tone) see `docs/house-style/`. Written 25 November 2026 from the live code: `src
 `includes/header.php`, `includes/footer.php`, `public/fact.php` and `renderExplanation()` in `includes/functions.php`.
 If this file and the code disagree, the code wins: fix this file.
 
+**Restyle in progress (from 25 November 2026):** the site is being rebuilt on daisyUI with light and dark themes (see
+`docs/restyle-plan.md`). This guide is updated in the same commit as each restyle step. Until a section is rewritten it
+describes the old navy-and-paper design and is marked as such.
+
 ## Principles
 
 - **A reference library, not a SaaS product.** The look is an index card on paper in ink: warm off-white, navy ink, hard

@@ -13,7 +13,13 @@ Started 25 November 2026. Decisions (Richard, 25 Nov 2026):
    visitor's device setting (`prefers-color-scheme`), with a visible toggle that remembers the choice. Replaces the
    current light-only design.
 
-`docs/design-style.md` describes the current (pre-restyle) design. It is rewritten in Step 6 and is wrong from Step 3 on.
+`docs/design-style.md` describes the current (pre-restyle) design.
+
+**Standing rule: the style guide is updated as we go, not at the end** (Richard, 25 Nov 2026). Every step below that
+changes how something looks also updates `docs/design-style.md` in the same commit, so the guide is never behind the code.
+A step isn't done until its section of the guide matches the code. Where the guide and the code disagree, the code wins and
+the guide is fixed straight away. Sections not yet restyled carry a "pre-restyle, replaced in Step N" note, so a reader
+knows which parts are current.
 
 ## Steps
 
@@ -24,7 +30,8 @@ Each step ends with a check and a commit. Nothing is pushed until the end of Ste
 - Pick a light theme and a dark theme that belong together (for example corporate with business, or nord with a dark
   counterpart). Check both on the sample page, including figure cards, alerts and tables.
 - Pick fonts (the current Fraunces, IBM Plex Sans and Mono are not required). Keep to one or two families.
-- Output: the chosen theme name and any colour tweaks, recorded here.
+- Output: the chosen theme names and any colour tweaks, recorded here and in `design-style.md` (Principles, Stack, Colour
+  and Typography sections rewritten for the new direction; the other sections marked pre-restyle).
 
 ### Step 2: Theme and base CSS
 - `src/input.css`: replace the custom `financefactlibrary` theme with the chosen built-in theme, plus any tweaks. Delete
@@ -35,6 +42,7 @@ Each step ends with a check and a commit. Nothing is pushed until the end of Ste
 - Use theme tokens only (`bg-base-100`, `text-base-content`, `border-base-300`), never fixed hex or `bg-white`, so every
   component works in both modes. Remove the hard-coded `#ffffff` and navy values.
 - Update the font links in `includes/header.php` and the `@theme` font mapping.
+- Update `design-style.md`: Stack, Colour, Typography and the theme toggle.
 - Run `npm run build` (node is on Richard's Mac terminal, not in the Claude shell) and commit the compiled CSS with the source.
 
 ### Step 3: Shared shell
@@ -42,6 +50,7 @@ Each step ends with a check and a commit. Nothing is pushed until the end of Ste
   the theme toggle, and daisyUI `breadcrumbs` for the trail (scrollable or truncated on narrow screens).
 - `includes/footer.php`: daisyUI `footer`.
 - Check one page at phone and desktop width before continuing, since every page changes.
+- Update `design-style.md`: Layout, Header and footer, Breadcrumb.
 
 ### Step 4: Subject page (`public/fact.php`)
 The page most visitors see, and the most components:
@@ -50,20 +59,24 @@ The page most visitors see, and the most components:
   `prose`-style approach or Tailwind typography.
 - Worked-example `table`, "What's changed" as `timeline` or a `list`, preview banner as an `alert`.
 - Check against real pages: a long one, one with regional tags, one with worked examples, one in preview mode.
+- Update `design-style.md`: Figure card, Region tag, Links, Tables, Change list, Explanation text, Preview banner.
 
 ### Step 5: Everything else public
 - Browse pages: `index.php`, `category.php`, `subcategory.php`, plus the country switch.
 - Long-text pages: `about.php`, `how-we-check.php`, `disclaimer.php`, `privacy.php`, `article.php` (build the long-text layout once).
 - Error and 404 pages, and optional extras (favicon, social share image). The site has none today.
+- Update `design-style.md`: browse and long-text page patterns, error pages, favicon and share image.
 
 ### Step 6: Admin editor (`public/admin/`, 8 pages, about 3,200 lines)
 - Uses `includes/admin-nav.php` and `includes/admin-auth.php`. Restyle login, subjects list, subject editor (the biggest),
   review, lessons and preview with daisyUI forms (`input`, `textarea`, `select`, `fieldset`), `btn`, `alert`, `tabs`, `badge`
   and `table`.
 - Do not change behaviour, form field names or the job and AI flows: markup and classes only. Test every form on MAMP.
+- Update `design-style.md`: add an Admin section (forms, buttons, tabs, alerts).
 
 ### Step 7: Docs and checks
-- Rewrite `docs/design-style.md` for the new design (palette tokens, type, component patterns, and when to add custom CSS).
+- Final read-through of `docs/design-style.md` against the finished site: remove every "pre-restyle" note, confirm each
+  class and token it names exists in the code, and check Motion, Accessibility and "Adding or changing design".
 - Update the CLAUDE.md line if it still describes the old look.
 - Responsive check on MAMP for every page type and the admin, at 320, 375, 768, 1024 and 1440px: no horizontal page
   scroll, nothing clipped, menus and forms usable by touch, long figures and long page names wrap.
@@ -73,7 +86,7 @@ The page most visitors see, and the most components:
 - Keyboard focus, and each live and hidden country.
 
 ### Step 8: Ship
-- Commit per step (plain messages, no `Co-Authored-By`). Richard approves, then one push deploys everything.
+- Commit per step, each including its `design-style.md` update (plain messages, no `Co-Authored-By`). Richard approves, then one push deploys everything.
 - After deploy, check the live site on a phone and spot-check pages in each country.
 
 ## Risks to watch
