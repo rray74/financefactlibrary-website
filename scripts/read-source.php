@@ -68,7 +68,10 @@ foreach ($finds as $find) {
     echo '=== "' . $find . "\" ===\n";
     $count = 0;
     $offset = 0;
-    while (($pos = stripos($text, $needle, $offset)) !== false && $count < 6) {
+    // Stop once the offset has run past the end of the page. A match near the end of a
+    // short page pushes $offset beyond strlen($text), and stripos() then throws
+    // "Argument #3 ($offset) must be contained in argument #1" (fixed 26 Nov 2026).
+    while ($offset <= strlen($text) && ($pos = stripos($text, $needle, $offset)) !== false && $count < 6) {
         $start = max(0, $pos - $around);
         $slice = substr($text, $start, strlen($needle) + 2 * $around);
         echo ($start > 0 ? '...' : '') . trim($slice) . "...\n\n";

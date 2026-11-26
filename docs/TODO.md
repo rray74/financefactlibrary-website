@@ -182,7 +182,7 @@ NZ is live with 25 pages built (Minimum Wage published, 24 hidden drafts for the
 - [ ] **Retest the held NZ pages** when their sources change: Student loan repayments (IRD has no 2026-27 threshold; retest all 73 IRD student-loan pages) and Official Cash Rate (rbnz.govt.nz returns HTTP 403). See the key dates below.
 - [ ] **Remaining NZ second-wave pages** (all optional; nine second-wave pages were built on 25 Nov): Winter Energy Payment, Family Boost, LVR rules and mortgage rates (RBNZ unreadable), ACC weekly compensation (acc.co.nz unreadable). Plan: `docs/content-maps/nz-content-map.md`.
 - [x] **Canada plan written (25 Nov 2026):** `docs/content-maps/ca-content-map.md` (20 pages proposed, sources tested from the Mac, six decisions waiting for Richard: provinces, money, spelling and dates, allowlist, category names, drip pace). Next: Richard's decisions, slug check, allowlist and migrations 035 and 036. The US follows.
-- [ ] **Bug in `scripts/read-source.php`:** `--find` crashes (`stripos(): Argument #3 ($offset) must be contained in argument #1`, line 71) when a match sits near the end of a short page. Found 25 Nov on the Canada EI premium page. Fix when next in that file.
+- [x] **Bug in `scripts/read-source.php` fixed (26 Nov 2026):** `--find` no longer crashes when a match sits near the end of a short page or `--around` is larger than the page.
 
 ### Page text: the routine is built, now apply it
 The routine is in `docs/page-checklist.md`: free triage, then read the sources, fix, close-copy check, reference sources, import on MAMP then the server, check the live page. Each page is a round of reading its sources, fixing the text, importing it and checking the live page, and then the nightly AI check re-reads it (roughly $0.05 a page by my estimate; the real figure is in the Console).
@@ -202,7 +202,7 @@ The routine is in `docs/page-checklist.md`: free triage, then read the sources, 
 - [ ] **After 6 April 2027:** change "due to come into force" to "in force".
 
 ### Small items
-- [ ] `scripts/read-source.php --find=... --around=N` crashes (stripos offset error) when N is larger than the page. Use `--chars` meanwhile.
+- [x] `scripts/read-source.php --find=... --around=N` crash: fixed 26 Nov 2026 (see above).
 - [ ] NS&I Green Savings Bond: the server has no `effective_from` (the change was approved on the review page on 30 Oct). Cosmetic; `import-facts.php` cannot fill it in for an unchanged value. Left as is.
 - [ ] Universal Credit Rates' meta description is exactly 200 characters and complete. The quick check shows "may have been cut off" on it; harmless.
 
