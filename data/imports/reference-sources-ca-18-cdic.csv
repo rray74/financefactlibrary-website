@@ -1,0 +1,4 @@
+subject_slug,source_url,source_name,action,note,excerpt_from
+cdic-deposit-insurance,https://www.cdic.ca/depositors/whats-covered/deposits-held-in-one-name/,Canada Deposit Insurance Corporation,add,"Deposits held in one name are combined for one limit",
+cdic-deposit-insurance,https://www.cdic.ca/depositors/whats-covered/deposits-held-in-more-than-one-name-joint-deposits/,Canada Deposit Insurance Corporation,add,"Joint deposits get a separate limit for each set of owners",
+cdic-deposit-insurance,https://www.cdic.ca/cdic-news/proposed-changes-to-strengthen-deposit-protection/,Canada Deposit Insurance Corporation,add,"The Budget 2026 proposals to raise the limit to 250000 for non-registered categories and to give unlimited coverage to registered and tax-free categories have not taken effect, and current protection stays in place",

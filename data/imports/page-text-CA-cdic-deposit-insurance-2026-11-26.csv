@@ -1,0 +1,39 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,savings-and-investments,deposit-protection,cdic-deposit-insurance,CDIC Deposit Insurance,"What CDIC insures, the limit for each category of deposit, which products are not covered and how joint deposits and registered plans are treated.","## What CDIC does
+
+CDIC, the Canada Deposit Insurance Corporation, was set up by Parliament in 1967 as a federal Crown corporation, and it insures eligible deposits held at its member institutions. Trust and loan companies, banks and federally regulated credit unions can all be members. If a member fails, CDIC steps in so that you can still reach your insured deposits. You are covered without paying anything or signing up. CDIC is paid for by premiums from its members and receives no public funds to operate.
+
+## What is covered
+
+An eligible deposit can be in Canadian or foreign currency and can arrive by payroll, Interac e-Transfer or cheque. Term deposits of all kinds, guaranteed investment certificates (GICs) among them, qualify as well. Mutual funds, stocks, bonds, exchange traded funds and cryptocurrencies (stablecoins as well) fall outside deposit insurance.
+
+Coverage is worked out for each member institution on its own, using the same rules everywhere. CDIC publishes a list of members, so you can check yours.
+
+## How the limit works
+
+Every category has its own limit of {fact:ca_cdic_limit}, which covers principal and interest. Spreading deposits across categories can therefore bring total protection above {fact:ca_cdic_limit}. The categories are:
+
+- deposits held in one name
+- joint deposits
+- registered retirement savings plans (RRSPs)
+- registered retirement income funds (RRIFs)
+- tax-free savings accounts (TFSAs)
+- registered disability savings plans (RDSPs)
+- registered education savings plans (RESPs)
+- first home savings accounts (FHSAs)
+- deposits held in trust
+
+The limit applies at each member institution separately, so eligible deposits at two members are each protected up to {fact:ca_cdic_limit}.
+
+## One name and joint deposits
+
+Savings accounts, chequing accounts and term deposits in one name, GICs included, are combined for a single limit. For joint deposits, a set of owners such as a couple gets {fact:ca_cdic_limit} for all their joint accounts together, and each different set of owners gets another {fact:ca_cdic_limit}. For separate coverage, the institution needs records that show joint ownership and each owner's name and address.
+
+## Inside a registered plan
+
+Only the eligible deposits are covered. A GIC held in a TFSA is covered, for example, while stocks and exchange traded funds held in the same account are not.
+
+## Proposed changes
+
+The federal government's Budget 2026 includes proposals to change how deposit insurance works. One proposal lifts the limit from {fact:ca_cdic_limit} to $250,000 for non-registered categories. A second would remove the limit altogether on eligible deposits in registered and tax-free categories. A third would cover short-term high balances that follow life events such as an inheritance or selling a home, and a fourth would require the framework to be reviewed periodically. They would need Parliament's approval and have not taken effect. Current protection stays in place, and depositors do not need to do anything.
+",CDIC Deposit Insurance: {fact:ca_cdic_limit} Limit,"CDIC insures eligible deposits up to {fact:ca_cdic_limit} per category at each member institution. See what is covered, what is not and how the limit works.",,
