@@ -185,6 +185,15 @@ NZ is live with 25 pages built (Minimum Wage published, 24 hidden drafts for the
 - [x] **Canada plan written (25 Nov 2026):** `docs/content-maps/ca-content-map.md` (20 pages proposed, sources tested from the Mac, six decisions waiting for Richard: provinces, money, spelling and dates, allowlist, category names, drip pace). Next: Richard's decisions, slug check, allowlist and migrations 035 and 036. The US follows.
 - [x] **Bug in `scripts/read-source.php` fixed (26 Nov 2026):** `--find` no longer crashes when a match sits near the end of a short page or `--around` is larger than the page.
 
+### Canada follow-ups (added 26 Nov 2026)
+Canada is live with 20 pages built (Federal Minimum Wage published, 19 hidden drafts for the drip, 3 a week, job #3). Work on the calendar:
+- [ ] **29 Nov 2026, after 07:11 UTC:** check the second Canada drip run on the server (`php scripts/run-jobs.php --status`). Expect job #3 to have published "Federal Income Tax Rates" (subject 99), the next slot about 56 hours later, no failures, and the live page returning 200. Then spot-check the drip about once a week until all 19 drafts are out (about 6 to 7 weeks). The AU, NZ and CA drips all run from the one worker.
+- [ ] **Decide the nightly AI check for Canadian pages** with the NZ question above (only the 25-page UK sample is checked now). A code change to the sample file or schedule needs asking first.
+- [ ] **Optional code change (ask first): a `CA` entry in `COUNTRY_TEXT_RULES`** (double quotation marks, Canadian spelling), so the nightly checks apply Canadian wording rules.
+- [ ] **Capital Gains Tax is 19th in the drip.** Re-read the CRA's 2026 capital gains guidance (expected about February 2027) before it publishes if you want the 2026 rate confirmed first.
+- [ ] **Second wave** (none started): provincial minimum wages and income tax rates (Ontario, British Columbia, Alberta and Quebec first), land transfer tax, RDSP, RESP and the education savings grant, Canada Student Loans, Quebec Pension Plan and QPIP, parental benefits, Allowance and Allowance for the Survivor, the dividend tax credit. Plan: `docs/content-maps/ca-content-map.md`.
+- [ ] **Plan the US** once the Canada drip is further along: content map and source checks first, as NZ and Canada did.
+
 ### Page text: the routine is built, now apply it
 The routine is in `docs/page-checklist.md`: free triage, then read the sources, fix, close-copy check, reference sources, import on MAMP then the server, check the live page. Each page is a round of reading its sources, fixing the text, importing it and checking the live page, and then the nightly AI check re-reads it (roughly $0.05 a page by my estimate; the real figure is in the Console).
 - [x] All 23 written UK pages done (section 3), including the whole "first 8" priority list and Cash ISA Allowance. Six more UK pages were written on 22 Nov night (see section 3), and three more on 23 Nov, and thirty more on 23 and 24 Nov, so the server now has 68 written pages (53 UK, 15 Australia) and no UK page without an explanation.
