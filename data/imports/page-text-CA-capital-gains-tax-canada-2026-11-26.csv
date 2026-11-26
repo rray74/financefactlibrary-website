@@ -1,0 +1,29 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,tax,capital-gains,capital-gains-tax-canada,Capital Gains Tax,"How capital gains are taxed in Canada, what the inclusion rate means, how losses and the principal residence work, and the status of the proposed change.","## Only part of a capital gain is taxed
+
+If proceeds from selling capital property, or from being deemed to sell it, exceed the adjusted cost base plus the costs of selling, the result is a capital gain. Adjusted cost base (ACB) normally means the price paid for the property together with acquisition expenses, for example commissions and legal fees. If you sell for less, you have a capital loss.
+
+The part of a gain you report as income is the taxable capital gain. You work it out by multiplying the gain by the inclusion rate, which the Canada Revenue Agency (CRA) gives as {fact:ca_cg_incl} for the 2025 tax year.
+
+## How it is reported
+
+If you sold or disposed of property during the year, you report the gains and losses on Schedule 3 of your return. Taxable capital gains above your allowable capital losses for the year are entered on line 12700.
+
+## Capital losses
+
+Multiply a capital loss by that year's inclusion rate and you get the allowable capital loss. It can be set against taxable capital gains. Whatever is left is a net capital loss, and it can be set against taxable capital gains in any of the three years before or in later years.
+
+## Your home
+
+A gain on a home that was your principal residence, and nothing else, in all the years you owned it is not taxed. If the property was not your principal residence, or not only that, in some years, the exemption may not shelter the whole gain. The sale is reported on Schedule 3 together with Form T2091(IND), the form for designating the property.
+
+A house, cottage, condominium, apartment, mobile home or houseboat can qualify. For a given year, a property qualifies if you hold it alone or with others, you, a spouse, a common-law partner or a child lived in it at some point in the year, and you designate it. The land can be part of it, normally up to half a hectare. Each year, a family can name just one home as its principal residence.
+
+## Gifts of certain property
+
+The inclusion rate is zero on a gain from donating some types of property to a qualified donee. Publicly listed securities and ecologically sensitive land are two of them.
+
+## The proposed increase
+
+In January 2025 the Department of Finance announced its intention to raise the inclusion rate from one-half to two-thirds, from January 1, 2026, on gains above $250,000 a year for individuals and on all gains for corporations and most trusts. Meanwhile the CRA continued to apply the enacted rate of one-half. In September 2026 the Department of Finance listed cancelling the proposed increase among the measures it is proposing.
+",Capital Gains Tax Canada: {fact:ca_cg_incl} Taxable,"Only part of a capital gain is taxed, at the {fact:ca_cg_incl} inclusion rate. See how the rate works, the home exemption, how losses are used and the proposed change.",,
