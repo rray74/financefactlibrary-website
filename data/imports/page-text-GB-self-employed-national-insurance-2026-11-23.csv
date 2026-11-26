@@ -9,12 +9,12 @@ A few groups follow different rules. People who examine, moderate, invigilate or
 
 When profits reach {fact:ni_small_profits_threshold}, Class 2 is treated as having been paid, so nothing is owed and the National Insurance record is still protected. This matters because the Class 4 limit is higher: profits between the two figures owe no Class 4 and still earn a qualifying year.
 
-Below {fact:ni_small_profits_threshold}, nothing has to be paid, but the year may leave a gap in the record. Paying voluntary Class 2 at {fact:ni_class2_voluntary_rate} a week closes it.
+Below {fact:ni_small_profits_threshold}, nothing has to be paid, but the year may leave a gap in the record. Paying voluntary Class 2 at {fact:ni_class2_voluntary_rate} a week can close it, though it does not always raise the pension.
 
 ## Voluntary contributions fill gaps, but not everyone gains from them
 
-Where self-employed profits fall short of {fact:ni_small_profits_threshold}, either Class 2 or Class 3 can be paid. Class 3 costs {fact:ni_class3_voluntary_rate} a week. Some self-employed people in particular jobs, including examiners and landlords who are eligible to pay Class 2, can also pay voluntarily even though their Class 2 is not treated as paid.
+Of the two voluntary classes, Class 3 costs {fact:ni_class3_voluntary_rate} a week. Some self-employed people in particular jobs, including examiners and landlords who are eligible to pay Class 2, can also pay voluntarily even though their Class 2 is not treated as paid.
 
-Gaps matter because a State Pension usually needs at least 10 qualifying years. Voluntary payments do not always raise a pension, for example where someone was contracted out, and they cannot be paid where the record has no gap. The State Pension forecast shows whether a payment would help.
+Gaps matter because a State Pension usually needs at least 10 qualifying years. Voluntary payments do not always raise a pension, for example where someone was contracted out, and they usually cannot be paid where the record has no gap, or by a married woman or widow paying the reduced rate, or after the deadline for the year. The State Pension forecast shows whether a payment would help.
 
-The rate for a voluntary payment is normally the current one. Class 2 for the previous tax year and Class 3 for the previous two tax years are charged at those years' original rates, while older years cost the current rate. A gap can be filled only for the last 6 tax years, and the cut-off date is 5 April.",Self-Employed National Insurance {tax_year},"Class 4 National Insurance on self-employed profits is {fact:ni_class4_main_rate} above {fact:ni_lower_profits_limit} a year. How Class 2, voluntary Class 2 and Class 3 contributions work.",,
+The rate for a voluntary payment is normally the current one. Class 2 for the previous tax year and Class 3 for the previous two tax years are charged at those years' original rates, while older years cost the current rate. A gap can be filled only for the last 6 tax years, and the cut-off date is 5 April.",Self-Employed National Insurance {tax_year},"Class 4 National Insurance is {fact:ni_class4_main_rate} on profits above {fact:ni_lower_profits_limit}, and lower above the upper limit. How Class 2 and voluntary Class 3 contributions work.",,
