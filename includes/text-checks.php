@@ -459,7 +459,7 @@ function factValueForms(array $fact): array
  * Only rules that cannot give false alarms belong here. A rule such as "no comma before the last
  * 'and'" can't be told apart from an ordinary clause by a program, so that one stays in the style
  * file. A country with no entry has no extra checks, and the UK has none: uk.md has no rule of
- * this kind.
+ * this kind. AU and NZ have entries.
  */
 const COUNTRY_TEXT_RULES = [
     'AU' => [
@@ -492,6 +492,34 @@ const COUNTRY_TEXT_RULES = [
             'pattern' => '/\bprogrammes?\b/i',
             'label'   => 'the spelling "programme"',
             'fix'     => 'Australian English spells it "program".',
+        ],
+    ],
+    // New Zealand (added 26 Nov 2026). The rules in nz.md that a program can check exactly. They
+    // are the Australian ones except the spelling rule: New Zealand English keeps "programme" (nz.md),
+    // so that rule would give false alarms and is left out.
+    'NZ' => [
+        // nz.md: "Don't use em dashes." The en dash in a tax year (2026–27) is U+2013 and is not matched.
+        [
+            'pattern' => '/\x{2014}/u',
+            'label'   => 'an em dash',
+            'fix'     => 'New Zealand house style does not use em dashes. Use a comma, a colon or a full stop instead.',
+        ],
+        // nz.md: dates are written 1 April 2027, with no ordinal and no comma before the year.
+        [
+            'pattern' => '/\b\d{1,2}(?:st|nd|rd|th)\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\b/',
+            'label'   => 'a date with an ordinal',
+            'fix'     => 'Write dates as in 1 April 2027, with no "st", "nd", "rd" or "th".',
+        ],
+        [
+            'pattern' => '/\b\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December),\s+\d{4}\b/',
+            'label'   => 'a comma between the month and the year',
+            'fix'     => 'Write dates as in 1 April 2027, with no comma between the month and the year.',
+        ],
+        // nz.md: "Use single quotation marks."
+        [
+            'pattern' => '/["\x{201C}\x{201D}]/u',
+            'label'   => 'double quotation marks',
+            'fix'     => 'New Zealand house style uses single quotation marks.',
         ],
     ],
 ];

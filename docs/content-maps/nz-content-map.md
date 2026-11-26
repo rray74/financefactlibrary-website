@@ -23,7 +23,7 @@ Found by reading the repo (nothing was changed):
 |---|---|
 | `includes/placeholders.php`, `COUNTRY_TAX_YEARS` | `'NZ' => month 4, day 1, style 'slash'`. So `{tax_year}` would show **2026/27** (UK style). IRD writes its years in more than one way, so the style is a decision below |
 | `includes/functions.php`, `COUNTRY_WORDING` | `NZ`: short "New Zealand", adjective "New Zealand", sources "Inland Revenue, Work and Income and the Reserve Bank of New Zealand" |
-| `includes/text-checks.php`, `COUNTRY_TEXT_RULES` | Only `AU` has program-checked style rules. NZ has none, so a `nz.md` rule that a program could check (spelling, date format, quotation marks) would need a **code change, to be asked about first** |
+| `includes/text-checks.php`, `COUNTRY_TEXT_RULES` | `AU` and `NZ` have program-checked style rules (NZ added 26 Nov 2026) |
 | `docs/house-style/au.md` | Already says "Official Cash Rate" is New Zealand's name for its own rate |
 | Jurisdiction row, sources, allowlist | **Nothing yet.** No `NZ` row in `jurisdictions`, no NZ domain in `FACT_SOURCE_ALLOWLIST` |
 
@@ -46,7 +46,7 @@ Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last upda
 - [x] **Migrations 032 and 033 written and applied on MAMP (23 November, not yet committed or on the server):** the `NZ` row (inactive, tax year 1 April) with 16 regions (the macron in Manawatū-Whanganui stores and reads back correctly) and 26 allowlisted source rows (all read that day). Left out of 033 on purpose: RBNZ, Kāinga Ora, ACC and the paid parental leave payment page.
 - [x] Migration 032 (the `NZ` row and 16 regions), 033 (source rows), 034 (launch): all applied on the server.
 - [x] `docs/house-style/nz.md` written.
-- [ ] Optional code change: `COUNTRY_TEXT_RULES` entry for NZ (only `AU` has program-checked style rules). Not started; needs approval first.
+- [x] `COUNTRY_TEXT_RULES` entry for NZ added 26 Nov 2026 (approved by Richard): em dash, ordinal date, comma between month and year, double quotation marks. Not the "programme" rule.
 - [x] Build the launch pages in Claude Code, one batch at a time: 16 pages, 24 November. Second wave: 9 pages, 25 November (see the build log).
 - [x] Preflight, switch on, start the drip: done 24 November 2026 (see the build log).
 
