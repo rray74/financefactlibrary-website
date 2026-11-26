@@ -1,7 +1,7 @@
 jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
 GB,tax,inheritance-tax,inheritance-tax-thresholds,Inheritance Tax Thresholds and Rates,"How much an estate can pass on before Inheritance Tax is due, the extra allowance for leaving a home to descendants, the rates above the thresholds and relief for farms and businesses.","## Estates below the nil-rate band normally pay nothing, and the rate applies only above it
 
-Everything a person owned when they died, from property to savings and belongings, makes up their estate. Inheritance Tax is not due when its value is below the **nil-rate band** of {fact:iht_nil_rate_band}, or when everything above that amount is left to a spouse, civil partner, charity or community amateur sports club. The estate's value may still have to be reported to HMRC. Above the band, the standard rate of {fact:iht_rate} is charged on the excess only. The band, the residence band described below and the value above which that band shrinks are all held at these levels until 5 April 2031.
+Everything a person owned when they died, from property to savings and belongings, makes up their estate. Inheritance Tax is not due when its value is below the **nil-rate band** of {fact:iht_nil_rate_band}, or when everything above that amount is left to a spouse, civil partner, charity or community amateur sports club. The estate's value may still have to be reported to HM Revenue and Customs (HMRC). Above the band, the standard rate of {fact:iht_rate} is charged on the excess only. The band, the residence band described below and the value above which that band shrinks are all held at these levels until 5 April 2031.
 
 If at least 10% of the net value of the estate goes to charity in the will, tax on some of the assets can be charged at the reduced rate of {fact:iht_charity_rate}. Debts are deducted from the estate's total to reach that net value.
 
@@ -11,14 +11,14 @@ When an estate is worth less than its band, the unused part can be added to the 
 
 ## The residence band adds to the threshold only when a home goes to descendants
 
-On top of the nil-rate band, a **residence nil-rate band** of {fact:iht_residence_nil_rate_band} can apply. It is available when a home, or a share in one, is left to children (including adopted, foster and stepchildren) or grandchildren. Three points matter:
+On top of the nil-rate band, a **residence nil-rate band** of {fact:iht_residence_nil_rate_band} can apply. It is available when a home, or a share in one, is left to children (including adopted, foster and stepchildren) or grandchildren, who must become entitled to the home on the death, so a home held in a trust may not qualify. Nephews, nieces and siblings are not direct descendants. Three points matter:
 
 - It can be set against any part of the taxable estate, not only the house. If the home is worth less than the full band, the leftover cannot be used on other assets, but it can pass to a surviving spouse or civil partner.
 - It does not apply to lifetime gifts. Gifts made in the seven years before death use up the ordinary nil-rate band, and the residence band is still available against the estate.
-- For estates worth more than {fact:iht_rnrb_taper_threshold}, it shrinks by £1 for every £2 above that value.
+- For estates worth more than {fact:iht_rnrb_taper_threshold}, it shrinks by £1 for every £2 above that value. The value tested is the total assets less debts, with the spouse exemption and reliefs such as agricultural or business relief not deducted.
 
 A home left to a spouse or civil partner is free of tax. If the home goes to somebody else under the will, its value is part of the estate.
 
-## Farms and businesses get 100% relief up to a limit
+## Farms and businesses get 100% relief only up to a limit, and some property gets 50%
 
 For deaths on or after 6 April 2026, qualifying farmland, farm buildings and trading businesses receive 100% relief up to {fact:iht_apr_bpr_allowance}, and 50% above it. The limit covers qualifying property in the estate together with qualifying gifts made on or after 30 October 2024, where the donor dies within seven years. A spouse's or civil partner's unused allowance can be added to it. Some property, such as shares on markets that are not classed as listed, including the Alternative Investment Market, can only receive 50% relief.",Inheritance Tax Thresholds and Rates,"The Inheritance Tax nil-rate band is {fact:iht_nil_rate_band}, charged at {fact:iht_rate} above it. The residence allowance, spouse transfers and farm and business relief are covered.",,
