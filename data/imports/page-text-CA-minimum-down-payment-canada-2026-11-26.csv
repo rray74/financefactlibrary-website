@@ -1,0 +1,29 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,mortgages-and-property,buying-a-home,minimum-down-payment-canada,Minimum Down Payment,"The minimum down payment for a home at each price level, when mortgage loan insurance is needed, what it costs and where the down payment can come from.","## The minimum depends on the price
+
+The down payment is your own money put toward the price, with the mortgage covering the balance. The minimum depends on what the home costs:
+
+- Up to {fact:ca_dp_tier}, the minimum is {fact:ca_dp_low} of the price.
+- Above {fact:ca_dp_tier}, it is {fact:ca_dp_low} of the first {fact:ca_dp_tier} plus {fact:ca_dp_high} of the part of the price above that.
+- At {fact:ca_dp_cap} or more, it is {fact:ca_dp_full} of the price.
+
+Self-employed borrowers, and those with poor credit, may be asked by lenders for more.
+
+## Below 20% you typically need insurance
+
+A down payment below 20% of the price usually means buying mortgage loan insurance. It protects the lender if you cannot make your payments, not you. Your lender arranges it, and may ask for it even with a larger down payment, usually where you are self-employed or have a poor credit history.
+
+The price cap matters for insured mortgages. For a CMHC-insured homeowner mortgage, the purchase price has to be below {fact:ca_dp_cap}.
+
+## What the insurance costs
+
+Insurance costs between {fact:ca_mli_low} and {fact:ca_mli_high} of the mortgage, charged as a premium. A bigger down payment means a smaller premium. You can add the premium to your mortgage, in which case you pay interest on it at your mortgage rate, or pay it as a lump sum up front. Provincial sales tax applies to the premium in Ontario, Manitoba and Quebec. That provincial tax cannot be rolled into the mortgage, so it is paid up front.
+
+## Where the down payment comes from
+
+In the usual case, the minimum is expected to come from your own money. CMHC treats savings, the proceeds of selling a property and gifts from relatives that do not have to be repaid as traditional down payment sources. A non-traditional down payment has to come from an arm's length source that is not tied to the purchase, such as an unsecured personal loan or line of credit. It is limited to properties of 1 or 2 units, with loans of 90.01% to 95% of the value, for borrowers who have shown strong credit management.
+
+## Other requirements
+
+There are two ground rules. One is location: the home is in Canada. The other is that the federal ban on purchases of residential property by non-Canadians does not apply to the purchase. CMHC also flags closing costs (legal fees and land transfer tax, for example) equal to 1.5% to 4% of the price, on top of the down payment.
+",Minimum Down Payment Canada: {fact:ca_dp_low} to {fact:ca_dp_full},The minimum down payment is {fact:ca_dp_low} on the first {fact:ca_dp_tier} of the price and {fact:ca_dp_high} above it. See when mortgage insurance is needed and the price cap.,,
