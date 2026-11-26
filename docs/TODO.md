@@ -187,7 +187,7 @@ NZ is live with 25 pages built (Minimum Wage published, 24 hidden drafts for the
 
 ### Canada follow-ups (added 26 Nov 2026)
 Canada is live with 20 pages built (Federal Minimum Wage published, 19 hidden drafts for the drip, 3 a week, job #3). Work on the calendar:
-- [ ] **29 Nov 2026, after 07:11 UTC:** check the second Canada drip run on the server (`php scripts/run-jobs.php --status`). Expect job #3 to have published "Federal Income Tax Rates" (subject 99), the next slot about 56 hours later, no failures, and the live page returning 200. Then spot-check the drip about once a week until all 19 drafts are out (about 6 to 7 weeks). The AU, NZ and CA drips all run from the one worker.
+- [ ] **29 Nov 2026, after 07:11 UTC:** check the second Canada drip run on the server (`php scripts/run-jobs.php --status`). Expect job #3 to have published "Federal Income Tax Rates" (subject 99), the next slot about 56 hours later, no failures, and the live page returning 200. Then spot-check the drip about once a week until all 19 drafts are out (about 6 to 7 weeks). The AU, NZ and CA drips all run from the one worker (the single cron row was confirmed by Richard on 26 Nov 2026).
 - [ ] **Decide the nightly AI check for Canadian pages** with the NZ question above (only the 25-page UK sample is checked now). A code change to the sample file or schedule needs asking first.
 - [ ] **Optional code change (ask first): a `CA` entry in `COUNTRY_TEXT_RULES`** (double quotation marks, Canadian spelling), so the nightly checks apply Canadian wording rules.
 - [ ] **Capital Gains Tax is 19th in the drip.** Re-read the CRA's 2026 capital gains guidance (expected about February 2027) before it publishes if you want the 2026 rate confirmed first.
