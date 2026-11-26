@@ -1,7 +1,7 @@
 jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
 GB,tax,stamp-duty,scottish-stamp-duty-lbtt,Scottish Stamp Duty (LBTT) Rates,"How Land and Buildings Transaction Tax works for residential purchases in Scotland: the bands, first-time buyer relief and the Additional Dwelling Supplement on extra homes.","## Each LBTT rate applies only to the slice of the price inside its band
 
-Scottish buyers pay Land and Buildings Transaction Tax (LBTT) rather than Stamp Duty Land Tax. A purchase at or below {fact:lbtt_nil_rate_threshold} owes nothing. Above that, the rate climbs through four bands, from {fact:lbtt_band_2pct} up to {fact:lbtt_band_12pct}, and each rate is charged only on the part of the price that falls inside its band. A purchase that reaches the top band is not taxed at that rate on the whole price.
+Scottish buyers pay Land and Buildings Transaction Tax (LBTT) rather than Stamp Duty Land Tax. A purchase at or below {fact:lbtt_nil_rate_threshold} owes nothing. Above that, the rate climbs from {fact:lbtt_band_2pct} up to {fact:lbtt_band_12pct}, and each rate is charged only on the part of the price that falls inside its band.
 
 A return has to be sent to Revenue Scotland for most residential purchases of £40,000 or more, even when no tax turns out to be due.
 
@@ -21,8 +21,8 @@ The supplement does not apply when:
 - the buyer has sold their only or main home in the 36 months before buying a replacement main home
 - the only other property owned, or the owner's share of a jointly owned one, is worth less than £40,000
 
-A repayment of the supplement can be claimed in some cases.
+A repayment of the supplement can be claimed if the previous main home is sold within 36 months of buying the replacement and the buyer has lived in the replacement as their only or main residence. The rules differ slightly for joint buyers.
 
 ## England and Northern Ireland use Stamp Duty Land Tax instead
 
-Stamp Duty Land Tax applies in England and Northern Ireland, with different bands. For comparison, its standard nil-rate threshold is {fact:sdlt_nil_rate_threshold}. Because the two systems differ, the same price can produce a different bill on either side of the border.",Scottish Stamp Duty (LBTT) Rates {tax_year},"Scottish residential LBTT is nil up to {fact:lbtt_nil_rate_threshold}, with higher bands above it, first-time buyer relief and an additional dwelling supplement of {fact:lbtt_ads_rate}.",,
+Stamp Duty Land Tax applies in England and Northern Ireland, with different bands. For comparison, its standard nil-rate threshold is {fact:sdlt_nil_rate_threshold}.",Scottish Stamp Duty (LBTT) Rates {tax_year},"Scottish residential LBTT is nil up to {fact:lbtt_nil_rate_threshold}, with higher bands above it, first-time buyer relief and an additional dwelling supplement of {fact:lbtt_ads_rate}.",,
