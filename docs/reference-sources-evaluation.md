@@ -149,3 +149,8 @@ further or the checker simply raises different points (it is not stable run to r
 | jobseeker-payment | 2026-11-21 | 8 | contradicts source 1, copied from source 1, duplicated 1, house style 2, missing exception 2, unneeded section 1 |
 | medicare-levy | 2026-11-21 | 1 | house style 1 |
 | minimum-wage-australia | 2026-11-21 | 4 | contradicts source 1, copied from source 1, duplicated 1, missing exception 1 |
+
+## Claude Code pages, first nightly check (25 and 26 Nov 2026)
+
+Ten of the 30 pages written in Claude Code on 22 to 24 Nov have been checked, with their reference sources read (every source read on the 26 Nov batch). 50 findings on 10 pages, 5 a page, close to the 4.8 a page of the API-drafted baseline (105 on 32 pages). About half needed a text change, a higher share than the old baseline (about 8 real in 105), but none was a wrong figure: they were overstated headings, missing conditions, one count the source does not give, and repeats. Reference sources let the check raise exact conditions (the £10,000 Self Assessment point, the LBTT repayment rule, the taper basis) that it could not have seen from the card sources alone. Detail and kinds of finding: `docs/claude-code-drafting-test.md`, "Nightly check on the Claude Code pages".
+

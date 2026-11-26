@@ -68,7 +68,7 @@ A mix on purpose: three hard pages would make the test look worse than the basel
 | Reference sources added | 2 | 4 | 2 |
 | Card or card-note problems found | 0 | 1 (card note on abolished waiting days not confirmed by the GOV.UK pages read) | 3 (trigger "more than" against GOV.UK "at least"; age-22 card cites a page that doesn't say 22; UK against Great Britain) |
 | Needed Claude in the browser | No | No | No |
-| Nightly AI check, first run | Not run yet | Not run yet | Not run yet |
+| Nightly AI check, first run | See "Nightly check on the Claude Code pages" below (10 pages checked 25 and 26 Nov) | Same | Same |
 
 ### What this shows so far
 
@@ -81,3 +81,23 @@ A mix on purpose: three hard pages would make the test look worse than the basel
 - Auto-enrolment: "UK" against "Great Britain" is not a real error. Northern Ireland has its own Act (Pensions (No. 2) Act (Northern Ireland) 2008), and its section 3 has the same age (at least 22) and trigger (more than £10,000) as the Great Britain Act. The 2026/27 Northern Ireland order was not found, so the Northern Ireland qualifying earnings band is not confirmed from an official page. The page text was left as it is.
 - Plan usage: Richard reports the three sessions used a tiny fraction of the monthly allowance, so it is recorded as "within the monthly allowance" and is not a constraint for now. It was not measured, and should be looked at again if a country launch (15 to 20 pages) is drafted in one month.
 - Still not known: what the nightly AI check says about these pages (due from about 23 to 30 November). Every other part of the decision rule is met: review time is lower, no substantive errors survived to review, and usage is sustainable.
+
+## Nightly check on the Claude Code pages (25 and 26 Nov 2026)
+
+The 05:30 run was capped to a fixed sample of the 30 UK pages written in Claude Code on 22 to 24 Nov, five a night. Ten are done; 20 remain (about 4 more nights).
+
+| Batch | Pages | Findings | Needed a real text change | Figure errors |
+|---|---|---|---|---|
+| 25 Nov | Junior ISA, SDLT, Income Tax Rates and Bands, Scottish Income Tax, Employee NI | 24 | about 12 | 0 |
+| 26 Nov | Self-Employed NI, Dividend Tax Rates, Inheritance Tax Thresholds, Scottish LBTT, Welsh LTT | 26 (5, 3, 7, 4, 7) | about half (fixed on all five pages), mostly wording | 0 |
+
+What the 26 Nov findings were (each read against the source with `scripts/read-source.php` before fixing):
+
+- Real accuracy problems: a meta description that read as if 6% Class 4 applied to all profits (Self-Employed NI); a "closes it" certainty that the source contradicts (voluntary payments do not always raise the pension); "larger amounts" with no £10,000 point (Dividend); a "four bands" count the source never gives (LBTT); two headings that overstated (Welsh "higher threshold", IHT "100% relief"); the Welsh replacement-home rule given for one direction only and for companies too.
+- Real omissions worth a clause: trust and descendant conditions on the residence band, the taper basis (assets less debts, no reliefs deducted), the LBTT repayment conditions, the Welsh £40,000 other-dwelling test, voluntary NI exceptions.
+- Style: HMRC not spelled out (two pages), repeated sentences (four pages), an own-consequence sentence about the border (two pages).
+- Not acted on: findings asking for detail the page deliberately leaves out (share fishermen's Class 2 rate, relief interactions, the taper-relief detail on gifts).
+- No finding on any page was a wrong figure, and no source went unread.
+
+Notes: fixing a page changes its text hash, so each fixed page was taken out of `data/nightly-check-sample.txt` (see `docs/page-checklist.md`). A fix pass now takes about 5 to 10 minutes a page including reading the source. The check costs about $0.07 a page. Meta descriptions are the awkward fix: the 200-character limit counts placeholders as typed while the 140 to 155 target counts them filled, so a description with several figures has little room.
+
