@@ -72,8 +72,8 @@ The other open decisions in the numbered list below were settled in the same way
 
 ### Loose ends
 
-- [ ] Student loan repayments: held until IRD states the 2026–27 threshold (retest 24 November, still held).
-- [ ] Official Cash Rate: RBNZ refuses the fetcher (retested 24 November). Retest before building; no NZ rate page exists, so the rate-page rules are untested for NZ.
+- [ ] Student loan repayments: held until IRD states the 2026–27 threshold (retested 24 and 26 November, still held: IRD's repayment page gives only the 2026 tax year, $24,128 a year and $464 a week, with no figure from 1 April 2026).
+- [ ] Official Cash Rate: RBNZ refuses the fetcher (retested 24 and 26 November: HTTP 403 from the Mac and the server). Retest before building; no NZ rate page exists, so the rate-page rules are untested for NZ.
 - [ ] Depositor Compensation Scheme and First Home Loan: sources refuse every machine tried.
 - [ ] The Tenancy bonds page still mentions the boarding house bond and notice, which the Boarding houses page now covers. Not edited.
 
