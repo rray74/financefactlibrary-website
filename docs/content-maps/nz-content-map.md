@@ -1,9 +1,11 @@
-# New Zealand content map (plan)
+# New Zealand content map
 
-Status: **plan only, first written on 23 November 2026.** Nothing is built: no figures, page text, CSVs, migrations or code
-exist for New Zealand yet, and the server and database were not touched. The tables below hold **no figure values**: a value
-goes into a CSV only after it has been read off its official source page on the day the CSV is built, as `core.md` and the
-Australian handover require. Where a page's *kind* of figure is named below (a threshold, a weekly rate), it is a label, not a value.
+Status: **live. First written as a plan on 23 November 2026; launched 24 November 2026; tidied 26 November 2026.** 25 pages are built
+(subject ids 73 to 97): 16 at launch (one published by hand, the rest dripping 3 a week as job #2) and 9 second-wave pages added on 25 November. The build log at the
+bottom is the record. The sections from "What already exists in code" to "Slugs" are the **original plan, kept for reference**: where it
+differs from the build log or the To do list, the build log wins. The tables hold **no figure values**: a value goes into a CSV only
+after it has been read off its official source page on the day the CSV is built, as `core.md` and the Australian handover require.
+Where a page's *kind* of figure is named, it is a label, not a value.
 
 Everything about sources below was found by reading the sites on 23 November 2026 from the Mac with `scripts/read-source.php`
 and `scripts/check-source-access.php`, **with the VPN state unknown** (see "Can the site read them?": several failures look like
@@ -27,25 +29,25 @@ Found by reading the repo (nothing was changed):
 
 ## To do
 
-Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 23 November 2026.
+Kept up to date as the work goes. `[x]` is done, `[ ]` is still to do. Last updated 26 November 2026.
 
 ### Planning (this document)
 
 - [x] Read the AU map, process, handover, house style and TODO (23 November).
 - [x] Find and test the official addresses (23 November, from the Mac; results below).
 - [x] **Retested with the VPN on (set to New Zealand), 23 November:** `legislation.govt.nz`, `fma.govt.nz` and `tenancy.govt.nz` now read. RBNZ (Cloudflare 403), Kāinga Ora and ACC (Imperva) are still refused on every variant, so the VPN does not fix them. Then tried the VPN set to the UK (still refused) and the Hostinger server (read-only `check-source-access.php` over SSH, with Richard's OK): **all three are refused on every variant from the server too** (RBNZ Cloudflare 403; Kāinga Ora and ACC return HTTP 200 with 0 characters). So pages 7, 8 and 12 cannot be built on the site's fetcher. **Decision needed: move them to the second wave, or find another official page that reads, or keep a hand-refreshed saved copy.**
-- [ ] **Ask Richard before running `check-source-access.php` over SSH** for the same failures (the server's address is often treated differently).
-- [ ] Richard decides the items under "Decisions waiting" and approves the page list.
-- [ ] Slug collision check on the local database (SQL below).
+- [x] Ask before running `check-source-access.php` over SSH: asked and run on 23 November (all three refused from the server too).
+- [x] Richard decided the items under "Decisions waiting" (23 and 25 November) and approved the page list.
+- [x] Slug collision check on the local database: done before the first import (24 November).
 
 ### After the plan is approved (not part of this job)
 
 - [x] **Allowlist and tax-year style (23 November, approved, tested on MAMP, not yet committed):** `ird.govt.nz`, `employment.govt.nz`, `workandincome.govt.nz` and `tenancy.govt.nz` added to `FACT_SOURCE_ALLOWLIST` (`rbnz.govt.nz` left out until it reads); `COUNTRY_TAX_YEARS['NZ']` changed to the dash style, so `{tax_year}` shows 2026–27.
 - [x] **Migrations 032 and 033 written and applied on MAMP (23 November, not yet committed or on the server):** the `NZ` row (inactive, tax year 1 April) with 16 regions (the macron in Manawatū-Whanganui stores and reads back correctly) and 26 allowlisted source rows (all read that day). Left out of 033 on purpose: RBNZ, Kāinga Ora, ACC and the paid parental leave payment page.
-- [ ] (was) Migration 032 for the `NZ` jurisdiction row (inactive); migration 033 for the source rows. Check the folder for the next free number before using it.
-- [ ] `docs/house-style/nz.md`, modelled on `au.md` (points listed below).
-- [ ] Optional code change: `COUNTRY_TEXT_RULES` entry for NZ once `nz.md` is settled.
-- [ ] Build the pages in Claude Code, one batch at a time, using `docs/content-creation-process.md` (card audit, sources read live, claims table, one commit per page).
+- [x] Migration 032 (the `NZ` row and 16 regions), 033 (source rows), 034 (launch): all applied on the server.
+- [x] `docs/house-style/nz.md` written.
+- [ ] Optional code change: `COUNTRY_TEXT_RULES` entry for NZ (only `AU` has program-checked style rules). Not started; needs approval first.
+- [x] Build the launch pages in Claude Code, one batch at a time: 16 pages, 24 November. Second wave: 9 pages, 25 November (see the build log).
 - [x] Preflight, switch on, start the drip: done 24 November 2026 (see the build log).
 
 ### Decision on the unreadable pages (23 November, Richard)
@@ -66,9 +68,14 @@ Settled by Richard on 23 November 2026:
 
 Decided 25 November 2026: 2 (bare "$"), 4 (titles keep to the bright-line test, no "capital gains tax" wording), 7 (macrons kept; round trip tested on MAMP and the server), 9 ("Inland Revenue (IRD)" at first mention, then "IRD"). Still open: 12 (Family Boost; Child Support is built) and what to do about the three unreadable sites.
 
+The other open decisions in the numbered list below were settled in the same way: 1 (dash, 2026–27), 3 (spelling), 5 (ACC weekly compensation: second wave, still not built), 6 (16 regional rows added in migration 032; the pages built so far use no region codes), 8 (British -ise spelling) and 13 (NZ drips alongside Australia).
+
 ### Loose ends
 
-- [ ] (fill in as they come up)
+- [ ] Student loan repayments: held until IRD states the 2026–27 threshold (retest 24 November, still held).
+- [ ] Official Cash Rate: RBNZ refuses the fetcher (retested 24 November). Retest before building; no NZ rate page exists, so the rate-page rules are untested for NZ.
+- [ ] Depositor Compensation Scheme and First Home Loan: sources refuse every machine tried.
+- [ ] The Tenancy bonds page still mentions the boarding house bond and notice, which the Boarding houses page now covers. Not edited.
 
 ## The launch set: 20 pages proposed, 18 after the 23 November decision (pages 8 and 12 moved to the second wave; see the To do section)
 
@@ -332,15 +339,15 @@ Each needs its sources found first.
 | ACC weekly compensation and entitlements | Rests on acc.co.nz, which refuses the fetcher |
 | Child Support | **Built 25 Nov 2026** (page 19, subject 91) |
 | Family Boost (childcare tax credit) | New, dated, my recollection only |
-| Accommodation Supplement | Area layers (a regional test) |
+| Accommodation Supplement | **Built 25 Nov 2026** (page 23, subject 95); no region codes used |
 | Public holidays and anniversary days by region | **Built 25 Nov 2026** (page 17, subject 89); no region codes used |
-| Residential rent increases and boarding houses | Builds on page 14 |
+| Residential rent increases and boarding houses | Boarding houses **built 25 Nov 2026** (page 24, subject 96). Rent increases are covered on page 14 |
 | LVR (loan-to-value) rules | RBNZ source, unreadable for now |
 | Variable and fixed mortgage rates | RBNZ statistical table: needs its own fetcher, like the RBA's |
-| Fringe benefit tax rates | IRD, changed recently (an IRD update says so) |
+| Fringe benefit tax rates | **Built 25 Nov 2026** (page 25, subject 97) |
 | Independent Earner Tax Credit | **Built 25 Nov 2026** (page 20, subject 92) |
-| Redundancy, minimum notice | Employment NZ |
-| Veteran's Pension, Winter Energy Payment | Work and Income |
+| Redundancy, minimum notice | **Built 25 Nov 2026** (page 21, subject 93) |
+| Veteran's Pension, Winter Energy Payment | Veteran's Pension **built 25 Nov 2026** (page 22, subject 94). Winter Energy Payment not built |
 
 ## Build log
 
