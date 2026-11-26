@@ -1,0 +1,27 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+CA,savings-and-investments,interest-rates,bank-of-canada-policy-rate,Bank of Canada Policy Interest Rate,"What the Bank of Canada's policy interest rate is, who sets it, how the Bank steers it and how it affects mortgage and savings rates.","## What the policy interest rate is
+
+The Bank of Canada's policy interest rate is its target for the overnight rate, which is the interest rate the Bank wants financial institutions to charge each other on overnight loans. It is the main tool the Bank uses to control inflation, and it is the starting point for setting many other interest rates in the economy.
+
+## The overnight market
+
+Every business day, funds flow between financial institutions as customers pay with debit cards or send e-transfers. At the end of each day the institutions settle those payments, and some end up short while others hold more than they need. One way to square up is for institutions to lend to each other for a single day. That is the overnight market. The public does not borrow or lend there.
+
+## How the Bank steers the rate
+
+The Bank is another option for them: money left with the Bank overnight earns the deposit rate, and money borrowed from it overnight costs the bank rate. The range between those two rates is called the operating band. Since the COVID-19 pandemic the Bank has used a floor system, in which the target sits at or just above the floor of the band, so the deposit rate is set a little below the target. Before 2020 it generally used a corridor system, with the target in the middle of the band.
+
+## Who decides, and when
+
+The Bank's policy-making body, the Governing Council, has the job of conducting monetary policy. Governing Council members include the Governor, the Senior Deputy Governor and every Deputy Governor.
+
+The Bank announces its policy interest rate {fact:ca_boc_meetings}, on fixed dates, a schedule it introduced in 2000. The dates are published on the Bank's website. In special circumstances the Bank can announce a change at another time, as it did twice in March 2020. A change takes effect the day after it is announced.
+
+## What the Bank is aiming for
+
+The Bank and the federal government agree a monetary policy framework and review it every five years. Within that framework the Bank aims for inflation of {fact:ca_inflation_target}, which sits halfway through a control range of {fact:ca_inflation_low} to {fact:ca_inflation_high}. The policy interest rate is the primary tool the Bank uses to keep inflation at that target.
+
+## What it affects
+
+The Bank's push for institutions to lend to each other near the policy rate shapes interest rates on a wide range of other borrowing. Commercial banks' prime rate, which they use to price loans such as mortgages and lines of credit, is one of them. Rates paid on savings, from deposits to guaranteed investment certificates, are affected too.
+",Bank of Canada Policy Interest Rate,"What the Bank of Canada's policy interest rate is, who sets it and how it is announced, and how it feeds into the rates on mortgages, loans and savings.",,
