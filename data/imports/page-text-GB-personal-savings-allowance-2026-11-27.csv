@@ -1,0 +1,22 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,savings,savings-tax,personal-savings-allowance,"Personal Savings Allowance and Starting Rate","How much savings interest can be earned tax-free through the Personal Allowance, the starting rate for savings and the Personal Savings Allowance, and how the tax is collected.","## Interest can be covered by three separate allowances
+
+Interest on savings held outside an ISA can be taxable, but up to three allowances may cover some or all of it. Foreign savings and children's accounts follow different rules. The first is the Personal Allowance: whatever part of it is not used up by wages, a pension or other income is applied to savings interest by HMRC. Next come the starting rate for savings and the Personal Savings Allowance, which are separate allowances. A person may qualify for both of those at once, and either can sit alongside whatever Personal Allowance is left. Interest earned in accounts such as ISAs is usually not taxed.
+
+## The starting rate for savings shrinks as other income rises
+
+The starting rate for savings is worth up to {fact:starting_rate_savings_band} of interest free of tax, for people whose other income is low. It is available only when other taxable income, which leaves out savings interest and dividends, is below {fact:starting_rate_income_limit}. Above the Personal Allowance, each £1 of other income takes £1 off the band, so nothing is left once income reaches that limit.
+
+## The Personal Savings Allowance depends on the tax band
+
+The allowance is {fact:psa_basic_rate} for basic rate taxpayers, {fact:psa_higher_rate} for higher rate taxpayers and {fact:psa_additional_rate} for additional rate taxpayers, who therefore pay tax on all their interest outside tax-free accounts. The band is worked out by adding the interest to other income, so interest itself can push someone into a higher band and a lower allowance. Interest beyond that allowance is charged at the taxpayer's normal Income Tax rate.
+
+Interest on a joint account is split equally between the holders, unless HMRC is told it should be divided differently.
+
+## How the tax is collected depends on the amount of interest
+
+After the tax year ends, banks and building societies tell HMRC how much interest they paid. A person who sends a Self Assessment return reports it there. Someone who is employed or has a pension and owes tax gets a tax calculation, usually between June and the end of November, and HMRC normally collects the tax through their tax code, which can also include an estimate for the current year. Where a tax code cannot be changed, a Simple Assessment letter is sent instead, and anyone who owes tax but has had no letter by the end of November has to contact HMRC. Where the interest is more than £10,000, it has to be reported on a Self Assessment return, and HMRC sends a notice to file one when a bank reports an amount that large. If the estimate in a tax code looks wrong, contacting HMRC gets it updated.
+
+## Savings tax rates are due to rise from April 2027
+
+From 6 April 2027 the rates of Income Tax on savings income are due to become {fact:savings_basic_rate_2027} at the basic rate, {fact:savings_higher_rate_2027} at the higher rate and {fact:savings_additional_rate_2027} at the additional rate. The Personal Savings Allowance and the starting rate for savings are not changing.","Personal Savings Allowance","The Personal Savings Allowance is {fact:psa_basic_rate} for basic rate taxpayers and {fact:psa_higher_rate} for higher rate, with none for additional rate, plus a starting rate.",,"2026-11-27 11:29:52"
