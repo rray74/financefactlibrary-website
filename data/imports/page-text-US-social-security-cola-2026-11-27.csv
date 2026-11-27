@@ -1,0 +1,19 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,social-security-and-retirement,benefit-adjustments,social-security-cola,Social Security Cost-of-Living Adjustment,"How Social Security's yearly cost-of-living adjustment is calculated, the taxable maximum, and the earnings needed for a quarter of coverage.","## What a COLA is
+
+Social Security benefits and Supplemental Security Income (SSI) payments are raised by a cost-of-living adjustment, or COLA, to keep up with inflation. Congress provided for it in legislation enacted in 1973. Benefits for December 2026, which arrive in January 2027, go up by {fact:us_ss_cola}. SSI payment levels rise by the same percentage for January 2027.
+
+Because January 1 is a holiday, SSI payments that would normally arrive on that date go out at the end of December instead.
+
+## How the Social Security Administration works it out
+
+The formula is set by the Social Security Act. Each month the Bureau of Labor Statistics publishes the CPI-W, which stands for Consumer Price Index for Urban Wage Earners and Clerical Workers, and the formula uses it. The Social Security Administration (SSA) takes the third-quarter average CPI-W for the year in question and compares it with the third-quarter average for the last year in which a COLA took effect. When the average has risen, the increase is rounded to a tenth of a percent. A year with no increase, or one that rounds to zero, has no COLA.
+
+## The taxable maximum rises with wages
+
+Social Security tax applies only to earnings up to an annual limit, the contribution and benefit base, also called the taxable maximum. The same limit is used when earnings go into a benefit calculation. The national average wage index drives the yearly change. Earnings in {tax_year} are covered up to {fact:us_fica_wage_base}.
+
+## Quarters of coverage
+
+Social Security uses quarters of coverage, also known as credits, to decide if a worker is insured. For {tax_year}, one quarter of coverage takes {fact:us_ss_qc} in earnings. However much you earn, you cannot get more than four quarters of coverage in a year. Since 1978 the figure has moved on its own each year, tracking the national average wage index.
+",Social Security COLA: {fact:us_ss_cola} Increase,"Social Security benefits rise {fact:us_ss_cola} with the cost-of-living adjustment. See how COLAs are calculated, the taxable maximum, and quarters of coverage.",,
