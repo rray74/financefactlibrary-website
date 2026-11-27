@@ -1,0 +1,28 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,tax,income-tax,standard-deduction-united-states,Standard Deduction,"How the standard deduction works, the amounts by filing status, the extra amounts for age and blindness, and who cannot claim it.","## What the standard deduction does
+
+The standard deduction is a set dollar amount that comes off your income before tax is worked out. It is the alternative to itemizing: if you itemize your deductions, you cannot also take it. The amount depends on your filing status, and it is adjusted for inflation each year.
+
+## The amounts for tax year {tax_year}
+
+Married couples filing jointly get {fact:us_sd_joint}. Single taxpayers and married individuals filing separately get {fact:us_sd_single}. Heads of households get {fact:us_sd_hoh}. All three are for tax year {tax_year}. The IRS says these adjustments generally apply to returns filed in 2028, so a return filed in 2027 uses the tax year 2026 amounts.
+
+## Age and blindness add to it
+
+What you deduct is the basic amount for your status, plus extra for being 65 or older or blind. You get an additional amount if you are 65 or older at the end of the tax year, and another if you are blind on the last day of the year. Age is measured a day early, so you count as 65 on the eve of your 65th birthday. Someone who is single, 65, and blind gets the amounts for both.
+
+On top of that, people 65 and over may qualify for an enhanced senior deduction, which carries an adjusted gross income cap. The IRS describes it for tax year 2025, and a married person has to file jointly to claim it.
+
+## Dependents have a lower limit
+
+If another taxpayer can claim you as a dependent, your standard deduction is limited to the greater of a small fixed amount or your earned income plus a small fixed amount, and it can never exceed the basic amount for your filing status.
+
+## Who cannot take it
+
+The standard deduction is not available to everyone:
+
+- A married person filing separately whose spouse itemizes
+- Most nonresident aliens and dual-status aliens, with exceptions in some cases
+- A person whose return covers fewer than 12 months because their accounting period changed
+- Estates, trusts, common trust funds, and partnerships
+",Standard Deduction {tax_year}: {fact:us_sd_single},The standard deduction for {tax_year} is {fact:us_sd_single} for single filers and {fact:us_sd_joint} for married couples filing jointly. See age add-ons and who cannot claim it.,,
