@@ -1,0 +1,36 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,work-and-benefits,pay-and-leave,family-and-medical-leave-act,Family and Medical Leave Act,"Who can take unpaid, job-protected family and medical leave, which employers are covered, what reasons qualify, and how state laws can add more protection.","## The FMLA gives eligible employees up to {fact:us_fmla_leave_weeks} of unpaid, job-protected leave
+
+The Family and Medical Leave Act (FMLA) gives eligible workers at covered employers a right to unpaid time off for certain family and medical needs, with their job protected. While you are on leave, your employer has to keep your group health benefits going on the same terms as if you had not taken leave. In any 12-month period you can take up to {fact:us_fmla_leave_weeks} of leave for one or more of these reasons:
+
+- Your own serious health condition, when it keeps you from doing your job
+- A serious health condition affecting your spouse, child, or parent, when you are the one caring for them
+- Welcoming a child through birth, adoption, or foster placement, including time to care for the child during the first year
+- A qualifying exigency stemming from military service, where the military member is your spouse, child, or parent and is on covered active duty or has been called to it
+
+You can take up to {fact:us_fmla_military_weeks} in a single 12-month period to care for a servicemember or covered veteran with a serious injury or illness, if you are their child, parent, spouse, or next of kin.
+
+## Your employer must be covered
+
+Whether a private-sector business is covered turns on its payroll: it needs {fact:us_fmla_employer_size} in at least 20 workweeks, counting the current calendar year or the one before. Public agencies, including federal, state, and local governments, and schools are covered whatever their size.
+
+## You must also meet three tests
+
+Eligibility has three parts. The first is tenure: at least {fact:us_fmla_months} with the covered employer. The second is workload: {fact:us_fmla_hours} of service in the 12 months before your leave begins. The third is location: the site where you work must have at least {fact:us_fmla_employer_size} within 75 miles of it. Flight crew members at airlines have their own hours-of-service test.
+
+## Leave does not have to be taken all at once
+
+When it is medically necessary, you can take FMLA leave in separate blocks of time or on a reduced schedule, for your own or a family member's serious health condition or to care for a servicemember. The same goes for qualifying exigencies. Leave to bond with a baby or a newly placed child can be taken this way only if your employer agrees. When you take less than a full workweek, the leave counted against you is a proportion of your usual workweek.
+
+## Who counts as family
+
+The FMLA's definitions are narrower than everyday use:
+
+- **Child**: someone under 18, or older if a physical or mental disability leaves them unable to care for themselves. Biological, adopted, and foster children count, as do stepchildren, legal wards, and children of a person who stands in as their parent.
+- **Parent**: a biological, adoptive, step, or foster parent, or someone who acted as a parent to you when you were a child. Parents-in-law are not included.
+- **Spouse**: your husband or wife. The state where you were married decides what counts as a marriage, and that includes same-sex and common law marriages.
+
+## State laws can add protection
+
+The FMLA itself is unpaid. The Department of Labor (DOL) says to check with your state labor department, because state law can give you additional or greater protections.
+",FMLA: Up to {fact:us_fmla_leave_weeks} of Unpaid Leave,"The FMLA gives eligible employees up to {fact:us_fmla_leave_weeks} of unpaid, job-protected leave. See who qualifies, which reasons count, and how state laws add to it.",,
