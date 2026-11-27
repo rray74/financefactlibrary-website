@@ -1,0 +1,23 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,tax,payroll-taxes,fica-payroll-tax,Social Security and Medicare Payroll Tax (FICA),"The Social Security and Medicare payroll tax rates, the Social Security wage base, and how the Additional Medicare Tax works for high earners.","## What FICA pays for
+
+The Federal Insurance Contributions Act (FICA) tax has two parts. One funds Social Security, formally the old-age, survivors, and disability insurance programs. The other funds Medicare's hospital insurance. Employees and employers each pay both, and each part has its own rate.
+
+## The rates
+
+Social Security tax is charged at {fact:us_fica_ss_rate} on the employee and at the same {fact:us_fica_ss_rate} on the employer. The Medicare tax rate is {fact:us_fica_medicare} for each. Employers withhold the employee's share from wages and pay their own share on top.
+
+## Only Social Security has a wage base
+
+Earnings above the wage base are not subject to Social Security tax. In {tax_year}, Social Security tax stops applying to earnings above {fact:us_fica_wage_base}, the wage base. Medicare tax has no cap, so every covered dollar of wages is subject to it.
+
+## The Additional Medicare Tax
+
+Wages above a threshold also bear an Additional Medicare Tax of {fact:us_fica_addl_rate}. Employers must start withholding it in the pay period when an employee's wages for the year pass {fact:us_fica_addl_employer}, and they continue until the end of the year. This applies whatever the employee's filing status, and there is no employer match.
+
+On your own return, the threshold depends on filing status: {fact:us_fica_addl_joint} for married couples filing jointly, {fact:us_fica_addl_mfs} for married people filing separately, and {fact:us_fica_addl_employer} for everyone else. If you receive both wages and self-employment income, the wages count first, and your threshold is reduced by the wages for the self-employment calculation. You report the tax on Form 8959, and some people ask their employer to withhold extra or make estimated payments to cover it.
+
+## Self-employed people pay both halves
+
+People who work for themselves pay the Social Security and Medicare taxes as self-employment tax instead of through an employer, and the same wage base applies.
+",FICA Payroll Tax: Rates and Wage Base,"Social Security tax is {fact:us_fica_ss_rate} and Medicare tax {fact:us_fica_medicare}, each paid by employee and employer. See the {tax_year} wage base and the Additional Medicare Tax.",,
