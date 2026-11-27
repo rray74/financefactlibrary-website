@@ -1,0 +1,26 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,low-income-support,universal-credit-rates,"Universal Credit Rates","How much Universal Credit pays each month, the extra amounts for children, childcare, health conditions and caring, and how earnings and savings reduce it.","Universal Credit is a single monthly payment for a household. It starts from a standard allowance, which depends on your age and on whether you are single or in a couple. Any extra amounts you qualify for are added, and anything that is taken off is subtracted.
+
+## Extras are not added for you
+
+You have to tell the Department for Work and Pensions (DWP) when something changes that makes you eligible for an extra amount. Starting a Carer's Allowance claim, for example, does not bring the carer element with it: you must report that you have become a carer too.
+
+## Several extras come with limits and conditions
+
+The carer element is not available to anyone already receiving the health amount that is paid for limited capability for work and work-related activity (LCWRA). Couples where both partners have LCWRA receive a single extra amount, the higher one if either of them would qualify for it, and couples who look after the same person share one carer element. The carer element needs at least 35 hours of care a week for someone who receives a qualifying disability benefit, and the person you care for loses their severe disability premium once you claim it. Anyone who reported a health condition before 6 April 2026 is under a different set of rules for the health amounts.
+
+## Childcare is refunded after you pay, and has conditions
+
+You pay the provider yourself first, then claim that money back through your Universal Credit payment. You must be in work, as must your partner unless they cannot work because of a disability or health condition, and the provider must be registered.
+
+## Earnings reduce your payment, with a work allowance for some
+
+Your payment falls by {fact:uc_taper_rate} of whatever you earn above any work allowance, and there is no limit on the hours you can work and still claim. A work allowance, the amount you can earn before the reduction starts, only exists for households with a child to be responsible for or with a disability or health condition that limits work. It is {fact:uc_work_allowance_with_housing} a month if Universal Credit helps with your housing costs or your council has placed you in temporary accommodation because you are homeless, and {fact:uc_work_allowance_no_housing} a month otherwise. Self-employed people follow different rules.
+
+If earnings climb high enough, your payment stops. It restarts automatically if earnings fall again within six months of your last payment, and after that you have to reapply.
+
+## Savings, other benefits and some debts also reduce your payment
+
+Savings and investments above {fact:uc_savings_lower_limit} reduce your payment in steps. For every £250, or part of £250, over that figure, a fixed amount comes off, and once they pass {fact:uc_savings_upper_limit} the payment can stop altogether.
+
+Some other benefits come off your Universal Credit pound for pound. Carer's Allowance, or Carer Support Payment if you live in Scotland, is one, along with the State Pension, Maternity Allowance and several others. Payments can also be cut to repay an advance, to meet the benefit cap, to recover earlier overpayments, or to clear certain debts such as Council Tax and court fines.","Universal Credit Rates {tax_year}","Universal Credit standard allowances for {tax_year} run from {fact:uc_standard_single_under_25} to {fact:uc_standard_couple_25_plus} a month, plus extras for children, health, caring and childcare.","2026-10-22 21:15:26","2026-11-27 11:41:52"
