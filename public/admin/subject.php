@@ -624,6 +624,8 @@ include __DIR__ . '/../../includes/admin-nav.php';
                 <li><strong>Read the intro and meta description against the headings.</strong> Nothing may be promised that the page doesn't cover, and a topic the cards show counts as covered. Meta description 140 to 155 characters. No Oxford comma.</li>
                 <li><strong>Save</strong>, hard-refresh the live page, then use Look for lessons. Approve a lesson only if it is general and doesn't contradict the house style. Lessons can't be edited: retire and add.</li>
                 <li><strong>Note the time</strong> and the cost (the "AI use" lines).</li>
+                <?php // Added 27 Nov 2026 to match the two rules in docs/page-checklist.md ("When the nightly check finds something"). ?>
+                <li><strong>When the nightly check finds something:</strong> act only on "contradicts source", "likely wrong" and "missing exception", and only after reading the source page (a stored result counts only if it is for the live text). Fix the page once; a recheck that raises only style points or points you already judged wrong means stop.</li>
             </ol>
         </details>
 

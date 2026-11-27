@@ -110,6 +110,8 @@ becoming an endless loop of fix, recheck, fix.
    the page as it is. Note any finding you decided was wrong in the commit message
    or in `docs/reference-sources-evaluation.md`, so the next reader does not redo it.
 
+The editor's "Checklist for finishing a page" (`public/admin/subject.php`) now carries both rules as its last step (27 Nov 2026).
+
 Not done yet: stopping a page being re-queued after a fix made in response to a
 check. That is a code change in `check-page-text.php` and waits until the first
 nightly results on the Claude Code pages are in (about 7 Dec 2026).
