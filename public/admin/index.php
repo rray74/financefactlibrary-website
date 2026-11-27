@@ -152,7 +152,9 @@ include __DIR__ . '/../../includes/admin-nav.php';
     <div class="grid sm:grid-cols-3 gap-5">
         <?php foreach ($waiting as [$title, $count, $help]): ?>
         <a href="/admin/review.php" class="card card-border border-base-content/20 bg-base-100 p-5 block hover:bg-base-200 transition-colors">
-            <p class="text-sm opacity-70"><?= e($title) ?>
+            <?php // The badge sits outside the faded text, so opacity doesn't lower its contrast. ?>
+            <p class="text-sm">
+                <span class="opacity-70"><?= e($title) ?></span>
                 <?php // A solid error badge when something is waiting, so it stands out (plain red text on the page surface is too faint). ?>
                 <?php if ($count > 0): ?><span class="badge badge-sm badge-error ml-1">Waiting</span><?php endif; ?>
             </p>

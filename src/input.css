@@ -14,6 +14,61 @@
   themes: light --default, dark --prefersdark;
 }
 
+/* PALETTE (decided 27 Nov 2026): daisyUI's built-in "light" and "dark" with their colour tokens replaced by standard
+   Tailwind colours. Each pair is a fill and the text that sits on it (-content), chosen so the text is at least 4.5:1
+   against the fill (WCAG AA), which the stock daisyUI palette missed in dark mode (primary buttons 4.13:1, solid error
+   badges 3.3:1). Radii, sizes and everything not listed here still come from the built-in themes.
+   To change a colour, change it here and re-check contrast (docs/design-style.md, "Checks"). */
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-base-100: var(--color-white);
+  --color-base-200: var(--color-slate-50);
+  --color-base-300: var(--color-slate-200);
+  --color-base-content: var(--color-slate-900);
+  --color-primary: var(--color-indigo-600);
+  --color-primary-content: var(--color-white);
+  --color-secondary: var(--color-pink-600);
+  --color-secondary-content: var(--color-white);
+  --color-accent: var(--color-teal-700);
+  --color-accent-content: var(--color-white);
+  --color-neutral: var(--color-slate-800);
+  --color-neutral-content: var(--color-slate-50);
+  --color-info: var(--color-sky-700);
+  --color-info-content: var(--color-white);
+  --color-success: var(--color-green-700);
+  --color-success-content: var(--color-white);
+  --color-warning: var(--color-amber-400);
+  --color-warning-content: var(--color-amber-950);
+  --color-error: var(--color-red-600);
+  --color-error-content: var(--color-white);
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
+  prefersdark: true;
+  --color-base-100: var(--color-slate-800);
+  --color-base-200: var(--color-slate-900);
+  --color-base-300: var(--color-slate-950);
+  --color-base-content: var(--color-slate-100);
+  --color-primary: var(--color-indigo-400);
+  --color-primary-content: var(--color-slate-950);
+  --color-secondary: var(--color-pink-400);
+  --color-secondary-content: var(--color-slate-950);
+  --color-accent: var(--color-teal-400);
+  --color-accent-content: var(--color-slate-950);
+  --color-neutral: var(--color-slate-700);
+  --color-neutral-content: var(--color-slate-50);
+  --color-info: var(--color-sky-400);
+  --color-info-content: var(--color-slate-950);
+  --color-success: var(--color-green-400);
+  --color-success-content: var(--color-slate-950);
+  --color-warning: var(--color-amber-400);
+  --color-warning-content: var(--color-amber-950);
+  --color-error: var(--color-red-400);
+  --color-error-content: var(--color-slate-950);
+}
+
 @theme {
   --font-display: "Fraunces", serif;
   --font-sans: "IBM Plex Sans", sans-serif;

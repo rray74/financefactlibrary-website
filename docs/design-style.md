@@ -35,48 +35,55 @@ Tailwind CSS 4 plus daisyUI 5, compiled by the Tailwind CLI.
 - After any change to a template class or `src/input.css`, run `npm run build` and commit the compiled CSS. Tailwind only
   includes classes it can see in the templates, so a class that isn't in the compiled file will not show.
 - `assetUrl()` adds the file's modified time to the CSS and JS addresses, so a rebuild is never missed by caches.
-- **Themes: daisyUI's built-in `light` and `dark`**, loaded as `themes: light --default, dark --prefersdark`. The device
+- **Themes: daisyUI's `light` and `dark`**, loaded as `themes: light --default, dark --prefersdark`, with their colours replaced (see Colour). The device
   setting picks the theme on a first visit, and a toggle in the header lets the visitor override it and remembers the choice.
 - **No `data-theme` on `<html>`** by default: with none set, daisyUI follows the device. The script in `<head>` of
   `includes/header.php` adds `data-theme="light"` or `"dark"` only when the visitor has chosen one (stored in `localStorage`
   under `ffl-theme`, in try/catch, applied before first paint so there is no flash). Any button with the attribute
   `data-theme-toggle` switches to the other theme and keeps its accessible name (`aria-label`, "Switch to dark mode") right. Don't hard-code a
   `data-theme` anywhere else.
-- **Changing the palette later:** add an override block in `src/input.css` named `light` (and one named `dark`) using
-  `@plugin "daisyui/theme"`, set only the tokens that change (primary, secondary and so on), then rebuild. Templates need no
-  edits, because they only use tokens.
+- **Changing the palette:** the colours are set in two `@plugin "daisyui/theme"` blocks in `src/input.css`, named `light`
+  (`default: true`) and `dark` (`prefersdark: true`), using standard Tailwind colour variables. Change a token there, rebuild,
+  and re-run the checks. Templates need no edits, because they only use tokens. Both flags matter: without them the stock
+  daisyUI colours still apply on a first visit.
 - **Changing fonts later:** the three families are mapped in the `@theme` block in `src/input.css` and loaded in
   `includes/header.php`. Change them in those two places only.
 
 ## Colour
 
-*Rewritten for the restyle (Step 1). The palette is daisyUI's stock `light` and `dark`, kept as a placeholder to be changed
-later.*
+*Rewritten 27 November 2026. The palette is now daisyUI's `light` and `dark` with every colour token replaced by a standard
+Tailwind colour, set in `src/input.css`.*
 
-Body text is `text-base-content` (set on `<body>`). `text-primary` is the brand colour, not the text colour. Use tokens only (`bg-base-100`, `text-base-content`, `btn-primary`, `border-base-300`). Each colour has a `-content` token for
+Use tokens only (`bg-base-100`, `text-base-content`, `btn-primary`, `border-base-300`). Each colour has a `-content` token for
 text that sits on it. Never use a raw hex value, `bg-white` or `text-black`.
 
-| Role | Token | Use |
-|---|---|---|
-| Page and card surfaces | `base-100`, `base-200`, `base-300` | Page background, cards, and progressively darker (light) or deeper (dark) surfaces |
-| Text and borders | `base-content` | Body text, headings; soften with opacity |
-| Brand colour | `primary` | Main buttons, key links and highlights |
-| Second brand colour | `secondary` | Secondary buttons and labels |
-| Accent | `accent` | Occasional emphasis, not body text |
-| Neutral | `neutral` | Dark UI surfaces such as a tooltip |
-| Status | `info`, `success`, `warning`, `error` | Alerts and badges that mean what they say |
-
-Current stock values (from `node_modules/daisyui/theme/light.css` and `dark.css`, in OKLCH): the primary is an indigo
-(`oklch(45% 0.24 277)` light, `oklch(58% 0.233 277)` dark), secondary a pink (`oklch(65% 0.241 354)`), accent a teal
-(`oklch(77% 0.152 182)`). Light surfaces are white to light grey; dark surfaces are a dark blue-grey. Both themes use 0.5rem
-box and selector radii and 0.25rem field radii.
+| Token | Light | Dark | Use |
+|---|---|---|---|
+| `base-100` | white | slate-800 | Page and card surface |
+| `base-200` | slate-50 | slate-900 | Footer, hover surface |
+| `base-300` | slate-200 | slate-950 | Rules and borders |
+| `base-content` | slate-900 | slate-100 | Body text and headings; soften with opacity |
+| `primary` / `-content` | indigo-600 / white | indigo-400 / slate-950 | Main buttons, key highlights |
+| `secondary` / `-content` | pink-600 / white | pink-400 / slate-950 | Second brand colour |
+| `accent` / `-content` | teal-700 / white | teal-400 / slate-950 | Occasional emphasis |
+| `neutral` / `-content` | slate-800 / slate-50 | slate-700 / slate-50 | Dark UI surfaces such as a tooltip |
+| `info` / `-content` | sky-700 / white | sky-400 / slate-950 | Informational alerts |
+| `success` / `-content` | green-700 / white | green-400 / slate-950 | Success alerts |
+| `warning` / `-content` | amber-400 / amber-950 | amber-400 / amber-950 | Warnings and the preview banner |
+| `error` / `-content` | red-600 / white | red-400 / slate-950 | Errors and problem badges |
 
 Rules:
-- **Don't give a hue a meaning.** The palette will change, so never write "the pink one" in a template or rely on a colour
+- **Fill and text pairs are chosen for contrast** (4.5:1 or better, WCAG AA). Light mode puts white on a darker fill; dark mode
+  puts near-black on a lighter fill. When changing a colour, change its `-content` with it and re-run the checks.
+- **Change a colour in `src/input.css` only** (the `light` and `dark` blocks; the colours there are Tailwind variables such as
+  `var(--color-indigo-600)`). Use standard Tailwind palette colours. Rebuild and re-check.
+- **Don't give a hue a meaning.** The palette can change again, so never write "the pink one" in a template or rely on a colour
   to mean something. Use the role (`primary`, `secondary`) instead.
+- Don't put a coloured badge or button inside text that has an `opacity-*` class: opacity fades the badge as well and lowers its
+  contrast. Put the faded text in its own `<span>`.
 - Red and green are only for errors and success, never to say a number rose or fell: pages state facts, not judgements.
 - Meaning is never carried by colour alone.
-- Check contrast again whenever a token is overridden, in both themes.
+- Body text is `text-base-content`. `text-primary` is the brand colour, not the text colour. Text links are plain `link`.
 
 ## Typography
 
@@ -296,12 +303,12 @@ Run these before shipping any visual change. Last full run: 27 November 2026, 21
 
 - **No horizontal page scroll** at any of those widths. Result: none on any page.
 - **Contrast** of every piece of text against its real background, in light and dark (WCAG AA: 4.5:1, or 3:1 for large
-  text). Result: all public text passes except the stock-palette items listed below.
+  text). Result: all text passes, except the decorative breadcrumb separators noted below.
 - **Tap targets** of block-level links and buttons at 375px on public pages are at least 40px. Result: none smaller. (Admin
   keeps small controls, see Admin editor.)
-- **Known stock-palette failures (to fix when the palette is chosen):** the dark theme's `btn-primary` label is 4.13:1, and
-  solid `badge-error` text is 3.3:1. Both come from daisyUI's own `primary`, `error` and `-content` colours. Overriding the
-  palette (see Stack) is the fix. After any override, re-run this check.
+- **Palette fixed 27 November 2026:** the stock daisyUI palette failed in dark mode (primary button label 4.13:1, solid error
+  badge 3.3:1). With the Tailwind palette in Colour, every text and fill pair on the checked pages passes in both themes. The
+  one remaining report is the decorative "/" between admin breadcrumb levels (`aria-hidden`), which is not read.
 - Test on MAMP with real pages: a long subject page, one with regional badges, one with a wide table, the error page, and
   the admin editor. A local admin session can be faked for testing without the real credentials by a throwaway PHP
   `auto_prepend_file` that sets `$_SESSION['admin_user']` and `$_SESSION['admin_last_seen']`; keep it out of the repo.
