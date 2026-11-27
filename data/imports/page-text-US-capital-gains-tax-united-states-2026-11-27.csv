@@ -1,0 +1,23 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,tax,capital-gains,capital-gains-tax-united-states,Capital Gains Tax,"How long-term and short-term gains are taxed, the holding period, the loss limit, rates above 20% for some assets, and the net investment income tax.","## Gains are taxed when you sell for more than your basis
+
+Nearly everything you own for personal use or as an investment counts as a capital asset, whether a house, furniture, or shares. If a sale brings in more than your adjusted basis you have a gain, and if it brings in less you have a loss. Basis is generally what the asset cost you, though gifts and inheritances have special rules. A loss on personal-use property, such as your car or your home, is not deductible.
+
+## How long you hold it sets the rate
+
+A gain or loss is long-term if you held the asset for more than one year, and short-term if you held it for one year or less. The clock starts the day after you acquire the asset, and the day you sell it still counts. Short-term gains, once netted, are simply added to your ordinary income and taxed at the graduated rates. A net capital gain, meaning net long-term gains above net short-term losses, can be taxed at lower rates.
+
+## The long-term rates are 0%, 15%, and 20%
+
+Which rate applies to a net capital gain depends on your overall taxable income and your filing status, and some or all of it may be taxed at 0%. Most people pay 15% or less on the bulk of their net capital gain. A rate of 20% applies to the part of the gain that sits above the income level where 15% stops. The IRS states the income thresholds for each filing status for the tax year it covers, and this page does not list them.
+
+## Some gains are taxed above 20%
+
+Collectibles gains are taxed at a maximum of {fact:us_cg_collectibles}, and so is the taxable part of a gain on qualified small business stock under section 1202. The ceiling for unrecaptured section 1250 gain, which arises on sales of real property, is {fact:us_cg_1250}.
+
+## Losses and the net investment income tax
+
+If your capital losses exceed your gains, you can deduct the lesser of {fact:us_cg_loss_limit} or your net loss, or {fact:us_cg_loss_limit_mfs} if you are married filing separately. Anything above that carries forward.
+
+Higher-income taxpayers can also owe the net investment income tax of {fact:us_cg_niit_rate} on investment income, including net gains from selling stocks, bonds, mutual funds, and real estate. It applies when modified adjusted gross income exceeds {fact:us_cg_niit_single} for single filers and heads of household, {fact:us_cg_niit_joint} for married couples filing jointly, or {fact:us_cg_niit_mfs} for married people filing separately. Wages and the excluded gain from selling a main home are not part of it.
+",US Capital Gains Tax Rates and Rules,"Long-term gains can be taxed at lower rates. See the holding period, loss limit, higher rates for some assets, and the {fact:us_cg_niit_rate} net investment income tax.",,
