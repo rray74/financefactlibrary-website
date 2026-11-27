@@ -1,0 +1,16 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,pensions,state-pension,state-pension-age,"State Pension Age","What State Pension age is for each date of birth, how it rises in monthly steps, how it can change, and how it differs from other pension ages.","## Date of birth decides State Pension age
+
+State Pension age marks the first point at which a person can start receiving their State Pension. For anyone born between 6 October 1954 and 5 April 1960 it is {fact:spa_born_before_april_1960}, reached on the birthday of that age. People born from 6 March 1961, up to 5 April 1977, reach {fact:spa_born_from_march_1961}. Those born earlier than October 1954 reached State Pension age younger, and for women born before December 1953 the dates were different from men's.
+
+In between, the rise is gradual. For a birthday between 6 April 1960 and 5 March 1961, the age is {fact:spa_born_before_april_1960} plus a number of months that goes up by one for every month later in that period. Births from 6 April to 5 May 1960 give {fact:spa_born_before_april_1960} and 1 month, births from 6 May to 5 June 1960 give {fact:spa_born_before_april_1960} and 2 months, and so on, up to {fact:spa_born_before_april_1960} and 11 months for births from 6 February to 5 March 1961.
+
+A further rise, to 68, is set in law under the Pensions Act 2007, phased in between 2044 and 2046. People born between 6 April 1977 and 5 April 1978 reach State Pension age at {fact:spa_born_from_march_1961} plus a number of months, and those born from 6 April 1978 reach it on their 68th birthday.
+
+## It is reviewed regularly, so the ages can change
+
+The law requires State Pension age to be looked at again within every 5-year period. Any change has to be approved by Parliament before it becomes law, and the timetable for the rise to 68 is the part most open to change. The State Pension age checker on GOV.UK works from the law as it stands and warns that its results may change after a review.
+
+## It is not always the same age as other milestones
+
+State Pension age may differ from the age at which a workplace or personal pension can be taken, which is covered on the [Minimum Pension Age](/uk/pensions/private-pensions/minimum-pension-age/) page. The GOV.UK checker also gives the Pension Credit qualifying age and the date free bus travel begins. Nobody has to stop working at State Pension age, because the compulsory retirement age of 65 has gone. How much the State Pension pays is covered on the [State Pension amount](/uk/pensions/state-pension/state-pension-amount/) page.","State Pension Age by Date of Birth","State Pension age is {fact:spa_born_before_april_1960} for those born 6 October 1954 to 5 April 1960 and {fact:spa_born_from_march_1961} from 6 March 1961, with monthly steps between them.",,"2026-11-27 11:30:20"
