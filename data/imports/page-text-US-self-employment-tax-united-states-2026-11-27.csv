@@ -1,0 +1,27 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,tax,payroll-taxes,self-employment-tax-united-states,Self-Employment Tax,"Who pays self-employment tax, the two parts of the rate, how much income it applies to, and the deduction for half of the tax.","## Who counts as self-employed
+
+The tax reaches sole proprietors (independent contractors included), partners in a partnership (including members of multi-member LLCs taxed that way), and anyone else running their own business. Single-member LLCs that the income tax disregards fall under it as well, and so do members of a qualified joint venture. As a rule you owe it once your net earnings from self-employment reach {fact:us_se_min}.
+
+## The rate is the sum of two taxes
+
+By law the rate is built from two pieces, {fact:us_se_ss} toward Social Security and {fact:us_se_medicare} toward Medicare. Unlike an employee, you pay both the employer's and the employee's shares.
+
+## What the rate is applied to
+
+Not all of your net earnings are taxed: the base is generally {fact:us_se_net_pct} of them. Net earnings are your business income less the ordinary and necessary expenses of running it.
+
+The law caps the earnings subject to the Social Security part at the Social Security wage base, which is {fact:us_fica_wage_base} for {tax_year}. That cap changes every year. All net earnings are subject to the Medicare part, and you can owe tax even if you already collect Social Security benefits.
+
+## The Additional Medicare Tax
+
+Self-employment income above a threshold also bears the Additional Medicare Tax. The threshold on your return is {fact:us_fica_addl_joint} for married couples filing jointly, {fact:us_fica_addl_mfs} for married people filing separately, and {fact:us_fica_addl_employer} for everyone else.
+
+## Reporting and the deduction for half
+
+You work out the tax on Schedule SE and attach it to your Form 1040. Half of the self-employment tax is deductible when you arrive at adjusted gross income. Schedule SE is also what the Social Security Administration relies on when it works out your benefits.
+
+## Optional methods and churches
+
+If you had a loss or a small amount of income from self-employment, one of two optional methods for computing net earnings may help, and it can give you credit toward Social Security coverage. Employees of certain churches that elected exemption from Social Security and Medicare taxes have separate rules.
+",Self-Employment Tax: Rates and Rules,"Self-employment tax is {fact:us_se_ss} for Social Security and {fact:us_se_medicare} for Medicare. See who pays it, the {fact:us_se_net_pct} rule, and the deduction for half of the tax.",,
