@@ -1,0 +1,18 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,pensions,pension-allowances,pension-annual-allowance,"Pension Annual Allowance and Lump Sum Limits","How much can be saved into pensions each tax year before a tax charge, how the limit falls for high earners and after flexible access, and the caps on tax-free lump sums.","## The annual allowance covers saving into all your pensions, whoever pays in
+
+The annual allowance of {fact:pension_annual_allowance} is the most that can be saved across all of someone's private pensions in a tax year before a tax charge arises. In a defined contribution scheme every payment counts, whether from the member, an employer or anyone else. In a defined benefit scheme, what counts is the rise in the pension's value over the year. Tax is due only on the amount over the limit.
+
+Unused allowance from the previous 3 tax years may be carried forward, but only once all of the allowance for the current tax year has been used. A pension provider sends a statement when a scheme goes over, and anyone in several schemes needs a statement from each. A charge has to be declared on the Self Assessment return, in its pension savings tax charges section, and the member or the provider may settle it. Tax relief on contributions can still be claimed alongside a charge. No charge arises for someone who has retired and taken all their pensions because of serious ill health, or who has died.
+
+## The allowance falls after flexible access and for the highest earners
+
+A lower **money purchase annual allowance** of {fact:pension_mpaa} replaces the standard one once someone has flexibly taken money from a defined contribution pension. Examples include drawing from a flexi-access drawdown fund, whether as cash or as a short-term annuity, or taking an uncrystallised funds pension lump sum, which is cash drawn straight from a pension pot.
+
+A high income tapers the allowance, but only when two tests are both met: threshold income above {fact:pension_taper_threshold_income} and adjusted income above {fact:pension_taper_adjusted_income}. The allowance then falls by £1 for every £2 of adjusted income over the second figure, down to a floor of {fact:pension_taper_minimum}.
+
+## Two allowances cap the tax-free lump sums
+
+Up to 25% of the value built up in a pension can usually be taken tax-free, but the lump sum allowance of {fact:pension_lump_sum_allowance} caps the total across a lifetime. A separate lump sum and death benefit allowance of {fact:pension_lsdba} covers lump sums for serious ill health and certain death benefits paid to beneficiaries, and everything that counts towards the first allowance also counts towards this one.
+
+Amounts above an allowance are taxed as income, with the pension provider deducting the tax before paying out. Usage has to be added up across all the schemes a person belongs to, so it is the provider or providers who can say how much has been used. People who protected their lifetime allowance before it was abolished may have a higher lump sum allowance.","Pension Annual Allowance {tax_year}: {fact:pension_annual_allowance}","The pension annual allowance is {fact:pension_annual_allowance}, lower for high earners and after flexible access. The tax-free lump sum caps and what counts towards them.",,"2026-11-27 11:30:33"
