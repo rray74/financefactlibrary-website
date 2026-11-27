@@ -1,0 +1,21 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,mortgages-and-property,loan-limits,conforming-loan-limits,Conforming Loan Limits,"What the conforming loan limit is, how FHFA sets the baseline each year, and how higher limits apply in high-cost areas.","## What the conforming loan limit is
+
+By law, Fannie Mae and Freddie Mac can only buy single-family mortgages that started below a set balance. That amount is the conforming loan limit. Loans above it are called jumbo loans. The Federal Housing Finance Agency (FHFA) sets the limit each year.
+
+## The baseline for {tax_year}
+
+For a one-unit property in most of the country, the limit for {tax_year} is {fact:us_cll_base}. Under the Housing and Economic Recovery Act of 2008 (HERA), FHFA must move the baseline every year in line with average US home prices. FHFA measures that with its House Price Index, comparing the third quarter of one year with the third quarter of the next, and moves the baseline by the same percentage.
+
+## Higher limits in high-cost areas
+
+If multiplying the local median home value by 115 percent gives more than the baseline, a higher limit applies. HERA scales the limit in costly areas with the median home value there, up to a ceiling of 150 percent of the baseline. For a one-unit property, the ceiling is {fact:us_cll_ceiling}.
+
+## Alaska, Hawaii, Guam, and the US Virgin Islands
+
+Special statutory provisions set different limits in these four areas. The baseline there is {fact:us_cll_ak_base} and the ceiling is {fact:us_cll_ak_ceiling} for one-unit properties.
+
+## Where to look up a county
+
+FHFA publishes the limits for every county and county equivalent, along with a map, a description of how the limits are set, and a list of frequently asked questions. FHFA keeps the limits for earlier years on the same page.
+",Conforming Loan Limit {tax_year}: {fact:us_cll_base},"The baseline conforming loan limit for {tax_year} is {fact:us_cll_base} for one-unit properties, up to {fact:us_cll_ceiling} in high-cost areas. See how the FHFA sets it.",,
