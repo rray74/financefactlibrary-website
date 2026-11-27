@@ -1,0 +1,21 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,savings-and-investments,health-accounts,hsa-contribution-limits,HSA Contribution Limits,"How health savings accounts work, the annual contribution limits for self-only and family coverage, and what makes a health plan a high deductible plan.","## What an HSA is
+
+An HSA is a medical savings account that you open through a qualified HSA trustee. Legally it is a tax-exempt trust or custodial account, and it is used to pay for, or repay you for, certain health care costs. A bank, an insurance company, or another trustee approved by the IRS can serve as the trustee, and it can be different from your health plan provider. Only an eligible individual can contribute. No IRS sign-off is needed to open one.
+
+## How an HSA is taxed
+
+Money you contribute personally, or that comes from anyone other than your employer, is deductible whether or not you itemize. What your employer puts in, including through a cafeteria plan, may not count as part of your gross income. Money you put in stays there until you spend it. Earnings are not taxed, and a withdrawal used for qualified medical expenses can be tax free as well. You keep the account if you switch employers or leave the workforce.
+
+## The contribution limits for {tax_year}
+
+The annual limit on HSA deductions for {tax_year} is {fact:us_hsa_self} for someone with self-only coverage under a high deductible health plan and {fact:us_hsa_family} for someone with family coverage. These come from a revenue procedure that the IRS published in an Internal Revenue Bulletin.
+
+## What counts as a high deductible health plan
+
+To contribute, you need to be covered by a high deductible health plan. For {tax_year}, that means a plan with an annual deductible of at least {fact:us_hsa_ded_self} for self-only coverage or {fact:us_hsa_ded_family} for family coverage. Out-of-pocket spending under the plan in a year, counting deductibles, copayments, and similar amounts but leaving out premiums, has to stay at or under {fact:us_hsa_oop_self} for self-only coverage or {fact:us_hsa_oop_family} for family coverage.
+
+## Other items in the same procedure
+
+The revenue procedure also sets a maximum monthly fee limit for direct primary care service arrangements and the maximum amount that can be newly made available for excepted benefit health reimbursement arrangements. Neither is covered here.
+",HSA Contribution Limits {tax_year},HSA contribution limits for {tax_year} are {fact:us_hsa_self} for self-only coverage and {fact:us_hsa_family} for family coverage. See the HDHP deductible and out-of-pocket rules.,,
