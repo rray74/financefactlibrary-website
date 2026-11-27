@@ -1,0 +1,19 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,savings-and-investments,retirement-accounts,ira-contribution-limits,IRA Contribution Limits,"How much you can put into IRAs, the catch-up amount for people over 50, and the income ranges that limit Roth contributions and traditional IRA deductions.","## One limit covers all your IRAs
+
+The IRA contribution limit is {fact:us_ira_limit} for {tax_year}, and it applies to your traditional and Roth IRAs added together, not to each one. People aged 50 and over can add a catch-up contribution of {fact:us_ira_catchup}, a figure that SECURE 2.0 made subject to an annual cost-of-living adjustment.
+
+## Traditional IRAs: your deduction depends on work coverage
+
+Whether a traditional IRA contribution is deductible depends on certain conditions. What matters is whether you or your spouse took part in a workplace retirement plan during the year. If neither of you was, the phase-outs do not apply and the deduction is not reduced because of your income.
+
+If you or your spouse was covered, the deduction shrinks as income rises and disappears at the top of a range. The range for a single taxpayer covered at work is {fact:us_ira_td_s_lo} to {fact:us_ira_td_s_hi}. For a married couple filing jointly where the contributing spouse is covered at work, it is {fact:us_ira_td_j_lo} to {fact:us_ira_td_j_hi}. If you are not covered at work but your spouse is, the range is {fact:us_ira_td_sp_lo} to {fact:us_ira_td_sp_hi}. A married person filing separately who is covered at work has a range that is not adjusted for inflation, from $0 to $10,000.
+
+## Roth IRAs: income limits on contributing
+
+Whether you can contribute to a Roth IRA depends on your income. The reduction range is {fact:us_ira_roth_s_lo} to {fact:us_ira_roth_s_hi} for single taxpayers and heads of household, and {fact:us_ira_roth_j_lo} to {fact:us_ira_roth_j_hi} for married couples filing jointly. For a married person filing separately, the range also stays at $0 to $10,000.
+
+## Ranges rise and fall year to year
+
+Most of these figures are adjusted each year for inflation. The separate-return ranges are the exception, because they are not adjusted. Saver's Credit and SIMPLE account limits are in the notice too.
+",IRA Contribution Limits {tax_year},"The IRA contribution limit is {fact:us_ira_limit} for {tax_year}, with a catch-up for ages 50 and over. See the income phase-outs for Roth IRAs and deductions.",,
