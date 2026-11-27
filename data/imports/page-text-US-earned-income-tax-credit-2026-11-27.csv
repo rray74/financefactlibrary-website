@@ -1,0 +1,21 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,work-and-benefits,tax-credits,earned-income-tax-credit,Earned Income Tax Credit,"How the Earned Income Tax Credit works, the maximum credit by number of children, the income limits, and what counts as earned income.","## What the credit is
+
+The Earned Income Tax Credit (EITC) helps people who earn income from work. How much you can get depends on your income, your filing status, and how many qualifying children you claim. The IRS publishes tables for each tax year that show the maximum credit, the adjusted gross income (AGI) limit, and the investment income limit.
+
+## The maximum credit for tax year {tax_year}
+
+For tax year {tax_year}, the maximum credit is {fact:us_eitc_max0} with no qualifying children, {fact:us_eitc_max1} with one, {fact:us_eitc_max2} with two, and {fact:us_eitc_max3} with three or more. Your income has to be below the limit for your situation. The AGI limits run from {fact:us_eitc_agi0_s} for a single filer with no children up to {fact:us_eitc_agi3_j} for a married couple filing jointly with three or more children. Your investment income must also be {fact:us_eitc_inv} or less.
+
+## Earned income is wages and business income
+
+Earned income covers everything you are paid for working, for an employer or for yourself. That includes wages, salaries, and tips, the income from gig work such as driving or selling goods online, money made from your own business or farm, and household employee wages. The IRS says to include the full amount of tip and overtime income when you work out earned income for the EITC, even if part of it is deductible.
+
+## What is not earned income
+
+Interest, dividends, pensions, Social Security, unemployment benefits, workers' compensation, veterans' benefits, alimony, child support, and welfare benefits are not earned income. Neither is pay for work done while an inmate in a penal institution.
+
+## Which year the table covers
+
+The IRS tables show tax year {tax_year}, which is for returns filed in 2027. The IRS has announced that the maximum credit for tax year 2027 with three or more qualifying children rises, and that a revenue procedure holds the full table of credit amounts, income thresholds, and phase-outs for the later year.
+",Earned Income Tax Credit {tax_year}: Limits,The maximum Earned Income Tax Credit for {tax_year} is {fact:us_eitc_max3} with three or more children. See the income limits and the investment income cap for the year.,,
