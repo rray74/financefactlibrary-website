@@ -1,0 +1,29 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,work-and-benefits,pay-and-leave,overtime-pay-united-states,Overtime Pay,"When federal law requires overtime, how the workweek is counted, which employees are exempt, and the salary tests for the executive, administrative, and professional exemptions.","## Overtime starts after {fact:us_ot_hours} in a workweek
+
+The overtime rules come from the Fair Labor Standards Act (FLSA). If you are covered by the Act and not exempt, any hours you work beyond {fact:us_ot_hours} in a workweek must be paid at no less than one and one-half times your regular rate. The Act puts no cap on how many hours someone aged 16 or older may work in a week.
+
+## How the workweek is counted
+
+Overtime is measured by the workweek: seven back-to-back 24-hour periods, 168 hours in all, that repeat on a fixed schedule. It can start on any day and at any hour, so it does not have to match the calendar week, and an employer can give different employees different workweeks. Hours cannot be averaged across two or more weeks. As a rule, the payday for that pay period is also when the overtime earned in the period is due.
+
+## Some extra pay is not required by federal law
+
+The FLSA does not call for overtime just because work falls on a Saturday, a Sunday, a holiday, or a regular day of rest, unless the hours worked also go past the weekly threshold. Nor does federal law demand a premium for working nights or weekends, or double time. Whether to pay one is left to agreement between the employer and the employee. Bonuses generally count toward the regular rate used to work out overtime, with some exceptions.
+
+## Exempt employees are not owed overtime
+
+Executive, administrative, professional, and outside sales employees can be exempt, as can certain computer employees. A job title does not decide it. Qualifying generally takes two things: passing duties tests, and being paid a salary of at least {fact:us_ot_salary_week} a week. Computer employees paid by the hour can qualify at {fact:us_ot_computer_hourly} an hour instead. Up to 10 percent of the salary level can be met with nondiscretionary bonuses and incentive payments, as long as they are paid annually or more often.
+
+Highly compensated employees doing office or non-manual work are exempt if they earn at least {fact:us_ot_hce} a year in total, including the weekly salary level on a salary or fee basis, and regularly perform at least one duty of an exempt employee.
+
+Two groups are not covered by these exemptions. Manual laborers in production, maintenance, construction, and similar jobs stay eligible for overtime however much they earn. So do police, firefighters, paramedics, and similar first responders, whatever their rank or pay.
+
+## The salary levels have been in dispute
+
+A 2024 rule would have changed the salary levels, but a court vacated it. The Department of Labor (DOL) said on May 14, 2026 that it had published a technical amendment taking the 2024 rule's wording out of the Code of Federal Regulations and republishing the 2019 regulations. Those are the regulations that set the weekly salary level and the highly compensated threshold shown here.
+
+## Other laws can give you more
+
+The FLSA is a floor. Better terms are allowed, but the protections cannot be given up or cut back. Employers also have to follow any federal, state, or local law that sets a higher minimum wage or a shorter maximum workweek, and an employer or a collective bargaining agreement can offer more than the FLSA does. Check your state labor department for state rules.
+",US Overtime Pay: Over {fact:us_ot_hours} a Week,"Covered employees get at least time and a half for hours over {fact:us_ot_hours} a week. See who is exempt, the salary tests, and how state laws can go further.",,
