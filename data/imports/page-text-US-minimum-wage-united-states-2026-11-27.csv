@@ -1,0 +1,35 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,work-and-benefits,pay-and-leave,minimum-wage-united-states,Federal Minimum Wage,"The federal minimum wage, which workers it covers, how it works with state and local rates, and the lower rate allowed for young workers at the start of a job.","## The federal minimum wage is {fact:us_mw_federal} an hour
+
+Pay floors for most American workers start with a federal law, the Fair Labor Standards Act (FLSA). A covered nonexempt worker must be paid at least {fact:us_mw_federal} an hour, a rate that took effect on July 24, 2009. Workers for private employers are included, as are employees of the federal government and of state and local governments.
+
+Not every worker is covered, and not every covered worker is nonexempt. The Department of Labor (DOL) publishes guidance on who is covered, because the answer depends on the details of the job and the employer.
+
+## Your state's minimum wage may be higher
+
+Plenty of states pass minimum wage laws of their own. A state law can give workers more than the federal one does, and an employer has to follow both.
+
+The DOL's state table shows how this plays out:
+
+- A state with no minimum wage law of its own leaves the federal rate as the one that employers covered by the FLSA must pay.
+- A few states point to the federal rate in their own law, so it takes over if it is higher than the state figure.
+- Some cities and counties set rates above their state's, and the table leaves these out.
+
+So the rate that applies to a particular job depends on where the work is done.
+
+## States can treat minors, students, and trainees differently
+
+A state may set lower rates for minors or students, leave them out of its law altogether, or allow a training wage for workers just starting a job. These rules vary by state, so check the state's own labor department for the details.
+
+## A lower rate for young workers in the first 90 days
+
+An employer may pay a worker under age 20 as little as {fact:us_mw_youth} an hour during the first 90 consecutive calendar days on the job. This applies only where hiring the worker does not displace other workers.
+
+## Tipped employees
+
+Employers that meet certain conditions can count part of a tipped worker's tips toward their minimum wage obligation. This applies to employees in jobs where they customarily and regularly receive tips.
+
+## Territories
+
+The rules for American Samoa and the Northern Mariana Islands differ and are not covered on this page.
+",US Federal Minimum Wage: {fact:us_mw_federal} an Hour,"The federal minimum wage is {fact:us_mw_federal} an hour. See which workers it covers, how state rates work alongside it, and the lower youth rate for workers under 20.",,

@@ -103,7 +103,7 @@ Kept up to date as the work goes. Last updated 27 November 2026.
 - [x] Migrations 038 (US row, inactive, 51 regions) and 039 (37 source rows) written. Applied on MAMP 27 November: US row inactive, 51 regions. Not yet on the server.
 - [x] `docs/house-style/us.md`, modelled on `ca.md`.
 - [x] `check-source-access.php --country=US` on the Mac: 37 of 37 read (27 November). Server run still to do (ask first).
-- [ ] Page 17 (Minimum wage) first, as the reference page.
+- [x] Page 17 (Minimum wage) first, as the reference page: built and approved 27 November 2026 (see the build log).
 - [ ] Batches, preflight, a launch migration (041 or the next free number), the drip.
 
 ## Decisions (all settled 27 November 2026 as recommended; the options are kept for the record)
@@ -346,3 +346,4 @@ These resolved to the same page on 27 November 2026 (same character count), so a
 | Page | Status |
 |---|---|
 | Planning, 27 November 2026 | Plan written. About 100 addresses tested from the Mac (VPN off or UK: the exit address showed GB). IRS, SSA, Federal Reserve, FDIC, CMS, Medicare, FHFA and most DOL pages read. Failures: DOL federal minimum wage and several `whd` pages (403), SSA `maxbenefit` and `maxfamily` (403), `studentaid.gov` (empty without JavaScript), `treasurydirect.gov` and `dir.ca.gov` (certificate error in MAMP's PHP), `ed.gov` (403). Found: the IRS rates page shows 2025, the 401(k) page shows 2026, and 2027 figures are already out from the IRS, SSA, CMS and FHFA, so the launch is planned for the first week of January 2027. No figure entered anywhere. |
+| 17 Federal minimum wage (reference page), 27 November 2026 | `data/imports/us-01-minimum-wage.csv`: two cards read live from the DOL (federal rate effective July 24, 2009 with the earlier rate as previous, and the youth rate for workers under 20 in their first 90 days, from the DOL minimum wage topic page). Three reference sources (state table, FLSA overview, history page). Text 386 words, no close copies, only the fixed legal figure notes. Tipped cash wage left out: the DOL fact sheets that state it answer 403. Subject 118 on MAMP, hidden draft. Approved by Richard and committed. Not yet pushed or on the server |

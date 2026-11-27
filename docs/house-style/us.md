@@ -67,3 +67,17 @@ added once the first page (Minimum wage) is approved.
 - The Federal Reserve's federal funds target range and any other rate checked every 42 days or less. See core.md, section 2.
 - Call it the federal funds rate, or the target range for the federal funds rate, as the Fed does. The Federal Open Market Committee (FOMC)
   sets it at scheduled meetings: read the committee's name and the meeting calendar on the Fed's own page before writing them down.
+
+## Reference page
+
+- The first page, Federal Minimum Wage (`minimum-wage-united-states`), was approved on 27 November 2026. What it settled: a page from two
+  card sources (the DOL minimum wage overview and the DOL minimum wage topic page for the youth rate) plus three reference sources (the
+  state table, the FLSA overview and the history page) can be about 390 words in six sections. The federal rate is not indexed, so its
+  card has no `tax_year` and the title carries no year. Title: US Federal Minimum Wage: {fact:us_mw_federal} an Hour.
+- The text never types the rate or the youth rate (placeholders). Typed legal figures (age 20, 90 days, the 24 in the effective date)
+  show as one triage note.
+- Many DOL fact sheets and `whd/state/...` pages answer 403 to the fetcher, so claims rest on the overview, state table and history pages.
+  Do not state the tipped cash wage until a readable DOL page states it. The text says only that a tip credit exists.
+- Official guidance is short and formulaic: expect to restructure sentences, not swap words, and to rerun the triage several times.
+  Stock phrases ("Fair Labor Standards Act sets the federal minimum wage") score as close copies, so reword the sentence's order.
+- The page covers the 50 states and DC and says in one line that American Samoa and the Northern Mariana Islands differ.
