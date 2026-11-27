@@ -82,8 +82,11 @@ The old `ff-website` key is retired.
 - Migrations: use the next free number in `sql/migrations`.
 - Code changes: add explanatory comments where code changes.
 - Design: any change to how the site looks (classes, theme, components, fonts, layout) also updates `docs/design-style.md` in
-  the same commit, so the guide is never behind the code. If they disagree, the code wins and the guide is fixed. The
-  restyle is run from `docs/restyle-plan.md` (daisyUI components, fully responsive, light and dark mode).
+  the same commit, so the guide is never behind the code. If they disagree, the code wins and the guide is fixed. The site
+  is daisyUI (light and dark themes, fully responsive; restyle done 25 to 27 Nov 2026, `docs/restyle-plan.md`). Use daisyUI
+  components and theme tokens only, never hex colours. After changing a class in a template or `src/input.css`, run
+  `npm run build:css` (Node is under nvm: `~/.nvm/versions/node/v24.18.0/bin`) and commit `public/assets/css/tailwind.css`.
+  Check the page at 320 to 1440px in both themes (`docs/design-style.md`, "Checks").
 - After any change, show each file's full path from the project root, say whether
   it is new or a replacement, in a table.
 - Cost awareness: use the right `AI_KEY_PURPOSE`; run free checks (close-copy

@@ -5,8 +5,9 @@ tone) see `docs/house-style/`. Written 25 November 2026 from the live code: `src
 `includes/header.php`, `includes/footer.php`, `public/fact.php` and `renderExplanation()` in `includes/functions.php`.
 If this file and the code disagree, the code wins: fix this file.
 
-**Restyle in progress (from 25 November 2026):** the public site is now on daisyUI with light and dark themes (Steps 1 to 5
-of `docs/restyle-plan.md`) and the admin editor (Step 6). Step 7 (final checks) is still to do. This guide is updated in the same commit as each restyle step.
+**Restyle complete (25 to 27 November 2026, `docs/restyle-plan.md`):** the public site and the admin editor are on daisyUI
+with light and dark themes, checked as listed under "Checks" below. From now on this guide is updated in the same commit as
+any change to how the site looks.
 
 ## Principles
 
@@ -39,7 +40,7 @@ Tailwind CSS 4 plus daisyUI 5, compiled by the Tailwind CLI.
 - **No `data-theme` on `<html>`** by default: with none set, daisyUI follows the device. The script in `<head>` of
   `includes/header.php` adds `data-theme="light"` or `"dark"` only when the visitor has chosen one (stored in `localStorage`
   under `ffl-theme`, in try/catch, applied before first paint so there is no flash). Any button with the attribute
-  `data-theme-toggle` switches to the other theme and keeps its label and `aria-pressed` right. Don't hard-code a
+  `data-theme-toggle` switches to the other theme and keeps its accessible name (`aria-label`, "Switch to dark mode") right. Don't hard-code a
   `data-theme` anywhere else.
 - **Changing the palette later:** add an override block in `src/input.css` named `light` (and one named `dark`) using
   `@plugin "daisyui/theme"`, set only the tokens that change (primary, secondary and so on), then rebuild. Templates need no
@@ -166,7 +167,7 @@ component scrolls sideways inside itself if the trail is too wide for a phone. D
 Contents, in this order: label (`text-sm opacity-80`) with an optional region badge, the value
 (`font-display text-3xl font-semibold tabular-nums break-words`), an optional context line (`text-sm opacity-80`), the source
 line (`text-xs opacity-70`: linked source name, "since" date, "checked" date, separated by `&middot;`), then an optional
-"More on ... &rarr;" link (`link link-primary text-xs`). The border is `base-content` at 20% so it shows in both themes.
+"More on ... &rarr;" link (`link text-xs`). The border is `base-content` at 20% so it shows in both themes.
 Use `tabular-nums` on every figure that should line up. The old `.fact-card` class has been deleted from the CSS.
 
 ### Region badge
@@ -174,7 +175,9 @@ Use `tabular-nums` on every figure that should line up. The old `.fact-card` cla
 
 ### Links
 *Restyled in Step 4.* daisyUI `link`. Source links and other inline links: `link`. Links that lead to another page of the
-site, including those in the explanation text: `link link-primary`. Navigation links have no underline (menu items).
+site, including those in the explanation text: plain `link` too. Don't use `link-primary` for text links: the stock dark
+primary is only 3.4:1 against the dark page (below the 4.5:1 AA minimum), and a link that takes the text colour with an
+underline passes whatever the palette becomes. Navigation links have no underline (menu items).
 External source links open in a new tab with `target="_blank" rel="noopener"`.
 
 ### Tables (worked examples)
@@ -190,7 +193,7 @@ old and new values in `font-semibold tabular-nums`. Don't add `timeline-snap-ico
 ### Explanation text
 *Restyled in Step 4.* Built in PHP by `renderExplanation()` in `includes/functions.php`, so classes are set there, not in a
 template: paragraphs `mb-4`, h2 `font-display text-2xl font-semibold mt-8 mb-3`, h3 `font-display text-xl font-semibold mt-6
-mb-2`, lists `list-disc` or `list-decimal pl-6 mb-4 space-y-1`, links `link link-primary`. Wrapped in `max-w-2xl
+mb-2`, lists `list-disc` or `list-decimal pl-6 mb-4 space-y-1`, links `link`. Wrapped in `max-w-2xl
 leading-relaxed`. No images, callouts or tables inside explanations.
 
 ### Preview banner (admin and previews only)
@@ -220,7 +223,7 @@ It's neutral text, not a brand colour, so it keeps its contrast whatever the pal
 ### Long-text pages (About, How we check, Disclaimer, Privacy)
 *Restyled in Step 5.* One `article.max-w-2xl`: h1 `font-display text-4xl font-semibold mb-6`, a `text-lg opacity-80` lead, h2
 `font-display text-2xl font-semibold mb-3`, paragraphs `mb-4` or `mb-8` before the next heading, lists `list-disc pl-6
-space-y-1`, links `link link-primary`, and a `text-sm opacity-70` "Last updated" line. The live totals on How we check are a
+space-y-1`, links `link`, and a `text-sm opacity-70` "Last updated" line. The live totals on How we check are a
 daisyUI `stats stats-vertical sm:stats-horizontal` (stacked on a phone), and the publisher list is a daisyUI `list` with
 `list-row` and `list-col-grow`.
 
@@ -285,6 +288,24 @@ and again after any palette override.*
 - Navigation, breadcrumbs, tables and headings use real elements (`<nav aria-label>`, `<table>`, `<h1>` to `<h3>`), and
   pages carry breadcrumb JSON-LD.
 - The site has no photos or illustrations. Add alt text if any are ever added.
+
+## Checks
+
+Run these before shipping any visual change. Last full run: 27 November 2026, 21 pages (public and admin) at 320, 375, 768,
+1024 and 1440px, with contrast measured in both themes at 320 and 1024px.
+
+- **No horizontal page scroll** at any of those widths. Result: none on any page.
+- **Contrast** of every piece of text against its real background, in light and dark (WCAG AA: 4.5:1, or 3:1 for large
+  text). Result: all public text passes except the stock-palette items listed below.
+- **Tap targets** of block-level links and buttons at 375px on public pages are at least 40px. Result: none smaller. (Admin
+  keeps small controls, see Admin editor.)
+- **Known stock-palette failures (to fix when the palette is chosen):** the dark theme's `btn-primary` label is 4.13:1, and
+  solid `badge-error` text is 3.3:1. Both come from daisyUI's own `primary`, `error` and `-content` colours. Overriding the
+  palette (see Stack) is the fix. After any override, re-run this check.
+- Test on MAMP with real pages: a long subject page, one with regional badges, one with a wide table, the error page, and
+  the admin editor. A local admin session can be faked for testing without the real credentials by a throwaway PHP
+  `auto_prepend_file` that sets `$_SESSION['admin_user']` and `$_SESSION['admin_last_seen']`; keep it out of the repo.
+- Headless Chrome ignores window widths under about 500px, so test phone widths with a 375px or 320px `<iframe>`.
 
 ## Adding or changing design
 

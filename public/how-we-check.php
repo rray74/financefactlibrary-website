@@ -101,7 +101,7 @@ include __DIR__ . '/../includes/header.php';
     <h2 class="font-display text-2xl font-semibold mb-3">Reporting an error</h2>
     <p>
         If you think a figure is wrong or out of date, please email
-        <a href="mailto:<?= e(SITE_CONTACT_EMAIL) ?>" class="link link-primary"><?= e(SITE_CONTACT_EMAIL) ?></a>.
+        <a href="mailto:<?= e(SITE_CONTACT_EMAIL) ?>" class="link"><?= e(SITE_CONTACT_EMAIL) ?></a>.
         It will be checked against its source and corrected if needed.
     </p>
     <?php endif; ?>

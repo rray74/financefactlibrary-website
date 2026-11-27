@@ -818,7 +818,7 @@ function renderExplanationInline(string $text): string
             if ($internal || $external) {
                 // Other sites open in a new tab, like the source links on the page.
                 $attrs = $external ? ' target="_blank" rel="noopener"' : '';
-                $out .= '<a href="' . e($url) . '"' . $attrs . ' class="link link-primary">'
+                $out .= '<a href="' . e($url) . '"' . $attrs . ' class="link">'
                     . renderExplanationBold(e($m[1])) . '</a>';
                 continue;
             }

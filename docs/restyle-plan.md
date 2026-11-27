@@ -83,7 +83,7 @@ The page most visitors see, and the most components:
 - Do not change behaviour, form field names or the job and AI flows: markup and classes only. Test every form on MAMP.
 - Update `design-style.md`: add an Admin section (forms, buttons, tabs, alerts). Done.
 
-### Step 7: Docs and checks
+### Step 7: Docs and checks - DONE 27 Nov 2026 (results in `design-style.md`, Checks section)
 - Final read-through of `docs/design-style.md` against the finished site: remove every "pre-restyle" note, confirm each
   class and token it names exists in the code, and check Motion, Accessibility and "Adding or changing design".
 - Update the CLAUDE.md line if it still describes the old look.
@@ -94,7 +94,7 @@ The page most visitors see, and the most components:
   choice, and the device setting is followed on first visit.
 - Keyboard focus, and each live and hidden country.
 
-### Step 8: Ship
+### Step 8: Ship - ALREADY LIVE: other sessions' pushes (US and Canada launches) carried the restyle commits to `origin/main`, so Hostinger deployed it before this step. Check the live site (phone, light and dark, each country).
 - Commit per step, each including its `design-style.md` update (plain messages, no `Co-Authored-By`). Richard approves, then one push deploys everything.
 - After deploy, check the live site on a phone and spot-check pages in each country.
 

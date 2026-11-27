@@ -110,7 +110,7 @@ include __DIR__ . '/../includes/header.php';
 <script type="application/ld+json"><?= $breadcrumbJson ?></script>
 
 <?php // daisyUI breadcrumbs (restyle Step 3). The component scrolls sideways inside itself if the trail is too wide for a phone. ?>
-<nav class="breadcrumbs text-sm mb-2" aria-label="Breadcrumb">
+<nav class="breadcrumbs text-sm mb-2 [&_a]:inline-flex [&_a]:items-center [&_a]:min-h-11" aria-label="Breadcrumb">
     <ul>
         <li><a href="<?= e(categoryUrl($subject['country_prefix'], $subject['category_slug'])) ?>"><?= e($subject['category_name']) ?></a></li>
         <li><a href="<?= e(subcategoryUrl($subject['country_prefix'], $subject['category_slug'], $subject['subcategory_slug'])) ?>"><?= e($subject['subcategory_name']) ?></a></li>
@@ -167,7 +167,7 @@ include __DIR__ . '/../includes/header.php';
             <?php if (!$fact['is_primary'] && $fact['owner_status'] === 'published'): ?>
             <?php // Shared fact: link to the page that owns it, for readers and for internal linking. ?>
             <p class="text-xs mt-1">
-                <a href="<?= e(subjectUrlById((int) $fact['primary_subject_id'])) ?>" class="link link-primary">
+                <a href="<?= e(subjectUrlById((int) $fact['primary_subject_id'])) ?>" class="link">
                     More on <?= e($fact['owner_name']) ?> &rarr;
                 </a>
             </p>

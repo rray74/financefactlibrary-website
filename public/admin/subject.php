@@ -501,9 +501,9 @@ include __DIR__ . '/../../includes/admin-nav.php';
 
 <nav class="font-mono text-xs uppercase tracking-wide opacity-70 mb-4">
     <a href="/admin/subjects.php" class="link link-hover">Subjects</a>
-    <span class="opacity-70">/</span>
+    <span class="opacity-70" aria-hidden="true">/</span>
     <?= e($subject['category_name']) ?>
-    <span class="opacity-70">/</span>
+    <span class="opacity-70" aria-hidden="true">/</span>
     <?= e($subject['subcategory_name']) ?>
 </nav>
 
@@ -1073,7 +1073,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
             <p class="text-sm opacity-80">
                 <?= e((string) ($fact['context_override'] ?? $fact['context'] ?? '')) ?>
                 <?php if ($fact['context_override'] !== null): ?>
-                <span class="font-mono text-xs opacity-70">(this page's own context)</span>
+                <span class="font-mono text-xs opacity-80">(this page's own context)</span>
                 <?php endif; ?>
             </p>
             <p class="text-xs mt-2">

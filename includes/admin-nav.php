@@ -26,12 +26,12 @@ $adminLinks = [
 // forced light text on alerts and buttons is gone: the daisyUI theme sets those colours, in light and dark.
 ?>
 <nav class="tabs tabs-border mb-8 items-center" aria-label="Admin">
-    <span class="tab font-mono text-xs uppercase tracking-wide opacity-70 pointer-events-none">Admin</span>
+    <span class="tab font-mono text-xs uppercase tracking-wide text-base-content pointer-events-none">Admin</span>
     <?php foreach ($adminLinks as $key => [$href, $text]): ?>
-    <a href="<?= e($href) ?>" class="tab <?= $adminSection === $key ? 'tab-active font-semibold' : '' ?>"
+    <a href="<?= e($href) ?>" class="tab text-base-content <?= $adminSection === $key ? 'tab-active font-semibold' : '' ?>"
         <?= $adminSection === $key ? 'aria-current="page"' : '' ?>><?= e($text) ?></a>
     <?php endforeach; ?>
-    <a href="/admin/logout.php" class="tab ml-auto">Log out</a>
+    <a href="/admin/logout.php" class="tab text-base-content ml-auto">Log out</a>
 </nav>
 
 <?php if ($adminFlash): ?>

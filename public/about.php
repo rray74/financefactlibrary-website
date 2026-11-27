@@ -57,7 +57,7 @@ include __DIR__ . '/../includes/header.php';
         shows what has changed and when.
     </p>
     <p class="mb-8">
-        Read <a href="/how-we-check-our-figures/" class="link link-primary">how we check our figures</a>
+        Read <a href="/how-we-check-our-figures/" class="link">how we check our figures</a>
         for the full detail of how sources are chosen and figures kept up to date.
     </p>
 
@@ -79,14 +79,14 @@ include __DIR__ . '/../includes/header.php';
     <h2 class="font-display text-2xl font-semibold mb-3">Information, not advice</h2>
     <p class="mb-8">
         Finance Fact Library explains the rules and figures but can't tell you what to do in your own
-        situation. See the <a href="/disclaimer/" class="link link-primary">disclaimer</a>
+        situation. See the <a href="/disclaimer/" class="link">disclaimer</a>
         for more.
     </p>
 
     <?php if (SITE_CONTACT_EMAIL !== ''): ?>
     <h2 class="font-display text-2xl font-semibold mb-3">Spotted a mistake?</h2>
     <p>
-        Please email <a href="mailto:<?= e(SITE_CONTACT_EMAIL) ?>" class="link link-primary"><?= e(SITE_CONTACT_EMAIL) ?></a>
+        Please email <a href="mailto:<?= e(SITE_CONTACT_EMAIL) ?>" class="link"><?= e(SITE_CONTACT_EMAIL) ?></a>
         with the page and figure, and it will be checked against its source.
     </p>
     <?php endif; ?>

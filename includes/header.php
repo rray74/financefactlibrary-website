@@ -159,7 +159,7 @@ if (!empty($metaDescription)) {
                 </div>
                 <?php endif; ?>
                 <?php // Wordmark uses SITE_NAME so it always matches the <title>. ?>
-                <a href="<?= e($homeUrl) ?>" class="font-display text-lg sm:text-2xl font-semibold tracking-tight leading-tight py-2">
+                <a href="<?= e($homeUrl) ?>" class="font-display text-lg sm:text-2xl font-semibold tracking-tight leading-tight py-3">
                     <?= e(SITE_NAME) ?>
                 </a>
             </div>

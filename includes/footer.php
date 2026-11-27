@@ -8,10 +8,10 @@
         <div class="footer sm:footer-horizontal max-w-4xl mx-auto px-4 sm:px-6 py-8 text-sm gap-y-6">
             <nav aria-label="About this site">
                 <h2 class="footer-title">About this site</h2>
-                <a href="/about/" class="link link-hover py-1">About</a>
-                <a href="/how-we-check-our-figures/" class="link link-hover py-1">How we check our figures</a>
-                <a href="/disclaimer/" class="link link-hover py-1">Disclaimer</a>
-                <a href="/privacy/" class="link link-hover py-1">Privacy</a>
+                <a href="/about/" class="link link-hover py-3">About</a>
+                <a href="/how-we-check-our-figures/" class="link link-hover py-3">How we check our figures</a>
+                <a href="/disclaimer/" class="link link-hover py-3">Disclaimer</a>
+                <a href="/privacy/" class="link link-hover py-3">Privacy</a>
             </nav>
             <aside class="max-w-md">
                 <?php // SITE_NAME comes from includes/site-info.php, loaded by header.php, so the name is set in one place. ?>

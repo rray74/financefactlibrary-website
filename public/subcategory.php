@@ -24,7 +24,7 @@ include __DIR__ . '/../includes/header.php';
 ?>
 
 <?php // daisyUI breadcrumbs (restyle Step 3). The last item is the current page, so it is not a link. ?>
-<nav class="breadcrumbs text-sm mb-2" aria-label="Breadcrumb">
+<nav class="breadcrumbs text-sm mb-2 [&_a]:inline-flex [&_a]:items-center [&_a]:min-h-11" aria-label="Breadcrumb">
     <ul>
         <li><a href="<?= e(categoryUrl($country['url_prefix'], $subcategory['category_slug'])) ?>"><?= e($subcategory['category_name']) ?></a></li>
         <li><?= e($subcategory['name']) ?></li>
