@@ -1,0 +1,29 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,savings-and-investments,deposit-protection,fdic-deposit-insurance,FDIC Deposit Insurance,"What FDIC deposit insurance covers, what it does not, how ownership categories add up, and how joint and trust accounts are insured.","## Coverage is {fact:us_fdic_standard} per depositor, per bank, per ownership category
+
+If an FDIC-insured bank fails, the Federal Deposit Insurance Corporation (FDIC) pays depositors for their insured deposits. Insurance is capped at {fact:us_fdic_standard} for each depositor, at each insured bank, in each ownership category. The FDIC adds up everything you hold in one category at one bank, whatever the type of account, and insures the total up to that amount. Coverage is automatic when you open a deposit account, and it includes interest earned through the day the bank closes.
+
+## Only deposits at an insured bank are covered
+
+The insured products are the ones banks use to hold money: checking, savings, money market deposit accounts, and certificates of deposit, plus cashier's checks and money orders. Stocks, bonds, mutual funds, annuities, life insurance policies, crypto assets, and the contents of safe deposit boxes are not, even when you buy them through an insured bank. Treasury bills, bonds, and notes are not FDIC-insured either, though the US government backs them. Insurance also does not make up losses from theft or fraud, which other laws address. If an institution is not FDIC-insured, none of this applies to its deposits.
+
+## Different ownership categories are insured separately
+
+Each category has its own limit at the same bank. The main ones are single accounts, certain retirement accounts, joint accounts, and trust accounts. Employee benefit plan accounts, business accounts, and government accounts have categories of their own.
+
+Your balances at different banks are insured separately from each other. So are balances in different categories at the same bank, for example a single account and a joint account.
+
+Certain retirement accounts include traditional, Roth, SEP, and SIMPLE IRAs and some self-directed plan accounts. They are added together at the same bank, and naming a beneficiary on one does not raise the amount.
+
+## Joint accounts are counted per co-owner
+
+Each co-owner is treated separately. Whatever portion of the joint accounts at the bank belongs to that person is combined, and {fact:us_fdic_standard} of the combined amount is protected. Shares are treated as equal unless the bank's records say otherwise. A joint account can hold more than that amount and still be fully insured, as long as each owner's share is within the limit.
+
+To count as joint, an account needs living people as co-owners, equal rights to withdraw, and either signed signature cards or bank records that show the co-ownership. The last condition does not apply to certificates of deposit. If the co-owners name beneficiaries, the FDIC treats the account as a trust account instead.
+
+## Trust accounts depend on the number of beneficiaries
+
+Each trust owner is insured for {fact:us_fdic_trust_per_beneficiary} per eligible beneficiary, up to {fact:us_fdic_trust_max} once five or more are named. Since April 1, 2024, this has applied to every trust account, whenever it was opened. It covers payable-on-death accounts, formal revocable trusts, and irrevocable trusts held at the same bank.
+
+A living person, a charity, or a nonprofit that qualifies under IRS rules can be an eligible beneficiary. If you name the same beneficiary on several of your trust accounts, that person counts once. You can name more than five, but coverage never goes above the maximum.
+",FDIC Deposit Insurance: {fact:us_fdic_standard} Limit,"FDIC deposit insurance covers {fact:us_fdic_standard} per depositor, per bank, per ownership category. See what is covered, how categories work, and trust limits.",,
