@@ -97,16 +97,16 @@ Server read test (`check-source-access.php --country=US`) is **not run**: it nee
 Kept up to date as the work goes. Last updated 27 November 2026.
 
 - [x] Plan written and sources tested (27 November).
-- [ ] **Richard settles Decisions A to K** (below) and approves the page list.
-- [ ] Slug check on the local database (SQL below).
-- [ ] `FACT_SOURCE_ALLOWLIST`: eight domains (approval first, a code change).
-- [ ] Migrations 038 (US row, inactive, 51 regions) and 039 (source rows). Test on MAMP.
-- [ ] `docs/house-style/us.md`, modelled on `ca.md`.
-- [ ] `check-source-access.php --country=US` on the Mac, then the server (ask first).
+- [x] **Decisions A to K settled (27 November, Richard: "A-K yes, fine, go ahead").** All as recommended.
+- [x] Slug check on the local database: 0 collisions (27 November).
+- [x] `FACT_SOURCE_ALLOWLIST`: eight domains added in `includes/fact-writer.php` (syntax checked).
+- [x] Migrations 038 (US row, inactive, 51 regions) and 039 (37 source rows) written. Applied on MAMP 27 November: US row inactive, 51 regions. Not yet on the server.
+- [x] `docs/house-style/us.md`, modelled on `ca.md`.
+- [x] `check-source-access.php --country=US` on the Mac: 37 of 37 read (27 November). Server run still to do (ask first).
 - [ ] Page 17 (Minimum wage) first, as the reference page.
 - [ ] Batches, preflight, a launch migration (041 or the next free number), the drip.
 
-## Decisions waiting (recommendation first)
+## Decisions (all settled 27 November 2026 as recommended; the options are kept for the record)
 
 **A. The state layer, and which states launch.** Options:
 1. **Recommended: add 51 sub-jurisdiction rows (50 states and DC, codes `US-AL` to `US-WY`, `US-DC`, ISO 3166-2, as `CA-ON` and `AU-NSW` did) in migration 038. No state gets its own page at launch.** Federal pages carry one sentence where a state's rule differs ("your state may set a higher

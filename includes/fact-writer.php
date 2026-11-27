@@ -84,6 +84,23 @@ const FACT_SOURCE_ALLOWLIST = [
     'bankofcanada.ca'         => null,
     'cdic.ca'                 => null,
     'cmhc-schl.gc.ca'         => null,
+    // United States national bodies, added 27 Nov 2026 for the US launch (plan: docs/content-maps/us-content-map.md,
+    // decision E, approved by Richard). Each was read from the Mac on 27 Nov 2026. Each body's own domain is
+    // listed, never 'gov' as a whole, which would admit every government site. The Internal Revenue Service
+    // (tax, retirement account limits), the Social Security Administration (benefits, wage base), the Federal
+    // Reserve (the federal funds target range), the FDIC (deposit insurance), the Department of Labor (minimum
+    // wage, overtime, FMLA), CMS and medicare.gov (Medicare premiums) and the Federal Housing Finance Agency
+    // (conforming loan limits). Some dol.gov and ssa.gov pages answer 403 to the fetcher, so confirm the exact
+    // page reads before a card cites it. A state's own domain is NOT here: add it when a state page is built.
+    // Licence is NULL (not verified).
+    'irs.gov'                 => null,
+    'ssa.gov'                 => null,
+    'federalreserve.gov'      => null,
+    'fdic.gov'                => null,
+    'dol.gov'                 => null,
+    'cms.gov'                 => null,
+    'medicare.gov'            => null,
+    'fhfa.gov'                => null,
 ];
 
 /**
