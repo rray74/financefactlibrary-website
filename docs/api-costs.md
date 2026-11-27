@@ -1,6 +1,6 @@
 # AI costs and the API key setup
 
-Last updated 26 Nov 2026. Figures are from the Claude Console (Cost & spend), in UTC, which lags by up to an hour (latest reading: 26 Nov, 08:52 UTC). Costs are in US dollars.
+Last updated 27 Nov 2026. Figures are from the Claude Console (Cost & spend), in UTC, which lags by up to an hour (latest reading: 27 Nov, 10:55 UTC). Costs are in US dollars.
 
 This file explains which API key pays for what, how to check each part is wired correctly, and what the AI work has cost so far. It contains no key values: keep those only in `config/database.local.php`.
 
@@ -72,17 +72,17 @@ Expected:
 
 All six were confirmed on 12 Nov 2026.
 
-## 6. What has been spent (last 30 days, read 26 Nov 2026, 08:52 UTC)
+## 6. What has been spent (last 30 days, read 27 Nov 2026, 10:55 UTC)
 
 | Key | Total | Notes |
 |---|---|---|
 | ff-website | $13.93 | Read on 12 Nov, not re-read since. Everything before 5 Nov: building, testing and the first pages (Pension Tax Relief and VAT cost over $2 each before the loop was cut back) |
 | ffl-pages | $3.90 | Live-site page work since 5 Nov, **unchanged since 21 Nov: the last spend was 19 Nov, so Claude Code drafting is costing nothing here**. Of that, **about $0.41 was local testing** (Sonnet 4.6) billed here until the Mac's config was fixed on 12 Nov, so the page-only figure is about $3.49. No Sonnet 4.6 spend since 11 Nov |
-| ffl-sources | $3.90 | Daily source and page checks, since 5 Nov. Daily bars read off the chart: about $0.25 (20 Nov), $0.24 (21), $0.47 (22), $0.35 (23), $0.41 (24), $0.30 (25), $0.47 (26). Each of those days was 5 page checks (see section 8), so **about $0.05 to $0.09 a page, average about $0.07** |
+| ffl-sources | $4.27 | Daily source and page checks, since 5 Nov. Daily bars read off the chart: about $0.25 (20 Nov), $0.24 (21), $0.47 (22), $0.35 (23), $0.41 (24), $0.30 (25), $0.47 (26), $0.37 (27). Each of those days was 5 page checks (see section 8), so **about $0.05 to $0.09 a page, average about $0.07** |
 | ffl-multicountry | $0.30 | Two days of use, 16 and 18 Nov. Nothing since (unchanged on 24 Nov) |
 | **All keys** | **about $21.56** | Uses ff-website as read on 12 Nov |
 
-Balance: **$3.41** on 26 Nov at 08:52 UTC, but the badge had not caught up: the same reading as 25 Nov, while ffl-sources rose by $0.47 (the 26 Nov nightly check), so the real balance is probably about $2.94. Re-read it after the Console refreshes. (It was $3.41 on 25 Nov, $3.71 on 24 Nov, $4.94 on 21 Nov, $6.19 on 19 Nov, $3.38 on 12 Nov). The drop from 24 Nov to 25 Nov, $0.30, equals the rise on ffl-sources ($0.30), and the drop from 21 to 24 Nov ($1.23) equals its rise then ($1.22), so the keys account for all of the spend.
+Balance: **$2.57** on 27 Nov, 10:55 UTC. That confirms the 26 Nov estimate: the badge read $3.41 while it lagged, the true balance after the 26 Nov run was about $2.94, and the 27 Nov run ($0.37, about $0.07 a page) took it to $2.57. (It was $3.41 on 25 Nov, $3.71 on 24 Nov, $4.94 on 21 Nov, $6.19 on 19 Nov, $3.38 on 12 Nov). The drop from 24 Nov to 25 Nov, $0.30, equals the rise on ffl-sources ($0.30), and the drop from 21 to 24 Nov ($1.23) equals its rise then ($1.22), so the keys account for all of the spend.
 
 ## 7. Cost of one page
 
@@ -152,4 +152,4 @@ If nightly drafting is resumed, set `DRAFTS_PER_NIGHT` to the number of pages ac
 - For Cash ISA, Average Savings Rates and Buy-to-Let, the job estimates were not all recorded. Note each page's "Estimated cost" line when it finishes.
 - Update the stale "about ten minutes" comment in `run-polish-jobs.php`.
 - Optional: a separate Console workspace with a monthly spend limit for the multi-country key.
-- **Balance is enough for now.** It was $3.41 on 25 Nov and probably about $2.94 after the 26 Nov run. The 20 pages still in the sample need about $1.40 to $1.80 more (at $0.07 to $0.09 a page), so about $1.10 to $1.50 should be left on 30 Nov. The later all-pages check (about 100 pages, about $7 to $9) will need a top-up first. Top up before any further AI work (a new country's drafting is Claude Code, so $0).
+- **Balance is enough for now.** It was $2.57 on 27 Nov. The 15 pages still in the sample need about $1.05 to $1.35 more (at $0.07 to $0.09 a page), so about $1.20 to $1.50 should be left on 30 Nov. The later all-pages check (about 100 pages, about $7 to $9) will need a top-up first. Top up before any further AI work (a new country's drafting is Claude Code, so $0).
