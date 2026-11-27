@@ -4,11 +4,7 @@
 # Change the sample by editing this file, not the script. One slug per line.
 # Checked on 25 Nov 2026 (results kept; text fixed afterwards, so they would otherwise be re-queued): junior-isa-allowance, stamp-duty-land-tax-rates, income-tax-rates-and-bands, scottish-income-tax-rates, employee-national-insurance.
 # Checked on 26 Nov 2026 (text fixed afterwards): self-employed-national-insurance, dividend-tax-rates, inheritance-tax-thresholds, scottish-stamp-duty-lbtt, welsh-stamp-duty-ltt.
-personal-savings-allowance
-state-pension-age
-pension-annual-allowance
-auto-enrolment-pension
-statutory-sick-pay
+# Checked on 27 Nov 2026 (text fixed afterwards except statutory-sick-pay): personal-savings-allowance, state-pension-age, pension-annual-allowance, auto-enrolment-pension, statutory-sick-pay.
 statutory-maternity-paternity-pay
 student-loan-repayment-thresholds
 marriage-allowance

@@ -68,7 +68,7 @@ A mix on purpose: three hard pages would make the test look worse than the basel
 | Reference sources added | 2 | 4 | 2 |
 | Card or card-note problems found | 0 | 1 (card note on abolished waiting days not confirmed by the GOV.UK pages read) | 3 (trigger "more than" against GOV.UK "at least"; age-22 card cites a page that doesn't say 22; UK against Great Britain) |
 | Needed Claude in the browser | No | No | No |
-| Nightly AI check, first run | See "Nightly check on the Claude Code pages" below (10 pages checked 25 and 26 Nov) | Same | Same |
+| Nightly AI check, first run | See "Nightly check on the Claude Code pages" below (15 pages checked 25 to 27 Nov) | Same | Same |
 
 ### What this shows so far
 
@@ -82,14 +82,15 @@ A mix on purpose: three hard pages would make the test look worse than the basel
 - Plan usage: Richard reports the three sessions used a tiny fraction of the monthly allowance, so it is recorded as "within the monthly allowance" and is not a constraint for now. It was not measured, and should be looked at again if a country launch (15 to 20 pages) is drafted in one month.
 - Still not known: what the nightly AI check says about these pages (due from about 23 to 30 November). Every other part of the decision rule is met: review time is lower, no substantive errors survived to review, and usage is sustainable.
 
-## Nightly check on the Claude Code pages (25 and 26 Nov 2026)
+## Nightly check on the Claude Code pages (25 to 27 Nov 2026)
 
-The 05:30 run was capped to a fixed sample of the 30 UK pages written in Claude Code on 22 to 24 Nov, five a night. Ten are done; 20 remain (about 4 more nights).
+The 05:30 run was capped to a fixed sample of the 30 UK pages written in Claude Code on 22 to 24 Nov, five a night. Fifteen are done; 15 remain (3 more nights, to about 30 Nov).
 
 | Batch | Pages | Findings | Needed a real text change | Figure errors |
 |---|---|---|---|---|
 | 25 Nov | Junior ISA, SDLT, Income Tax Rates and Bands, Scottish Income Tax, Employee NI | 24 | about 12 | 0 |
 | 26 Nov | Self-Employed NI, Dividend Tax Rates, Inheritance Tax Thresholds, Scottish LBTT, Welsh LTT | 26 (5, 3, 7, 4, 7) | about half (fixed on all five pages), mostly wording | 0 |
+| 27 Nov | Personal Savings Allowance, State Pension Age, Pension Annual Allowance, Auto-Enrolment Thresholds, Statutory Sick Pay | 24 (7, 3, 4, 9, 1) | 16, about two thirds (fixed on four pages; Statutory Sick Pay left as it was) | 0 |
 
 What the 26 Nov findings were (each read against the source with `scripts/read-source.php` before fixing):
 
@@ -98,6 +99,14 @@ What the 26 Nov findings were (each read against the source with `scripts/read-s
 - Style: HMRC not spelled out (two pages), repeated sentences (four pages), an own-consequence sentence about the border (two pages).
 - Not acted on: findings asking for detail the page deliberately leaves out (share fishermen's Class 2 rate, relief interactions, the taper-relief detail on gifts).
 - No finding on any page was a wrong figure, and no source went unread.
+
+What the 27 Nov findings were (each read against the source with `scripts/read-source.php` before fixing):
+
+- Real accuracy problems: the age 68 sentence in State Pension Age read as if everyone born from 6 April 1977 reaches 68, when only those born from 6 April 1978 do (1977 to 1978 births get 67 plus months); "not taxed at all" for ISA interest dropped the source's "usually"; the Auto-Enrolment re-enrolment heading and "dismiss" without "unfairly"; the employer-pays-more rule stated for every scheme when the source says some; a "two thresholds" count and a Savings tax-code heading that overstated.
+- Real omissions worth a clause: the pension carry-forward condition (all of this year's allowance must be used), foreign and children's accounts, the £10,000 Self Assessment point, relief at source for non-taxpayers, the re-enrolment exceptions, how to opt out.
+- Not acted on: Statutory Sick Pay's one finding (the text is right: the source says the same, the "special rules" are an omission), Great Britain against UK in Auto-Enrolment (the GOV.UK page we cite says UK), the State Pension end-of-month rule, the reduced lump sum allowances and the alternative annual allowance, niche auto-enrolment exclusions, one unneeded-section finding.
+- Two near-copies were introduced by the first fix wording and caught by the free triage, then reworded.
+- No finding was a wrong figure.
 
 Notes: fixing a page changes its text hash, so each fixed page was taken out of `data/nightly-check-sample.txt` (see `docs/page-checklist.md`). A fix pass now takes about 5 to 10 minutes a page including reading the source. The check costs about $0.07 a page. Meta descriptions are the awkward fix: the 200-character limit counts placeholders as typed while the 140 to 155 target counts them filled, so a description with several figures has little room.
 
