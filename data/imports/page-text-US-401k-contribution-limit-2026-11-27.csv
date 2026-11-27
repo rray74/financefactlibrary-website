@@ -1,0 +1,19 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,savings-and-investments,retirement-accounts,401k-contribution-limit,401(k) Contribution Limit,"How much an employee can contribute to a 401(k), 403(b), 457, or Thrift Savings Plan, the catch-up amounts for older workers, and SIMPLE plan limits.","## The deferral limit
+
+The most an employee can put into a 401(k) from their own pay is {fact:us_401k_limit} for {tax_year}. Workers in 403(b) plans, governmental 457 plans, and the federal Thrift Savings Plan are held to the same figure. The employee's own deferrals are counted together across all of these plans, so using several plans does not raise the limit.
+
+## Catch-up contributions
+
+Employees aged 50 and over in most of these plans can add a catch-up contribution of {fact:us_401k_catchup}. Together with the deferral limit, that means participants aged 50 and over can generally contribute up to a combined total, which the IRS puts at $34,000 a year.
+
+Workers aged 60 through 63 in these plans get a bigger catch-up than other participants, a result of SECURE 2.0. For {tax_year}, it is {fact:us_401k_catchup_60} instead of the standard catch-up.
+
+## SIMPLE plans have lower limits
+
+Employees in SIMPLE retirement accounts can generally contribute {fact:us_simple_limit}, and {fact:us_simple_higher} in certain applicable plans. In most SIMPLE plans, employees 50 and over can add a catch-up of {fact:us_simple_catchup}. Separate catch-up amounts apply to certain applicable SIMPLE plans and to employees aged 60 through 63.
+
+## Where the figures come from
+
+Most retirement limits are adjusted each year for inflation, and the IRS announces them in a notice that covers all the cost-of-living adjustments for pension plans and other retirement items. IRA limits are on their own page. The 401(k) topic page the IRS maintains states only the earlier year's limit, so check the date before relying on it.
+",401(k) Limit {tax_year}: {fact:us_401k_limit},"Employees can defer up to {fact:us_401k_limit} into a 401(k) in {tax_year}, plus catch-up amounts. See the matching limits for 403(b), 457, TSP, and SIMPLE plans.",,
