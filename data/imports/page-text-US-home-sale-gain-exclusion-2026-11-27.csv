@@ -1,0 +1,27 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,mortgages-and-property,selling-a-home,home-sale-gain-exclusion,Home Sale Gain Exclusion,"How much gain on selling your main home can be left out of income, the ownership and use tests, and when you still have to report the sale.","## You can exclude part of the gain from selling your main home
+
+If you sell your main home for more than you paid for it, the difference is a capital gain. Up to {fact:us_home_excl_single} of that gain may be left out of your income, and a couple filing jointly can exclude up to {fact:us_home_excl_joint}. The Internal Revenue Service (IRS) explains the rules and worksheets in Publication 523, Selling Your Home.
+
+## You have to pass two tests
+
+Two requirements apply, and you must satisfy both: ownership and use. Ownership is met by holding title for at least {fact:us_home_test_months} within the 5 years before the sale. Use is met by living there as your residence for at least {fact:us_home_test_months} within that same span. Both tests have to be met within the 5 years ending on the sale date, but the two periods do not have to be the same one.
+
+On a joint return, either you or your spouse can meet the ownership test, but each of you has to meet the use test on your own.
+
+## An earlier home sale can rule you out
+
+In general, you cannot claim the exclusion if you already excluded the gain from selling a different home in the two years before this sale. Publication 523 is where to look for exceptions to that two-year rule, along with the complete eligibility rules and the limits on the exclusion amount.
+
+## You may still have to report the sale
+
+If a Form 1099-S arrives for the sale (the form is titled Proceeds From Real Estate Transactions), it has to be reported on your return whether or not you can exclude every dollar of the gain. The sale is reported as well whenever part of the gain cannot be excluded. The forms for reporting are Schedule D (Form 1040) and Form 8949.
+
+## Military and similar service can pause the clock
+
+Service members, Foreign Service officers, and intelligence community employees on extended official duty can choose to pause that 5-year window for as long as 10 years. The duty of you or your spouse counts. It qualifies if the posting is open-ended or longer than 90 days, and it is either at least 50 miles from your main home or in housing the government provides under orders.
+
+## Installment sales
+
+When the contract lets the buyer pay some of the price in a later year, the sale is an installment sale. The installment method is how you report it unless you opt out, and deferring gain that way does not cost you the exclusion.
+",Home Sale Tax Exclusion: Up to {fact:us_home_excl_single},"You may exclude up to {fact:us_home_excl_single} of gain from selling your main home, or {fact:us_home_excl_joint} on a joint return. See the ownership and use tests and reporting rules.",,
