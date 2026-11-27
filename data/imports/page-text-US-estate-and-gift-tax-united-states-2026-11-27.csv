@@ -1,0 +1,25 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,tax,estate-and-gift-tax,estate-and-gift-tax-united-states,Estate and Gift Tax,"How the federal estate tax and gift tax work, the exclusion amounts, who has to file, and how the annual gift exclusion applies.","## What the estate tax is
+
+Federal estate tax is charged on passing property on at death. The calculation begins with everything you own, or hold certain interests in, on the date you die, each item at fair market value instead of its purchase price. That total is the gross estate. Cash, shares, land and buildings, life insurance, trusts, annuities, and stakes in a business can all be part of it.
+
+## From gross estate to tax
+
+Deductions then reduce the gross estate to a taxable estate. They can include mortgages and other debts, administration expenses, and property that passes to a surviving spouse or a qualified charity. Some operating businesses and farms can be valued lower. Taxable gifts made since 1977 are then added to that figure, the tax is computed, and the unified credit comes off the result.
+
+## The exclusion amount
+
+{fact:us_estate_exclusion} is the basic exclusion amount for an estate when the person dies during {tax_year}. Relatively simple estates do not have to file an estate tax return. An estate has to file once its gross estate, with adjusted taxable gifts and the specific gift tax exemption added, is worth more than the filing threshold for the year the person died. Portability helps married couples: if a spouse survives, the estate can choose, on a return filed on time, to hand the unused exemption to the survivor.
+
+## What counts as a gift
+
+A gift, for tax purposes, is any transfer of property where the person giving gets back nothing, or less than the property is worth. The giver's intent does not matter. Gifts of money count, and so does the use of property or income from it. Charging less than something is worth, or lending money with no interest or at a reduced rate, can also amount to a gift.
+
+## The annual exclusion
+
+For {tax_year}, the first {fact:us_gift_annual} of gifts to any one person is left out of your total taxable gifts for the year. If the recipient is a spouse who is not a US citizen, the annual exclusion is {fact:us_gift_noncitizen}.
+
+## Who files what
+
+US citizens and residents report gifts on Form 709, and estates of citizens and residents use Form 706. For gift tax, residency is closer to domicile, so a person can be a US resident for income tax and still be a nonresident for gift tax. A green card is not conclusive. People who are neither citizens nor residents use Form 709-NA for gifts of US real or tangible property, and Form 706-NA for estates.
+",Estate and Gift Tax Exclusions {tax_year},"The basic estate tax exclusion is {fact:us_estate_exclusion} for {tax_year}, and the annual gift exclusion is {fact:us_gift_annual}. See who must file, and how gifts count toward the limits.",,
