@@ -1,0 +1,23 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,tax,income-tax,income-tax-rates-united-states,Federal Income Tax Rates,"The seven federal income tax rates, where each bracket starts for single filers and married couples filing jointly, and how marginal rates work.","## Each rate applies only to its own layer of income
+
+Federal income tax is marginal. The rate for a bracket is charged only on the slice of taxable income that falls inside that bracket, so crossing into a higher bracket never raises the rate on the income below it. There are seven rates: 10%, 12%, 22%, 24%, 32%, 35%, and 37%.
+
+## Where the brackets start
+
+For single taxpayers in tax year {tax_year}, the 12% rate begins above {fact:us_it_s_12} of taxable income and the top rate of 37% begins above {fact:us_it_s_37}. For married couples filing jointly, the same two rates begin above {fact:us_it_j_12} and {fact:us_it_j_37}. The 10% rate covers everything up to the first threshold, and the cards above list the thresholds in between.
+
+Heads of household and married people filing separately have their own bracket tables, which are not shown here.
+
+## Brackets apply to taxable income
+
+Taxable income is what is left after deductions, such as the standard deduction, come off your total income. The personal exemption stays at zero, and the IRS says the elimination was made permanent by legislation it calls the Working Families Tax Cuts.
+
+## Which return uses which year
+
+Figures for tax year {tax_year} are meant for returns filed in 2028, according to the IRS. A return filed in 2027 uses the tax year 2026 figures, which the IRS published in a separate announcement.
+
+## Some income is taxed differently
+
+Net capital gains are not taxed at these rates. A net capital gain is taxed on its own schedule: how much of it falls at 0% depends on your overall taxable income, and the remainder generally faces rates below the ordinary ones. Short-term gains are taxed as ordinary income.
+",Federal Income Tax Rates {tax_year},"See the federal income tax brackets for {tax_year}: where each rate starts for single filers and married couples filing jointly, and how marginal rates work.",,
