@@ -1,0 +1,21 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,social-security-and-retirement,medicare,medicare-part-b-premium,Medicare Part B Premium,"The standard Medicare Part B premium and deductible, how higher incomes pay more, and the Part A premium and hospital deductible.","## Part A and Part B cover different care
+
+Part A is Medicare's hospital cover. Inpatient stays are its core, and it extends to hospice and some nursing and rehabilitation care. Part B picks up outpatient medical care, such as doctors' services and equipment, that Part A does not cover. The premiums, deductibles, and coinsurance for both are set each year under the Social Security Act.
+
+## The Part B premium and deductible
+
+For {tax_year}, the standard monthly premium for Part B is {fact:us_mc_partb_premium}, and the annual deductible is {fact:us_mc_partb_deductible}. The Centers for Medicare & Medicaid Services (CMS) says the increase is mainly due to projected increases in healthcare spending.
+
+## Higher incomes pay more for Part B
+
+Income has played a part in the Part B premium since 2007. The income-related monthly adjustment applies to about 9% of Part B enrollees. It starts when modified adjusted gross income goes above {fact:us_mc_irmaa_single} on an individual return or {fact:us_mc_irmaa_joint} on a joint return, and it rises in steps. Married people who lived with their spouse at any point in the year but file separately have tables of their own.
+
+## Most people pay no Part A premium
+
+Roughly 99% of beneficiaries pay no Part A premium, because the Social Security Administration credits them with at least 40 quarters of Medicare-covered work. People age 65 and over with fewer than 40 quarters, and certain people with disabilities, can buy into Part A. With at least 30 quarters, or a spouse with that many, the monthly premium is {fact:us_mc_parta_reduced}. With fewer than 30, it is {fact:us_mc_parta_full}.
+
+## The Part A hospital deductible
+
+If you are admitted to the hospital, the Part A deductible is {fact:us_mc_parta_deductible}. You pay it once per benefit period, and it takes care of your share for the first 60 days of covered hospital care. Daily coinsurance applies after that, including for days 61 through 90 and for lifetime reserve days.
+",Medicare Part B {tax_year}: {fact:us_mc_partb_premium} a Month,"The standard Medicare Part B premium is {fact:us_mc_partb_premium} a month in {tax_year}, with a {fact:us_mc_partb_deductible} deductible. See the Part A costs and the income-related surcharges.",,
