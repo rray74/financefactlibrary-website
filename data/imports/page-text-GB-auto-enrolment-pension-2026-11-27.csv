@@ -1,0 +1,26 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,pensions,workplace-pensions,auto-enrolment-pension,"Auto-Enrolment Thresholds and Minimum Contributions","When employers must enrol staff in a workplace pension, which earnings contributions are based on, the minimum contributions, and how opting out works.","## Different earnings limits decide who is enrolled and what contributions are based on
+
+Employers must put a worker into a workplace pension automatically when the worker is at least {fact:ae_minimum_age} old, below State Pension age, usually works in the UK and meets the earnings trigger of {fact:ae_earnings_trigger} a year. Contributions are then based on earnings between {fact:ae_qualifying_earnings_lower} and {fact:ae_qualifying_earnings_upper} a year, not on the whole salary, in most schemes. Government reviews these limits every tax year.
+
+Pay that counts towards that band includes salary, wages, bonuses, commission and overtime, together with statutory sick pay and the statutory family payments such as maternity, paternity and adoption pay.
+
+Workers whose earnings fall between the lower limit and the trigger are not enrolled automatically, but they can ask to join. An employer then has to contribute only if the worker earns more than {fact:ae_opt_in_employer_threshold} a month.
+
+## The legal minimum is a total, and schemes can ask for more
+
+The minimum paid in is {fact:ae_min_total_contribution} of qualifying earnings. The employer must provide at least {fact:ae_min_employer_contribution} of it and the worker {fact:ae_min_employee_contribution}. Some schemes are more generous than this, and most defined benefit schemes are. In some schemes the employer can choose to pay more than its minimum, and the worker can then pay less, provided the total still reaches the legal level.
+
+The government usually adds tax relief to a workplace pension where the worker pays Income Tax. Someone who pays no Income Tax can still receive an extra amount when the scheme adds money through relief at source. Paying into a pension also lowers take-home pay, which can affect income-related benefits and student loan repayments.
+
+## Some workers are not enrolled automatically, and the start date can be put back
+
+An employer usually does not have to enrol someone who has given or received notice to leave the job, who holds evidence of lifetime allowance protection, or who has already taken a pension arranged by the employer. Directors without an employment contract who employ at least one other person, members of a limited liability partnership and people in certain EU cross-border schemes are also left out. Anyone excluded can usually still ask to join, and the employer cannot refuse.
+
+Employers may postpone enrolment by up to 3 months, and for some defined benefit and hybrid schemes it can be longer. The worker must be told in writing and can join in the meantime if they ask.
+
+## Opting out is allowed, and re-enrolment usually follows
+
+A worker who is enrolled can leave by contacting the pension provider, and the employer must explain how. Doing so within a month of being added brings back what has been paid in. After that, the money usually stays in the pension until retirement. Some schemes allow contributions to be cut for a short time, which is arranged with the employer and the provider.
+
+A worker can rejoin whenever they like by writing to the employer, although the employer need not accept someone who has joined and left within the previous 12 months. Employers must also re-enrol workers who have left, usually every 3 years from the date the worker first enrolled. That does not apply to someone who no longer qualifies for the scheme, and an employer need not re-enrol a worker who chose to leave in the 12 months before the re-enrolment date, although it can choose to. An employer cannot press a worker to opt out, and cannot discriminate against them or dismiss them unfairly because they are in the scheme.","Auto-Enrolment {tax_year}: Trigger {fact:ae_earnings_trigger}","Auto-enrolment starts at {fact:ae_earnings_trigger} of earnings, and minimum contributions total {fact:ae_min_total_contribution}, split between employer and worker. Who is enrolled and how it works.",,"2026-11-27 11:31:13"
