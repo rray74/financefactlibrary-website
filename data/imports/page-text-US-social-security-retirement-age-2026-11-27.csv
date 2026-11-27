@@ -1,0 +1,31 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+US,social-security-and-retirement,retirement-benefits,social-security-retirement-age,Social Security Retirement Age,"When you can start Social Security retirement benefits, how your full retirement age depends on your birth year, and how starting early or late changes the amount.","## You can start at {fact:us_ss_earliest_age} of age, but full benefits come later
+
+The earliest you can claim retirement benefits from the Social Security Administration (SSA) is {fact:us_ss_earliest_age} of age. Your full benefit is available only from your full retirement age onward. If you wait beyond that age, up to {fact:us_ss_max_delay_age} of age, the amount goes up. To receive benefits for a month, you have to be at least {fact:us_ss_earliest_age} of age for that whole month.
+
+## Your full retirement age depends on the year you were born
+
+- Born from 1943 to 1954: 66
+- Born in 1955: 66 and 2 months
+- Born in 1956: 66 and 4 months
+- Born in 1957: 66 and 6 months
+- Born in 1958: 66 and 8 months
+- Born in 1959: 66 and 10 months
+- Born in 1960 or later: {fact:us_ss_fra_1960} of age
+
+If your birthday is January 1, use the previous year. If you were born on the first of any other month, the SSA treats your birthday as falling in the month before when it works out your benefit and full retirement age.
+
+## Starting early reduces your benefit
+
+Your benefit is cut by a small percentage for every month you claim before your full retirement age. Someone whose full retirement age is {fact:us_ss_fra_1960} and who starts at the earliest age gets roughly {fact:us_ss_reduction_1960} less than the full amount. The cut is smaller for people with an earlier full retirement age, and the SSA's chart gives the percentage for each birth year. A spouse's benefit is also reduced when it starts early. The reduction is applied after the spouse's amount has been cut to half of the worker's benefit.
+
+## Waiting raises your benefit up to {fact:us_ss_max_delay_age} of age
+
+Each month you delay past full retirement age earns you delayed retirement credits. For people born in 1943 or later, the increase is {fact:us_ss_drc_rate} for each full year of delay. The increase stops at {fact:us_ss_max_delay_age} of age, so there is no gain from waiting longer.
+
+If you start benefits before {fact:us_ss_max_delay_age} of age, some of the credits you have earned are not added until the January after you begin receiving benefits. A person already at full retirement age can ask for benefits to begin with an earlier month, but no earlier than the month that age was reached and no more than six months before the application.
+
+## Medicare enrollment follows its own timing
+
+Delaying Social Security does not delay Medicare. The SSA says to apply for Medicare within three months of your 65th birthday even if you put off retirement benefits. Missing that window can make Medicare Part B (medical insurance) and Part D (prescription drug coverage) more expensive later.
+",Social Security Retirement Age Explained,"You can start Social Security retirement benefits at {fact:us_ss_earliest_age} of age, but full benefits wait until full retirement age. Find the age for your birth year.",,
