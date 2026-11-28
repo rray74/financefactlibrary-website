@@ -68,7 +68,7 @@ A mix on purpose: three hard pages would make the test look worse than the basel
 | Reference sources added | 2 | 4 | 2 |
 | Card or card-note problems found | 0 | 1 (card note on abolished waiting days not confirmed by the GOV.UK pages read) | 3 (trigger "more than" against GOV.UK "at least"; age-22 card cites a page that doesn't say 22; UK against Great Britain) |
 | Needed Claude in the browser | No | No | No |
-| Nightly AI check, first run | See "Nightly check on the Claude Code pages" below (15 pages checked 25 to 27 Nov) | Same | Same |
+| Nightly AI check, first run | See "Nightly check on the Claude Code pages" below (20 pages checked 25 to 28 Nov) | Same | Same |
 
 ### What this shows so far
 
@@ -82,15 +82,16 @@ A mix on purpose: three hard pages would make the test look worse than the basel
 - Plan usage: Richard reports the three sessions used a tiny fraction of the monthly allowance, so it is recorded as "within the monthly allowance" and is not a constraint for now. It was not measured, and should be looked at again if a country launch (15 to 20 pages) is drafted in one month.
 - Still not known: what the nightly AI check says about these pages (due from about 23 to 30 November). Every other part of the decision rule is met: review time is lower, no substantive errors survived to review, and usage is sustainable.
 
-## Nightly check on the Claude Code pages (25 to 27 Nov 2026)
+## Nightly check on the Claude Code pages (25 to 28 Nov 2026)
 
-The 05:30 run was capped to a fixed sample of the 30 UK pages written in Claude Code on 22 to 24 Nov, five a night. Fifteen are done; 15 remain (3 more nights, to about 30 Nov).
+The 05:30 run was capped to a fixed sample of the 30 UK pages written in Claude Code on 22 to 24 Nov, five a night. Twenty are done; 10 remain (2 more nights, to about 30 Nov).
 
 | Batch | Pages | Findings | Needed a real text change | Figure errors |
 |---|---|---|---|---|
 | 25 Nov | Junior ISA, SDLT, Income Tax Rates and Bands, Scottish Income Tax, Employee NI | 24 | about 12 | 0 |
 | 26 Nov | Self-Employed NI, Dividend Tax Rates, Inheritance Tax Thresholds, Scottish LBTT, Welsh LTT | 26 (5, 3, 7, 4, 7) | about half (fixed on all five pages), mostly wording | 0 |
 | 27 Nov | Personal Savings Allowance, State Pension Age, Pension Annual Allowance, Auto-Enrolment Thresholds, Statutory Sick Pay | 24 (7, 3, 4, 9, 1) | 16, about two thirds (fixed on four pages; Statutory Sick Pay left as it was) | 0 |
+| 28 Nov | Statutory Maternity and Paternity Pay, Student Loan Repayment Thresholds, Marriage Allowance, Trading and Property Allowances, Making Tax Digital for Income Tax | 28 (5, 5, 4, 9, 5) | 24, about six in seven (fixed on all five pages) | 0 |
 
 What the 26 Nov findings were (each read against the source with `scripts/read-source.php` before fixing):
 
@@ -106,6 +107,14 @@ What the 27 Nov findings were (each read against the source with `scripts/read-s
 - Real omissions worth a clause: the pension carry-forward condition (all of this year's allowance must be used), foreign and children's accounts, the £10,000 Self Assessment point, relief at source for non-taxpayers, the re-enrolment exceptions, how to opt out.
 - Not acted on: Statutory Sick Pay's one finding (the text is right: the source says the same, the "special rules" are an omission), Great Britain against UK in Auto-Enrolment (the GOV.UK page we cite says UK), the State Pension end-of-month rule, the reduced lump sum allowances and the alternative annual allowance, niche auto-enrolment exclusions, one unneeded-section finding.
 - Two near-copies were introduced by the first fix wording and caught by the free triage, then reworded.
+- No finding was a wrong figure.
+
+What the 28 Nov findings were (each read against the source with `scripts/read-source.php` before fixing):
+
+- Real accuracy problems: the Student Loan meta said repayments are 9% above the threshold with no mention that a Postgraduate Loan is 6%; the Maternity Pay heading said "flat rate" and the adoption pay sentence gave a flat rate, when the source says the lower of the flat rate and 90% of earnings; the Making Tax Digital heading said the deadline does not change, when quarterly updates have their own deadlines; the Student Loan "leaving the UK" heading covered a paragraph about credit reports (now its own heading); a "three conditions" count (Marriage Allowance).
+- Real omissions worth a clause: the late-update penalties and the no-points first year (Making Tax Digital), the property reporting band of £1,000 to £2,500 and the effect on tax credits and student loan repayments (Trading and Property Allowances), the 6 April 2022 backdating limit and the route after a partner's death (Marriage Allowance), when student loan repayments start and the self-employed route.
+- Not acted on: the police custody and paternity pay conditions and one unneeded-section finding (Maternity Pay), a long list of niche partnership and qualifying-income inclusions and a dispute route (Making Tax Digital), a refund route (Trading and Property Allowances).
+- Three near-copies were introduced by the first fix wording and caught by the free triage, then reworded. A fixed meta description is hard to fit: it needs 140 or more characters filled and 199 or fewer typed, which two placeholders make tight.
 - No finding was a wrong figure.
 
 Notes: fixing a page changes its text hash, so each fixed page was taken out of `data/nightly-check-sample.txt` (see `docs/page-checklist.md`). A fix pass now takes about 5 to 10 minutes a page including reading the source. The check costs about $0.07 a page. Meta descriptions are the awkward fix: the 200-character limit counts placeholders as typed while the 140 to 155 target counts them filled, so a description with several figures has little room.
