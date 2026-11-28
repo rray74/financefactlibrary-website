@@ -1,0 +1,29 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,work-benefits,pay,statutory-sick-pay,Statutory Sick Pay,"What Statutory Sick Pay is, who qualifies, how fit notes and linked periods of sickness work, and what happens if it ends or you do not qualify.","## Statutory Sick Pay is a legal minimum that your employer pays, and a contract can offer more
+
+Your employer pays Statutory Sick Pay (SSP) for the time you are unable to work through illness. The most it pays is {fact:ssp_weekly_rate} a week, or {fact:ssp_earnings_percentage} of your average weekly earnings when that comes to less, and it lasts up to {fact:ssp_max_weeks}. An employer cannot pay less than this, but a company sick pay scheme written into your contract can pay more. Agricultural workers follow different rules.
+
+The average is worked out from an 8-week stretch of earnings, and someone with fewer than 8 weeks of pay behind them is still covered. SSP covers the days you would normally have worked. It is paid like wages, on the usual payday, with tax and National Insurance taken off. A person holding several jobs may receive it from each employer.
+
+## Qualifying takes one full working day off sick, and you must tell your employer in time
+
+Three things are needed: employee status, some work done for the employer, and an illness that keeps you off for at least one full working day. Agency workers may also be entitled. A day does not count as a sick day if you worked for any part of it before going home ill.
+
+Your employer sets a deadline for telling them you are off sick, and where none has been set you have 7 days. Missing it can reduce what you are paid. After more than 7 days off in a row, counting days you would not have worked, you must give your employer a fit note. A GP, hospital doctor, registered nurse, occupational therapist, pharmacist or physiotherapist can issue one, on paper or digitally. Instead of a fit note, your employer may accept different evidence, for example a Health and Work Report written by a physiotherapist or occupational therapist.
+
+## Some people are excluded, and linked periods of sickness can end entitlement
+
+SSP stops being available once you have been paid the full {fact:ssp_max_weeks}, and it is not paid while you receive Statutory Maternity Pay or Maternity Allowance, though special rules apply to women who are pregnant or have given birth and who get neither. Other exclusions include:
+
+- time off for a pregnancy-related illness during the four weeks before your baby's due week
+- the first day of your sickness falling while you are in custody or on strike
+- working outside the EU where your employer is not liable for your National Insurance
+- Employment and Support Allowance paid to you within 12 weeks of the point at which you began or resumed work for this employer
+
+Repeated spells of illness count as linked if each lasts at least one full working day and they are 8 weeks or less apart. Entitlement ends once a continuous series of linked spells has lasted more than 3 years.
+
+## If SSP is not paid or runs out, Universal Credit or ESA may be available
+
+Where SSP is refused or has finished, a claim for Universal Credit or Employment and Support Allowance (ESA) may be possible, and form SSP1 from the employer supports it. The employer must send it within 7 days of the first day off sick if you do not qualify, or within 7 days of SSP ending unexpectedly. If SSP is due to run out before the illness does, it must be sent by the start of the 23rd week.
+
+If you think a decision not to pay, or the amount paid, is wrong, talk to your employer and ask for their reasons. Where the reply does not resolve things, HMRC's Statutory Payment Disputes Team is the next step.",Statutory Sick Pay {tax_year}: {fact:ssp_weekly_rate} a Week,"Statutory Sick Pay is {fact:ssp_weekly_rate} a week or {fact:ssp_earnings_percentage} of average earnings if lower, for up to {fact:ssp_max_weeks}. Who qualifies, who is excluded and how it works.",,2026-11-28 17:53:40
