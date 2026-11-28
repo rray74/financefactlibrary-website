@@ -356,6 +356,39 @@ function getSubjectDraft(int $subjectId): ?array
 }
 
 /**
+ * Names of the category and subcategory pages, keyed by their public path
+ * (e.g. /uk/savings/nsandi/), for the dashboard's Google search table: Google
+ * lists these pages too, but they are not subjects. Each value is
+ * ['name' => ..., 'country_code' => ...]. The subcategory's name is
+ * shown with its category ("Savings: NS&I") when the two differ, because a
+ * subcategory name alone can be vague.
+ */
+function getAdminListingNamesByPath(): array
+{
+    $pdo = getDbConnection();
+    $names = [];
+
+    foreach ($pdo->query(
+        'SELECT c.slug, c.name, j.url_prefix, j.code
+         FROM categories c JOIN jurisdictions j ON j.id = c.jurisdiction_id'
+    )->fetchAll() as $row) {
+        $names[categoryUrl((string) $row['url_prefix'], $row['slug'])] = ['name' => $row['name'], 'country_code' => $row['code']];
+    }
+
+    foreach ($pdo->query(
+        'SELECT sc.slug, sc.name, c.slug AS category_slug, c.name AS category_name, j.url_prefix, j.code
+         FROM subcategories sc
+         JOIN categories c ON c.id = sc.category_id
+         JOIN jurisdictions j ON j.id = c.jurisdiction_id'
+    )->fetchAll() as $row) {
+        $label = $row['category_name'] === $row['name'] ? $row['name'] : $row['category_name'] . ': ' . $row['name'];
+        $names[subcategoryUrl((string) $row['url_prefix'], $row['category_slug'], $row['slug'])] = ['name' => $label, 'country_code' => $row['code']];
+    }
+
+    return $names;
+}
+
+/**
  * Pages still to be written: published and draft subjects with no
  * explanation, most-searched first (Google impressions in the last 28
  * days), then published before draft, then by name. Each row has

@@ -69,6 +69,7 @@ const WRITING_QUEUE_WAITING_SHOWN = 100;
  */
 function printWritingQueueTable(array $pages): void
 {
+    global $countryBySubjectId;
     ?>
     <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
         <table class="table table-sm">
@@ -87,6 +88,7 @@ function printWritingQueueTable(array $pages): void
                         <a href="/admin/subject.php?id=<?= (int) $page['id'] ?>#subject-details" class="font-semibold link link-hover">
                             <?= e($page['name']) ?>
                         </a>
+                        <?php printCountryBadge($countryBySubjectId[(int) $page['id']] ?? null); ?>
                     </td>
                     <td class="font-mono text-xs"><?= e($page['status']) ?></td>
                     <td class="text-right"><?= number_format((int) $page['impressions']) ?></td>
@@ -118,8 +120,23 @@ $searchPages = $searchTotals ? getTopSearchPages(10) : [];
 
 // Page paths to subject names, so the table shows names where it can.
 $subjectNamesByPath = [];
+// Each subject's country code (GB, AU, CA...), so the page tables can say which country a row belongs to.
+$countryBySubjectId = [];
 foreach (getAdminSubjectList() as $listedSubject) {
     $subjectNamesByPath[subjectUrlById((int) $listedSubject['id'])] = $listedSubject;
+    $countryBySubjectId[(int) $listedSubject['id']] = $listedSubject['country_code'];
+}
+
+// Category and subcategory pages (e.g. /uk/savings/nsandi/) are not subjects, but Google
+// lists them too. Their names fill the search table's title gap: path => name and country.
+$listingNamesByPath = getAdminListingNamesByPath();
+
+/** A small country tag (GB, AU...) shown beside a page name. Prints nothing if the country isn't known. */
+function printCountryBadge(?string $code): void
+{
+    if ($code) {
+        echo '<span class="badge badge-outline badge-sm font-mono ml-1">' . e($code) . '</span>';
+    }
 }
 
 // Cron runs: one row per expected script, plus any other script that has
@@ -263,6 +280,7 @@ include __DIR__ . '/../../includes/admin-nav.php';
                         <a href="/admin/subject.php?id=<?= (int) $page['id'] ?>#subject-details" class="font-semibold link link-hover">
                             <?= e($page['name']) ?>
                         </a>
+                        <?php printCountryBadge($countryBySubjectId[(int) $page['id']] ?? null); ?>
                     </td>
                     <td class="text-xs">
                         <?php // One line per reason; the details are on the page's editor. ?>
@@ -391,7 +409,11 @@ include __DIR__ . '/../../includes/admin-nav.php';
             </thead>
             <tbody>
                 <?php foreach ($searchPages as $searchPage): ?>
-                <?php $pageSubject = $subjectNamesByPath[$searchPage['page_path']] ?? null; ?>
+                <?php
+                $pageSubject = $subjectNamesByPath[$searchPage['page_path']] ?? null;
+                // Not a subject: a category or subcategory page, shown by its name without an editor link.
+                $pageListing = $pageSubject ? null : ($listingNamesByPath[$searchPage['page_path']] ?? null);
+                ?>
                 <tr class="align-top">
                     <td>
                         <?php if ($pageSubject): ?>
@@ -399,6 +421,10 @@ include __DIR__ . '/../../includes/admin-nav.php';
                         <a href="/admin/subject.php?id=<?= (int) $pageSubject['id'] ?>#search" class="font-semibold link link-hover">
                             <?= e($pageSubject['name']) ?>
                         </a>
+                        <?php printCountryBadge($pageSubject['country_code']); ?>
+                        <?php elseif ($pageListing): ?>
+                        <span class="font-semibold"><?= e($pageListing['name']) ?></span>
+                        <?php printCountryBadge($pageListing['country_code']); ?>
                         <?php endif; ?>
                         <span class="block font-mono text-xs opacity-70"><?= e($searchPage['page_path']) ?></span>
                     </td>

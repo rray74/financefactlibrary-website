@@ -259,6 +259,10 @@ job and AI flows are unchanged: classes and markup only.
   Wide tables scroll inside their box on a phone; the page itself never widens.
 - **Status badges:** daisyUI `badge badge-sm whitespace-nowrap`: `badge-outline` for normal and live states, solid `badge-error`
   for a problem. Soft badges and plain red text are too faint on the page surface, so use the solid badge.
+- **Country tag (dashboard, 28 November 2026):** `badge badge-outline badge-sm font-mono ml-1` with the country code (GB, AU, CA,
+  NZ, US) after a page name in the dashboard's Needs reviewing, Writing queue and Google search tables
+  (`printCountryBadge()` in `public/admin/index.php`). Category and subcategory pages in the search table show their name in
+  plain semibold text, with no editor link.
 - **Forms:** daisyUI `input`, `textarea`, `select`, `radio`, `checkbox` and `btn` with their default borders (daisyUI 5 has no
   `-bordered` modifiers). Sizes `input-sm`, `btn-sm` and `btn-xs` are allowed in the admin's dense tables and rows, because
   the editor is a desktop tool; use default sizes for anything that stands alone.
