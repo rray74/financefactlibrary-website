@@ -359,9 +359,9 @@ function getSubjectDraft(int $subjectId): ?array
  * Names of the category and subcategory pages, keyed by their public path
  * (e.g. /uk/savings/nsandi/), for the dashboard's Google search table: Google
  * lists these pages too, but they are not subjects. Each value is
- * ['name' => ..., 'country_code' => ...]. The subcategory's name is
- * shown with its category ("Savings: NS&I") when the two differ, because a
- * subcategory name alone can be vague.
+ * ['name' => ..., 'country_code' => ...]. The name is the page's own name,
+ * the same as its heading and <title> on the public site, so every page is
+ * named the same way everywhere.
  */
 function getAdminListingNamesByPath(): array
 {
@@ -376,13 +376,12 @@ function getAdminListingNamesByPath(): array
     }
 
     foreach ($pdo->query(
-        'SELECT sc.slug, sc.name, c.slug AS category_slug, c.name AS category_name, j.url_prefix, j.code
+        'SELECT sc.slug, sc.name, c.slug AS category_slug, j.url_prefix, j.code
          FROM subcategories sc
          JOIN categories c ON c.id = sc.category_id
          JOIN jurisdictions j ON j.id = c.jurisdiction_id'
     )->fetchAll() as $row) {
-        $label = $row['category_name'] === $row['name'] ? $row['name'] : $row['category_name'] . ': ' . $row['name'];
-        $names[subcategoryUrl((string) $row['url_prefix'], $row['category_slug'], $row['slug'])] = ['name' => $label, 'country_code' => $row['code']];
+        $names[subcategoryUrl((string) $row['url_prefix'], $row['category_slug'], $row['slug'])] = ['name' => $row['name'], 'country_code' => $row['code']];
     }
 
     return $names;
