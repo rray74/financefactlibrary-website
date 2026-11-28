@@ -1,0 +1,28 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,pensions,private-pensions,pension-tax-relief,Pension Tax Relief,"How pension tax relief works, which taxpayers must claim extra relief themselves, what the annual allowance is and when it can be reduced.","## Two kinds of scheme give relief automatically, but some cases need a claim
+
+Two types of pension scheme give relief automatically. In one, your employer calculates taxable pay only after removing your contributions, so relief is built in. In the other, your pension provider claims {fact:pension_relief_basic_rate} from HM Revenue and Customs (HMRC) and adds it to your pot — a method called **relief at source**. If your scheme does neither, you need to claim the relief yourself, through your Self Assessment tax return or, if you do not file one, through a separate claim to HMRC. No relief is available on contributions to a pension scheme that is not registered with HMRC, and no relief is given if contributions are used to pay a personal term assurance life policy — one that ends on the first death or covers only family members — unless it is a protected policy.
+
+Third-party contributions work differently depending on the scheme type. If a partner or anyone else pays into a relief at source pension for you, the {fact:pension_relief_basic_rate} is added to your pot automatically. For contributions made by someone else into a workplace pension, you must claim the relief separately.
+
+## Under relief at source, higher and additional rate taxpayers claim the extra themselves
+
+Relief at source covers only the first {fact:pension_relief_basic_rate}. If your Income Tax rate in England, Wales or Northern Ireland is above that, you need to claim the additional relief yourself, and only on the income you actually paid the higher or additional rate on, not on your total contribution. On income taxed at the higher rate the extra relief is {fact:pension_relief_higher_rate_extra}; on income taxed at the additional rate it is {fact:pension_relief_additional_rate_extra}.
+
+If you have already claimed relief and need to change it, HMRC's online claim tax relief service can be used for that.
+
+## Relief is capped at your earnings, with a separate limit for low earners
+
+People under 75 who live in the UK may receive relief. It stops once your own contributions pass {fact:pension_relief_earnings_limit} of your annual earnings, unless that comes to less than £3,600, in which case £3,600 is the limit. If relief is given on more than the cap allows, HMRC can ask for the excess back, and keeping within it is down to you.
+
+In a relief at source scheme, if you pay no Income Tax but have some earnings, your provider can claim {fact:pension_relief_basic_rate} relief on contributions up to 80% of those earnings in the tax year. If you have no earnings at all, the provider can claim relief on contributions up to {fact:pension_relief_non_earner_limit} a tax year.
+
+## Scottish taxpayers are treated differently on relief
+
+If your Scottish Income Tax rate is below {fact:pension_relief_basic_rate}, your provider still claims {fact:pension_relief_basic_rate} for you and you do not repay the difference. If you pay above that, the extra relief you can claim is worked out at different percentages for each Scottish rate above {fact:pension_relief_basic_rate}, unlike the rest of the UK.
+
+## Going over the annual allowance brings a tax charge, and the allowance can be reduced
+
+If you have more than one pension, they are added together and measured against a single annual allowance. For a defined contribution scheme the count is the total paid in, by you or by anyone else such as an employer, and for a defined benefit scheme it is the year's increase in the benefit. Going over it triggers the annual allowance charge, which is taxed at the same rate as your top slice of income, and either you or your pension provider must pay it. Even if your provider pays all or part of it, you must report the charge in the 'Pension savings tax charges' section of your Self Assessment tax return, and you can still claim tax relief on your contributions on that return. There is no charge for someone who retired and took all their pension pots because of serious ill health, or who has died. Carrying over unused allowance from the three tax years before may be possible, but only once the allowance for the tax year in question has been used in full.
+
+The allowance can be reduced in more than one way. If your adjusted income and threshold income both exceed set limits, a taper applies and the allowance shrinks, though it stops at a minimum rather than shrinking without limit. If you have flexibly accessed any pension benefits, a lower money purchase annual allowance applies to further defined contribution savings.",Pension Tax Relief {tax_year},Pension tax relief can cover up to {fact:pension_relief_earnings_limit} of your earnings. Higher and additional rate taxpayers in relief at source schemes must claim the extra themselves.,2026-10-27 08:27:48,2026-11-28 17:53:40
