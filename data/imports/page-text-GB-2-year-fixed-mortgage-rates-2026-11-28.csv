@@ -1,0 +1,22 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,mortgages,fixed-rate-mortgages,2-year-fixed-mortgage-rates,2-Year Fixed Mortgage Rates,"Bank of England averages for 2-year fixed mortgage rates by deposit size, what moves them, and how they relate to Bank Rate and the average paid on newly-drawn mortgages.","## The averages show advertised rates, not the rate you would get
+
+The 2-year fixed figures on this page are Bank of England averages of the rates UK lenders advertise. There is one for each deposit size. For each lender, the Bank counts its most competitive product that fits the definition, and leaves out products restricted to first-time buyers. Deposit size matters because lenders price by **loan-to-value**, which compares what you borrow with what the property is worth. A 5% deposit means borrowing 95% of the value, and a 25% deposit means borrowing 75%.
+
+An average of advertised rates is a market benchmark. The rate a lender offers you depends on its own range, the loan-to-value band you fall into, your circumstances and any product fees. The averages use each lender's advertised headline rate, not a figure that includes fees. Fees and cash-back only help decide which of a lender's products counts as its most competitive. The averages cover the whole UK.
+
+## Bank Rate, advertised rates and newly-drawn rates are different things
+
+The page shows different kinds of figure, and they measure different things.
+
+- **Bank Rate** is the interest rate the Bank of England sets. It is decided by the Monetary Policy Committee, which meets eight times a year. It is not a mortgage rate.
+- **Advertised 2-year fixed rates** are what lenders say they will charge on the fixed-rate deals they're offering. They are averaged by loan-to-value band.
+- **The average rate on newly-drawn mortgages** is what the Bank calls the ""effective"" rate: the interest actually being paid on mortgages taken out in the month. It covers newly drawn mortgages in general, so it is not specific to 2-year fixes.
+
+## A fixed rate does not follow Bank Rate during the fixed period
+
+A 2-year fixed rate stays the same for the whole fixed period, whatever happens to Bank Rate in that time. Repaying the mortgage before the deal ends will probably bring an early repayment charge, usually a percentage of what you still owe. It tends to shrink as the end of the deal nears, and its terms depend on your mortgage. When the period ends, a mortgage that has not been moved to another deal goes onto the lender's reversion rate, which is often its standard variable rate and will normally be higher than your initial rate.
+
+## What moves 2-year fixed rates
+
+The Bank of England tracks quoted 2-year fixed mortgage rates against the two-year overnight index swap (OIS) rate, a market rate that reflects what is expected for Bank Rate over that time, along with a premium for risk. Rises in this reference rate can pass through to quoted mortgage rates relatively quickly.",2 Year Fixed Mortgage Rates: UK Averages,"What the Bank of England's average 2 year fixed mortgage rates show for different deposit sizes, what moves them, and how they compare with 5 year fixes.",2026-10-19 21:19:19,2026-11-28 17:53:40
