@@ -671,6 +671,18 @@ function parseAiAnswers(string $reply): array
 {
     $json = trim(preg_replace('/^```(?:json)?|```$/m', '', trim($reply)));
     $data = json_decode($json, true);
+    // When a figure is written differently on the page (3-3/4 for 3.75, "50 cents" for $0.50),
+    // the AI sometimes explains in a few sentences first and puts the JSON in a fenced block
+    // after them. That made check-sources.php report "1 pages failed" every day from
+    // 26 Nov 2026 (Federal Reserve and Canada pay-deductions pages). So if the whole reply
+    // isn't JSON, take the first {...} object in it instead: from the first "{" to the last "}".
+    if (!is_array($data)) {
+        $start = strpos($reply, '{');
+        $end = strrpos($reply, '}');
+        if ($start !== false && $end !== false && $end > $start) {
+            $data = json_decode(substr($reply, $start, $end - $start + 1), true);
+        }
+    }
     if (!is_array($data) || !isset($data['results']) || !is_array($data['results'])) {
         throw new RuntimeException('AI reply was not in the expected format');
     }
