@@ -1,0 +1,14 @@
+jurisdiction_code,category_slug,subcategory_slug,subject_slug,subject_name,intro,explanation,meta_title,meta_description,text_reviewed_at,exported_at
+GB,savings,nsandi,premium-bonds,Premium Bonds Prize Rate and Odds,"How Premium Bonds prize draws work, what the prize fund rate actually means for holders, the monthly odds, and the maximum you can hold.","## Prizes replace interest, not supplement it
+
+Premium Bonds do not earn interest. Instead, National Savings & Investments (NS&I) applies the **prize fund rate** across all eligible Bonds to fund a monthly draw. NS&I can change the rate at any time, as it is variable. Each Bond goes into the draw separately, so more Bonds mean more entries, but every Bond has the same odds as every other, and those odds are variable.
+
+UK Income Tax and Capital Gains Tax do not apply to any prizes you win. Prizes from £25,000 up to £100,000 are not paid automatically. NS&I sends the winner a claim form, and the prize is paid once it has been completed and returned. The jackpot winner is visited in person instead.
+
+## New Bonds wait before their first draw, except reinvested prizes below the holding limit
+
+A Bond has to be held for a full month before it can go into a draw. Bonds you buy in a given calendar month are therefore first entered in the month after next, whatever day of the month you buy them. The exception is prizes you choose to reinvest, and only while your holding is below the maximum: those Bonds are eligible for the very next draw.
+
+## Bonds above the holding limit cannot win
+
+The maximum any one person can hold is {fact:premium_bonds_max_holding}. Bond numbers that would push a holding beyond that limit are excluded from prize draws. Should an excluded number be drawn and a prize paid out by mistake, NS&I is entitled to reclaim that prize. If you top up by bank transfer and the amount would take you over the limit, NS&I automatically refunds the transfer in full to your bank account.",Premium Bonds Prize Rate & Odds,Premium Bonds enter you into a monthly prize draw instead of paying interest. How the prize fund rate and odds work and how much you can hold in Bonds.,2026-10-28 08:56:06,2026-11-28 17:53:40
