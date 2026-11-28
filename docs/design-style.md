@@ -298,7 +298,36 @@ and again after any palette override.*
 - `<html lang>` comes from the country's locale (for example `en-GB`). Don't hard-code it.
 - Navigation, breadcrumbs, tables and headings use real elements (`<nav aria-label>`, `<table>`, `<h1>` to `<h3>`), and
   pages carry breadcrumb JSON-LD.
-- The site has no photos or illustrations. Add alt text if any are ever added.
+- The site has no photos or illustrations (only the brand mark and share image, see Brand assets). Add alt text if any are ever added. The share image's alt text is set in `includes/header.php`.
+
+## Brand assets
+
+*Added 28 November 2026.* The mark is a white "F" (for Fact) on an indigo-600 rounded square, with an amber-400 dot as the
+data point: standard Tailwind colours, no font needed, so it stays sharp at 16px. If the primary colour changes (see Colour),
+change the indigo here too, rebuild the images and re-check.
+
+| File | Size | Used for |
+|---|---|---|
+| `public/assets/img/favicon.svg` | any | Browser tab icon (modern browsers). The source for the PNGs |
+| `public/assets/img/favicon-32.png` | 32x32 | Tab icon where SVG isn't supported |
+| `public/favicon.ico` | 48x48 (PNG inside) | Browsers that ask for `/favicon.ico` by default, so it lives in the web root |
+| `public/assets/img/apple-touch-icon.png` | 180x180, opaque | iPhone and iPad "Add to Home Screen" (iOS rounds the corners itself) |
+| `public/assets/img/og-default.png` | 1200x630 | Social share image for every public page. Source: `src/brand/og-default.html` |
+
+- **Where they're linked:** `includes/header.php`. Icons and `theme-color` (white in light, slate-800 in dark, to match the page)
+  go on every page. The Open Graph and `twitter:card` tags go only on public pages (not `noindex` ones such as admin and error
+  pages). Page title, description and canonical address come from each page's own `$pageTitle`, `$metaDescription` and
+  `$canonicalPath`; the image is the same default for every page. The icon links use `assetUrl()`, so a changed file is never
+  missed by caches.
+- **Rebuilding the share image** (from the project root; needs Google Chrome and an internet connection for the fonts):
+  `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu --hide-scrollbars
+  --window-size=1200,630 --virtual-time-budget=15000 --screenshot=public/assets/img/og-default.png
+  file://$PWD/src/brand/og-default.html`.
+- **Rebuilding the icons:** edit `favicon.svg`, then render it at 32, 48 and 180px the same way (the 180px apple icon is the
+  same drawing on a full-bleed indigo square, with no rounded corners). Pack the 48px PNG into `favicon.ico` with a one-image
+  ICO header.
+- Share previews are cached by Facebook, LinkedIn, X and messaging apps for days. After changing the image, use each
+  service's own "refresh" tool, or add a version to the image address.
 
 ## Checks
 

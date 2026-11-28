@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Finance Fact Library">
+  <!-- Brand mark: a white "F" (for Fact) on indigo-600, with an amber-400 dot as the data point. Tailwind palette colours. -->
+  <rect width="64" height="64" rx="14" fill="#4f46e5"/>
+  <path fill="#ffffff" d="M20 14H46V22H29V29H42V37H29V50H20Z"/>
+  <circle cx="47" cy="47" r="5.5" fill="#fbbf24"/>
+</svg>

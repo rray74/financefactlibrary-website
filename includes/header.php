@@ -80,6 +80,42 @@ if (!empty($metaDescription)) {
     <?php endif; ?>
 
     <?php
+    // Brand assets (restyle follow-up, 28 Nov 2026). The SVG icon is used by modern browsers and scales to any size; the
+    // 32px PNG and /favicon.ico (48px, in the web root because browsers ask for that address by default) cover older ones;
+    // the apple-touch-icon is what iPhones and iPads use for "Add to Home Screen". theme-color tints the phone's browser
+    // bar to match the page in light and dark. Sources and how to rebuild the images: docs/design-style.md, "Brand assets".
+    ?>
+    <link rel="icon" href="<?= e(assetUrl('/assets/img/favicon.svg')) ?>" type="image/svg+xml">
+    <link rel="icon" href="<?= e(assetUrl('/assets/img/favicon-32.png')) ?>" type="image/png" sizes="32x32">
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
+    <link rel="apple-touch-icon" href="<?= e(assetUrl('/assets/img/apple-touch-icon.png')) ?>">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1e293b" media="(prefers-color-scheme: dark)">
+
+    <?php
+    // Social sharing: what appears when a page is posted in a chat or on social media. Public pages only (not admin,
+    // previews or error pages, which are noindex). One default image for every page, at the 1200x630 size these cards
+    // use. The address must be absolute, so absoluteUrl() builds it. The description falls back to the site's own line.
+    if (empty($noindex)):
+        $shareDescription = !empty($metaDescription)
+            ? $metaDescription
+            : 'Rates, thresholds and figures for personal finance, each checked against an official source and dated.';
+    ?>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="<?= e(SITE_NAME) ?>">
+    <meta property="og:title" content="<?= e($pageTitle) ?>">
+    <meta property="og:description" content="<?= e($shareDescription) ?>">
+    <?php if (!empty($canonicalPath)): ?>
+    <meta property="og:url" content="<?= e(absoluteUrl($canonicalPath)) ?>">
+    <?php endif; ?>
+    <meta property="og:image" content="<?= e(absoluteUrl('/assets/img/og-default.png')) ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="<?= e(SITE_NAME) ?>: rates, thresholds and figures for personal finance, each checked against an official source and dated.">
+    <meta name="twitter:card" content="summary_large_image">
+    <?php endif; ?>
+
+    <?php
     // Applies a saved light or dark choice before the page is drawn, so there is no flash of the wrong
     // theme. Storage can be blocked (private windows), so every use is in try/catch and the page works
     // without it. Also wires the toggle button(s) marked data-theme-toggle: they switch to the other
